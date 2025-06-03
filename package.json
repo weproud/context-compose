@@ -1,5 +1,5 @@
 {
-  "name": "task-action",
+  "name": "@modelcontextprotocol/task-action",
   "version": "1.0.0",
   "description": "Model Context Protocol (MCP) 서버 및 CLI 도구 - 단일 패키지, 다중 진입점",
   "type": "module",
@@ -26,21 +26,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/weproud/hello-model-context-protocol.git"
+    "url": "git+https://github.com/weproud/task-action.git"
   },
   "keywords": [
     "mcp",
     "model-context-protocol",
+    "task-action",
     "typescript",
     "fastmcp",
-    "cli"
+    "cli",
+    "automation",
+    "workflow"
   ],
-  "author": "",
+  "author": "weproud",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/weproud/hello-model-context-protocol/issues"
+    "url": "https://github.com/weproud/task-action/issues"
   },
-  "homepage": "https://github.com/weproud/hello-model-context-protocol#readme",
+  "homepage": "https://github.com/weproud/task-action#readme",
   "dependencies": {
     "commander": "^11.1.0",
     "dotenv": "^16.4.5",
