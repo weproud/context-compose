@@ -1,0 +1,64 @@
+{
+  "name": "task-action",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) 서버 및 CLI 도구 - 단일 패키지, 다중 진입점",
+  "type": "module",
+  "main": "dist/mcp-server/src/index.js",
+  "bin": {
+    "task-action": "bin/task-action-cli.js",
+    "task-action-server": "mcp-server/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev:server": "tsx mcp-server/src/index.ts",
+    "dev:cli": "tsx src/cli/index.ts",
+    "start:server": "node dist/mcp-server/src/index.js",
+    "start:cli": "node bin/task-action-cli.js",
+    "task-action": "tsx src/cli/index.ts",
+    "inspect": "npx fastmcp inspect mcp-server/server.ts",
+    "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
+    "test": "vitest",
+    "lint": "eslint src/**/*.ts mcp-server/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts mcp-server/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts mcp-server/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts mcp-server/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weproud/hello-model-context-protocol.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "typescript",
+    "fastmcp",
+    "cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weproud/hello-model-context-protocol/issues"
+  },
+  "homepage": "https://github.com/weproud/hello-model-context-protocol#readme",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.5",
+    "fastmcp": "^2.2.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.29",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.28.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

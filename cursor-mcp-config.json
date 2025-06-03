@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "task-action": {
+      "command": "node",
+      "args": [
+        "/Users/raiiz/madeinnook/workspace/task-action/mcp-server/server.js"
+      ],
+      "env": {
+        "SLACK_WEBHOOK_URL": "your-slack-webhook-url",
+        "DISCORD_WEBHOOK_URL": "your-discord-webhook-url"
+      },
+      "cwd": "/Users/raiiz/madeinnook/workspace/task-action"
+    }
+  }
+}

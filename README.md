@@ -1,4 +1,4 @@
-# Hello Model Context Protocol (MCP)
+# Task Action Model Context Protocol (MCP)
 
 A comprehensive MCP server and CLI toolkit built with Node.js, TypeScript, and FastMCP.
 
@@ -132,16 +132,16 @@ pnpm start:server
 
 ```bash
 # Initialize a project
-pnpm hello-mcp init
+pnpm task-action init
 
 # Add a greeting
-pnpm hello-mcp greeting hello
+pnpm task-action greeting hello
 
 # Send Slack message (requires SLACK_WEBHOOK_URL)
-pnpm hello-mcp send-message-slack "Hello, World!"
+pnpm task-action send-message-slack "Hello, World!"
 
 # Send Discord message (requires DISCORD_WEBHOOK_URL)
-pnpm hello-mcp send-message-discord "Hello, Discord!"
+pnpm task-action send-message-discord "Hello, Discord!"
 ```
 
 #### 3. Test with MCP Inspector
@@ -256,22 +256,22 @@ The CLI provides the same functionality as the MCP server tools, allowing direct
 
 ```bash
 # Initialize project
-pnpm hello-mcp init
+pnpm task-action init
 
 # Add greeting
-pnpm hello-mcp greeting hello
+pnpm task-action greeting hello
 
 # Send Slack message
-pnpm hello-mcp send-message-slack "Hello, World!"
+pnpm task-action send-message-slack "Hello, World!"
 
 # Send Discord message
-pnpm hello-mcp send-message-discord "Hello, Discord!"
+pnpm task-action send-message-discord "Hello, Discord!"
 
 # Show examples
-pnpm hello-mcp examples
+pnpm task-action examples
 
 # Show help
-pnpm hello-mcp --help
+pnpm task-action --help
 ```
 
 #### Method 2: Direct execution
@@ -290,9 +290,9 @@ npx tsx src/cli/index.ts examples
 pnpm link
 
 # Use anywhere
-hello-mcp init --verbose
-hello-mcp examples
-hello-mcp --help
+task-action init --verbose
+task-action examples
+task-action --help
 ```
 
 ### Command Examples
@@ -301,15 +301,15 @@ hello-mcp --help
 
 ```bash
 # Basic usage
-pnpm hello-mcp init
+pnpm task-action init
 # Result: Creates .hellomcp directory and hello.yaml file
 
 # Verbose output
-pnpm hello-mcp init --verbose
+pnpm task-action init --verbose
 # Result: Detailed initialization information
 
 # Force overwrite
-pnpm hello-mcp init --force
+pnpm task-action init --force
 # Result: Overwrites existing files
 ```
 
@@ -317,11 +317,11 @@ pnpm hello-mcp init --force
 
 ```bash
 # Add a greeting
-pnpm hello-mcp greeting hello
+pnpm task-action greeting hello
 # Result: Creates .hellomcp/hello-hello.yaml
 
 # Add greeting with spaces (converted to dashes)
-pnpm hello-mcp greeting "good morning"
+pnpm task-action greeting "good morning"
 # Result: Creates .hellomcp/hello-good-morning.yaml
 ```
 
@@ -329,10 +329,10 @@ pnpm hello-mcp greeting "good morning"
 
 ```bash
 # Send Slack message (requires SLACK_WEBHOOK_URL environment variable)
-SLACK_WEBHOOK_URL="your-webhook-url" pnpm hello-mcp send-message-slack "Hello from CLI!"
+SLACK_WEBHOOK_URL="your-webhook-url" pnpm task-action send-message-slack "Hello from CLI!"
 
 # Send Discord message (requires DISCORD_WEBHOOK_URL environment variable)
-DISCORD_WEBHOOK_URL="your-webhook-url" pnpm hello-mcp send-message-discord "Hello from CLI!"
+DISCORD_WEBHOOK_URL="your-webhook-url" pnpm task-action send-message-discord "Hello from CLI!"
 ```
 
 ## 🔧 MCP Server Usage
@@ -350,9 +350,9 @@ Add the following configuration to your Claude Desktop MCP settings:
 ```json
 {
   "mcpServers": {
-    "hello-mcp": {
+    "task-action": {
       "command": "node",
-      "args": ["path/to/hello-model-context-protocol/mcp-server/server.js"],
+      "args": ["path/to/task-action/mcp-server/server.js"],
       "env": {
         "SLACK_WEBHOOK_URL": "your-slack-webhook-url",
         "DISCORD_WEBHOOK_URL": "your-discord-webhook-url"
@@ -389,7 +389,7 @@ Add to your Cursor MCP settings:
 
 The MCP server exposes the following tools:
 
-- **`init`**: Initialize a Hello MCP project (creates `.hellomcp` directory and `hello.yaml`)
+- **`init`**: Initialize a Task Action project (creates `.hellomcp` directory and `hello.yaml`)
 - **`greeting`**: Create greeting files (creates `hello-<name>.yaml` files)
 - **`send_message_slack`**: Send messages to Slack via webhook
 - **`send_message_discord`**: Send messages to Discord via webhook
@@ -492,16 +492,16 @@ Claude: Uses send_message_slack tool to send the message
 
 ```bash
 # Initialize project
-pnpm hello-mcp init
+pnpm task-action init
 
 # Add multiple greetings
-pnpm hello-mcp greeting hello
-pnpm hello-mcp greeting "good morning"
-pnpm hello-mcp greeting farewell
+pnpm task-action greeting hello
+pnpm task-action greeting "good morning"
+pnpm task-action greeting farewell
 
 # Send messages
-SLACK_WEBHOOK_URL="..." pnpm hello-mcp send-message-slack "Deployment complete!"
-DISCORD_WEBHOOK_URL="..." pnpm hello-mcp send-message-discord "Server is online!"
+SLACK_WEBHOOK_URL="..." pnpm task-action send-message-slack "Deployment complete!"
+DISCORD_WEBHOOK_URL="..." pnpm task-action send-message-discord "Server is online!"
 ```
 
 ## 🤝 Contributing
