@@ -1,17 +1,16 @@
 {
   "mcpServers": {
-    "task-action-dev": {
+    "task-action": {
       "command": "npx",
       "args": [
         "tsx",
-        "mcp-server/src/index.ts"
+        "/Users/raiz/labs/workspace/task-action/mcp-server/server.ts"
       ],
       "env": {
-        "NODE_ENV": "development",
-        "SLACK_WEBHOOK_URL": "",
-        "DISCORD_WEBHOOK_URL": ""
+        "SLACK_WEBHOOK_URL": "your-slack-webhook-url-here",
+        "DISCORD_WEBHOOK_URL": "your-discord-webhook-url-here"
       },
-      "cwd": "."
+      "cwd": "/Users/raiz/labs/workspace/task-action"
     }
   }
 }

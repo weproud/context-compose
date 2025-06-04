@@ -1,0 +1,6 @@
+version: 1
+kind: rule
+name: The Must Follow Rule
+description: A rule that must be followed unconditionally
+prompt: |
+  Only develop what is explicitly requested.
