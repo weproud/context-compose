@@ -53,7 +53,6 @@ hello-model-context-protocol/
 │   ├── src/                     # MCP server source code
 │   │   ├── tools/               # Tool definitions
 │   │   │   ├── init.ts          # Project initialization tool
-│   │   │   ├── greeting.ts      # Greeting management tool
 │   │   │   ├── slack.ts         # Slack messaging tool
 │   │   │   ├── discord.ts       # Discord messaging tool
 │   │   │   └── index.ts         # Tool registration
@@ -63,14 +62,12 @@ hello-model-context-protocol/
 ├── src/                         # Shared source code
 │   ├── schemas/                 # Tool-specific schema definitions
 │   │   ├── init.ts              # Init tool schema
-│   │   ├── greeting.ts          # Greeting tool schema
 │   │   ├── slack.ts             # Slack tool schema
 │   │   ├── discord.ts           # Discord tool schema
 │   │   └── index.ts             # Schema exports
 │   ├── core/                    # Shared utilities and business logic
 │   │   ├── tools/               # Common business logic
 │   │   │   ├── init.ts          # Init tool logic
-│   │   │   ├── greeting.ts      # Greeting tool logic
 │   │   │   ├── slack.ts         # Slack tool logic
 │   │   │   ├── discord.ts       # Discord tool logic
 │   │   │   └── index.ts         # Tool logic exports
@@ -78,7 +75,6 @@ hello-model-context-protocol/
 │   ├── cli/                     # CLI logic
 │   │   ├── commands/            # CLI command handlers
 │   │   │   ├── init.ts          # Init command
-│   │   │   ├── greeting.ts      # Greeting command
 │   │   │   ├── slack.ts         # Slack command
 │   │   │   └── discord.ts       # Discord command
 │   │   └── index.ts             # CLI entry point
@@ -134,9 +130,6 @@ pnpm start:server
 # Initialize a project
 pnpm task-action init
 
-# Add a greeting
-pnpm task-action greeting hello
-
 # Send Slack message (requires SLACK_WEBHOOK_URL)
 pnpm task-action send-message-slack "Hello, World!"
 
@@ -162,7 +155,6 @@ This project follows the **DRY (Don't Repeat Yourself)** principle by sharing th
 ```
 src/core/tools/
 ├── init.ts             # Init tool core business logic
-├── greeting.ts         # Greeting tool core business logic
 ├── slack.ts            # Slack tool core business logic
 ├── discord.ts          # Discord tool core business logic
 └── index.ts            # All tool logic exports
@@ -218,7 +210,7 @@ npx fastmcp inspect dist/mcp-server/server.js
 ### How to Use MCP Inspector
 
 1. **Start Server**: Run one of the commands above - a web browser will open automatically
-2. **Test Tools**: Test tools like `init`, `greeting`, `send_message_slack` directly in the web UI
+2. **Test Tools**: Test tools like `init`, `send_message_slack` directly in the web UI
 3. **Check Resources**: Explore available resources like `logs://application`
 4. **Real-time Debugging**: Monitor server logs and request/response in real-time
 
@@ -258,9 +250,6 @@ The CLI provides the same functionality as the MCP server tools, allowing direct
 # Initialize project
 pnpm task-action init
 
-# Add greeting
-pnpm task-action greeting hello
-
 # Send Slack message
 pnpm task-action send-message-slack "Hello, World!"
 
@@ -279,7 +268,6 @@ pnpm task-action --help
 ```bash
 # Using tsx directly
 npx tsx src/cli/index.ts init --verbose
-npx tsx src/cli/index.ts greeting hello
 npx tsx src/cli/index.ts examples
 ```
 
@@ -311,18 +299,6 @@ pnpm task-action init --verbose
 # Force overwrite
 pnpm task-action init --force
 # Result: Overwrites existing files
-```
-
-#### Greeting Command
-
-```bash
-# Add a greeting
-pnpm task-action greeting hello
-# Result: Creates .hellomcp/hello-hello.yaml
-
-# Add greeting with spaces (converted to dashes)
-pnpm task-action greeting "good morning"
-# Result: Creates .hellomcp/hello-good-morning.yaml
 ```
 
 #### Messaging Commands
@@ -390,7 +366,6 @@ Add to your Cursor MCP settings:
 The MCP server exposes the following tools:
 
 - **`init`**: Initialize a Task Action project (creates `.hellomcp` directory and `hello.yaml`)
-- **`greeting`**: Create greeting files (creates `hello-<name>.yaml` files)
 - **`send_message_slack`**: Send messages to Slack via webhook
 - **`send_message_discord`**: Send messages to Discord via webhook
 
@@ -481,9 +456,6 @@ pnpm format:check
 User: "Initialize a new MCP project"
 Claude: Uses the init tool to create .hellomcp directory and hello.yaml
 
-User: "Add a greeting called 'welcome'"
-Claude: Uses the greeting tool to create hello-welcome.yaml
-
 User: "Send a message to Slack saying 'Hello team!'"
 Claude: Uses send_message_slack tool to send the message
 ```
@@ -493,11 +465,6 @@ Claude: Uses send_message_slack tool to send the message
 ```bash
 # Initialize project
 pnpm task-action init
-
-# Add multiple greetings
-pnpm task-action greeting hello
-pnpm task-action greeting "good morning"
-pnpm task-action greeting farewell
 
 # Send messages
 SLACK_WEBHOOK_URL="..." pnpm task-action send-message-slack "Deployment complete!"
@@ -537,5 +504,7 @@ If you encounter any issues or have questions:
 ---
 
 **Happy coding with Model Context Protocol! 🚀**
+
 # task-action
+
 # task-action

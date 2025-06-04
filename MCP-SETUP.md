@@ -5,6 +5,7 @@
 ## 📋 사전 준비
 
 1. **프로젝트 빌드**
+
    ```bash
    npm install
    npm run build
@@ -21,19 +22,19 @@
 ### Claude Desktop
 
 **설정 파일 위치:**
+
 - **macOS**: `~/.claude/mcp_servers.json`
 - **Windows**: `%APPDATA%\Claude\mcp_servers.json`
 - **Linux**: `~/.config/claude/mcp_servers.json`
 
 **설정 내용:**
+
 ```json
 {
   "mcpServers": {
     "task-action": {
       "command": "node",
-      "args": [
-        "/absolute/path/to/task-action/mcp-server/server.js"
-      ],
+      "args": ["/absolute/path/to/task-action/mcp-server/server.js"],
       "env": {
         "SLACK_WEBHOOK_URL": "your-slack-webhook-url-here",
         "DISCORD_WEBHOOK_URL": "your-discord-webhook-url-here"
@@ -47,19 +48,19 @@
 ### Cursor
 
 **설정 파일 위치:**
+
 - **macOS**: `~/.cursor/mcp_servers.json`
 - **Windows**: `%APPDATA%\Cursor\mcp_servers.json`
 - **Linux**: `~/.config/cursor/mcp_servers.json`
 
 **설정 내용:**
+
 ```json
 {
   "mcpServers": {
     "task-action": {
       "command": "node",
-      "args": [
-        "/absolute/path/to/task-action/mcp-server/server.js"
-      ],
+      "args": ["/absolute/path/to/task-action/mcp-server/server.js"],
       "env": {
         "SLACK_WEBHOOK_URL": "your-slack-webhook-url-here",
         "DISCORD_WEBHOOK_URL": "your-discord-webhook-url-here"
@@ -79,10 +80,7 @@
   "mcpServers": {
     "task-action-dev": {
       "command": "npx",
-      "args": [
-        "tsx",
-        "mcp-server/src/index.ts"
-      ],
+      "args": ["tsx", "mcp-server/src/index.ts"],
       "env": {
         "NODE_ENV": "development",
         "SLACK_WEBHOOK_URL": "",
@@ -100,7 +98,7 @@
 
 - `mcp-config.json` - 일반적인 MCP 설정 (상대 경로)
 - `claude-desktop-config.json` - Claude Desktop용 설정
-- `cursor-mcp-config.json` - Cursor용 설정  
+- `cursor-mcp-config.json` - Cursor용 설정
 - `mcp-config-dev.json` - 개발환경용 설정
 
 ## 🔍 설정 확인
@@ -120,9 +118,8 @@ npm run inspect
 Task Action MCP 서버는 다음 도구들을 제공합니다:
 
 1. **init** - Task Action 프로젝트 초기화 (assets → .taskaction 복사)
-2. **greeting** - 인사말 파일 생성
-3. **send_message_slack** - Slack 메시지 전송
-4. **send_message_discord** - Discord 메시지 전송
+2. **send_message_slack** - Slack 메시지 전송
+3. **send_message_discord** - Discord 메시지 전송
 
 ## 🚨 문제 해결
 

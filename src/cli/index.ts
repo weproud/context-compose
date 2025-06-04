@@ -2,10 +2,6 @@
 
 import { Command } from 'commander';
 import { createInitCommand, showInitExamples } from './commands/init.js';
-import {
-  createGreetingCommand,
-  showGreetingExamples,
-} from './commands/greeting.js';
 import { createSlackCommand, showSlackExamples } from './commands/slack.js';
 import {
   createDiscordCommand,
@@ -21,14 +17,13 @@ function createCLI(): Command {
 
   program
     .name('task-action')
-    .description('Task Action Model Context Protocol (MCP) 서버 도구들을 위한 CLI')
+    .description(
+      'Task Action Model Context Protocol (MCP) 서버 도구들을 위한 CLI'
+    )
     .version('1.0.0');
 
   // Init 명령 추가
   program.addCommand(createInitCommand());
-
-  // Greeting 명령 추가
-  program.addCommand(createGreetingCommand());
 
   // Slack 명령 추가
   program.addCommand(createSlackCommand());
@@ -45,16 +40,13 @@ function createCLI(): Command {
     .description('사용 예시를 보여줍니다')
     .option(
       '-c, --command <command>',
-      '특정 명령의 예시만 표시 (init, greeting, send-message-slack, send-message-discord)'
+      '특정 명령의 예시만 표시 (init, send-message-slack, send-message-discord)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
         switch (options.command) {
           case 'init':
             showInitExamples();
-            break;
-          case 'greeting':
-            showGreetingExamples();
             break;
           case 'send-message-slack':
             showSlackExamples();
@@ -68,7 +60,7 @@ function createCLI(): Command {
           default:
             console.error(`❌ 알 수 없는 명령: ${options.command}`);
             console.log(
-              '사용 가능한 명령: init, greeting, send-message-slack, send-message-discord'
+              '사용 가능한 명령: init, send-message-slack, send-message-discord'
             );
             process.exit(1);
         }
@@ -76,14 +68,12 @@ function createCLI(): Command {
         console.log('🛠️  MCP CLI 도구 사용 예시\n');
         showInitExamples();
         console.log('');
-        showGreetingExamples();
-        console.log('');
         showSlackExamples();
         console.log('');
         showDiscordExamples();
         console.log('\n더 자세한 정보는 각 명령에 --help 옵션을 사용하세요.');
         console.log(
-          '예: task-action init --help, task-action greeting --help, task-action send-message-slack --help, task-action send-message-discord --help'
+          '예: task-action init --help, task-action send-message-slack --help, task-action send-message-discord --help'
         );
       }
     });
@@ -95,7 +85,6 @@ function createCLI(): Command {
     console.log('');
     console.log('사용 예시:');
     console.log('  $ task-action init');
-    console.log('  $ task-action greeting hi');
     console.log('  $ task-action send-message-slack "Hello, World!"');
     console.log('  $ task-action send-message-discord "Hello, Discord!"');
     console.log('  $ task-action examples');

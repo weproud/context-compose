@@ -14,7 +14,6 @@ alwaysApply: false
 ```
 src/core/tools/           # 공유 비즈니스 로직
 ├── init.ts              # 프로젝트 초기화 로직
-├── greeting.ts          # 인사말 관리 로직
 ├── slack.ts             # Slack 메시징 로직
 ├── discord.ts           # Discord 메시징 로직
 └── index.ts             # 모든 도구 로직 내보내기

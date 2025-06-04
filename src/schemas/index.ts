@@ -9,13 +9,6 @@ export {
   type InitToolResponse,
 } from './init.js';
 
-// Greeting 도구 스키마
-export {
-  GreetingToolSchema,
-  type GreetingToolInput,
-  type GreetingToolResponse,
-} from './greeting.js';
-
 // Slack 도구 스키마
 export {
   SlackToolSchema,
