@@ -1,8 +1,6 @@
 import { FastMCP } from 'fastmcp';
-import {
-  AddTaskToolSchema,
-  executeAddTaskTool,
-} from '../../../src/core/tools/index.js';
+import { AddTaskToolSchema } from '../../../src/schemas/add-task.js';
+import { executeAddTaskTool } from '../../../src/core/tools/add-task.js';
 import logger from '../logger.js';
 
 /**

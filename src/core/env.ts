@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync } from 'fs-extra';
 
 /**
  * 환경변수 로드 유틸리티

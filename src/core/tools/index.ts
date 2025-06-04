@@ -7,12 +7,10 @@
 export { InitTool, initProject, executeInitTool } from './init.js';
 
 // Add Task 도구
-export {
-  AddTaskTool,
-  addTask,
-  executeAddTaskTool,
-  AddTaskToolSchema,
-} from './add-task.js';
+export { AddTaskTool, addTask, executeAddTaskTool } from './add-task.js';
+
+// Add Task 스키마 (schemas에서 re-export)
+export { AddTaskToolSchema } from '../../schemas/add-task.js';
 
 // Slack 도구
 export { SlackTool, executeSlackTool } from './slack.js';

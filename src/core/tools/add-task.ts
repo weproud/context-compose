@@ -1,29 +1,11 @@
-import { z } from 'zod';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs-extra';
 import { join } from 'path';
 import mustache from 'mustache';
-
-/**
- * Add Task 도구 입력 스키마
- */
-export const AddTaskToolSchema = z.object({
-  taskId: z.string().min(1, 'Task ID는 필수입니다'),
-  configPath: z.string().default('.taskaction'),
-});
-
-export type AddTaskToolInput = z.infer<typeof AddTaskToolSchema>;
-
-/**
- * Add Task 도구 응답 타입
- */
-export interface AddTaskToolResponse {
-  success: boolean;
-  message: string;
-  taskId: string;
-  fileName: string;
-  filePath?: string;
-  tasksYamlUpdated?: boolean;
-}
+import {
+  AddTaskToolSchema,
+  type AddTaskToolInput,
+  type AddTaskToolResponse,
+} from '../../schemas/add-task.js';
 
 /**
  * Task 항목 타입

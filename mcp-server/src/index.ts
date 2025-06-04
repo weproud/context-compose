@@ -1,7 +1,7 @@
 import { FastMCP } from 'fastmcp';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { registerHelloMCPTools } from './tools/index.js';
 
 // Constants

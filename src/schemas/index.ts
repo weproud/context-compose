@@ -16,6 +16,13 @@ export {
   type SlackToolResponse,
 } from './slack.js';
 
+// Add Task 도구 스키마
+export {
+  AddTaskToolSchema,
+  type AddTaskToolInput,
+  type AddTaskToolResponse,
+} from './add-task.js';
+
 // Discord 도구 스키마
 export {
   DiscordToolSchema,

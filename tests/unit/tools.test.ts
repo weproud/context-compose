@@ -17,10 +17,10 @@ describe('MCP Tools', () => {
       });
     });
 
-    it('should validate input parameters', () => {
-      expect(() =>
+    it('should validate input parameters', async () => {
+      await expect(
         InitTool.executeWithValidation({ configPath: 123 })
-      ).toThrow();
+      ).rejects.toThrow();
     });
   });
 });

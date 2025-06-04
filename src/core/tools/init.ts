@@ -2,11 +2,11 @@ import {
   mkdir,
   access,
   constants,
-  cp,
+  copy,
   readdir,
   stat,
   rename,
-} from 'fs/promises';
+} from 'fs-extra';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
@@ -145,7 +145,7 @@ export class InitTool {
           copiedFiles.push(...subFiles);
         } else {
           // 파일 복사
-          await cp(srcPath, destPath);
+          await copy(srcPath, destPath);
           copiedFiles.push(destPath);
         }
       }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs-extra';
 import { join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,23 +13,23 @@ const projectRoot = resolve(__dirname, '..');
  */
 function updateMcpConfigs() {
   const absolutePath = resolve(projectRoot);
-  
-  const configs = [
-    'claude-desktop-config.json',
-    'cursor-mcp-config.json'
-  ];
+
+  const configs = ['claude-desktop-config.json', 'cursor-mcp-config.json'];
 
   configs.forEach(configFile => {
     try {
       const configPath = join(projectRoot, configFile);
       const config = JSON.parse(readFileSync(configPath, 'utf8'));
-      
+
       // 절대 경로로 업데이트
       if (config.mcpServers && config.mcpServers['task-action']) {
-        config.mcpServers['task-action'].args[0] = join(absolutePath, 'mcp-server/server.js');
+        config.mcpServers['task-action'].args[0] = join(
+          absolutePath,
+          'mcp-server/server.js'
+        );
         config.mcpServers['task-action'].cwd = absolutePath;
       }
-      
+
       writeFileSync(configPath, JSON.stringify(config, null, 2));
       console.log(`✅ ${configFile} 업데이트 완료: ${absolutePath}`);
     } catch (error) {
