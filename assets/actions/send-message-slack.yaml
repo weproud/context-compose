@@ -2,7 +2,8 @@ version: 1
 kind: action
 name: Send Message to Slack
 description: Send comprehensive status messages to Slack with rich formatting and context
-prompt: |-
+prompt: Send status message to Slack with rich formatting. Check SLACK_WEBHOOK_URL, prepare message with attachments and context, and handle errors gracefully.
+prompt-enhanced: |-
   Send message to Slack channel following these comprehensive guidelines:
 
   ## Prerequisites & Configuration

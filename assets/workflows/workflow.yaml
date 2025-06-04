@@ -36,7 +36,8 @@ jobs:
       uses: actions/task-done.yaml
       description: Finalize task completion with validation, cleanup, and comprehensive team notification
 
-prompt: |-
+prompt: Execute complete task-action workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
+prompt-enhanced: |-
   Execute the complete task-action workflow following these comprehensive guidelines:
 
   ## Workflow Execution Strategy

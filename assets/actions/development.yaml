@@ -2,7 +2,8 @@ version: 1
 kind: action
 name: Development
 description: Comprehensive development action for task-action implementation
-prompt: |-
+prompt: Implement task requirements following TypeScript best practices, comprehensive testing, and proper documentation. Ensure code quality through ESLint/Prettier, maintain clean architecture, and validate all requirements are met.
+prompt-enhanced: |-
   Develop the task content for task-action following these comprehensive guidelines:
 
   ## Pre-Development Analysis

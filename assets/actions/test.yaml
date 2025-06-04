@@ -2,7 +2,8 @@ version: 1
 kind: action
 name: Test
 description: Comprehensive testing execution with detailed analysis and reporting
-prompt: |-
+prompt: Execute comprehensive test suite including unit, integration, and e2e tests. Verify environment setup, run tests sequentially, analyze failures, and ensure 80%+ coverage before proceeding.
+prompt-enhanced: |-
   Execute comprehensive project testing following these detailed guidelines:
 
   ## Pre-Test Setup

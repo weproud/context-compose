@@ -2,7 +2,8 @@ version: 1
 kind: mcp
 name: sequential-thinking
 description: Systematic sequential thinking process for complex problem solving and decision making
-prompt: |-
+prompt: Apply systematic problem-solving for complex tasks. Break down problems step-by-step, analyze dependencies, design solutions iteratively, validate each step, and document the thought process and decisions.
+prompt-enhanced: |-
   Utilize sequential-thinking for systematic problem solving following these comprehensive guidelines:
 
   ## When to Use Sequential-Thinking
