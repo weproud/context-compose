@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/mcp-server/src/index.js",
   "bin": {
-    "task-action": "bin/task-action-cli.js",
+    "task-action": "bin/task-action-cli.ts",
     "task-action-server": "mcp-server/server.js"
   },
   "scripts": {
