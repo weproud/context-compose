@@ -6,35 +6,27 @@ jobs:
   steps:
     - name: Create a new feature branch
       uses: actions/create-branch.yaml
-      description: Create a properly named feature branch from the latest main/develop branch
 
     - name: Development
       uses: actions/development.yaml
-      description: Implement the task requirements following best practices and coding standards
 
     - name: Test
       uses: actions/test.yaml
-      description: Execute comprehensive testing suite including unit, integration, and e2e tests
 
     - name: Commit the changes
       uses: actions/git-commit.yaml
-      description: Stage and commit changes with conventional commit messages
 
     - name: Push the changes
       uses: actions/git-push.yaml
-      description: Push committed changes to remote repository with safety checks
 
     - name: Create a pull request
       uses: actions/create-pull-request.yaml
-      description: Create a comprehensive pull request with detailed description and proper reviewers
 
     - name: Send a message to Slack
       uses: actions/send-message-slack.yaml
-      description: Notify team members about task completion and pull request creation
 
     - name: Task Done
       uses: actions/task-done.yaml
-      description: Finalize task completion with validation, cleanup, and comprehensive team notification
 
 prompt: Execute complete task-action workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
 enhanced-prompt: |-

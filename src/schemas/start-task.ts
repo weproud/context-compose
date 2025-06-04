@@ -40,8 +40,9 @@ export interface StartTaskToolResponse {
   taskId: string;
   combinedPrompt?: string;
   files?: {
-    workflow?: string | undefined;
-    rules: string[];
-    mcps: string[];
+    workflow?: string;
+    rules?: string[];
+    mcps?: string[];
+    [key: string]: string | string[] | undefined; // 동적 섹션 지원
   };
 }

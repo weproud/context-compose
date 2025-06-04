@@ -21,6 +21,7 @@ interface TaskYaml {
     workflow?: string;
     rules?: string[];
     mcps?: string[];
+    [key: string]: string | string[] | undefined; // 동적 섹션 지원
   };
   prompt?: string;
 }
@@ -126,13 +127,79 @@ export class StartTaskTool {
   }
 
   /**
-   * 모든 prompt들을 조합
+   * 컴포넌트 파일들 읽기 (범용)
+   */
+  static readComponentFiles(
+    projectRoot: string,
+    configPath: string,
+    filePaths: string[]
+  ): ComponentYaml[] {
+    return filePaths.map(filePath => {
+      const fullPath = join(projectRoot, configPath, filePath);
+      return this.readYamlFile(fullPath);
+    });
+  }
+
+  /**
+   * 단일 컴포넌트 파일 읽기 (범용)
+   */
+  static readComponentFile(
+    projectRoot: string,
+    configPath: string,
+    filePath: string
+  ): ComponentYaml {
+    const fullPath = join(projectRoot, configPath, filePath);
+    return this.readYamlFile(fullPath);
+  }
+
+  /**
+   * Jobs 섹션 처리 - 동적으로 모든 섹션을 처리
+   */
+  static processJobsSection(
+    projectRoot: string,
+    configPath: string,
+    jobs: TaskYaml['jobs']
+  ): Record<string, ComponentYaml[]> {
+    const processedSections: Record<string, ComponentYaml[]> = {};
+
+    for (const [sectionName, sectionValue] of Object.entries(jobs)) {
+      if (!sectionValue) continue;
+
+      try {
+        if (typeof sectionValue === 'string') {
+          // 단일 파일 (예: workflow)
+          const component = this.readComponentFile(
+            projectRoot,
+            configPath,
+            sectionValue
+          );
+          processedSections[sectionName] = [component];
+        } else if (Array.isArray(sectionValue)) {
+          // 파일 배열 (예: rules, mcps, notify, issue 등)
+          const components = this.readComponentFiles(
+            projectRoot,
+            configPath,
+            sectionValue
+          );
+          processedSections[sectionName] = components;
+        }
+      } catch (error) {
+        console.warn(
+          `⚠️  ${sectionName} 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
+        );
+        processedSections[sectionName] = [];
+      }
+    }
+
+    return processedSections;
+  }
+
+  /**
+   * 모든 prompt들을 조합 (동적 섹션 지원)
    */
   static combinePrompts(
     taskYaml: TaskYaml,
-    workflowYaml?: ComponentYaml,
-    rulesYamls: ComponentYaml[] = [],
-    mcpsYamls: ComponentYaml[] = [],
+    processedSections: Record<string, ComponentYaml[]>,
     useEnhancedPrompt: boolean = false
   ): string {
     const sections: string[] = [];
@@ -147,46 +214,57 @@ export class StartTaskTool {
       sections.push(`\n## Task Prompt\n${taskYaml.prompt}`);
     }
 
-    // Workflow
-    if (workflowYaml) {
-      sections.push(`\n## Workflow: ${workflowYaml.name}`);
-      sections.push(`**Description:** ${workflowYaml.description}`);
-      const promptToUse =
-        useEnhancedPrompt && workflowYaml['prompt-enhanced']
-          ? workflowYaml['prompt-enhanced']
-          : workflowYaml.prompt;
-      sections.push(`\n${promptToUse}`);
-    }
+    // 동적으로 모든 섹션 처리
+    for (const [sectionName, components] of Object.entries(processedSections)) {
+      if (components.length === 0) continue;
 
-    // Rules
-    if (rulesYamls.length > 0) {
-      sections.push('\n## Rules');
-      rulesYamls.forEach((rule, index) => {
-        sections.push(`\n### ${index + 1}. ${rule.name}`);
-        sections.push(`**Description:** ${rule.description}`);
-        const promptToUse =
-          useEnhancedPrompt && rule['prompt-enhanced']
-            ? rule['prompt-enhanced']
-            : rule.prompt;
-        sections.push(`\n${promptToUse}`);
-      });
-    }
+      // 섹션 제목 생성
+      const sectionTitle = this.getSectionTitle(sectionName);
+      sections.push(`\n## ${sectionTitle}`);
 
-    // MCPs
-    if (mcpsYamls.length > 0) {
-      sections.push('\n## MCPs (Model Context Protocols)');
-      mcpsYamls.forEach((mcp, index) => {
-        sections.push(`\n### ${index + 1}. ${mcp.name}`);
-        sections.push(`**Description:** ${mcp.description}`);
+      // 단일 컴포넌트인 경우 (예: workflow)
+      if (components.length === 1) {
+        const component = components[0];
+        sections.push(`**Name:** ${component.name}`);
+        sections.push(`**Description:** ${component.description}`);
         const promptToUse =
-          useEnhancedPrompt && mcp['prompt-enhanced']
-            ? mcp['prompt-enhanced']
-            : mcp.prompt;
+          useEnhancedPrompt && component['prompt-enhanced']
+            ? component['prompt-enhanced']
+            : component.prompt;
         sections.push(`\n${promptToUse}`);
-      });
+      } else {
+        // 다중 컴포넌트인 경우 (예: rules, mcps, notify, issue 등)
+        components.forEach((component, index) => {
+          sections.push(`\n### ${index + 1}. ${component.name}`);
+          sections.push(`**Description:** ${component.description}`);
+          const promptToUse =
+            useEnhancedPrompt && component['prompt-enhanced']
+              ? component['prompt-enhanced']
+              : component.prompt;
+          sections.push(`\n${promptToUse}`);
+        });
+      }
     }
 
     return sections.join('\n');
+  }
+
+  /**
+   * 섹션 이름을 사용자 친화적인 제목으로 변환
+   */
+  static getSectionTitle(sectionName: string): string {
+    const titleMap: Record<string, string> = {
+      workflow: 'Workflow',
+      rules: 'Rules',
+      mcps: 'MCPs (Model Context Protocols)',
+      notify: 'Notifications',
+      issue: 'Issue Management',
+    };
+
+    return (
+      titleMap[sectionName] ||
+      sectionName.charAt(0).toUpperCase() + sectionName.slice(1)
+    );
   }
 
   /**
@@ -208,74 +286,21 @@ export class StartTaskTool {
           message: `✅ Task '${taskId}'는 이미 완료되었습니다. (상태: ${taskYaml.status})`,
           taskId,
           combinedPrompt: `# Task: ${taskYaml.name}\n**Description:** ${taskYaml.description}\n**ID:** ${taskYaml.id}\n**Status:** ${taskYaml.status}\n\n이 태스크는 이미 완료되었습니다.`,
-          files: {
-            workflow: taskYaml.jobs.workflow,
-            rules: taskYaml.jobs.rules || [],
-            mcps: taskYaml.jobs.mcps || [],
-          },
+          files: taskYaml.jobs,
         };
       }
 
-      const files = {
-        workflow: taskYaml.jobs.workflow,
-        rules: taskYaml.jobs.rules || [],
-        mcps: taskYaml.jobs.mcps || [],
-      };
+      // 3. 모든 Jobs 섹션 동적 처리
+      const processedSections = this.processJobsSection(
+        projectRoot,
+        configPath,
+        taskYaml.jobs
+      );
 
-      // 3. Workflow 파일 읽기 (선택적)
-      let workflowYaml: ComponentYaml | undefined;
-      if (taskYaml.jobs.workflow) {
-        try {
-          workflowYaml = this.readWorkflowFile(
-            projectRoot,
-            configPath,
-            taskYaml.jobs.workflow
-          );
-        } catch (error) {
-          console.warn(
-            `⚠️  Workflow 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
-          );
-        }
-      }
-
-      // 4. Rules 파일들 읽기
-      let rulesYamls: ComponentYaml[] = [];
-      if (taskYaml.jobs.rules && taskYaml.jobs.rules.length > 0) {
-        try {
-          rulesYamls = this.readRulesFiles(
-            projectRoot,
-            configPath,
-            taskYaml.jobs.rules
-          );
-        } catch (error) {
-          console.warn(
-            `⚠️  Rules 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
-          );
-        }
-      }
-
-      // 5. MCPs 파일들 읽기
-      let mcpsYamls: ComponentYaml[] = [];
-      if (taskYaml.jobs.mcps && taskYaml.jobs.mcps.length > 0) {
-        try {
-          mcpsYamls = this.readMcpsFiles(
-            projectRoot,
-            configPath,
-            taskYaml.jobs.mcps
-          );
-        } catch (error) {
-          console.warn(
-            `⚠️  MCPs 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
-          );
-        }
-      }
-
-      // 6. 모든 prompt들 조합
+      // 4. 모든 prompt들 조합
       const combinedPrompt = this.combinePrompts(
         taskYaml,
-        workflowYaml,
-        rulesYamls,
-        mcpsYamls,
+        processedSections,
         enhancedPrompt
       );
 
@@ -284,7 +309,7 @@ export class StartTaskTool {
         message: `✅ Task '${taskId}' 시작 준비가 완료되었습니다.`,
         taskId,
         combinedPrompt,
-        files,
+        files: taskYaml.jobs,
       };
     } catch (error) {
       return {

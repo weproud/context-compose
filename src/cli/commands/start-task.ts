@@ -10,7 +10,7 @@ export function createStartTaskCommand(): Command {
 
   command
     .description(
-      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 workflow, rules, mcps 파일들의 prompt를 조합합니다.'
+      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 jobs 섹션의 모든 파일들(workflow, rules, mcps, notify, issue 등 커스텀 섹션 포함)의 prompt를 조합합니다.'
     )
     .argument('<taskId>', 'Task ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
