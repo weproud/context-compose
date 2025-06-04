@@ -42,19 +42,6 @@ export function createStartTaskCommand(): Command {
             console.log('='.repeat(80));
             console.log(result.combinedPrompt);
             console.log('='.repeat(80));
-
-            if (result.files) {
-              console.log('\n📁 참조된 파일들:');
-              if (result.files.workflow) {
-                console.log(`  - Workflow: ${result.files.workflow}`);
-              }
-              if (result.files.rules.length > 0) {
-                console.log(`  - Rules: ${result.files.rules.join(', ')}`);
-              }
-              if (result.files.mcps.length > 0) {
-                console.log(`  - MCPs: ${result.files.mcps.join(', ')}`);
-              }
-            }
           } else {
             console.error(result.message);
             process.exit(1);

@@ -43,10 +43,10 @@ interface ComponentYaml {
  */
 export class StartTaskTool {
   /**
-   * Task ID 포맷팅 (하이픈을 언더스코어로 변경)
+   * Task ID 포맷팅 (하이픈 유지)
    */
   static formatTaskId(taskId: string): string {
-    return taskId.replace(/-/g, '_');
+    return taskId;
   }
 
   /**
@@ -225,23 +225,27 @@ export class StartTaskTool {
       // 단일 컴포넌트인 경우 (예: workflow)
       if (components.length === 1) {
         const component = components[0];
-        sections.push(`**Name:** ${component.name}`);
-        sections.push(`**Description:** ${component.description}`);
-        const promptToUse =
-          useEnhancedPrompt && component['prompt-enhanced']
-            ? component['prompt-enhanced']
-            : component.prompt;
-        sections.push(`\n${promptToUse}`);
-      } else {
-        // 다중 컴포넌트인 경우 (예: rules, mcps, notify, issue 등)
-        components.forEach((component, index) => {
-          sections.push(`\n### ${index + 1}. ${component.name}`);
+        if (component) {
+          sections.push(`**Name:** ${component.name}`);
           sections.push(`**Description:** ${component.description}`);
           const promptToUse =
             useEnhancedPrompt && component['prompt-enhanced']
               ? component['prompt-enhanced']
               : component.prompt;
           sections.push(`\n${promptToUse}`);
+        }
+      } else {
+        // 다중 컴포넌트인 경우 (예: rules, mcps, notify, issue 등)
+        components.forEach((component, index) => {
+          if (component) {
+            sections.push(`\n### ${index + 1}. ${component.name}`);
+            sections.push(`**Description:** ${component.description}`);
+            const promptToUse =
+              useEnhancedPrompt && component['prompt-enhanced']
+                ? component['prompt-enhanced']
+                : component.prompt;
+            sections.push(`\n${promptToUse}`);
+          }
         });
       }
     }
