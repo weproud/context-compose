@@ -1,0 +1,7 @@
+version: 1
+kind: mcp
+name: sequential-thinking
+description: Sequential thinking process for complex problem solving
+prompt: >-
+  Utilize sequential-thinking when solving complex problems or tasks. Break down problems step by step, approach them in
+  logical order, and improve iteratively.
