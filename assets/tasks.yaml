@@ -1,6 +1,7 @@
 version: 1
-name: task-actions-ai task list
-description: task-actions-ai 프로젝트
+kind: tasklist
+name: task-action task list
+description: task-action 프로젝트
 tasks:
   - id: init
     status: todo

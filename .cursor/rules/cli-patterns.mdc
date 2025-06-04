@@ -1,0 +1,195 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# CLI Patterns and Guidelines
+
+## CLI Architecture
+
+The CLI is built using Commander.js and mirrors the functionality of the MCP server, allowing direct command-line access to all tools.
+
+### Entry Point
+The CLI entry point is [src/cli/index.ts](mdc:src/cli/index.ts), which sets up the Commander.js program and registers all commands.
+
+### Binary Configuration
+The CLI is accessible through multiple binary names defined in [package.json](mdc:package.json):
+- `task-action` - Main CLI binary
+- `task-action-server` - MCP server binary
+
+## Command Structure Pattern
+
+### Command Definition
+All CLI commands follow this pattern in `src/cli/commands/`:
+
+```typescript
+import { Command } from 'commander';
+import { exampleSchema } from '@/schemas/example';
+import { executeExampleTool } from '@/core/tools/example';
+
+export function createExampleCommand(): Command {
+  return new Command('example')
+    .description('Description of what this command does')
+    .option('-r, --required-param <value>', 'Required parameter description')
+    .option('-c, --config-path <path>', 'Configuration path', '.taskaction')
+    .action(async (options) => {
+      try {
+        const input = exampleSchema.parse(options);
+        const result = await executeExampleTool(input);
+        
+        if (result.success) {
+          console.log(`✅ ${result.message}`);
+        } else {
+          console.error(`❌ ${result.message}`);
+          process.exit(1);
+        }
+      } catch (error) {
+        console.error(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        process.exit(1);
+      }
+    });
+}
+```
+
+### Command Registration
+Commands are registered in the main CLI file:
+```typescript
+// In src/cli/index.ts
+import { Command } from 'commander';
+import { createExampleCommand } from './commands/example';
+
+const program = new Command();
+
+program
+  .name('task-action')
+  .description('Task Action CLI toolkit')
+  .version('1.0.0');
+
+// Register commands
+program.addCommand(createExampleCommand());
+
+program.parse();
+```
+
+## CLI Best Practices
+
+### Option Naming
+- Use kebab-case for long options (`--config-path`)
+- Provide short aliases for common options (`-c`)
+- Use descriptive option names that match schema properties
+- Provide helpful descriptions for all options
+
+### Input Validation
+- Always use Zod schemas for validation
+- Convert Commander.js options to match schema structure
+- Handle validation errors gracefully with user-friendly messages
+- Use the same schemas as MCP tools for consistency
+
+### Output Formatting
+- Use emoji indicators for success (✅) and error (❌) states
+- Provide clear, actionable error messages
+- Format data output as JSON when appropriate
+- Exit with appropriate status codes
+
+### Error Handling
+- Exit with code 1 for errors, code 0 for success
+- Catch all errors and provide user-friendly messages
+- Use consistent error message formatting
+
+## Common CLI Patterns
+
+### File and Directory Operations
+```typescript
+// Check if paths exist before operations
+import { existsSync } from 'fs';
+
+if (!existsSync(configPath)) {
+  throw new Error(`Configuration directory not found: ${configPath}`);
+}
+```
+
+### Environment Variable Handling
+```typescript
+// Check for required environment variables
+const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+if (!webhookUrl) {
+  throw new Error('SLACK_WEBHOOK_URL environment variable is required');
+}
+```
+
+### Async Command Handling
+```typescript
+// Always use async/await in command actions
+.action(async (options) => {
+  try {
+    const result = await executeAsyncTool(options);
+    // Handle result
+  } catch (error) {
+    // Handle error
+  }
+});
+```
+
+## CLI Command Types
+
+### Initialization Commands
+Commands that set up project structure or configuration:
+- Should check for existing files/directories
+- Provide confirmation for destructive operations
+- Create necessary directory structure
+- Copy template files when needed
+
+### Action Commands
+Commands that perform operations or call external services:
+- Validate required environment variables
+- Provide progress feedback for long operations
+- Handle network errors gracefully
+- Return meaningful success/failure messages
+
+### Query Commands
+Commands that retrieve or display information:
+- Format output consistently
+- Support different output formats (JSON, table, etc.)
+- Handle empty results gracefully
+- Provide filtering options when appropriate
+
+## Development and Testing
+
+### Local Development
+```bash
+# Run CLI in development mode
+pnpm dev:cli <command> [options]
+
+# Or use tsx directly
+pnpm task-action <command> [options]
+```
+
+### CLI Testing
+- Test command parsing and validation
+- Mock external dependencies (APIs, file system)
+- Test error conditions and edge cases
+- Verify output formatting and exit codes
+
+### Command Help
+Ensure all commands have:
+- Clear descriptions
+- Option documentation
+- Usage examples
+- Required vs optional parameter clarity
+
+## Integration with MCP Server
+
+### Shared Business Logic
+CLI commands use the same core functions as MCP tools:
+
+```typescript
+import { executeExampleTool } from '@/core/tools/example';
+
+// Both CLI and MCP use the same implementation
+const result = await executeExampleTool(input);
+```
+
+### Schema Consistency
+- CLI options should map directly to schema properties
+- Use same validation rules and error messages
+- Maintain type safety between CLI and MCP interfaces

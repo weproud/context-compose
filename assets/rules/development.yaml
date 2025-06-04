@@ -1,9 +1,9 @@
 version: 1
 kind: rule
 name: Development Rule
-description: Rules to follow when working on task-actions-ai development
+description: Rules to follow when working on task-action development
 prompt: |
-  Follow these rules when developing task-actions-ai:
+  Follow these rules when developing task-action:
   - Ensure code quality by using TypeScript, ESLint, and Prettier
   - Use meaningful commit messages and feature/ prefix branches
   - Code review through Pull Request is mandatory

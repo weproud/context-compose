@@ -1,5 +1,5 @@
 version: 1
 kind: action
 name: Development
-description: task-actions-ai development
-prompt: Develop the task content for task-actions-ai
+description: Development Action
+prompt: Develop the task content for task-action

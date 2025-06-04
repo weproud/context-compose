@@ -1,7 +1,7 @@
 version: 1
 kind: action
 name: Create Branch
-description: Create a new Git branch
+description: Create a new Git branch Action
 prompt: >-
   Generate appropriate branch name using feature/ prefix, create new branch from latest main/develop branch and
   checkout.

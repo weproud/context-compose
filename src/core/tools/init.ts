@@ -234,16 +234,16 @@ export class InitTool {
 
     if (createdFiles.length > 0) {
       messages.push(`✅ Task Action 프로젝트가 성공적으로 초기화되었습니다!`);
-      messages.push(`assets 디렉토리가 .taskaction으로 복사되었습니다.`);
-      messages.push(`생성된 파일/디렉토리: ${createdFiles.length}개`);
-      // 너무 많은 파일 목록을 표시하지 않도록 제한
-      const displayFiles = createdFiles.slice(0, 10);
-      displayFiles.forEach(file => {
-        messages.push(`  - ${file}`);
-      });
-      if (createdFiles.length > 10) {
-        messages.push(`  ... 그리고 ${createdFiles.length - 10}개 더`);
-      }
+      // messages.push(`assets 디렉토리가 .taskaction으로 복사되었습니다.`);
+      // messages.push(`생성된 파일/디렉토리: ${createdFiles.length}개`);
+      // // 너무 많은 파일 목록을 표시하지 않도록 제한
+      // const displayFiles = createdFiles.slice(0, 10);
+      // displayFiles.forEach(file => {
+      //   messages.push(`  - ${file}`);
+      // });
+      // if (createdFiles.length > 10) {
+      //   messages.push(`  ... 그리고 ${createdFiles.length - 10}개 더`);
+      // }
     }
 
     if (backupPath) {

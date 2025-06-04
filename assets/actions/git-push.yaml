@@ -1,5 +1,5 @@
 version: 1
 kind: action
 name: Git Push
-description: Push local changes to remote repository
+description: Push local changes to remote repository Action
 prompt: Push changes from current branch to remote repository and set upstream if necessary.

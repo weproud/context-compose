@@ -1,0 +1,138 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# File Structure Guide
+
+## Root Directory
+
+### Configuration Files
+- [package.json](mdc:package.json) - Package configuration with dual CLI/MCP server entry points
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript compiler configuration with strict settings
+- [vitest.config.ts](mdc:vitest.config.ts) - Vitest testing framework configuration
+- [playwright.config.ts](mdc:playwright.config.ts) - Playwright E2E testing configuration
+- [.eslintrc.json](mdc:.eslintrc.json) - ESLint linting rules and TypeScript integration
+- [.prettierrc](mdc:.prettierrc) - Prettier code formatting configuration
+- [.gitignore](mdc:.gitignore) - Git ignore patterns for Node.js and TypeScript projects
+- [.npmignore](mdc:.npmignore) - NPM package publishing ignore patterns
+
+### Build and Distribution
+- `dist/` - Compiled JavaScript output from TypeScript build process
+- `node_modules/` - NPM dependencies (managed by pnpm)
+- `pnpm-lock.yaml` - pnpm lockfile for reproducible dependency installation
+
+## Source Code Organization
+
+### `src/` Directory
+Core shared source code used by both CLI and MCP server implementations.
+
+#### `src/schemas/`
+Zod schema definitions for tool parameter validation:
+- Contains schema files for each tool (e.g., `init.ts`, `slack.ts`, `discord.ts`)
+- Exports TypeScript types derived from schemas
+- Provides input validation for both CLI and MCP interfaces
+- [index.ts](mdc:src/schemas/index.ts) - Centralized schema exports
+
+#### `src/core/`
+Shared business logic implementation:
+- `tools/` - Core tool implementations used by both CLI and MCP
+- `utils.ts` - Common utility functions
+- Pure business logic without interface-specific code
+- Returns structured results with success/error states
+
+#### `src/cli/`
+Commander.js-based CLI implementation:
+- [index.ts](mdc:src/cli/index.ts) - CLI entry point and command registration
+- `commands/` - Individual CLI command implementations
+- Maps CLI options to shared business logic
+- Handles CLI-specific output formatting and error handling
+
+#### `src/types/`
+Common TypeScript type definitions:
+- Shared interfaces and types used across the project
+- Type definitions that don't belong to specific schemas
+- Common result types and utility types
+
+## MCP Server Structure
+
+### `mcp-server/` Directory
+FastMCP-based Model Context Protocol server implementation.
+
+#### `mcp-server/src/`
+- [index.ts](mdc:mcp-server/src/index.ts) - Main MCP server class definition
+- `tools/` - MCP tool wrappers that use shared business logic
+- [logger.ts](mdc:mcp-server/src/logger.ts) - Logging utilities for MCP server
+
+#### `mcp-server/server.ts`
+Server entry point that starts the FastMCP server with appropriate transport configuration.
+
+## Testing Structure
+
+### `tests/` Directory
+Comprehensive testing setup for the project:
+- `unit/` - Vitest unit tests for core business logic
+- `e2e/` - Playwright end-to-end tests for CLI and MCP server
+- Tests focus on `src/core/` logic to ensure consistency between interfaces
+
+## Assets and Templates
+
+### `.taskaction/` Directory
+Default configuration and template directory:
+- Contains template files used by the init tool
+- Project configuration templates
+- Asset files that get copied during project initialization
+
+### `assets/` Directory
+Additional project assets and resources:
+- Static files and resources
+- Documentation assets
+- Template files for various project types
+
+## Binary and Scripts
+
+### `bin/` Directory
+Executable binary files:
+- CLI entry points defined in package.json
+- Shell scripts for project automation
+- Executable wrappers for the compiled TypeScript
+
+### `scripts/` Directory
+Development and build scripts:
+- Automation scripts for common development tasks
+- Build pipeline scripts
+- Utility scripts for project maintenance
+
+## Development Configuration
+
+### MCP Configuration
+- `mcp-config-dev.json` - Development MCP server configuration
+- Contains transport settings and server parameters
+
+### Version Control
+- `.git/` - Git repository metadata
+- `.gitignore` - Standard Node.js/TypeScript ignore patterns
+- Branch and commit history for the project
+
+## Key Architecture Principles
+
+### Single Package Design
+The project maintains a single package.json with multiple entry points:
+- CLI binary: `task-action`
+- MCP server binary: `task-action-server`
+- Shared dependencies and configuration
+
+### Shared Business Logic
+Core functionality in `src/core/` is used by both:
+- CLI commands in `src/cli/commands/`
+- MCP tools in `mcp-server/src/tools/`
+
+### Type Safety
+- Strict TypeScript configuration
+- Zod schemas for runtime validation
+- Shared types between CLI and MCP interfaces
+
+### Testing Strategy
+- Unit tests focus on core business logic
+- Integration tests verify CLI and MCP behavior
+- E2E tests ensure end-to-end functionality

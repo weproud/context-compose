@@ -4,6 +4,7 @@
  */
 import { FastMCP } from 'fastmcp';
 import { registerInitTool } from './init.js';
+import { registerAddTaskTool } from './add-task.js';
 import { registerSlackTool } from './slack.js';
 import { registerDiscordTool } from './discord.js';
 import logger from '../logger.js';
@@ -16,6 +17,7 @@ export function registerHelloMCPTools(server: FastMCP): void {
   try {
     // Register each tool
     registerInitTool(server);
+    registerAddTaskTool(server);
     registerSlackTool(server);
     registerDiscordTool(server);
 

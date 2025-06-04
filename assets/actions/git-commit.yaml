@@ -1,7 +1,7 @@
 version: 1
 kind: action
 name: Git Commit
-description: Commit changes to Git
+description: Commit changes to Git Action
 prompt: >
   Check changed files, stage them, and execute commit with meaningful commit message (using conventions like feat:,
   fix:, docs:, etc.).

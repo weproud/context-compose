@@ -3,89 +3,208 @@ description:
 globs:
 alwaysApply: false
 ---
-# 문제 해결 및 디버깅 가이드
+# Troubleshooting Guide
 
-## 일반적인 문제 해결
+## Common Development Issues
 
-### 빌드 오류
-- **TypeScript 컴파일 오류**: `pnpm type-check`로 타입 오류 확인
-- **의존성 문제**: `pnpm install`로 의존성 재설치
-- **캐시 문제**: `pnpm store prune`으로 캐시 정리
+### TypeScript Compilation Errors
 
-### 런타임 오류
-- **환경 변수 누락**: `.env` 파일 확인 (Slack, Discord webhook URL)
-- **포트 충돌**: MCP 서버 포트 변경 필요시 설정 확인
-- **권한 문제**: Node.js 18+ 버전 확인
-
-## MCP 서버 디버깅
-
-### MCP Inspector 사용
+#### Issue: Module Resolution Errors
 ```bash
-# 개발 모드에서 서버 검사
-pnpm inspect
-
-# 빌드된 서버 검사
-pnpm inspect:built
+error TS2307: Cannot find module '@/schemas' or its corresponding type declarations
 ```
 
-### 로그 확인
-- 서버 로그는 콘솔에 출력
-- [mcp-server/src/logger.ts](mdc:mcp-server/src/logger.ts)에서 로깅 설정 확인
-- 디버그 모드 활성화 방법 확인
-
-### 연결 문제
-- Stdio 전송 방식 확인
-- 클라이언트 설정 검증
-- 프로토콜 버전 호환성 확인
-
-## CLI 도구 디버깅
-
-### 명령어 실행 오류
-```bash
-# 직접 실행으로 디버깅
-pnpm task-action --help
-
-# 개발 모드로 실행
-pnpm dev:cli
+**Solution**: Verify path mapping in [tsconfig.json](mdc:tsconfig.json):
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
 ```
 
-### 환경 설정
-- 환경 변수 로딩 확인
-- 설정 파일 경로 검증
-- 권한 및 파일 접근 확인
+#### Issue: Strict Type Checking Failures
+**Solution**: The project uses strict TypeScript settings. Common fixes:
+- Add explicit return types to functions
+- Handle null/undefined cases with proper type guards
+- Use type assertions carefully with `as` keyword
+- Prefer interfaces over `any` types
 
-## 테스트 관련 문제
+### Build and Runtime Issues
 
-### 단위 테스트 실패
-- `pnpm test` 실행 후 오류 메시지 확인
-- [vitest.config.ts](mdc:vitest.config.ts) 설정 검토
-- 모킹 설정 확인
+#### Issue: MCP Server Won't Start
+**Check**: 
+1. TypeScript compilation: `pnpm build`
+2. Missing dependencies: `pnpm install`
+3. Server entry point: [mcp-server/server.ts](mdc:mcp-server/server.ts)
 
-### E2E 테스트 실패
-- Playwright 브라우저 설치 확인: `npx playwright install`
-- [playwright.config.ts](mdc:playwright.config.ts) 설정 검토
-- 테스트 환경 격리 확인
+#### Issue: CLI Commands Not Working
+**Debug Steps**:
+1. Verify binary paths in [package.json](mdc:package.json)
+2. Check command registration in [src/cli/index.ts](mdc:src/cli/index.ts)
+3. Test with development mode: `pnpm dev:cli`
 
-## 성능 최적화
+### Environment Variable Issues
 
-### 빌드 성능
-- TypeScript 컴파일 최적화
-- 불필요한 의존성 제거
-- 트리 쉐이킹 활용
+#### Missing Webhook URLs
+**Error**: `SLACK_WEBHOOK_URL environment variable is required`
 
-### 런타임 성능
-- 비동기 처리 최적화
-- 메모리 사용량 모니터링
-- 로깅 레벨 조정
+**Solutions**:
+1. Create `.env` file in project root:
+```bash
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+```
 
-## 개발 환경 설정
+2. Export variables in shell:
+```bash
+export SLACK_WEBHOOK_URL="your-webhook-url"
+```
 
-### IDE 설정
-- TypeScript 언어 서버 활성화
-- ESLint, Prettier 플러그인 설치
-- 디버거 설정 확인
+3. Pass as command prefix:
+```bash
+SLACK_WEBHOOK_URL="url" pnpm task-action send-message-slack "message"
+```
 
-### Git 워크플로우
-- 커밋 전 린트 검사 실행
-- 브랜치별 기능 개발
-- PR 전 테스트 실행 필수
+### MCP Inspector Issues
+
+#### Issue: Inspector Can't Connect to Server
+**Debug Steps**:
+1. Ensure server is running: `pnpm dev:server`
+2. Check transport configuration in server setup
+3. Verify FastMCP version compatibility
+4. Use built version: `pnpm build && pnpm inspect:built`
+
+#### Issue: Tools Not Appearing in Inspector
+**Check**:
+1. Tool registration in `mcp-server/src/tools/index.ts`
+2. Schema validation errors in tool definitions
+3. Import/export statements in tool files
+
+### Testing Issues
+
+#### Unit Test Failures
+**Common Causes**:
+1. Missing mock implementations for external dependencies
+2. Async/await handling in test functions
+3. Schema validation failures in test data
+4. File system operations in tests need proper cleanup
+
+**Debug Commands**:
+```bash
+pnpm test --verbose          # Detailed test output
+pnpm test --reporter=verbose # Vitest verbose reporter
+pnpm test path/to/test.ts    # Run specific test file
+```
+
+#### E2E Test Failures
+**Check**:
+1. Playwright browser installation: `npx playwright install`
+2. Test configuration in [playwright.config.ts](mdc:playwright.config.ts)
+3. Server availability during E2E tests
+4. Port conflicts with other services
+
+### Dependency Issues
+
+#### pnpm Installation Problems
+**Solutions**:
+1. Clear cache: `pnpm store prune`
+2. Delete node_modules: `rm -rf node_modules && pnpm install`
+3. Update pnpm: `npm install -g pnpm@latest`
+4. Check Node.js version: Project requires Node.js 18+
+
+#### Package Version Conflicts
+**Debug**:
+1. Check lockfile: `pnpm-lock.yaml`
+2. Update dependencies: `pnpm update`
+3. Check peer dependencies: `pnpm list`
+
+### Code Quality Issues
+
+#### ESLint Errors
+**Common Fixes**:
+```bash
+pnpm lint:fix               # Auto-fix ESLint issues
+pnpm format                 # Format with Prettier
+```
+
+**Manual Fixes**:
+- Remove unused imports
+- Add missing return types
+- Fix indentation and spacing
+- Address TypeScript strict mode violations
+
+#### Import/Export Issues
+**Best Practices**:
+- Use absolute imports with `@/` prefix for `src/` directory
+- Export types separately: `export type { TypeName }`
+- Use default exports sparingly
+- Group imports: built-ins, external, internal, relative
+
+## Debugging Strategies
+
+### MCP Server Debugging
+1. **Logging**: Add console.log statements in tool implementations
+2. **Inspector**: Use `pnpm inspect` for interactive debugging
+3. **Isolation**: Test core logic separately from MCP wrapper
+4. **Schema Validation**: Verify input/output schemas match expectations
+
+### CLI Debugging
+1. **Development Mode**: Use `pnpm dev:cli` for TypeScript debugging
+2. **Option Parsing**: Add logging to see parsed Commander.js options
+3. **Schema Validation**: Test Zod schema parsing with sample data
+4. **Error Handling**: Ensure all async operations are properly caught
+
+### Shared Logic Debugging
+1. **Unit Tests**: Write tests for core tool functions
+2. **Type Checking**: Use `pnpm type-check` for TypeScript validation
+3. **Isolated Testing**: Test core functions without CLI/MCP wrappers
+4. **Mock External Services**: Use mocks for webhooks and file operations
+
+## Performance Issues
+
+### Slow Build Times
+**Optimizations**:
+1. Use TypeScript incremental compilation
+2. Exclude unnecessary files in tsconfig.json
+3. Optimize import statements
+4. Use development mode for faster iteration
+
+### Memory Usage
+**Check**:
+1. Large file operations in tools
+2. Memory leaks in async operations
+3. Inefficient data structures
+4. Unnecessary dependency loading
+
+## Getting Help
+
+### Internal Resources
+1. Check existing tests for usage examples
+2. Review tool implementations in `src/core/tools/`
+3. Examine schema definitions for parameter requirements
+4. Study CLI command patterns in `src/cli/commands/`
+
+### External Resources
+1. FastMCP documentation for MCP server issues
+2. Commander.js documentation for CLI problems
+3. Zod documentation for schema validation
+4. Node.js documentation for runtime issues
+
+### Debug Output Commands
+```bash
+# TypeScript compilation with details
+pnpm build --verbose
+
+# Test with debugging output
+pnpm test --reporter=verbose
+
+# ESLint with detailed output
+pnpm lint --debug
+
+# MCP server with logging
+DEBUG=* pnpm dev:server
+```

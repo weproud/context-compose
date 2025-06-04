@@ -91,4 +91,5 @@ pids/
 tmp/
 temp/
 
-.taskaction
+.taskaction/
+.taskaction*

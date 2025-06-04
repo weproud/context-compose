@@ -1,9 +1,9 @@
 version: 1
 kind: rule
 name: Refactoring Rule
-description: Rules to follow when refactoring task-actions-ai code
+description: Rules to follow when refactoring task-action code
 prompt: |
-  Follow these rules when refactoring task-actions-ai code:
+  Follow these rules when refactoring task-action code:
 
   ## Code Quality Improvement
   - Remove duplicate code and extract common utility functions

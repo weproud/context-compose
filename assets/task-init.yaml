@@ -1,15 +1,19 @@
 version: 1
 kind: task
+name: 'task-action-init'
+description: 'task action init'
+
 id: init
-name: task actions init
 status: done
 jobs:
-  workflow: workflows/feature-development.yaml
+  workflow: workflows/feature.yaml
   rules:
-    - rules/the-must-follow-rule.yaml
-    - rules/development-rule.yaml
+    - rules/the-must-follow.yaml
+    - rules/development.yaml
+    - rules/refactoring.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/playwright.yaml
-prompt: run task-actions init
+prompt: |
+  this is init task

@@ -1,5 +1,5 @@
 version: 1
 kind: action
 name: Create Pull Request
-description: Create Pull Request for completed feature development
+description: Create Pull Request for completed feature development Action
 prompt: Write PR with clear title and description, set appropriate reviewers and labels to create Pull Request.

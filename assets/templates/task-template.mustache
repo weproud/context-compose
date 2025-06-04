@@ -1,0 +1,19 @@
+version: 1
+kind: task
+name: '{{name}}'
+description: |
+  {{description}}
+
+id: '{{id}}'
+status: ready
+jobs:
+  workflow: workflows/workflow.yaml
+  rules:
+    - rules/the-must-follow-rule.yaml
+    - rules/development-rule.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/playwright.yaml
+prompt: |
+  {{prompt}}
