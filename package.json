@@ -51,6 +51,7 @@
     "fs-extra": "^11.3.0",
     "inquirer": "^12.6.3",
     "mustache": "^4.2.0",
+    "yaml": "^2.8.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

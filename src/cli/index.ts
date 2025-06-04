@@ -6,6 +6,10 @@ import {
   createAddTaskCommand,
   showAddTaskExamples,
 } from './commands/add-task.js';
+import {
+  createStartTaskCommand,
+  showStartTaskExamples,
+} from './commands/start-task.js';
 import { createSlackCommand, showSlackExamples } from './commands/slack.js';
 import {
   createDiscordCommand,
@@ -32,6 +36,9 @@ function createCLI(): Command {
   // Add Task 명령 추가
   program.addCommand(createAddTaskCommand());
 
+  // Start Task 명령 추가
+  program.addCommand(createStartTaskCommand());
+
   // Slack 명령 추가
   program.addCommand(createSlackCommand());
 
@@ -47,7 +54,7 @@ function createCLI(): Command {
     .description('사용 예시를 보여줍니다')
     .option(
       '-c, --command <command>',
-      '특정 명령의 예시만 표시 (init, add-task, send-message-slack, send-message-discord)'
+      '특정 명령의 예시만 표시 (init, add-task, start-task, send-message-slack, send-message-discord)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -57,6 +64,9 @@ function createCLI(): Command {
             break;
           case 'add-task':
             showAddTaskExamples();
+            break;
+          case 'start-task':
+            showStartTaskExamples();
             break;
           case 'send-message-slack':
             showSlackExamples();
@@ -70,7 +80,7 @@ function createCLI(): Command {
           default:
             console.error(`❌ 알 수 없는 명령: ${options.command}`);
             console.log(
-              '사용 가능한 명령: init, add-task, send-message-slack, send-message-discord'
+              '사용 가능한 명령: init, add-task, start-task, send-message-slack, send-message-discord'
             );
             process.exit(1);
         }
@@ -79,6 +89,8 @@ function createCLI(): Command {
         showInitExamples();
         console.log('');
         showAddTaskExamples();
+        console.log('');
+        showStartTaskExamples();
         console.log('');
         showSlackExamples();
         console.log('');
@@ -98,6 +110,7 @@ function createCLI(): Command {
     console.log('사용 예시:');
     console.log('  $ task-action init');
     console.log('  $ task-action add task "create user controller"');
+    console.log('  $ task-action start-task init');
     console.log('  $ task-action send-message-slack "Hello, World!"');
     console.log('  $ task-action send-message-discord "Hello, Discord!"');
     console.log('  $ task-action examples');
