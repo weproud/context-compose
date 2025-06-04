@@ -9,7 +9,7 @@ import logger from '../logger.js';
  */
 export function registerAddTaskTool(server: FastMCP): void {
   server.addTool({
-    name: 'add_task',
+    name: 'task_add',
     description:
       '새로운 Task 파일을 생성합니다 (.taskaction/task-template.yaml을 템플릿으로 사용). projectRoot 매개변수로 프로젝트 루트 디렉토리를 지정해야 합니다.',
     parameters: AddTaskToolSchema,
