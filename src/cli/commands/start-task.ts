@@ -42,6 +42,44 @@ export function createStartTaskCommand(): Command {
             console.log('='.repeat(80));
             console.log(result.combinedPrompt);
             console.log('='.repeat(80));
+
+            // 참조된 파일들 표시
+            if (result.files) {
+              console.log('\n📁 참조된 파일들:');
+              const filesList: string[] = [];
+
+              if (result.files.workflow) {
+                filesList.push(`Workflow: ${result.files.workflow}`);
+              }
+
+              if (result.files.rules && result.files.rules.length > 0) {
+                filesList.push(`Rules: ${result.files.rules.join(', ')}`);
+              }
+
+              if (result.files.mcps && result.files.mcps.length > 0) {
+                filesList.push(`MCPs: ${result.files.mcps.join(', ')}`);
+              }
+
+              // 기타 동적 섹션들 처리
+              Object.entries(result.files).forEach(([key, value]) => {
+                if (
+                  key !== 'workflow' &&
+                  key !== 'rules' &&
+                  key !== 'mcps' &&
+                  value
+                ) {
+                  if (Array.isArray(value)) {
+                    filesList.push(`${key}: ${value.join(', ')}`);
+                  } else {
+                    filesList.push(`${key}: ${value}`);
+                  }
+                }
+              });
+
+              if (filesList.length > 0) {
+                console.log(`  - ${filesList.join('\n  - ')}`);
+              }
+            }
           } else {
             console.error(result.message);
             process.exit(1);

@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/mcp-server/src/index.js",
   "bin": {
-    "task-action": "bin/task-action-cli.ts",
+    "task-action": "bin/task-action-cli.js",
     "task-action-server": "mcp-server/server.js"
   },
   "scripts": {
@@ -13,7 +13,7 @@
     "dev:server": "tsx mcp-server/src/index.ts",
     "dev:cli": "tsx src/cli/index.ts",
     "start:server": "node dist/mcp-server/src/index.js",
-    "start:cli": "node bin/task-action-cli.js",
+    "start:cli": "npx tsx bin/task-action-cli.ts",
     "task-action": "tsx src/cli/index.ts",
     "inspect": "npx fastmcp inspect mcp-server/server.ts",
     "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
