@@ -1,68 +1,190 @@
 version: 1
 kind: action
 name: Task Done
-description: Perform task completion processing and cleanup work
+description: Comprehensive task completion processing with validation, cleanup, and team notification
 prompt: |-
-  Perform task completion processing.
+  Perform comprehensive task completion processing following these detailed guidelines:
 
-  Please perform the following steps:
-  1. Verify and validate requirement implementation
-  2. Code cleanup and refactoring
-  3. Execute and verify tests
-  4. Change task status to 'done'
-  5. Send completion notification to team
+  ## Pre-Completion Validation
+  1. **Requirement Verification**:
+     - Review original task requirements and acceptance criteria
+     - Verify all specified features are implemented correctly
+     - Check edge cases and error handling scenarios
+     - Validate user experience and interface requirements
 
-  Notification sending:
-  - If SLACK_WEBHOOK_URL environment variable is set, send task completion notification to Slack
-  - If DISCORD_WEBHOOK_URL environment variable is set, send task completion notification to Discord
-  - Include task ID, task name, and project information in the notification
-  - Display error and continue even if sending fails
+  2. **Code Quality Assessment**:
+     - Run comprehensive code review checklist
+     - Verify adherence to coding standards and conventions
+     - Check for code smells, duplications, and anti-patterns
+     - Ensure proper documentation and comments
 
-  Slack notification message example:
-  {
-    "text": "✅ Task Completed!",
-    "username": "Task Actions Bot",
-    "icon_emoji": ":white_check_mark:",
-    "attachments": [
-      {
-        "color": "good",
-        "title": "Task Information",
-        "fields": [
-          {
-            "title": "Task ID",
-            "value": "TASK-001",
-            "short": true
-          },
-          {
-            "title": "Task Name",
-            "value": "User Authentication Feature Implementation",
-            "short": true
-          }
-        ]
-      }
-    ]
-  }
+  3. **Testing Validation**:
+     - Execute full test suite (unit, integration, e2e)
+     - Verify test coverage meets project standards
+     - Validate performance benchmarks
+     - Check for any flaky or failing tests
 
-  Discord notification message example:
-  {
-    "content": "✅ Task Completed!",
-    "username": "Task Actions Bot",
-    "embeds": [
-      {
-        "color": 65280,
-        "title": "Task Information",
-        "fields": [
-          {
-            "name": "Task ID",
-            "value": "TASK-001",
-            "inline": true
-          },
-          {
-            "name": "Task Name",
-            "value": "User Authentication Feature Implementation",
-            "inline": true
-          }
-        ]
-      }
-    ]
-  }
+  ## Code Cleanup & Optimization
+  1. **Code Refactoring**:
+     - Remove debug code, console.logs, and temporary comments
+     - Optimize imports and remove unused dependencies
+     - Refactor complex functions for better readability
+     - Apply consistent formatting and linting
+
+  2. **Documentation Updates**:
+     - Update README files with new features
+     - Document API changes and new endpoints
+     - Update inline code documentation
+     - Create or update user guides if needed
+
+  3. **Security & Performance**:
+     - Scan for security vulnerabilities
+     - Optimize performance bottlenecks
+     - Validate input sanitization and validation
+     - Check for memory leaks or resource issues
+
+  ## Final Integration Testing
+  1. **System Integration**:
+     - Test integration with existing systems
+     - Verify backward compatibility
+     - Check deployment readiness
+     - Validate configuration and environment variables
+
+  2. **User Acceptance Testing**:
+     - Perform manual testing of user workflows
+     - Verify UI/UX meets design requirements
+     - Test accessibility compliance
+     - Validate cross-browser/platform compatibility
+
+  ## Task Status Management
+  1. **Status Update Process**:
+     - Change task status to 'done' in project management system
+     - Update progress tracking and time logs
+     - Close related issues and tickets
+     - Archive or organize task-related documents
+
+  2. **Deliverable Documentation**:
+     - Create deployment notes and instructions
+     - Document any configuration changes needed
+     - Prepare release notes and changelog entries
+     - Update project roadmap and milestone tracking
+
+  ## Team Notification System
+  1. **Multi-Channel Notifications**:
+     - Send notifications to all configured channels (Slack, Discord, etc.)
+     - Include comprehensive task completion summary
+     - Provide links to relevant resources (PR, documentation, etc.)
+     - Mention relevant team members and stakeholders
+
+  2. **Notification Content Structure**:
+     ```json
+     // Slack notification example
+     {
+       "text": "✅ Task Completed Successfully!",
+       "username": "Task-Action Bot",
+       "icon_emoji": ":white_check_mark:",
+       "attachments": [
+         {
+           "color": "good",
+           "title": "Task Completion Summary",
+           "title_link": "https://github.com/repo/pull/123",
+           "fields": [
+             {
+               "title": "Task ID",
+               "value": "TASK-001",
+               "short": true
+             },
+             {
+               "title": "Task Name",
+               "value": "User Authentication Feature",
+               "short": true
+             },
+             {
+               "title": "Branch",
+               "value": "feature/user-auth",
+               "short": true
+             },
+             {
+               "title": "Tests",
+               "value": "All passing (95% coverage)",
+               "short": true
+             },
+             {
+               "title": "Deployment",
+               "value": "Ready for production",
+               "short": true
+             },
+             {
+               "title": "Next Steps",
+               "value": "Code review and merge",
+               "short": true
+             }
+           ],
+           "footer": "Task-Action System",
+           "ts": 1234567890
+         }
+       ]
+     }
+     ```
+
+     ```json
+     // Discord notification example
+     {
+       "content": "✅ **Task Completed Successfully!**",
+       "username": "Task-Action Bot",
+       "embeds": [
+         {
+           "color": 65280,
+           "title": "Task Completion Summary",
+           "url": "https://github.com/repo/pull/123",
+           "fields": [
+             {
+               "name": "📋 Task Details",
+               "value": "**ID:** TASK-001\n**Name:** User Authentication Feature\n**Branch:** feature/user-auth",
+               "inline": false
+             },
+             {
+               "name": "✅ Quality Metrics",
+               "value": "**Tests:** All passing\n**Coverage:** 95%\n**Performance:** Optimized",
+               "inline": true
+             },
+             {
+               "name": "🚀 Status",
+               "value": "**Ready for:** Code Review\n**Deployment:** Staging Ready\n**Next:** Merge to main",
+               "inline": true
+             }
+           ],
+           "footer": {
+             "text": "Task-Action System"
+           },
+           "timestamp": "2024-01-01T12:00:00.000Z"
+         }
+       ]
+     }
+     ```
+
+  ## Error Handling & Resilience
+  1. **Graceful Failure Management**:
+     - Continue task completion even if notifications fail
+     - Log detailed error information for debugging
+     - Provide fallback notification methods
+     - Retry failed notifications with exponential backoff
+
+  2. **Rollback Procedures**:
+     - Document rollback steps if issues are discovered
+     - Maintain backup of previous working state
+     - Provide quick recovery procedures
+     - Alert team of any critical issues discovered post-completion
+
+  ## Post-Completion Activities
+  1. **Knowledge Sharing**:
+     - Schedule knowledge transfer sessions if needed
+     - Update team documentation and wikis
+     - Share lessons learned and best practices
+     - Contribute to team's technical debt backlog
+
+  2. **Continuous Improvement**:
+     - Gather feedback on task completion process
+     - Identify areas for process improvement
+     - Update task templates and checklists
+     - Contribute to team retrospectives and planning

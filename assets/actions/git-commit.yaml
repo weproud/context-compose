@@ -1,7 +1,54 @@
 version: 1
 kind: action
 name: Git Commit
-description: Commit changes to Git Action
-prompt: >
-  Check changed files, stage them, and execute commit with meaningful commit message (using conventions like feat:,
-  fix:, docs:, etc.).
+description: Commit changes to Git with conventional commit messages and best practices
+prompt: |-
+  Commit changes to Git following these comprehensive guidelines:
+
+  ## Pre-Commit Process
+  1. **Status Review**:
+     - Run `git status` to review all changed files
+     - Identify untracked, modified, and deleted files
+     - Ensure no sensitive information (secrets, credentials) is included
+     - Review changes with `git diff` for accuracy
+
+  2. **Staging Strategy**:
+     - Stage related changes together for logical commits
+     - Use `git add <specific-files>` for selective staging
+     - Avoid `git add .` unless all changes are related
+     - Consider splitting large changes into multiple commits
+
+  ## Commit Message Convention
+  Follow Conventional Commits specification:
+
+  **Format**: `<type>[optional scope]: <description>`
+
+  **Types**:
+  - `feat`: New feature or functionality
+  - `fix`: Bug fix or error correction
+  - `docs`: Documentation changes only
+  - `style`: Code style changes (formatting, semicolons, etc.)
+  - `refactor`: Code refactoring without feature changes
+  - `test`: Adding or updating tests
+  - `chore`: Maintenance tasks, dependency updates
+  - `perf`: Performance improvements
+  - `ci`: CI/CD configuration changes
+
+  **Examples**:
+  - `feat(auth): add user authentication system`
+  - `fix(api): resolve memory leak in request handler`
+  - `docs: update installation instructions`
+  - `refactor(utils): simplify string manipulation functions`
+  - `test(core): add unit tests for task runner`
+
+  ## Commit Best Practices
+  - Keep commits atomic (one logical change per commit)
+  - Write clear, concise commit messages (50 chars for title)
+  - Use imperative mood ("add" not "added" or "adds")
+  - Include body text for complex changes (wrap at 72 chars)
+  - Reference issue numbers when applicable: `fixes #123`
+
+  ## Final Verification
+  - Verify commit with `git log --oneline -1`
+  - Ensure commit message follows conventions
+  - Confirm all intended changes are included

@@ -1,5 +1,60 @@
 version: 1
 kind: action
 name: Git Push
-description: Push local changes to remote repository Action
-prompt: Push changes from current branch to remote repository and set upstream if necessary.
+description: Push local changes to remote repository with comprehensive safety checks
+prompt: |-
+  Push changes to remote repository following these comprehensive guidelines:
+
+  ## Pre-Push Validation
+  1. **Local Repository Status**:
+     - Verify all changes are committed (`git status` should be clean)
+     - Confirm you're on the correct branch
+     - Check commit history with `git log --oneline -5`
+     - Ensure no sensitive data is included in commits
+
+  2. **Remote Repository Sync**:
+     - Fetch latest changes from remote: `git fetch origin`
+     - Check for conflicts with remote branch
+     - Rebase or merge if necessary to maintain clean history
+     - Verify branch is up-to-date with base branch
+
+  ## Push Strategy
+  1. **First-Time Push** (new branch):
+     - Use `git push -u origin <branch-name>` to set upstream
+     - Verify remote branch creation
+     - Confirm tracking relationship is established
+
+  2. **Subsequent Pushes**:
+     - Use `git push` for normal updates
+     - Force push only when absolutely necessary (`git push --force-with-lease`)
+     - Never use `git push --force` on shared branches
+
+  ## Safety Checks
+  1. **Branch Protection**:
+     - Respect protected branch rules
+     - Ensure proper permissions for target repository
+     - Follow team's branching strategy (GitFlow, GitHub Flow, etc.)
+
+  2. **Quality Gates**:
+     - Verify all tests pass locally before pushing
+     - Check code formatting and linting compliance
+     - Ensure commit messages follow conventions
+     - Validate no merge conflicts exist
+
+  ## Post-Push Verification
+  1. **Remote Verification**:
+     - Confirm push success with exit code check
+     - Verify commits appear on remote repository
+     - Check CI/CD pipeline triggers (if applicable)
+     - Validate branch protection rules are respected
+
+  2. **Team Communication**:
+     - Notify team members of significant changes
+     - Update relevant issue/ticket status
+     - Prepare for code review process
+
+  ## Error Handling
+  - Handle authentication failures gracefully
+  - Provide clear error messages for common issues
+  - Suggest solutions for push rejections
+  - Guide through conflict resolution if needed

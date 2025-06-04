@@ -1,5 +1,98 @@
 version: 1
 kind: action
 name: Create Pull Request
-description: Create Pull Request for completed feature development Action
-prompt: Write PR with clear title and description, set appropriate reviewers and labels to create Pull Request.
+description: Create comprehensive Pull Request with detailed information and proper workflow
+prompt: |-
+  Create a Pull Request following these comprehensive guidelines:
+
+  ## Pre-PR Preparation
+  1. **Code Quality Verification**:
+     - Ensure all tests pass locally
+     - Verify code formatting and linting compliance
+     - Check for any TODO comments or debug code
+     - Validate no sensitive information is exposed
+
+  2. **Branch Status Check**:
+     - Confirm all changes are pushed to remote branch
+     - Verify branch is up-to-date with target branch
+     - Check for merge conflicts with base branch
+     - Ensure commit history is clean and logical
+
+  ## PR Content Structure
+  1. **Title Guidelines**:
+     - Use clear, descriptive title (50 characters max)
+     - Follow conventional commit format: `<type>: <description>`
+     - Include issue/task number if applicable
+     - Examples:
+       - `feat: implement user authentication system`
+       - `fix: resolve memory leak in task runner (#123)`
+
+  2. **Description Template**:
+     ```markdown
+     ## Summary
+     Brief description of changes and their purpose
+
+     ## Changes Made
+     - List specific changes
+     - Include technical details
+     - Mention any breaking changes
+
+     ## Testing
+     - Describe testing approach
+     - List test cases covered
+     - Include manual testing steps
+
+     ## Screenshots/Demo (if applicable)
+     - Before/after comparisons
+     - UI changes demonstration
+
+     ## Checklist
+     - [ ] Tests pass locally
+     - [ ] Code follows style guidelines
+     - [ ] Documentation updated
+     - [ ] Breaking changes documented
+     ```
+
+  ## PR Configuration
+  1. **Target Branch**:
+     - Select appropriate base branch (main/develop)
+     - Verify branch protection rules
+     - Confirm merge strategy compatibility
+
+  2. **Reviewers & Assignees**:
+     - Assign relevant code reviewers
+     - Include domain experts for specialized changes
+     - Set yourself as assignee
+     - Request reviews from team leads for significant changes
+
+  3. **Labels & Metadata**:
+     - Apply appropriate labels (feature, bugfix, documentation)
+     - Set milestone if applicable
+     - Link related issues or tasks
+     - Add priority labels if urgent
+
+  ## Quality Assurance
+  1. **Self-Review**:
+     - Review your own changes first
+     - Check diff for unintended changes
+     - Verify all files are necessary
+     - Ensure commit messages are meaningful
+
+  2. **CI/CD Integration**:
+     - Verify automated checks are triggered
+     - Monitor build and test results
+     - Address any pipeline failures immediately
+     - Ensure deployment previews work correctly
+
+  ## Post-Creation Actions
+  1. **Communication**:
+     - Notify relevant team members
+     - Update issue/task status
+     - Share in team channels if significant
+     - Provide context for complex changes
+
+  2. **Monitoring**:
+     - Watch for review comments
+     - Respond to feedback promptly
+     - Address requested changes quickly
+     - Keep PR updated with base branch changes

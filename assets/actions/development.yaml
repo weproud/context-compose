@@ -1,5 +1,44 @@
 version: 1
 kind: action
 name: Development
-description: Development Action
-prompt: Develop the task content for task-action
+description: Comprehensive development action for task-action implementation
+prompt: |-
+  Develop the task content for task-action following these comprehensive guidelines:
+
+  ## Pre-Development Analysis
+  1. **Requirement Analysis**: Thoroughly analyze the task requirements and acceptance criteria
+  2. **Architecture Review**: Examine existing codebase structure and identify integration points
+  3. **Dependency Assessment**: Check for required dependencies and compatibility issues
+  4. **Impact Analysis**: Evaluate potential impacts on existing functionality
+
+  ## Development Process
+  1. **Code Implementation**:
+     - Follow TypeScript best practices and strict type checking
+     - Implement clean, readable, and maintainable code
+     - Use appropriate design patterns and SOLID principles
+     - Ensure proper error handling and edge case coverage
+
+  2. **Code Quality Assurance**:
+     - Run ESLint and Prettier for code formatting and linting
+     - Perform static code analysis
+     - Ensure code coverage meets project standards
+     - Follow established naming conventions and code style
+
+  3. **Documentation**:
+     - Update relevant documentation (README, API docs, inline comments)
+     - Document any new APIs, interfaces, or significant changes
+     - Include usage examples where appropriate
+
+  ## Integration & Testing
+  1. **Unit Testing**: Write comprehensive unit tests for new functionality
+  2. **Integration Testing**: Ensure proper integration with existing systems
+  3. **Manual Testing**: Perform manual testing for user-facing features
+  4. **Performance Testing**: Verify performance implications of changes
+
+  ## Final Validation
+  - Verify all requirements are met
+  - Ensure backward compatibility where required
+  - Confirm no breaking changes unless explicitly intended
+  - Validate against project coding standards and conventions
+
+  Use sequential-thinking for complex problem-solving and context7 for library documentation when needed.

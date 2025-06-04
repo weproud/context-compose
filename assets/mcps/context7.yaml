@@ -1,7 +1,98 @@
 version: 1
 kind: mcp
 name: context7
-description: Library documentation search through Context7
-prompt: >
-  Utilize Context7 when using libraries or frameworks. Reference the latest version of official documentation to follow
-  accurate implementation and best practices.
+description: Comprehensive library documentation research and implementation guidance through Context7
+prompt: |-
+  Utilize Context7 for comprehensive library and framework research following these guidelines:
+
+  ## When to Use Context7
+  1. **Library Integration**:
+     - Before implementing any new library or framework
+     - When encountering unfamiliar APIs or methods
+     - For understanding best practices and patterns
+     - When troubleshooting library-specific issues
+
+  2. **Documentation Research**:
+     - Verify latest version compatibility and features
+     - Understand breaking changes between versions
+     - Find official examples and implementation patterns
+     - Research performance implications and limitations
+
+  ## Research Strategy
+  1. **Comprehensive Investigation**:
+     - Start with official documentation and getting started guides
+     - Look for migration guides and changelog information
+     - Research community best practices and common patterns
+     - Identify potential security considerations and vulnerabilities
+
+  2. **Version-Specific Research**:
+     - Always target the latest stable version unless constrained
+     - Check for LTS (Long Term Support) versions for production use
+     - Understand deprecation timelines and migration paths
+     - Verify compatibility with existing project dependencies
+
+  ## Implementation Guidelines
+  1. **Best Practices Application**:
+     - Follow official recommended patterns and architectures
+     - Implement proper error handling as documented
+     - Use TypeScript definitions and type safety features
+     - Apply security best practices from official guidelines
+
+  2. **Performance Considerations**:
+     - Understand bundle size implications
+     - Implement lazy loading where recommended
+     - Follow performance optimization guidelines
+     - Consider tree-shaking and dead code elimination
+
+  ## Documentation Integration
+  1. **Code Documentation**:
+     - Reference official documentation in code comments
+     - Include links to relevant documentation sections
+     - Document any deviations from standard patterns
+     - Explain complex configurations or customizations
+
+  2. **Team Knowledge Sharing**:
+     - Share discovered best practices with team
+     - Document common patterns for future reference
+     - Create internal guides for complex integrations
+     - Update project documentation with new learnings
+
+  ## Quality Assurance
+  1. **Validation Process**:
+     - Verify implementation against official examples
+     - Test edge cases mentioned in documentation
+     - Validate security recommendations are followed
+     - Ensure accessibility guidelines are met
+
+  2. **Continuous Learning**:
+     - Stay updated with library releases and updates
+     - Monitor for security advisories and patches
+     - Participate in community discussions and forums
+     - Contribute back to open source when possible
+
+  ## Common Research Areas
+  1. **Configuration & Setup**:
+     - Installation and setup procedures
+     - Configuration options and environment variables
+     - Build tool integration and optimization
+     - Development vs production configurations
+
+  2. **API Usage & Patterns**:
+     - Core API methods and their proper usage
+     - Event handling and lifecycle management
+     - State management patterns and recommendations
+     - Testing strategies and utilities
+
+  3. **Advanced Features**:
+     - Plugin systems and extensibility
+     - Custom hooks and middleware patterns
+     - Performance monitoring and debugging tools
+     - Integration with other tools and frameworks
+
+  ## Research Output
+  Always document your Context7 research findings including:
+  - Library version and compatibility information
+  - Key implementation decisions and rationale
+  - Links to relevant documentation sections
+  - Any discovered limitations or considerations
+  - Recommended patterns for the specific use case

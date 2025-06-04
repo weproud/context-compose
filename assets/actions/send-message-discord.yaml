@@ -1,44 +1,195 @@
 version: 1
 kind: action
 name: Send Message to Discord
-description: Send message to Discord channel
+description: Send comprehensive status messages to Discord with rich embeds and context
 prompt: |-
-  Send message to Discord channel.
+  Send message to Discord channel following these comprehensive guidelines:
 
-  The following information is required:
-  - Discord webhook URL set in DISCORD_WEBHOOK_URL environment variable
-  - Message content to send
-  - Optional: Message format (plain text, embed, etc.)
+  ## Prerequisites & Configuration
+  1. **Environment Setup**:
+     - Verify DISCORD_WEBHOOK_URL environment variable is set
+     - Validate webhook URL format and accessibility
+     - Check network connectivity and permissions
+     - Ensure proper authentication credentials
 
-  Please perform the following steps:
-  1. Check DISCORD_WEBHOOK_URL from environment variables
-  2. Prepare message format and content
-  3. Send message to Discord webhook via HTTP POST request
-  4. Check sending result and handle errors
+  2. **Message Context Preparation**:
+     - Gather relevant project information (branch, commit, task details)
+     - Determine message urgency and priority level
+     - Identify target channel and audience
+     - Prepare any necessary attachments or media
 
-  If DISCORD_WEBHOOK_URL environment variable is not set, request user to configure it.
+  ## Message Formatting Strategy
+  1. **Message Types & Colors**:
+     - **Success** (Green - 65280): Task completion, deployment success, test passes
+     - **Warning** (Orange - 16753920): Non-critical issues, deprecation notices
+     - **Error** (Red - 16711680): Build failures, test failures, critical issues
+     - **Info** (Blue - 3447003): Status updates, progress reports, notifications
 
-  Example message format:
-  {
-    "content": "Message content",
-    "username": "Bot",
-    "embeds": [
-      {
-        "title": "Title",
-        "description": "Description",
+  2. **Rich Embed Structure**:
+     ```json
+     {
+       "content": "📋 **Task Status Update**",
+       "username": "Task-Action Bot",
+       "avatar_url": "https://example.com/bot-avatar.png",
+       "embeds": [
+         {
+           "title": "Task Completion Summary",
+           "description": "Detailed description of the task and its completion status",
+           "color": 65280,
+           "url": "https://github.com/repo/pull/123",
+           "thumbnail": {
+             "url": "https://example.com/project-logo.png"
+           },
+           "fields": [
+             {
+               "name": "📋 Task Details",
+               "value": "**ID:** TASK-001\n**Name:** User Authentication Feature\n**Branch:** feature/user-auth",
+               "inline": false
+             },
+             {
+               "name": "✅ Quality Metrics",
+               "value": "**Tests:** All passing\n**Coverage:** 95%\n**Performance:** Optimized",
+               "inline": true
+             },
+             {
+               "name": "🚀 Status",
+               "value": "**Ready for:** Code Review\n**Deployment:** Staging Ready\n**Next:** Merge to main",
+               "inline": true
+             }
+           ],
+           "footer": {
+             "text": "Task-Action System",
+             "icon_url": "https://example.com/footer-icon.png"
+           },
+           "timestamp": "2024-01-01T12:00:00.000Z"
+         }
+       ]
+     }
+     ```
+
+  ## Message Content Guidelines
+  1. **Clear Communication**:
+     - Use descriptive emojis for visual clarity
+     - Include relevant context and links
+     - Mention specific team members when needed (<@user_id>)
+     - Provide next steps or required actions
+
+  2. **Status-Specific Templates**:
+     - **Task Completion**: "✅ **Task #{id} Completed!** - {description}"
+     - **Build Success**: "🚀 **Build Successful** for `{branch}` - Ready for review"
+     - **Test Failure**: "❌ **Tests Failed** on `{branch}` - {failure_count} failures detected"
+     - **Deployment**: "📦 **Deployed** `{version}` to **{environment}**"
+
+  ## Execution Process
+  1. **Pre-Send Validation**:
+     - Validate message content and embed structure
+     - Check webhook URL accessibility and permissions
+     - Verify JSON payload structure and limits
+     - Test with dry-run if available
+
+  2. **Message Delivery**:
+     - Send HTTP POST request with proper headers
+     - Handle rate limiting (Discord: 30 requests per minute)
+     - Monitor response status and error codes
+     - Log successful deliveries and failures
+
+  3. **Error Handling**:
+     - Gracefully handle network failures and timeouts
+     - Provide fallback notification methods
+     - Log detailed error information for debugging
+     - Suggest configuration fixes for common issues
+
+  ## Advanced Features
+  1. **Interactive Elements**:
+     - Include clickable links to Pull Requests and issues
+     - Add deployment links and environment information
+     - Provide test results and coverage reports
+     - Include performance metrics and benchmarks
+
+  2. **Conditional Messaging**:
+     - Send different messages based on task status and type
+     - Filter messages by importance level and audience
+     - Customize content for different channels and teams
+     - Include relevant team members based on task ownership
+
+  ## Discord-Specific Considerations
+  1. **Message Limits**:
+     - Content: 2000 characters maximum
+     - Embed title: 256 characters maximum
+     - Embed description: 4096 characters maximum
+     - Field name: 256 characters maximum
+     - Field value: 1024 characters maximum
+     - Total embeds: 10 per message maximum
+
+  2. **Formatting Features**:
+     - Use Discord markdown for text formatting
+     - Implement code blocks for technical information
+     - Use mentions and role pings appropriately
+     - Include timestamps for time-sensitive information
+
+  ## Example Implementations
+  ```bash
+  # Success message example
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "content": "✅ **Task Completed Successfully!**",
+      "embeds": [{
+        "title": "Feature Implementation Complete",
+        "description": "User authentication system has been successfully implemented and tested.",
+        "color": 65280,
+        "url": "https://github.com/repo/pull/123",
+        "fields": [
+          {
+            "name": "📊 Metrics",
+            "value": "**Tests:** 45/45 passing\n**Coverage:** 95.2%\n**Performance:** +15% improvement",
+            "inline": true
+          },
+          {
+            "name": "🔗 Links",
+            "value": "[Pull Request](https://github.com/repo/pull/123)\n[Staging Deploy](https://staging.example.com)",
+            "inline": true
+          }
+        ],
+        "footer": {
+          "text": "Task-Action Bot"
+        },
+        "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+      }]
+    }' \
+    "${DISCORD_WEBHOOK_URL}"
+
+  # Error message example
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "content": "❌ **Build Failed** - Immediate attention required",
+      "embeds": [{
+        "title": "Build Failure on feature/user-auth",
+        "description": "The build pipeline failed during the testing phase. Please review and fix the issues.",
         "color": 16711680,
         "fields": [
           {
-            "name": "Field name",
-            "value": "Field value",
+            "name": "🚨 Failed Tests",
+            "value": "3 unit tests failing\n2 integration tests failing",
+            "inline": true
+          },
+          {
+            "name": "📝 Next Steps",
+            "value": "1. Review test failures\n2. Fix failing tests\n3. Re-run pipeline",
             "inline": true
           }
-        ]
-      }
-    ]
-  }
+        ],
+        "footer": {
+          "text": "Task-Action Bot"
+        },
+        "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"
+      }]
+    }' \
+    "${DISCORD_WEBHOOK_URL}"
+  ```
 
-  curl example:
-  curl -X POST -H 'Content-type: application/json' \
-  --data '{"content":"Hello, World!"}' \
-  ${DISCORD_WEBHOOK_URL}
+  ## Post-Send Verification
+  - Confirm message delivery success (HTTP 204 response)
+  - Verify message appears correctly in target channel
+  - Check for any formatting issues or broken links
+  - Monitor for team responses or required follow-ups
+  - Handle any webhook rate limiting or quota issues

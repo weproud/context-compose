@@ -1,40 +1,192 @@
 version: 1
 kind: rule
 name: Refactoring Rule
-description: Rules to follow when refactoring task-action code
-prompt: |
-  Follow these rules when refactoring task-action code:
+description: Comprehensive refactoring guidelines for task-action code improvement and optimization
+prompt: |-
+  Follow these comprehensive refactoring rules when improving task-action code:
+
+  ## Pre-Refactoring Assessment
+  1. **Code Analysis**:
+     - Identify code smells and anti-patterns
+     - Analyze cyclomatic complexity and maintainability metrics
+     - Review test coverage and identify untested areas
+     - Document current behavior and expected outcomes
+
+  2. **Impact Assessment**:
+     - Evaluate potential breaking changes and dependencies
+     - Identify affected components and integration points
+     - Plan rollback strategies for critical refactoring
+     - Estimate effort and timeline for refactoring tasks
 
   ## Code Quality Improvement
-  - Remove duplicate code and extract common utility functions
-  - Use meaningful variable and function names (clear and descriptive)
-  - Separate complex conditional statements into functions for better readability
-  - Remove magic numbers and manage them as constants
-  - Enhance type safety (utilize TypeScript strict mode)
+  1. **Duplication Elimination**:
+     - Extract common utility functions and shared logic
+     - Create reusable components and modules
+     - Implement proper inheritance and composition patterns
+     - Consolidate similar functions with parameterization
 
-  ## Structure Improvement
-  - Separate functions/classes according to Single Responsibility Principle (SRP)
-  - Reduce coupling through dependency inversion
-  - Maintain appropriate abstraction levels
-  - Organize folder structure and separate concerns
-  - Design flexibly through interfaces and abstraction
+  2. **Naming & Clarity**:
+     - Use meaningful, descriptive variable and function names
+     - Follow consistent naming conventions across the codebase
+     - Replace abbreviations with full, clear names
+     - Ensure names accurately reflect purpose and behavior
+
+  3. **Code Simplification**:
+     - Break down complex conditional statements into readable functions
+     - Replace nested conditions with early returns or guard clauses
+     - Simplify complex expressions and calculations
+     - Remove unnecessary complexity and over-engineering
+
+  4. **Constants & Configuration**:
+     - Replace magic numbers and strings with named constants
+     - Create configuration objects for related constants
+     - Use enums for fixed sets of values
+     - Externalize configuration to environment variables
+
+  5. **Type Safety Enhancement**:
+     - Utilize TypeScript strict mode and advanced type features
+     - Add proper type annotations and interfaces
+     - Eliminate any types and improve type inference
+     - Implement runtime type validation where necessary
+
+  ## Structural Improvements
+  1. **SOLID Principles Application**:
+     - **Single Responsibility**: Each function/class has one clear purpose
+     - **Open/Closed**: Open for extension, closed for modification
+     - **Liskov Substitution**: Subtypes must be substitutable for base types
+     - **Interface Segregation**: Clients shouldn't depend on unused interfaces
+     - **Dependency Inversion**: Depend on abstractions, not concretions
+
+  2. **Architecture Patterns**:
+     - Implement proper layered architecture (presentation, business, data)
+     - Apply appropriate design patterns (Factory, Strategy, Observer, etc.)
+     - Use dependency injection for better testability
+     - Separate concerns through modular design
+
+  3. **Code Organization**:
+     - Organize files and folders by feature or domain
+     - Group related functionality together
+     - Maintain consistent project structure
+     - Separate configuration, utilities, and business logic
 
   ## Performance Optimization
-  - Minimize unnecessary rendering (utilize React.memo, useMemo, useCallback)
-  - Remove duplicate API calls and apply caching strategies
-  - Optimize bundle size (code splitting, tree shaking)
-  - Prevent memory leaks (cleanup event listeners, useEffect cleanup)
-  - Choose efficient data structures and algorithms
+  1. **Rendering Optimization** (React/Frontend):
+     - Implement React.memo for component memoization
+     - Use useMemo for expensive calculations
+     - Apply useCallback for function memoization
+     - Optimize re-rendering with proper key props
+
+  2. **Network & API Optimization**:
+     - Eliminate duplicate API calls and implement caching
+     - Use request deduplication and batching
+     - Implement proper loading states and error handling
+     - Apply pagination and lazy loading for large datasets
+
+  3. **Bundle & Asset Optimization**:
+     - Implement code splitting and lazy loading
+     - Enable tree shaking for unused code elimination
+     - Optimize images and static assets
+     - Minimize and compress JavaScript/CSS bundles
+
+  4. **Memory Management**:
+     - Clean up event listeners and subscriptions
+     - Implement proper useEffect cleanup functions
+     - Avoid memory leaks in closures and timers
+     - Use weak references where appropriate
+
+  5. **Algorithm & Data Structure Optimization**:
+     - Choose efficient algorithms for data processing
+     - Use appropriate data structures (Map, Set, etc.)
+     - Optimize loops and iterations
+     - Implement efficient search and sort algorithms
 
   ## Maintainability Enhancement
-  - Add clear comments and documentation
-  - Ensure test coverage and write testable code
-  - Externalize configuration values and utilize environment variables
-  - Improve error handling and user-friendly messages
-  - Establish logging system and provide debugging information
+  1. **Documentation & Comments**:
+     - Add comprehensive JSDoc comments for public APIs
+     - Document complex business logic and algorithms
+     - Maintain up-to-date README and setup instructions
+     - Create architectural decision records (ADRs)
 
-  ## Refactoring Principles
-  - Gradual improvement in small units
-  - Improve structure without changing functionality
-  - Verify behavior by running tests before and after refactoring
-  - Ensure quality through code reviews
+  2. **Testing Improvements**:
+     - Increase test coverage to minimum 80%
+     - Write unit tests for all business logic
+     - Implement integration tests for critical workflows
+     - Add end-to-end tests for user journeys
+
+  3. **Error Handling & Resilience**:
+     - Implement comprehensive error handling strategies
+     - Provide user-friendly error messages
+     - Add proper logging and monitoring
+     - Implement retry mechanisms and circuit breakers
+
+  4. **Configuration Management**:
+     - Externalize all configuration values
+     - Use environment variables for different environments
+     - Implement configuration validation
+     - Support runtime configuration updates where appropriate
+
+  ## Refactoring Process & Principles
+  1. **Incremental Approach**:
+     - Make small, focused changes in each iteration
+     - Refactor one concern at a time
+     - Maintain working software throughout the process
+     - Use feature flags for large refactoring efforts
+
+  2. **Testing Strategy**:
+     - Run full test suite before starting refactoring
+     - Add tests for areas lacking coverage
+     - Verify behavior remains unchanged after each step
+     - Use regression testing to catch unintended changes
+
+  3. **Code Review & Quality Assurance**:
+     - Conduct thorough code reviews for all refactoring
+     - Use static analysis tools and linters
+     - Perform performance testing before and after
+     - Document changes and rationale in commit messages
+
+  4. **Risk Management**:
+     - Identify high-risk refactoring areas
+     - Plan rollback strategies for critical changes
+     - Use feature toggles for gradual rollouts
+     - Monitor system behavior after deployment
+
+  ## Specific Refactoring Techniques
+  1. **Extract Method/Function**:
+     - Break large functions into smaller, focused ones
+     - Extract complex expressions into named functions
+     - Create utility functions for common operations
+
+  2. **Extract Class/Module**:
+     - Separate related data and behavior into classes
+     - Create modules for cohesive functionality
+     - Apply proper encapsulation and information hiding
+
+  3. **Rename & Reorganize**:
+     - Rename variables, functions, and classes for clarity
+     - Reorganize code structure for better readability
+     - Move related code closer together
+
+  4. **Simplify Conditionals**:
+     - Replace complex conditions with descriptive functions
+     - Use polymorphism instead of switch statements
+     - Implement strategy pattern for varying behavior
+
+  ## Post-Refactoring Validation
+  1. **Quality Metrics**:
+     - Measure code complexity and maintainability improvements
+     - Verify test coverage has increased or maintained
+     - Check performance benchmarks and optimization gains
+     - Validate security and accessibility standards
+
+  2. **Team Communication**:
+     - Document refactoring changes and benefits
+     - Share learnings and best practices with team
+     - Update team guidelines and coding standards
+     - Conduct knowledge transfer sessions if needed
+
+  ## Continuous Improvement
+  - Schedule regular refactoring sessions
+  - Monitor code quality metrics over time
+  - Gather feedback from team members
+  - Update refactoring guidelines based on experience
+  - Invest in tools and automation for code quality

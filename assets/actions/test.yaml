@@ -1,16 +1,70 @@
 version: 1
 kind: action
 name: Test
-description: Execute project tests
+description: Comprehensive testing execution with detailed analysis and reporting
 prompt: |-
-  Execute project tests.
+  Execute comprehensive project testing following these detailed guidelines:
 
-  Please perform the following steps:
-  1. Check test environment configuration
-  2. Verify package dependencies installation
-  3. Run unit tests
-  4. Run integration tests (if available)
-  5. Report test results
-  6. Analyze causes and provide solutions for test failures
+  ## Pre-Test Setup
+  1. **Environment Verification**:
+     - Check Node.js version compatibility
+     - Verify test environment variables are set
+     - Ensure test databases/services are available
+     - Validate test configuration files
 
-  Check package.json scripts first for test commands, and use the appropriate test framework for the project.
+  2. **Dependency Management**:
+     - Verify all dependencies are installed (`npm ci` or `npm install`)
+     - Check for peer dependency warnings
+     - Ensure dev dependencies are available
+     - Validate package-lock.json integrity
+
+  ## Test Discovery & Configuration
+  1. **Test Framework Detection**:
+     - Check package.json scripts for test commands
+     - Identify test framework (Jest, Mocha, Vitest, etc.)
+     - Locate test configuration files
+     - Review test patterns and file locations
+
+  2. **Test Categories**:
+     - **Unit Tests**: Individual component/function testing
+     - **Integration Tests**: Component interaction testing
+     - **E2E Tests**: End-to-end user workflow testing
+     - **Performance Tests**: Load and performance testing
+     - **Security Tests**: Vulnerability and security testing
+
+  ## Test Execution Strategy
+  1. **Sequential Testing**:
+     - Run unit tests first (fastest feedback)
+     - Execute integration tests if unit tests pass
+     - Run E2E tests for critical user paths
+     - Perform performance tests if applicable
+
+  2. **Parallel Execution**:
+     - Utilize test runner's parallel capabilities
+     - Monitor resource usage during parallel runs
+     - Handle test isolation and cleanup
+
+  ## Test Analysis & Reporting
+  1. **Results Analysis**:
+     - Generate detailed test reports (coverage, performance)
+     - Identify failing tests and error patterns
+     - Analyze test coverage metrics
+     - Review performance benchmarks
+
+  2. **Failure Investigation**:
+     - Categorize failures (syntax, logic, environment)
+     - Provide specific solutions for each failure type
+     - Suggest code improvements based on test results
+     - Recommend additional test cases for uncovered scenarios
+
+  ## Quality Gates
+  - Minimum test coverage threshold (typically 80%+)
+  - Zero critical test failures
+  - Performance benchmarks within acceptable limits
+  - Security vulnerability checks passed
+
+  ## Post-Test Actions
+  - Update test documentation if needed
+  - Commit test improvements or fixes
+  - Report test metrics to team/CI system
+  - Schedule follow-up for persistent issues

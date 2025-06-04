@@ -1,7 +1,36 @@
 version: 1
 kind: action
 name: Create Branch
-description: Create a new Git branch Action
-prompt: >-
-  Generate appropriate branch name using feature/ prefix, create new branch from latest main/develop branch and
-  checkout.
+description: Create a new Git branch with proper naming conventions and best practices
+prompt: |-
+  Create a new Git branch following these comprehensive guidelines:
+
+  ## Branch Creation Process
+  1. **Pre-Creation Checks**:
+     - Verify current Git status and ensure working directory is clean
+     - Check if there are any uncommitted changes that need to be stashed
+     - Confirm you're on the correct base branch (main/develop)
+     - Pull latest changes from remote to ensure up-to-date base
+
+  2. **Branch Naming Convention**:
+     - Use descriptive, kebab-case naming: `feature/task-description`
+     - Include task/issue number if available: `feature/123-add-new-feature`
+     - Follow pattern: `<type>/<task-id>-<brief-description>`
+     - Types: feature/, bugfix/, hotfix/, refactor/, docs/, test/
+
+  3. **Branch Creation**:
+     - Create branch from latest main/develop branch
+     - Use meaningful branch names that clearly describe the work
+     - Checkout to the new branch immediately after creation
+     - Verify branch creation and current branch status
+
+  ## Examples
+  - `feature/456-implement-task-runner`
+  - `bugfix/789-fix-memory-leak`
+  - `refactor/123-optimize-performance`
+  - `docs/update-readme`
+
+  ## Post-Creation
+  - Confirm successful branch creation with `git branch` or `git status`
+  - Set up tracking branch if working with remote repository
+  - Document branch purpose if working on complex features
