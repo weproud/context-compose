@@ -1,7 +1,7 @@
 import { FastMCP } from 'fastmcp';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs-extra';
+import { readFileSync } from 'fs';
 import { registerHelloMCPTools } from './tools/index.js';
 
 // Constants
@@ -25,7 +25,7 @@ class TaskActionServer {
     // Get version from package.json using synchronous fs
     const packagePath = path.join(__dirname, '../../package.json');
     const packageJson: PackageJson = JSON.parse(
-      fs.readFileSync(packagePath, 'utf8')
+      readFileSync(packagePath, 'utf8')
     );
 
     // Create FastMCP server with proper options

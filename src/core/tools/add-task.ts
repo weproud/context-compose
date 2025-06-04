@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs-extra';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import mustache from 'mustache';
 import {
