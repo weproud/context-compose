@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "task-action-dev": {
+      "command": "npx",
+      "args": [
+        "tsx",
+        "mcp-server/src/index.ts"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "SLACK_WEBHOOK_URL": "",
+        "DISCORD_WEBHOOK_URL": ""
+      },
+      "cwd": "."
+    }
+  }
+}

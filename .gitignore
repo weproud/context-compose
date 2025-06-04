@@ -90,3 +90,5 @@ pids/
 # Temporary folders
 tmp/
 temp/
+
+.taskaction

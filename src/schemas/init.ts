@@ -2,18 +2,13 @@ import { z } from 'zod';
 
 /**
  * Init 도구 스키마
- * MCP 프로젝트를 초기화하는 도구의 입력 매개변수를 정의합니다.
+ * Task Action 프로젝트를 초기화하는 도구의 입력 매개변수를 정의합니다.
  */
 export const InitToolSchema = z.object({
-  force: z
-    .boolean()
-    .optional()
-    .default(false)
-    .describe('기존 파일을 덮어쓸지 여부'),
   configPath: z
     .string()
     .optional()
-    .default('.hellomcp')
+    .default('.taskaction')
     .describe('설정 디렉토리 경로'),
 });
 

@@ -5,7 +5,6 @@ describe('MCP Tools', () => {
   describe('Init Tool', () => {
     it('should initialize project with default settings', async () => {
       const result = await InitTool.execute({
-        force: false,
         configPath: '.taskaction-test',
       });
 
@@ -20,7 +19,7 @@ describe('MCP Tools', () => {
 
     it('should validate input parameters', () => {
       expect(() =>
-        InitTool.executeWithValidation({ force: 'invalid' })
+        InitTool.executeWithValidation({ configPath: 123 })
       ).toThrow();
     });
   });
