@@ -3,7 +3,7 @@ kind: action
 name: Create Branch
 description: Create a new Git branch with proper naming conventions and best practices
 prompt: Create a new feature branch with proper naming (feature/task-description) from the latest main/develop branch. Ensure clean working directory and verify successful checkout.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Create a new Git branch following these comprehensive guidelines:
 
   ## Branch Creation Process

@@ -3,7 +3,7 @@ kind: action
 name: Git Commit
 description: Commit changes to Git with conventional commit messages and best practices
 prompt: Stage and commit changes using conventional commit format (feat:, fix:, docs:, etc.). Review changes with git diff, stage selectively, and write clear, descriptive commit messages.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Commit changes to Git following these comprehensive guidelines:
 
   ## Pre-Commit Process

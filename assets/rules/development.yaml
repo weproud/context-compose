@@ -3,7 +3,7 @@ kind: rule
 name: Development Rule
 description: Comprehensive development rules and best practices for task-action development
 prompt: Follow TypeScript strict mode, ESLint/Prettier standards, conventional commits, mandatory PR reviews, comprehensive documentation, and utilize sequential-thinking/context7/playwright for complex tasks.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Follow these comprehensive development rules when working on task-action:
 
   ## Code Quality Standards

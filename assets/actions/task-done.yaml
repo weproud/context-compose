@@ -3,7 +3,7 @@ kind: action
 name: Task Done
 description: Comprehensive task completion processing with validation, cleanup, and team notification
 prompt: Finalize task completion with requirement validation, code cleanup, comprehensive testing, status update, and multi-channel team notifications.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Perform comprehensive task completion processing following these detailed guidelines:
 
   ## Pre-Completion Validation

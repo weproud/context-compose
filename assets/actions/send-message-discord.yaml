@@ -3,7 +3,7 @@ kind: action
 name: Send Message to Discord
 description: Send comprehensive status messages to Discord with rich embeds and context
 prompt: Send status message to Discord with rich embeds. Check DISCORD_WEBHOOK_URL, format message with proper colors and fields, and handle rate limiting.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Send message to Discord channel following these comprehensive guidelines:
 
   ## Prerequisites & Configuration

@@ -3,7 +3,7 @@ kind: rule
 name: The Must Follow Rule
 description: Critical rules that must be followed unconditionally in all circumstances
 prompt: Only develop what is explicitly requested. No scope creep, ensure data protection, maintain system integrity, follow testing requirements, and communicate transparently. When in doubt, ask for clarification.
-prompt-enhanced: |-
+enhanced-prompt: |-
   These rules must be followed unconditionally in all circumstances:
 
   ## Scope Adherence

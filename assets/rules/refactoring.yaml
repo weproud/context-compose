@@ -3,7 +3,7 @@ kind: rule
 name: Refactoring Rule
 description: Comprehensive refactoring guidelines for task-action code improvement and optimization
 prompt: Improve code quality through systematic refactoring: eliminate duplication, enhance naming clarity, apply SOLID principles, optimize performance, increase test coverage, and maintain incremental approach with proper validation.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Follow these comprehensive refactoring rules when improving task-action code:
 
   ## Pre-Refactoring Assessment

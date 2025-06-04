@@ -301,6 +301,24 @@ pnpm task-action init --force
 # Result: Overwrites existing files
 ```
 
+#### Start Task Commands
+
+```bash
+# Start a task with simple prompts (default)
+pnpm task-action start-task init
+# Result: Combines task, workflow, rules, and mcps prompts using simple format
+
+# Start a task with enhanced prompts (detailed guidelines)
+pnpm task-action start-task init --enhanced-prompt
+# Result: Uses detailed prompt-enhanced content for comprehensive guidance
+
+# Start a task with custom config path
+pnpm task-action start-task my-feature-task --config-path .taskaction
+
+# Start a task with enhanced prompts and custom config (short form)
+pnpm task-action start-task complex-task -e -c .taskaction
+```
+
 #### Messaging Commands
 
 ```bash
@@ -366,6 +384,11 @@ Add to your Cursor MCP settings:
 The MCP server exposes the following tools:
 
 - **`init`**: Initialize a Task Action project (creates `.hellomcp` directory and `hello.yaml`)
+- **`start_task`**: Start a task by combining prompts from task, workflow, rules, and mcps files
+  - `taskId`: Task identifier to start
+  - `projectRoot`: Project root directory (absolute path)
+  - `configPath`: Configuration directory path (default: `.taskaction`)
+  - `enhancedPrompt`: Use detailed enhanced prompts instead of simple prompts (default: `false`)
 - **`send_message_slack`**: Send messages to Slack via webhook
 - **`send_message_discord`**: Send messages to Discord via webhook
 
@@ -465,6 +488,10 @@ Claude: Uses send_message_slack tool to send the message
 ```bash
 # Initialize project
 pnpm task-action init
+
+# Start tasks
+pnpm task-action start-task init                    # Simple prompts
+pnpm task-action start-task init --enhanced-prompt  # Enhanced prompts
 
 # Send messages
 SLACK_WEBHOOK_URL="..." pnpm task-action send-message-slack "Deployment complete!"

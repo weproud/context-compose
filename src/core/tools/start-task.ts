@@ -34,6 +34,7 @@ interface ComponentYaml {
   name: string;
   description: string;
   prompt: string;
+  'prompt-enhanced'?: string;
 }
 
 /**
@@ -131,7 +132,8 @@ export class StartTaskTool {
     taskYaml: TaskYaml,
     workflowYaml?: ComponentYaml,
     rulesYamls: ComponentYaml[] = [],
-    mcpsYamls: ComponentYaml[] = []
+    mcpsYamls: ComponentYaml[] = [],
+    useEnhancedPrompt: boolean = false
   ): string {
     const sections: string[] = [];
 
@@ -149,7 +151,11 @@ export class StartTaskTool {
     if (workflowYaml) {
       sections.push(`\n## Workflow: ${workflowYaml.name}`);
       sections.push(`**Description:** ${workflowYaml.description}`);
-      sections.push(`\n${workflowYaml.prompt}`);
+      const promptToUse =
+        useEnhancedPrompt && workflowYaml['prompt-enhanced']
+          ? workflowYaml['prompt-enhanced']
+          : workflowYaml.prompt;
+      sections.push(`\n${promptToUse}`);
     }
 
     // Rules
@@ -158,7 +164,11 @@ export class StartTaskTool {
       rulesYamls.forEach((rule, index) => {
         sections.push(`\n### ${index + 1}. ${rule.name}`);
         sections.push(`**Description:** ${rule.description}`);
-        sections.push(`\n${rule.prompt}`);
+        const promptToUse =
+          useEnhancedPrompt && rule['prompt-enhanced']
+            ? rule['prompt-enhanced']
+            : rule.prompt;
+        sections.push(`\n${promptToUse}`);
       });
     }
 
@@ -168,7 +178,11 @@ export class StartTaskTool {
       mcpsYamls.forEach((mcp, index) => {
         sections.push(`\n### ${index + 1}. ${mcp.name}`);
         sections.push(`**Description:** ${mcp.description}`);
-        sections.push(`\n${mcp.prompt}`);
+        const promptToUse =
+          useEnhancedPrompt && mcp['prompt-enhanced']
+            ? mcp['prompt-enhanced']
+            : mcp.prompt;
+        sections.push(`\n${promptToUse}`);
       });
     }
 
@@ -181,7 +195,7 @@ export class StartTaskTool {
   static async execute(
     input: StartTaskToolInput
   ): Promise<StartTaskToolResponse> {
-    const { taskId, projectRoot, configPath } = input;
+    const { taskId, projectRoot, configPath, enhancedPrompt = false } = input;
 
     try {
       // 1. Task 파일 읽기
@@ -261,7 +275,8 @@ export class StartTaskTool {
         taskYaml,
         workflowYaml,
         rulesYamls,
-        mcpsYamls
+        mcpsYamls,
+        enhancedPrompt
       );
 
       return {

@@ -11,7 +11,7 @@ export function registerStartTaskTool(server: FastMCP): void {
   server.addTool({
     name: 'start_task',
     description:
-      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 workflow, rules, mcps 파일들의 prompt를 조합하여 AI 개발을 위한 컨텍스트를 제공합니다. projectRoot 매개변수로 프로젝트 루트 디렉토리를 지정해야 합니다.',
+      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 workflow, rules, mcps 파일들의 prompt를 조합하여 AI 개발을 위한 컨텍스트를 제공합니다. projectRoot 매개변수로 프로젝트 루트 디렉토리를 지정해야 합니다. enhancedPrompt 옵션으로 상세한 가이드라인 사용 여부를 선택할 수 있습니다.',
     parameters: StartTaskToolSchema,
     execute: async (args: unknown) => {
       try {

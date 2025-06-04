@@ -3,7 +3,7 @@ kind: mcp
 name: playwright
 description: Comprehensive browser automation and end-to-end testing with Playwright
 prompt: Perform browser automation and E2E testing with Playwright. Write user-centric tests, implement cross-browser testing, use robust selectors, handle async operations, and include visual/performance/accessibility testing.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Utilize Playwright for comprehensive browser automation and testing following these guidelines:
 
   ## Core Testing Capabilities

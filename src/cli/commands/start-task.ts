@@ -14,47 +14,59 @@ export function createStartTaskCommand(): Command {
     )
     .argument('<taskId>', 'Task ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .action(async (taskId: string, options: { configPath: string }) => {
-      try {
-        const input: StartTaskToolInput = {
-          taskId,
-          projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
-          configPath: options.configPath,
-        };
+    .option(
+      '-e, --enhanced-prompt',
+      '상세한 enhanced prompt 사용 (기본값: 간단한 prompt)'
+    )
+    .action(
+      async (
+        taskId: string,
+        options: { configPath: string; enhancedPrompt?: boolean }
+      ) => {
+        try {
+          const input: StartTaskToolInput = {
+            taskId,
+            projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
+            configPath: options.configPath,
+            enhancedPrompt: options.enhancedPrompt || false,
+          };
 
-        const result = await executeStartTaskTool(input);
+          const result = await executeStartTaskTool(input);
 
-        if (result.success) {
-          console.log(result.message);
-          console.log('\n' + '='.repeat(80));
-          console.log('COMBINED PROMPT');
-          console.log('='.repeat(80));
-          console.log(result.combinedPrompt);
-          console.log('='.repeat(80));
+          if (result.success) {
+            console.log(result.message);
+            const promptType = options.enhancedPrompt ? 'ENHANCED' : 'SIMPLE';
+            console.log(`\n📋 Prompt Type: ${promptType}`);
+            console.log('\n' + '='.repeat(80));
+            console.log('COMBINED PROMPT');
+            console.log('='.repeat(80));
+            console.log(result.combinedPrompt);
+            console.log('='.repeat(80));
 
-          if (result.files) {
-            console.log('\n📁 참조된 파일들:');
-            if (result.files.workflow) {
-              console.log(`  - Workflow: ${result.files.workflow}`);
+            if (result.files) {
+              console.log('\n📁 참조된 파일들:');
+              if (result.files.workflow) {
+                console.log(`  - Workflow: ${result.files.workflow}`);
+              }
+              if (result.files.rules.length > 0) {
+                console.log(`  - Rules: ${result.files.rules.join(', ')}`);
+              }
+              if (result.files.mcps.length > 0) {
+                console.log(`  - MCPs: ${result.files.mcps.join(', ')}`);
+              }
             }
-            if (result.files.rules.length > 0) {
-              console.log(`  - Rules: ${result.files.rules.join(', ')}`);
-            }
-            if (result.files.mcps.length > 0) {
-              console.log(`  - MCPs: ${result.files.mcps.join(', ')}`);
-            }
+          } else {
+            console.error(result.message);
+            process.exit(1);
           }
-        } else {
-          console.error(result.message);
+        } catch (error) {
+          console.error(
+            `❌ Start Task 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
+          );
           process.exit(1);
         }
-      } catch (error) {
-        console.error(
-          `❌ Start Task 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
-        );
-        process.exit(1);
       }
-    });
+    );
 
   return command;
 }
@@ -69,4 +81,6 @@ export function showStartTaskExamples(): void {
   console.log(
     '  task-action start-task test-task-creation --config-path .taskaction'
   );
+  console.log('  task-action start-task my-task --enhanced-prompt');
+  console.log('  task-action start-task complex-task -e -c .taskaction');
 }

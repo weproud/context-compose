@@ -3,7 +3,7 @@ kind: mcp
 name: context7
 description: Comprehensive library documentation research and implementation guidance through Context7
 prompt: Research library documentation through Context7 for accurate implementation. Verify latest versions, understand best practices, follow official patterns, and document findings with links and compatibility information.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Utilize Context7 for comprehensive library and framework research following these guidelines:
 
   ## When to Use Context7

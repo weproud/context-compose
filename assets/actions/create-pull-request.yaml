@@ -3,7 +3,7 @@ kind: action
 name: Create Pull Request
 description: Create comprehensive Pull Request with detailed information and proper workflow
 prompt: Create detailed Pull Request with clear title, comprehensive description, proper reviewers, and relevant labels. Ensure all tests pass and include testing notes.
-prompt-enhanced: |-
+enhanced-prompt: |-
   Create a Pull Request following these comprehensive guidelines:
 
   ## Pre-PR Preparation
