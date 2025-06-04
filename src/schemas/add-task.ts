@@ -9,6 +9,9 @@ export const AddTaskToolSchema = z.object({
     .string()
     .min(1, 'Task ID는 필수입니다')
     .describe('생성할 task의 고유 식별자'),
+  projectRoot: z
+    .string()
+    .describe('The directory of the project. Must be an absolute path.'),
   configPath: z
     .string()
     .optional()

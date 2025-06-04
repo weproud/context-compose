@@ -10,7 +10,8 @@ import logger from '../logger.js';
 export function registerInitTool(server: FastMCP): void {
   server.addTool({
     name: 'init',
-    description: 'Task Action 프로젝트를 초기화합니다 (assets 디렉토리를 .taskaction으로 복사)',
+    description:
+      'Task Action 프로젝트를 초기화합니다 (assets 디렉토리를 .taskaction으로 복사). projectRoot 매개변수로 프로젝트 루트 디렉토리를 지정해야 합니다.',
     parameters: InitToolSchema,
     execute: async (args: unknown) => {
       try {

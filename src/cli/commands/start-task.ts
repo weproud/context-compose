@@ -9,13 +9,16 @@ export function createStartTaskCommand(): Command {
   const command = new Command('start-task');
 
   command
-    .description('Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 workflow, rules, mcps 파일들의 prompt를 조합합니다.')
+    .description(
+      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 workflow, rules, mcps 파일들의 prompt를 조합합니다.'
+    )
     .argument('<taskId>', 'Task ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
     .action(async (taskId: string, options: { configPath: string }) => {
       try {
         const input: StartTaskToolInput = {
           taskId,
+          projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
           configPath: options.configPath,
         };
 
@@ -28,7 +31,7 @@ export function createStartTaskCommand(): Command {
           console.log('='.repeat(80));
           console.log(result.combinedPrompt);
           console.log('='.repeat(80));
-          
+
           if (result.files) {
             console.log('\n📁 참조된 파일들:');
             if (result.files.workflow) {
@@ -63,5 +66,7 @@ export function showStartTaskExamples(): void {
   console.log('\n📖 Start Task 사용 예시:');
   console.log('  task-action start-task init');
   console.log('  task-action start-task my-feature-task');
-  console.log('  task-action start-task test-task-creation --config-path .taskaction');
+  console.log(
+    '  task-action start-task test-task-creation --config-path .taskaction'
+  );
 }

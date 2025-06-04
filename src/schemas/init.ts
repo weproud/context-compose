@@ -5,11 +5,11 @@ import { z } from 'zod';
  * Task Action 프로젝트를 초기화하는 도구의 입력 매개변수를 정의합니다.
  */
 export const InitToolSchema = z.object({
-  configPath: z
+  projectRoot: z
     .string()
-    .optional()
-    .default('.taskaction')
-    .describe('설정 디렉토리 경로'),
+    .describe(
+      'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
+    ),
 });
 
 /**
@@ -25,5 +25,4 @@ export interface InitToolResponse {
   message: string;
   createdFiles: string[];
   skippedFiles: string[];
-  configPath: string;
 }

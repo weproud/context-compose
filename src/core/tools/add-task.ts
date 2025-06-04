@@ -48,12 +48,13 @@ export class AddTaskTool {
    * .taskaction 디렉토리에서 템플릿 파일 경로 찾기
    */
   static async findTaskactionTemplatePath(
+    projectRoot: string,
     configPath: string
   ): Promise<string | null> {
     // .taskaction/templates 디렉토리에서 찾기
     try {
       const taskactionTemplatePath = join(
-        process.cwd(),
+        projectRoot,
         configPath,
         'templates',
         'task-template.mustache'
@@ -71,10 +72,15 @@ export class AddTaskTool {
   /**
    * 템플릿 파일 읽기
    */
-  static async readTemplate(configPath: string): Promise<string> {
+  static async readTemplate(
+    projectRoot: string,
+    configPath: string
+  ): Promise<string> {
     // .taskaction/templates/task-template.mustache 파일을 찾습니다
-    const taskactionTemplatePath =
-      await this.findTaskactionTemplatePath(configPath);
+    const taskactionTemplatePath = await this.findTaskactionTemplatePath(
+      projectRoot,
+      configPath
+    );
 
     if (taskactionTemplatePath) {
       try {
@@ -90,7 +96,7 @@ export class AddTaskTool {
     throw new Error(
       `.taskaction/templates/task-template.mustache 파일을 찾을 수 없습니다.\n` +
         `다음 위치에 파일이 있는지 확인하세요:\n` +
-        `1. ./${configPath}/templates/task-template.mustache\n` +
+        `1. ${projectRoot}/${configPath}/templates/task-template.mustache\n` +
         `먼저 'task-action init' 명령으로 프로젝트를 초기화해주세요.`
     );
   }
@@ -101,11 +107,12 @@ export class AddTaskTool {
   static createTaskFile(
     taskId: string,
     content: string,
+    projectRoot: string,
     configPath: string
   ): string {
     const formattedId = this.formatTaskId(taskId);
     const fileName = `task-${formattedId}.yaml`;
-    const filePath = join(process.cwd(), configPath, fileName);
+    const filePath = join(projectRoot, configPath, fileName);
 
     if (existsSync(filePath)) {
       throw new Error(
@@ -128,8 +135,8 @@ export class AddTaskTool {
   /**
    * tasks.yaml 파일 읽기
    */
-  static readTasksYaml(configPath: string): string {
-    const tasksYamlPath = join(process.cwd(), configPath, 'tasks.yaml');
+  static readTasksYaml(projectRoot: string, configPath: string): string {
+    const tasksYamlPath = join(projectRoot, configPath, 'tasks.yaml');
 
     if (!existsSync(tasksYamlPath)) {
       throw new Error(
@@ -232,19 +239,20 @@ export class AddTaskTool {
    * tasks.yaml 파일 업데이트
    */
   static updateTasksYaml(
+    projectRoot: string,
     configPath: string,
     taskId: string,
     status: string = 'todo'
   ): void {
     try {
-      const tasksYamlContent = this.readTasksYaml(configPath);
+      const tasksYamlContent = this.readTasksYaml(projectRoot, configPath);
       const updatedContent = this.addTaskToTasksYaml(
         tasksYamlContent,
         taskId,
         status
       );
 
-      const tasksYamlPath = join(process.cwd(), configPath, 'tasks.yaml');
+      const tasksYamlPath = join(projectRoot, configPath, 'tasks.yaml');
       writeFileSync(tasksYamlPath, updatedContent, 'utf8');
     } catch (error) {
       throw new Error(
@@ -257,11 +265,11 @@ export class AddTaskTool {
    * Add Task 핵심 로직
    */
   static async execute(input: AddTaskToolInput): Promise<AddTaskToolResponse> {
-    const { taskId, configPath } = input;
+    const { taskId, projectRoot, configPath } = input;
 
     try {
       // 1. 템플릿 파일 읽기
-      const template = await this.readTemplate(configPath);
+      const template = await this.readTemplate(projectRoot, configPath);
 
       // 2. 변수 준비
       const formattedId = this.formatTaskId(taskId);
@@ -277,13 +285,18 @@ export class AddTaskTool {
       const content = this.replaceTemplateVariables(template, variables);
 
       // 4. Task 파일 생성
-      const filePath = this.createTaskFile(taskId, content, configPath);
+      const filePath = this.createTaskFile(
+        taskId,
+        content,
+        projectRoot,
+        configPath
+      );
       const fileName = `task-${formattedId}.yaml`;
 
       // 5. tasks.yaml 파일 업데이트
       let tasksYamlUpdated = false;
       try {
-        this.updateTasksYaml(configPath, taskId, 'todo');
+        this.updateTasksYaml(projectRoot, configPath, taskId, 'todo');
         tasksYamlUpdated = true;
       } catch (tasksYamlError) {
         // tasks.yaml 업데이트 실패는 경고로 처리하고 계속 진행
@@ -335,9 +348,10 @@ export class AddTaskTool {
    */
   static async executeFromParams(
     taskId: string,
+    projectRoot: string,
     configPath = '.taskaction'
   ): Promise<AddTaskToolResponse> {
-    return this.execute({ taskId, configPath });
+    return this.execute({ taskId, projectRoot, configPath });
   }
 }
 
@@ -346,9 +360,10 @@ export class AddTaskTool {
  */
 export async function addTask(
   taskId: string,
+  projectRoot: string,
   configPath = '.taskaction'
 ): Promise<AddTaskToolResponse> {
-  return AddTaskTool.executeFromParams(taskId, configPath);
+  return AddTaskTool.executeFromParams(taskId, projectRoot, configPath);
 }
 
 /**

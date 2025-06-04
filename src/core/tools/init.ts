@@ -2,11 +2,7 @@ import { access, mkdir, readdir, stat, rename, copyFile } from 'fs/promises';
 import { constants } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import {
-  InitToolSchema,
-  type InitToolInput,
-  type InitToolResponse,
-} from '../../schemas/index.js';
+import { InitToolSchema, type InitToolResponse } from '../../schemas/index.js';
 
 /**
  * 공통 Init 비즈니스 로직
@@ -154,15 +150,34 @@ export class InitTool {
   /**
    * Task Action 프로젝트 초기화 핵심 로직
    */
-  static async execute(input: InitToolInput): Promise<InitToolResponse> {
-    const { configPath } = input;
+  static async execute(projectRoot?: string): Promise<InitToolResponse> {
     const createdFiles: string[] = [];
     const skippedFiles: string[] = [];
     let backupPath: string | null = null;
 
     try {
-      // 현재 작업 디렉토리 기준으로 설정 디렉토리 경로 생성
-      const configDir = join(process.cwd(), configPath);
+      // 대상 디렉토리 결정 (매개변수로 전달되거나 현재 작업 디렉토리)
+      let baseDir: string;
+      if (projectRoot) {
+        baseDir = projectRoot;
+        console.log(`[DEBUG] 사용자 지정 projectRoot: "${baseDir}"`);
+      } else {
+        baseDir = process.cwd();
+        console.log(`[DEBUG] process.cwd(): "${baseDir}"`);
+
+        // process.cwd()가 빈 문자열이거나 유효하지 않은 경우 처리
+        if (!baseDir || baseDir === '/') {
+          throw new Error(
+            'process.cwd()가 유효하지 않습니다. ' +
+              'MCP 서버가 올바른 작업 디렉토리에서 실행되고 있거나 ' +
+              'projectRoot 매개변수를 명시적으로 제공해주세요. ' +
+              `현재 값: "${baseDir}"`
+          );
+        }
+      }
+
+      const configDir = join(baseDir, '.taskaction');
+      console.log(`[DEBUG] configDir: "${configDir}"`);
 
       // assets 디렉토리 찾기
       const assetsDir = await this.findAssetsDirectory();
@@ -200,7 +215,6 @@ export class InitTool {
         message,
         createdFiles,
         skippedFiles,
-        configPath: configDir,
       };
     } catch (error) {
       const errorMessage =
@@ -210,7 +224,6 @@ export class InitTool {
         message: `Task Action 프로젝트 초기화 실패: ${errorMessage}`,
         createdFiles,
         skippedFiles,
-        configPath: join(process.cwd(), configPath),
       };
     }
   }
@@ -258,29 +271,25 @@ export class InitTool {
    */
   static async executeWithValidation(args: unknown): Promise<InitToolResponse> {
     // Zod 스키마로 입력 검증
-    const validatedInput = InitToolSchema.parse(args);
+    const validatedArgs = InitToolSchema.parse(args);
 
     // 비즈니스 로직 실행
-    return this.execute(validatedInput);
+    return this.execute(validatedArgs.projectRoot);
   }
 
   /**
    * CLI용 헬퍼 함수 - 직접 매개변수 전달
    */
-  static async executeFromParams(
-    configPath = '.taskaction'
-  ): Promise<InitToolResponse> {
-    return this.execute({ configPath });
+  static async executeFromParams(): Promise<InitToolResponse> {
+    return this.execute();
   }
 }
 
 /**
  * 간단한 함수형 인터페이스 (선택사항)
  */
-export async function initProject(
-  configPath = '.taskaction'
-): Promise<InitToolResponse> {
-  return InitTool.executeFromParams(configPath);
+export async function initProject(): Promise<InitToolResponse> {
+  return InitTool.executeFromParams();
 }
 
 /**

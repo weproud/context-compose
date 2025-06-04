@@ -69,10 +69,14 @@ export class StartTaskTool {
   /**
    * Task 파일 읽기
    */
-  static readTaskFile(configPath: string, taskId: string): TaskYaml {
+  static readTaskFile(
+    projectRoot: string,
+    configPath: string,
+    taskId: string
+  ): TaskYaml {
     const formattedId = this.formatTaskId(taskId);
     const taskFilePath = join(
-      process.cwd(),
+      projectRoot,
       configPath,
       `task-${formattedId}.yaml`
     );
@@ -84,10 +88,11 @@ export class StartTaskTool {
    * Workflow 파일 읽기
    */
   static readWorkflowFile(
+    projectRoot: string,
     configPath: string,
     workflowPath: string
   ): ComponentYaml {
-    const fullPath = join(process.cwd(), configPath, workflowPath);
+    const fullPath = join(projectRoot, configPath, workflowPath);
     return this.readYamlFile(fullPath);
   }
 
@@ -95,11 +100,12 @@ export class StartTaskTool {
    * Rules 파일들 읽기
    */
   static readRulesFiles(
+    projectRoot: string,
     configPath: string,
     rulesPaths: string[]
   ): ComponentYaml[] {
     return rulesPaths.map(rulePath => {
-      const fullPath = join(process.cwd(), configPath, rulePath);
+      const fullPath = join(projectRoot, configPath, rulePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -108,11 +114,12 @@ export class StartTaskTool {
    * MCPs 파일들 읽기
    */
   static readMcpsFiles(
+    projectRoot: string,
     configPath: string,
     mcpsPaths: string[]
   ): ComponentYaml[] {
     return mcpsPaths.map(mcpPath => {
-      const fullPath = join(process.cwd(), configPath, mcpPath);
+      const fullPath = join(projectRoot, configPath, mcpPath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -174,11 +181,11 @@ export class StartTaskTool {
   static async execute(
     input: StartTaskToolInput
   ): Promise<StartTaskToolResponse> {
-    const { taskId, configPath } = input;
+    const { taskId, projectRoot, configPath } = input;
 
     try {
       // 1. Task 파일 읽기
-      const taskYaml = this.readTaskFile(configPath, taskId);
+      const taskYaml = this.readTaskFile(projectRoot, configPath, taskId);
 
       // 2. Task 상태 확인 - done 상태면 이미 완료되었다는 메시지 반환
       if (taskYaml.status === 'done') {
@@ -206,6 +213,7 @@ export class StartTaskTool {
       if (taskYaml.jobs.workflow) {
         try {
           workflowYaml = this.readWorkflowFile(
+            projectRoot,
             configPath,
             taskYaml.jobs.workflow
           );
@@ -220,7 +228,11 @@ export class StartTaskTool {
       let rulesYamls: ComponentYaml[] = [];
       if (taskYaml.jobs.rules && taskYaml.jobs.rules.length > 0) {
         try {
-          rulesYamls = this.readRulesFiles(configPath, taskYaml.jobs.rules);
+          rulesYamls = this.readRulesFiles(
+            projectRoot,
+            configPath,
+            taskYaml.jobs.rules
+          );
         } catch (error) {
           console.warn(
             `⚠️  Rules 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
@@ -232,7 +244,11 @@ export class StartTaskTool {
       let mcpsYamls: ComponentYaml[] = [];
       if (taskYaml.jobs.mcps && taskYaml.jobs.mcps.length > 0) {
         try {
-          mcpsYamls = this.readMcpsFiles(configPath, taskYaml.jobs.mcps);
+          mcpsYamls = this.readMcpsFiles(
+            projectRoot,
+            configPath,
+            taskYaml.jobs.mcps
+          );
         } catch (error) {
           console.warn(
             `⚠️  MCPs 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
