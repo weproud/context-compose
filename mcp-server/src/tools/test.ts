@@ -22,29 +22,50 @@ async function executeTest(
   try {
     logger.info(`${toolName} tool called with target: ${input.testTarget}`);
 
-    const { testTarget, projectRoot, dryRun, verbose } = input;
+    const { testTarget, projectRoot, dryRun, verbose, cleanup, branchName } =
+      input;
 
-    // 도구별 testTarget 형식 검증
-    if (toolName === 'test-action' && !testTarget.startsWith('actions/')) {
-      throw new Error(
-        'test-action tool requires testTarget to start with "actions/"'
-      );
-    }
-    if (toolName === 'test-notify' && !testTarget.startsWith('notify/')) {
-      throw new Error(
-        'test-notify tool requires testTarget to start with "notify/"'
-      );
+    // testTarget 형식 정규화
+    let normalizedTarget = testTarget;
+
+    if (toolName === 'test-action') {
+      // test-action의 경우: 단순한 이름이면 actions/ prefix 추가
+      if (!testTarget.includes('/')) {
+        normalizedTarget = `actions/${testTarget}`;
+      } else if (!testTarget.startsWith('actions/')) {
+        throw new Error(
+          'test-action tool requires testTarget to be in format: <action-name> or actions/<action-name>'
+        );
+      }
     }
 
-    // Create test runner with projectRoot
-    const testRunner = new TestRunner(projectRoot);
+    if (toolName === 'test-notify') {
+      // test-notify의 경우: 단순한 이름이면 notify/ prefix 추가
+      if (!testTarget.includes('/')) {
+        normalizedTarget = `notify/${testTarget}`;
+      } else if (!testTarget.startsWith('notify/')) {
+        throw new Error(
+          'test-notify tool requires testTarget to be in format: <notify-name> or notify/<notify-name>'
+        );
+      }
+    }
+
+    // Create test runner with projectRoot and options
+    const testRunnerOptions: { cleanup?: boolean; branchName?: string } = {};
+    if (cleanup !== undefined) testRunnerOptions.cleanup = cleanup;
+    if (branchName !== undefined) testRunnerOptions.branchName = branchName;
+
+    const testRunner = new TestRunner(projectRoot, testRunnerOptions);
 
     // Show test information
     const testInfo = {
-      target: testTarget,
+      originalTarget: testTarget,
+      normalizedTarget,
       projectRoot,
       dryRun,
       verbose,
+      cleanup,
+      branchName,
       timestamp: new Date().toISOString(),
     };
 
@@ -56,7 +77,7 @@ async function executeTest(
     if (dryRun) {
       const dryRunResponse = {
         success: true,
-        message: `🧪 Dry run for test target: ${testTarget}`,
+        message: `🧪 Dry run for test target: ${testTarget} (normalized: ${normalizedTarget})`,
         details: {
           ...testInfo,
           note: 'This was a dry run - no actual execution performed',
@@ -66,13 +87,14 @@ async function executeTest(
     }
 
     // Run actual test
-    const result = await testRunner.runTest(testTarget);
+    const result = await testRunner.runTest(normalizedTarget);
 
     // Format response
     const response = {
       success: result.success,
       message: result.message,
-      testTarget,
+      originalTarget: testTarget,
+      normalizedTarget,
       executionTime: `${result.executionTime}ms`,
       timestamp: new Date().toISOString(),
       details: result.details,
@@ -100,7 +122,7 @@ async function executeTest(
     }
 
     logger.info(
-      `Test completed: ${result.success ? 'SUCCESS' : 'FAILED'} for ${testTarget}`
+      `Test completed: ${result.success ? 'SUCCESS' : 'FAILED'} for ${testTarget} (normalized: ${normalizedTarget})`
     );
 
     return JSON.stringify(response);
@@ -126,7 +148,7 @@ export function registerTestActionTool(server: FastMCP): void {
   server.addTool({
     name: 'test-action',
     description:
-      'Test task-action actions in real environment (e.g., test-action actions/create-branch)',
+      'Test task-action actions in real environment (e.g., test-action create-branch or test-action actions/create-branch)',
     parameters: TestActionToolSchema,
     execute: async (input: TestActionToolInput) => {
       return executeTest(input, 'test-action');
@@ -143,7 +165,7 @@ export function registerTestNotifyTool(server: FastMCP): void {
   server.addTool({
     name: 'test-notify',
     description:
-      'Test task-action notifications in real environment (e.g., test-notify notify/slack-send-message)',
+      'Test task-action notifications in real environment (e.g., test-notify slack-send-message or test-notify notify/slack-send-message)',
     parameters: TestNotifyToolSchema,
     execute: async (input: TestNotifyToolInput) => {
       return executeTest(input, 'test-notify');

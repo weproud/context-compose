@@ -38,10 +38,67 @@ export interface NotifyConfig {
 export class TestRunner {
   private workingDir: string;
   private taskactionDir: string;
+  private assetsDir: string;
+  private cleanup: boolean;
+  private branchName: string | undefined;
 
-  constructor(workingDir: string = process.cwd()) {
+  constructor(
+    workingDir: string = process.cwd(),
+    options: { cleanup?: boolean; branchName?: string } = {}
+  ) {
     this.workingDir = workingDir;
     this.taskactionDir = join(workingDir, '.taskaction');
+    this.assetsDir = join(workingDir, 'assets');
+    this.cleanup = options.cleanup ?? true;
+    this.branchName = options.branchName;
+  }
+
+  /**
+   * 액션 파일 경로를 해결합니다
+   * 우선순위: assets/actions -> .taskaction/actions
+   */
+  private resolveActionPath(actionName: string): string | null {
+    // assets/actions 디렉토리에서 먼저 확인
+    const assetsPath = join(this.assetsDir, 'actions', `${actionName}.yaml`);
+    if (existsSync(assetsPath)) {
+      return assetsPath;
+    }
+
+    // .taskaction/actions 디렉토리에서 확인
+    const taskactionPath = join(
+      this.taskactionDir,
+      'actions',
+      `${actionName}.yaml`
+    );
+    if (existsSync(taskactionPath)) {
+      return taskactionPath;
+    }
+
+    return null;
+  }
+
+  /**
+   * 알림 파일 경로를 해결합니다
+   * 우선순위: assets/notify -> .taskaction/notify
+   */
+  private resolveNotifyPath(notifyName: string): string | null {
+    // assets/notify 디렉토리에서 먼저 확인
+    const assetsPath = join(this.assetsDir, 'notify', `${notifyName}.yaml`);
+    if (existsSync(assetsPath)) {
+      return assetsPath;
+    }
+
+    // .taskaction/notify 디렉토리에서 확인
+    const taskactionPath = join(
+      this.taskactionDir,
+      'notify',
+      `${notifyName}.yaml`
+    );
+    if (existsSync(taskactionPath)) {
+      return taskactionPath;
+    }
+
+    return null;
   }
 
   /**
@@ -108,16 +165,15 @@ export class TestRunner {
    * 액션을 테스트합니다
    */
   private async testAction(actionName: string): Promise<TestResult> {
-    const actionPath = join(
-      this.taskactionDir,
-      'actions',
-      `${actionName}.yaml`
-    );
+    logger.info(`Testing action: ${actionName}`);
 
-    if (!existsSync(actionPath)) {
+    // 액션 파일 경로 해결
+    const actionPath = this.resolveActionPath(actionName);
+
+    if (!actionPath) {
       return {
         success: false,
-        message: `Action file not found: ${actionPath}`,
+        message: `Action file not found: ${actionName}.yaml (searched in assets/actions and .taskaction/actions)`,
         executionTime: 0,
       };
     }
@@ -163,6 +219,26 @@ export class TestRunner {
     try {
       logger.info(`Testing notification: ${notifyName}`);
 
+      // 알림 파일 경로 해결 (YAML 파일이 있는지 확인)
+      const notifyPath = this.resolveNotifyPath(notifyName);
+
+      if (!notifyPath) {
+        return {
+          success: false,
+          message: `Notification file not found: ${notifyName}.yaml (searched in assets/notify and .taskaction/notify)`,
+          executionTime: 0,
+        };
+      }
+
+      // YAML 파일 로드하여 설정 확인
+      try {
+        const notifyContent = readFileSync(notifyPath, 'utf-8');
+        const notifyConfig: NotifyConfig = parse(notifyContent);
+        logger.info(`Testing notification: ${notifyConfig.name}`);
+      } catch (parseError) {
+        logger.warn(`Failed to parse notification config: ${parseError}`);
+      }
+
       // 알림 타입에 따른 실제 실행
       const result = await this.executeNotification(notifyName);
 
@@ -173,6 +249,7 @@ export class TestRunner {
           : `❌ Notification '${notifyName}' failed`,
         details: {
           notifyName,
+          configPath: notifyPath,
           output: result.output,
         },
         output: result.output,
@@ -240,24 +317,42 @@ export class TestRunner {
     error?: string;
   }> {
     try {
-      const branchName = `test-branch-${Date.now()}`;
+      // 사용자 지정 브랜치 이름 또는 자동 생성
+      const branchName = this.branchName || `test-branch-${Date.now()}`;
+
+      // 브랜치 이름 유효성 검사
+      if (!/^[a-zA-Z0-9/_-]+$/.test(branchName)) {
+        return {
+          success: false,
+          error: `Invalid branch name: ${branchName}. Use only alphanumeric characters, hyphens, underscores, and forward slashes.`,
+        };
+      }
+
       const { stdout } = await execAsync(`git checkout -b ${branchName}`, {
         cwd: this.workingDir,
       });
 
-      // 테스트 후 원래 브랜치로 돌아가기
-      try {
-        await execAsync('git checkout -', { cwd: this.workingDir });
-        await execAsync(`git branch -D ${branchName}`, {
-          cwd: this.workingDir,
-        });
-      } catch (cleanupError) {
-        logger.warn(`Failed to cleanup test branch: ${cleanupError}`);
+      let outputMessage = `✅ Created branch: ${branchName}\n${stdout}`;
+
+      // cleanup 옵션에 따라 정리 여부 결정
+      if (this.cleanup) {
+        try {
+          await execAsync('git checkout -', { cwd: this.workingDir });
+          await execAsync(`git branch -D ${branchName}`, {
+            cwd: this.workingDir,
+          });
+          outputMessage = `🧪 Created and cleaned up test branch: ${branchName}\n${stdout}`;
+        } catch (cleanupError) {
+          logger.warn(`Failed to cleanup test branch: ${cleanupError}`);
+          outputMessage += `\n⚠️ Warning: Failed to cleanup branch: ${cleanupError}`;
+        }
+      } else {
+        outputMessage += `\n📌 Branch '${branchName}' has been created and is ready for use.`;
       }
 
       return {
         success: true,
-        output: `Created and cleaned up test branch: ${branchName}\n${stdout}`,
+        output: outputMessage,
       };
     } catch (error) {
       return {

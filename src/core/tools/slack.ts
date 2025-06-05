@@ -25,8 +25,8 @@ export class SlackTool {
     const { message, projectRoot } = input;
 
     try {
-      // .env 파일에서 환경변수 로드 (projectRoot 기준)
-      EnvLoader.load(projectRoot);
+      // .env 파일에서 환경변수 로드
+      EnvLoader.load();
 
       // Webhook URL 환경변수에서 가져오기
       const webhookUrl = EnvLoader.get('SLACK_WEBHOOK_URL');

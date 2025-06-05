@@ -19,6 +19,19 @@ const BaseTestToolSchema = z.object({
     .optional()
     .default(false)
     .describe('Enable verbose output'),
+  cleanup: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe(
+      'Whether to cleanup test artifacts after execution (default: true). Set to false to keep created branches/files.'
+    ),
+  branchName: z
+    .string()
+    .optional()
+    .describe(
+      'Custom branch name for create-branch action. If not provided, auto-generated name will be used.'
+    ),
 });
 
 /**
@@ -29,7 +42,7 @@ export const TestActionToolSchema = BaseTestToolSchema.extend({
   testTarget: z
     .string()
     .describe(
-      'Test target in format: actions/<action-name> (e.g., actions/create-branch, actions/git-commit)'
+      'Test target in format: <action-name> or actions/<action-name> (e.g., create-branch, actions/create-branch, git-commit). When using simple name, searches in assets/actions first, then .taskaction/actions'
     ),
 });
 
@@ -41,7 +54,7 @@ export const TestNotifyToolSchema = BaseTestToolSchema.extend({
   testTarget: z
     .string()
     .describe(
-      'Test target in format: notify/<notify-name> (e.g., notify/slack-send-message, notify/discord-send-message)'
+      'Test target in format: <notify-name> or notify/<notify-name> (e.g., slack-send-message, notify/slack-send-message, discord-send-message). When using simple name, searches in assets/notify first, then .taskaction/notify'
     ),
 });
 
