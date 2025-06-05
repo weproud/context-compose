@@ -8,7 +8,7 @@ import type {
 import { TaskStatusToolSchema } from '../../schemas/task-status.js';
 
 /**
- * Task YAML 파일 구조 타입
+ * Task YAML file structure type
  */
 interface TaskYaml {
   version: number;

@@ -16,4 +16,4 @@ jobs:
     - mcps/context7.yaml
     - mcps/playwright.yaml
 prompt: |
-  task-action start task가 remote agent에서 제대로 동작하는지 확인
+  Verify that task-action start task works properly in remote agent

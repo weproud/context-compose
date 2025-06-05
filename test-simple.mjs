@@ -1,4 +1,4 @@
-// 간단한 테스트 - 파일 읽기 확인
+// Simple test - file reading verification
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { parse as parseYaml } from 'yaml';
@@ -16,15 +16,15 @@ console.log('Task file exists:', existsSync(taskFilePath));
 if (existsSync(taskFilePath)) {
   const taskContent = readFileSync(taskFilePath, 'utf8');
   const taskYaml = parseYaml(taskContent);
-  
+
   console.log('\n📄 Task YAML:');
   console.log('Name:', taskYaml.name);
   console.log('Jobs sections:', Object.keys(taskYaml.jobs));
-  
-  // 각 섹션의 파일들 확인
+
+  // Check files in each section
   for (const [sectionName, sectionValue] of Object.entries(taskYaml.jobs)) {
     console.log(`\n📁 ${sectionName}:`, sectionValue);
-    
+
     if (typeof sectionValue === 'string') {
       const filePath = join(projectRoot, configPath, sectionValue);
       console.log(`  File exists: ${existsSync(filePath)}`);

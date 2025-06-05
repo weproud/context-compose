@@ -127,7 +127,7 @@ export class StartTaskTool {
   }
 
   /**
-   * 컴포넌트 파일들 읽기 (범용)
+   * Read component files (generic)
    */
   static readComponentFiles(
     projectRoot: string,
@@ -141,7 +141,7 @@ export class StartTaskTool {
   }
 
   /**
-   * 단일 컴포넌트 파일 읽기 (범용)
+   * Read single component file (generic)
    */
   static readComponentFile(
     projectRoot: string,
@@ -153,7 +153,7 @@ export class StartTaskTool {
   }
 
   /**
-   * Jobs 섹션 처리 - 동적으로 모든 섹션을 처리
+   * Process Jobs section - dynamically handle all sections
    */
   static processJobsSection(
     projectRoot: string,
@@ -195,7 +195,7 @@ export class StartTaskTool {
   }
 
   /**
-   * 모든 prompt들을 조합 (동적 섹션 지원)
+   * Combine all prompts (with dynamic section support)
    */
   static combinePrompts(
     taskYaml: TaskYaml,
@@ -204,7 +204,7 @@ export class StartTaskTool {
   ): string {
     const sections: string[] = [];
 
-    // Task 기본 정보
+    // Task basic information
     sections.push(`# Task: ${taskYaml.name}`);
     sections.push(`**Description:** ${taskYaml.description}`);
     sections.push(`**ID:** ${taskYaml.id}`);
@@ -214,7 +214,7 @@ export class StartTaskTool {
       sections.push(`\n## Task Prompt\n${taskYaml.prompt}`);
     }
 
-    // 동적으로 모든 섹션 처리
+    // Process all sections dynamically
     for (const [sectionName, components] of Object.entries(processedSections)) {
       if (components.length === 0) continue;
 
@@ -283,25 +283,25 @@ export class StartTaskTool {
       // 1. Task 파일 읽기
       const taskYaml = this.readTaskFile(projectRoot, configPath, taskId);
 
-      // 2. Task 상태 확인 - done 상태면 이미 완료되었다는 메시지 반환
+      // 2. Check task status - return completion message if already done
       if (taskYaml.status === 'done') {
         return {
           success: true,
-          message: `✅ Task '${taskId}'는 이미 완료되었습니다. (상태: ${taskYaml.status})`,
+          message: `✅ Task '${taskId}' is already completed. (Status: ${taskYaml.status})`,
           taskId,
-          combinedPrompt: `# Task: ${taskYaml.name}\n**Description:** ${taskYaml.description}\n**ID:** ${taskYaml.id}\n**Status:** ${taskYaml.status}\n\n이 태스크는 이미 완료되었습니다.`,
+          combinedPrompt: `# Task: ${taskYaml.name}\n**Description:** ${taskYaml.description}\n**ID:** ${taskYaml.id}\n**Status:** ${taskYaml.status}\n\nThis task is already completed.`,
           files: taskYaml.jobs,
         };
       }
 
-      // 3. 모든 Jobs 섹션 동적 처리
+      // 3. Process all Jobs sections dynamically
       const processedSections = this.processJobsSection(
         projectRoot,
         configPath,
         taskYaml.jobs
       );
 
-      // 4. 모든 prompt들 조합
+      // 4. Combine all prompts
       const combinedPrompt = this.combinePrompts(
         taskYaml,
         processedSections,

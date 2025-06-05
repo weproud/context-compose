@@ -110,7 +110,7 @@ export class TestRunner {
     try {
       logger.info(`Starting test for: ${testTarget}`);
 
-      // 테스트 대상 파싱 (actions/create-branch 또는 notify/slack-send-message)
+      // Parse test target (actions/create-branch or notify/slack-send-message)
       const [type, name] = testTarget.split('/');
 
       if (!type || !name) {
@@ -185,7 +185,7 @@ export class TestRunner {
 
       logger.info(`Testing action: ${actionConfig.name}`);
 
-      // 액션 타입에 따른 실제 실행
+      // Execute action based on action type
       const result = await this.executeAction(actionName, actionConfig);
 
       return {
@@ -200,7 +200,7 @@ export class TestRunner {
         },
         output: result.output,
         error: result.error,
-        executionTime: 0, // 상위에서 설정됨
+        executionTime: 0, // Set by parent
       };
     } catch (error) {
       return {

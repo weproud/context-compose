@@ -1,39 +1,39 @@
 /**
- * 모든 MCP 도구 스키마를 export하는 중앙 집중식 파일
+ * Centralized file that exports all MCP tool schemas
  */
 
-// Init 도구 스키마
+// Init tool schema
 export {
   InitToolSchema,
   type InitToolInput,
   type InitToolResponse,
 } from './init.js';
 
-// Slack 도구 스키마
+// Slack tool schema
 export {
   SlackToolSchema,
   type SlackToolInput,
   type SlackToolResponse,
 } from './slack.js';
 
-// Add Task 도구 스키마
+// Add Task tool schema
 export {
   AddTaskToolSchema,
   type AddTaskToolInput,
   type AddTaskToolResponse,
 } from './add-task.js';
 
-// Discord 도구 스키마
+// Discord tool schema
 export {
   DiscordToolSchema,
   type DiscordToolInput,
   type DiscordToolResponse,
 } from './discord.js';
 
-// Start Task 도구 스키마
+// Start Task tool schema
 export { StartTaskToolSchema, type StartTaskToolInput } from './start-task.js';
 
-// Validate Task 도구 스키마
+// Validate Task tool schema
 export {
   ValidateTaskToolSchema,
   type ValidateTaskToolInput,

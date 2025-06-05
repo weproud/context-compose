@@ -23,7 +23,7 @@ class ActionTestSuite {
   }
 
   /**
-   * 모든 액션 파일을 찾아서 반환
+   * Find and return all action files
    */
   private findActionFiles(): string[] {
     try {
@@ -38,18 +38,18 @@ class ActionTestSuite {
   }
 
   /**
-   * 단일 액션 테스트 실행
+   * Execute single action test
    */
   async testSingleAction(actionPath: string, options: TestOptions) {
     console.log(`\n🧪 Testing action: ${actionPath}`);
     console.log(`📋 Mode: ${options.mode}`);
-    
+
     const startTime = Date.now();
-    
+
     try {
       const result = await this.testRunner.runAction(actionPath, options.mode);
       const duration = Date.now() - startTime;
-      
+
       if (result.success) {
         console.log(`✅ PASS (${duration}ms)`);
         if (options.verbose && result.output) {
@@ -61,16 +61,20 @@ class ActionTestSuite {
           console.log(`🚨 Error: ${result.error}`);
         }
       }
-      
+
       if (options.verbose && result.validationResults.length > 0) {
         console.log(`📊 Validation Results:`);
         result.validationResults.forEach(validation => {
-          const icon = validation.type === 'success' ? '✅' : 
-                      validation.type === 'warning' ? '⚠️' : '❌';
+          const icon =
+            validation.type === 'success'
+              ? '✅'
+              : validation.type === 'warning'
+                ? '⚠️'
+                : '❌';
           console.log(`   ${icon} ${validation.message}`);
         });
       }
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -85,125 +89,133 @@ class ActionTestSuite {
   }
 
   /**
-   * 모든 액션 테스트 실행
+   * Execute all action tests
    */
   async testAllActions(options: TestOptions) {
     const actionFiles = this.findActionFiles();
-    
+
     if (actionFiles.length === 0) {
       console.log('❌ No action files found in .taskaction/actions directory');
       return;
     }
-    
+
     console.log(`🚀 Running tests for ${actionFiles.length} actions`);
     console.log(`📋 Mode: ${options.mode}`);
     console.log(`⏱️  Timeout: ${options.timeout}ms`);
-    
+
     const results = new Map();
     let passCount = 0;
     let failCount = 0;
-    
+
     for (const actionFile of actionFiles) {
       const result = await this.testSingleAction(actionFile, options);
       results.set(actionFile, result);
-      
+
       if (result.success) {
         passCount++;
       } else {
         failCount++;
       }
     }
-    
-    // 결과 요약
+
+    // Test summary
     console.log(`\n📊 Test Summary:`);
     console.log(`✅ Passed: ${passCount}`);
     console.log(`❌ Failed: ${failCount}`);
-    console.log(`📈 Success Rate: ${((passCount / (passCount + failCount)) * 100).toFixed(1)}%`);
-    
-    // 실패한 테스트 상세 정보
+    console.log(
+      `📈 Success Rate: ${((passCount / (passCount + failCount)) * 100).toFixed(1)}%`
+    );
+
+    // Failed test details
     if (failCount > 0) {
       console.log(`\n🚨 Failed Tests:`);
       for (const [actionFile, result] of results) {
         if (!result.success) {
-          console.log(`   ❌ ${actionFile}: ${result.error || 'Unknown error'}`);
+          console.log(
+            `   ❌ ${actionFile}: ${result.error || 'Unknown error'}`
+          );
         }
       }
     }
-    
-    // 출력 형식에 따른 결과 저장
+
+    // Save results based on output format
     await this.saveResults(results, options);
-    
+
     return results;
   }
 
   /**
-   * 특정 액션 타입별 테스트 실행
+   * Execute tests for specific action type
    */
   async testActionsByType(actionType: string, options: TestOptions) {
     const actionFiles = this.findActionFiles();
-    const filteredFiles = actionFiles.filter(file => 
+    const filteredFiles = actionFiles.filter(file =>
       file.toLowerCase().includes(actionType.toLowerCase())
     );
-    
+
     if (filteredFiles.length === 0) {
       console.log(`❌ No actions found for type: ${actionType}`);
       return;
     }
-    
-    console.log(`🎯 Testing ${filteredFiles.length} actions of type: ${actionType}`);
-    
+
+    console.log(
+      `🎯 Testing ${filteredFiles.length} actions of type: ${actionType}`
+    );
+
     const results = new Map();
     for (const actionFile of filteredFiles) {
       const result = await this.testSingleAction(actionFile, options);
       results.set(actionFile, result);
     }
-    
+
     return results;
   }
 
   /**
-   * 테스트 결과를 지정된 형식으로 저장
+   * Save test results in specified format
    */
   private async saveResults(results: Map<string, any>, options: TestOptions) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    
+
     switch (options.output) {
       case 'json':
         const jsonResults = Object.fromEntries(results);
         const jsonOutput = JSON.stringify(jsonResults, null, 2);
         const jsonFile = `test-results-${timestamp}.json`;
-        
-        await import('fs').then(fs => 
-          fs.writeFileSync(jsonFile, jsonOutput)
-        );
+
+        await import('fs').then(fs => fs.writeFileSync(jsonFile, jsonOutput));
         console.log(`📄 JSON results saved to: ${jsonFile}`);
         break;
-        
+
       case 'html':
         const htmlContent = this.generateHtmlReport(results);
         const htmlFile = `test-results-${timestamp}.html`;
-        
-        await import('fs').then(fs => 
-          fs.writeFileSync(htmlFile, htmlContent)
-        );
+
+        await import('fs').then(fs => fs.writeFileSync(htmlFile, htmlContent));
         console.log(`🌐 HTML report saved to: ${htmlFile}`);
         break;
-        
+
       case 'console':
       default:
-        // 콘솔 출력은 이미 완료됨
+        // Console output already completed
         break;
     }
   }
 
   /**
-   * HTML 리포트 생성
+   * Generate HTML report
    */
   private generateHtmlReport(results: Map<string, any>): string {
-    const passCount = Array.from(results.values()).filter(r => r.success).length;
-    const failCount = Array.from(results.values()).filter(r => !r.success).length;
-    const successRate = ((passCount / (passCount + failCount)) * 100).toFixed(1);
-    
+    const passCount = Array.from(results.values()).filter(
+      r => r.success
+    ).length;
+    const failCount = Array.from(results.values()).filter(
+      r => !r.success
+    ).length;
+    const successRate = ((passCount / (passCount + failCount)) * 100).toFixed(
+      1
+    );
+
     return `
 <!DOCTYPE html>
 <html>
@@ -231,7 +243,9 @@ class ActionTestSuite {
     </div>
     
     <h2>Test Results</h2>
-    ${Array.from(results.entries()).map(([actionFile, result]) => `
+    ${Array.from(results.entries())
+      .map(
+        ([actionFile, result]) => `
         <div class="test-result ${result.success ? 'pass' : 'fail'}">
             <h3>${actionFile.split('/').pop()}</h3>
             <p><strong>Status:</strong> ${result.success ? '✅ PASS' : '❌ FAIL'}</p>
@@ -239,13 +253,15 @@ class ActionTestSuite {
             ${result.error ? `<p><strong>Error:</strong> ${result.error}</p>` : ''}
             ${result.output ? `<div class="details"><strong>Output:</strong><br>${result.output}</div>` : ''}
         </div>
-    `).join('')}
+    `
+      )
+      .join('')}
 </body>
 </html>`;
   }
 }
 
-// CLI 설정
+// CLI configuration
 program
   .name('test-actions')
   .description('Test individual task-action YAML files')
@@ -256,7 +272,11 @@ program
   .description('Test all actions')
   .option('-m, --mode <mode>', 'Test mode: mock, integration, e2e', 'mock')
   .option('-v, --verbose', 'Verbose output', false)
-  .option('-o, --output <format>', 'Output format: console, json, html', 'console')
+  .option(
+    '-o, --output <format>',
+    'Output format: console, json, html',
+    'console'
+  )
   .option('-t, --timeout <ms>', 'Timeout in milliseconds', '30000')
   .action(async (options: TestOptions) => {
     const testSuite = new ActionTestSuite();
@@ -268,11 +288,19 @@ program
   .description('Test a single action')
   .option('-m, --mode <mode>', 'Test mode: mock, integration, e2e', 'mock')
   .option('-v, --verbose', 'Verbose output', false)
-  .option('-o, --output <format>', 'Output format: console, json, html', 'console')
+  .option(
+    '-o, --output <format>',
+    'Output format: console, json, html',
+    'console'
+  )
   .option('-t, --timeout <ms>', 'Timeout in milliseconds', '30000')
   .action(async (action: string, options: TestOptions) => {
     const testSuite = new ActionTestSuite();
-    const actionPath = join(process.cwd(), '.taskaction/actions', `${action}.yaml`);
+    const actionPath = join(
+      process.cwd(),
+      '.taskaction/actions',
+      `${action}.yaml`
+    );
     await testSuite.testSingleAction(actionPath, options);
   });
 
@@ -281,14 +309,18 @@ program
   .description('Test actions by type (e.g., git, slack, discord)')
   .option('-m, --mode <mode>', 'Test mode: mock, integration, e2e', 'mock')
   .option('-v, --verbose', 'Verbose output', false)
-  .option('-o, --output <format>', 'Output format: console, json, html', 'console')
+  .option(
+    '-o, --output <format>',
+    'Output format: console, json, html',
+    'console'
+  )
   .option('-t, --timeout <ms>', 'Timeout in milliseconds', '30000')
   .action(async (actionType: string, options: TestOptions) => {
     const testSuite = new ActionTestSuite();
     await testSuite.testActionsByType(actionType, options);
   });
 
-// CLI 실행
+// CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   program.parse();
 }

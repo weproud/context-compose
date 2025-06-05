@@ -4,7 +4,10 @@ import { join } from 'path';
 
 describe('Send Message Slack Action', () => {
   let testRunner: ActionTestRunner;
-  const actionPath = join(process.cwd(), '.taskaction/actions/send-message-slack.yaml');
+  const actionPath = join(
+    process.cwd(),
+    '.taskaction/actions/send-message-slack.yaml'
+  );
 
   beforeEach(() => {
     testRunner = new ActionTestRunner();
@@ -13,7 +16,7 @@ describe('Send Message Slack Action', () => {
   describe('Action Loading', () => {
     it('should load send-message-slack action successfully', async () => {
       const action = await testRunner.loadAction(actionPath);
-      
+
       expect(action.name).toBe('Send Message to Slack');
       expect(action.kind).toBe('action');
       expect(action.description).toContain('Slack');
@@ -31,8 +34,12 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       expect(result.success).toBe(true);
       expect(result.output).toBeDefined();
     });
@@ -49,14 +56,18 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       expect(result.success).toBe(true);
     });
 
     it('should validate message types', async () => {
       const messageTypes = ['success', 'warning', 'error', 'info'];
-      
+
       for (const messageType of messageTypes) {
         const customContext = {
           environment: {
@@ -66,8 +77,12 @@ describe('Send Message Slack Action', () => {
           },
         };
 
-        const result = await testRunner.runAction(actionPath, 'mock', customContext);
-        
+        const result = await testRunner.runAction(
+          actionPath,
+          'mock',
+          customContext
+        );
+
         expect(result.success).toBe(true);
       }
     });
@@ -87,8 +102,12 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       expect(result.success).toBe(true);
     });
   });
@@ -102,8 +121,12 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       // 실제 구현에서는 webhook URL 검증 로직 필요
       // Mock에서는 기본값을 사용하므로 성공할 수 있음
     });
@@ -124,8 +147,12 @@ describe('Send Message Slack Action', () => {
           },
         };
 
-        const result = await testRunner.runAction(actionPath, 'mock', customContext);
-        
+        const result = await testRunner.runAction(
+          actionPath,
+          'mock',
+          customContext
+        );
+
         // 실제 구현에서는 URL 검증 로직 추가 필요
       }
     });
@@ -140,8 +167,12 @@ describe('Send Message Slack Action', () => {
       };
 
       // Mock 서비스에서 네트워크 에러 시뮬레이션
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       // 실제 구현에서는 네트워크 에러 처리 테스트
     });
 
@@ -154,8 +185,12 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       // 실제 구현에서는 rate limiting 처리 테스트
     });
   });
@@ -165,7 +200,7 @@ describe('Send Message Slack Action', () => {
       const testCases = [
         { message: '', shouldPass: false },
         { message: 'Valid message', shouldPass: true },
-        { message: 'A'.repeat(4000), shouldPass: false }, // 너무 긴 메시지
+        { message: 'A'.repeat(4000), shouldPass: false }, // Message too long
         { message: 'Message with @channel', shouldPass: true },
         { message: 'Message with <@U123456>', shouldPass: true },
       ];
@@ -178,9 +213,13 @@ describe('Send Message Slack Action', () => {
           },
         };
 
-        const result = await testRunner.runAction(actionPath, 'mock', customContext);
-        
-        // 실제 구현에서는 메시지 검증 로직 추가 필요
+        const result = await testRunner.runAction(
+          actionPath,
+          'mock',
+          customContext
+        );
+
+        // Message validation logic needs to be added in actual implementation
       }
     });
 
@@ -193,8 +232,12 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
       expect(result.success).toBe(true);
       // 실제 구현에서는 JSON 구조 검증
     });
@@ -203,13 +246,13 @@ describe('Send Message Slack Action', () => {
   describe('Integration Tests', () => {
     it('should integrate with MCP server', async () => {
       const result = await testRunner.runAction(actionPath, 'integration');
-      
+
       expect(result).toBeDefined();
       expect(result.executionTime).toBeGreaterThan(0);
     });
 
     it('should work with real Slack webhook (E2E)', async () => {
-      // 실제 Slack webhook이 설정된 경우에만 실행
+      // Execute only when real Slack webhook is configured
       if (process.env.REAL_SLACK_WEBHOOK_URL) {
         const customContext = {
           environment: {
@@ -219,8 +262,12 @@ describe('Send Message Slack Action', () => {
           },
         };
 
-        const result = await testRunner.runAction(actionPath, 'e2e', customContext);
-        
+        const result = await testRunner.runAction(
+          actionPath,
+          'e2e',
+          customContext
+        );
+
         expect(result.success).toBe(true);
       }
     });
@@ -229,24 +276,26 @@ describe('Send Message Slack Action', () => {
   describe('Performance Tests', () => {
     it('should complete message sending within timeout', async () => {
       const result = await testRunner.runAction(actionPath, 'mock');
-      
+
       expect(result.executionTime).toBeLessThan(10000); // 10초 이내
     });
 
     it('should handle multiple concurrent messages', async () => {
-      const promises = Array(3).fill(null).map((_, index) => {
-        const customContext = {
-          environment: {
-            SLACK_WEBHOOK_URL: 'https://hooks.slack.com/test/webhook',
-            MESSAGE: `Concurrent test message ${index + 1}`,
-          },
-        };
-        
-        return testRunner.runAction(actionPath, 'mock', customContext);
-      });
+      const promises = Array(3)
+        .fill(null)
+        .map((_, index) => {
+          const customContext = {
+            environment: {
+              SLACK_WEBHOOK_URL: 'https://hooks.slack.com/test/webhook',
+              MESSAGE: `Concurrent test message ${index + 1}`,
+            },
+          };
+
+          return testRunner.runAction(actionPath, 'mock', customContext);
+        });
 
       const results = await Promise.all(promises);
-      
+
       results.forEach(result => {
         expect(result.success).toBe(true);
       });
@@ -262,9 +311,13 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
-      // 로그나 출력에 webhook URL이 노출되지 않는지 확인
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
+      // Verify that webhook URL is not exposed in logs or output
       expect(result.output).not.toContain('secret');
     });
 
@@ -276,9 +329,13 @@ describe('Send Message Slack Action', () => {
         },
       };
 
-      const result = await testRunner.runAction(actionPath, 'mock', customContext);
-      
-      // 실제 구현에서는 XSS 방지 로직 테스트
+      const result = await testRunner.runAction(
+        actionPath,
+        'mock',
+        customContext
+      );
+
+      // Test XSS prevention logic in actual implementation
       expect(result.success).toBe(true);
     });
   });

@@ -5,12 +5,12 @@ import { fileURLToPath } from 'url';
 import { InitToolSchema, type InitToolResponse } from '../../schemas/index.js';
 
 /**
- * 공통 Init 비즈니스 로직
- * CLI와 MCP 서버에서 모두 사용할 수 있는 순수 함수
+ * Common Init business logic
+ * Pure functions that can be used by both CLI and MCP server
  */
 export class InitTool {
   /**
-   * 파일이 존재하는지 확인
+   * Check if file exists
    */
   private static async fileExists(filePath: string): Promise<boolean> {
     try {
@@ -22,7 +22,7 @@ export class InitTool {
   }
 
   /**
-   * 현재 날짜시간을 yyyyMMddHHmmss 형식으로 반환
+   * Return current date and time in yyyyMMddHHmmss format
    */
   private static getCurrentTimestamp(): string {
     const now = new Date();
@@ -37,7 +37,7 @@ export class InitTool {
   }
 
   /**
-   * 기존 디렉토리를 백업
+   * Backup existing directory
    */
   private static async backupExistingDirectory(
     configDir: string
@@ -50,31 +50,31 @@ export class InitTool {
   }
 
   /**
-   * assets 디렉토리 경로 찾기
+   * Find assets directory path
    */
   private static async findAssetsDirectory(): Promise<string | null> {
-    // MCP 서버가 다른 프로젝트에서 호출될 때를 고려하여
-    // task-action 패키지의 assets 디렉토리를 찾습니다
+    // Consider when MCP server is called from other projects
+    // Find the assets directory of the task-action package
 
-    // 1. 현재 파일의 위치에서 시작하여 task-action 프로젝트의 assets 디렉토리를 찾습니다
+    // 1. Start from current file location and find task-action project's assets directory
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
 
-    // task-action 프로젝트 루트까지 올라가면서 assets 디렉토리를 찾습니다
+    // Go up to task-action project root while looking for assets directory
     let currentDir = __dirname;
     for (let i = 0; i < 10; i++) {
-      // 최대 10단계까지만 올라갑니다
+      // Go up maximum 10 levels
       const assetsPath = join(currentDir, 'assets');
       if (await this.fileExists(assetsPath)) {
         return assetsPath;
       }
       const parentDir = dirname(currentDir);
-      if (parentDir === currentDir) break; // 루트 디렉토리에 도달
+      if (parentDir === currentDir) break; // Reached root directory
       currentDir = parentDir;
     }
 
-    // 2. node_modules에서 task-action 패키지의 assets 디렉토리를 찾습니다
-    // (다른 프로젝트에서 task-action을 npm 패키지로 설치한 경우)
+    // 2. Find task-action package's assets directory in node_modules
+    // (when task-action is installed as npm package in other projects)
     try {
       const nodeModulesPath = join(
         process.cwd(),
@@ -86,12 +86,12 @@ export class InitTool {
         return nodeModulesPath;
       }
     } catch (error) {
-      // node_modules에서 찾지 못한 경우 무시
+      // Ignore if not found in node_modules
     }
 
-    // 3. 전역 node_modules에서 찾기 시도
+    // 3. Try to find in global node_modules
     try {
-      // require.resolve를 사용하여 task-action 패키지 위치 찾기
+      // Use require.resolve to find task-action package location
       const taskActionPath = require.resolve('task-action/package.json');
       const taskActionRoot = dirname(taskActionPath);
       const globalAssetsPath = join(taskActionRoot, 'assets');
@@ -99,14 +99,14 @@ export class InitTool {
         return globalAssetsPath;
       }
     } catch (error) {
-      // require.resolve 실패 시 무시
+      // Ignore if require.resolve fails
     }
 
     return null;
   }
 
   /**
-   * 디렉토리를 재귀적으로 복사
+   * Copy directory recursively
    */
   private static async copyDirectory(
     src: string,
@@ -115,11 +115,11 @@ export class InitTool {
     const copiedFiles: string[] = [];
 
     try {
-      // 대상 디렉토리 생성
+      // Create destination directory
       await mkdir(dest, { recursive: true });
       copiedFiles.push(dest);
 
-      // 소스 디렉토리의 모든 항목 읽기
+      // Read all entries in source directory
       const entries = await readdir(src);
 
       for (const entry of entries) {
@@ -129,18 +129,18 @@ export class InitTool {
         const stats = await stat(srcPath);
 
         if (stats.isDirectory()) {
-          // 하위 디렉토리 재귀 복사
+          // Recursively copy subdirectory
           const subFiles = await this.copyDirectory(srcPath, destPath);
           copiedFiles.push(...subFiles);
         } else {
-          // 파일 복사
+          // Copy file
           await copyFile(srcPath, destPath);
           copiedFiles.push(destPath);
         }
       }
     } catch (error) {
       throw new Error(
-        `디렉토리 복사 실패: ${error instanceof Error ? error.message : String(error)}`
+        `Directory copy failed: ${error instanceof Error ? error.message : String(error)}`
       );
     }
 
@@ -148,7 +148,7 @@ export class InitTool {
   }
 
   /**
-   * Task Action 프로젝트 초기화 핵심 로직
+   * Task Action project initialization core logic
    */
   static async execute(projectRoot?: string): Promise<InitToolResponse> {
     const createdFiles: string[] = [];
@@ -156,22 +156,22 @@ export class InitTool {
     let backupPath: string | null = null;
 
     try {
-      // 대상 디렉토리 결정 (매개변수로 전달되거나 현재 작업 디렉토리)
+      // Determine target directory (passed as parameter or current working directory)
       let baseDir: string;
       if (projectRoot) {
         baseDir = projectRoot;
-        console.log(`[DEBUG] 사용자 지정 projectRoot: "${baseDir}"`);
+        console.log(`[DEBUG] User-specified projectRoot: "${baseDir}"`);
       } else {
         baseDir = process.cwd();
         console.log(`[DEBUG] process.cwd(): "${baseDir}"`);
 
-        // process.cwd()가 빈 문자열이거나 유효하지 않은 경우 처리
+        // Handle case when process.cwd() is empty string or invalid
         if (!baseDir || baseDir === '/') {
           throw new Error(
-            'process.cwd()가 유효하지 않습니다. ' +
-              'MCP 서버가 올바른 작업 디렉토리에서 실행되고 있거나 ' +
-              'projectRoot 매개변수를 명시적으로 제공해주세요. ' +
-              `현재 값: "${baseDir}"`
+            'process.cwd() is invalid. ' +
+              'Make sure MCP server is running in correct working directory or ' +
+              'explicitly provide projectRoot parameter. ' +
+              `Current value: "${baseDir}"`
           );
         }
       }
@@ -179,16 +179,16 @@ export class InitTool {
       const configDir = join(baseDir, '.taskaction');
       console.log(`[DEBUG] configDir: "${configDir}"`);
 
-      // assets 디렉토리 찾기
+      // Find assets directory
       const assetsDir = await this.findAssetsDirectory();
       if (!assetsDir) {
         throw new Error(
-          'task-action의 assets 디렉토리를 찾을 수 없습니다. ' +
-            'task-action이 올바르게 설치되었는지 확인해주세요. ' +
-            '다음 위치들을 확인했습니다:\n' +
-            '1. 현재 프로젝트의 assets 디렉토리\n' +
+          'Cannot find task-action assets directory. ' +
+            'Please verify that task-action is properly installed. ' +
+            'Checked the following locations:\n' +
+            '1. Current project assets directory\n' +
             '2. node_modules/task-action/assets\n' +
-            '3. 전역 설치된 task-action 패키지의 assets 디렉토리'
+            '3. Globally installed task-action package assets directory'
         );
       }
 
@@ -221,7 +221,7 @@ export class InitTool {
         error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        message: `Task Action 프로젝트 초기화 실패: ${errorMessage}`,
+        message: `Task Action project initialization failed: ${errorMessage}`,
         createdFiles,
         skippedFiles,
       };
@@ -229,7 +229,7 @@ export class InitTool {
   }
 
   /**
-   * 성공 메시지 생성
+   * Generate success message
    */
   private static generateSuccessMessage(
     createdFiles: string[],
@@ -239,25 +239,27 @@ export class InitTool {
     const messages: string[] = [];
 
     if (createdFiles.length > 0) {
-      messages.push(`✅ Task Action 프로젝트가 성공적으로 초기화되었습니다!`);
-      // messages.push(`assets 디렉토리가 .taskaction으로 복사되었습니다.`);
-      // messages.push(`생성된 파일/디렉토리: ${createdFiles.length}개`);
-      // // 너무 많은 파일 목록을 표시하지 않도록 제한
+      messages.push(
+        `✅ Task Action project has been successfully initialized!`
+      );
+      // messages.push(`assets directory has been copied to .taskaction.`);
+      // messages.push(`Created files/directories: ${createdFiles.length}`);
+      // // Limit display to avoid showing too many files
       // const displayFiles = createdFiles.slice(0, 10);
       // displayFiles.forEach(file => {
       //   messages.push(`  - ${file}`);
       // });
       // if (createdFiles.length > 10) {
-      //   messages.push(`  ... 그리고 ${createdFiles.length - 10}개 더`);
+      //   messages.push(`  ... and ${createdFiles.length - 10} more`);
       // }
     }
 
     if (backupPath) {
-      messages.push(`📦 기존 디렉토리가 백업되었습니다: ${backupPath}`);
+      messages.push(`📦 Existing directory has been backed up: ${backupPath}`);
     }
 
     if (skippedFiles.length > 0 && !backupPath) {
-      messages.push(`⚠️  이미 존재하는 디렉토리: ${skippedFiles.length}개`);
+      messages.push(`⚠️  Already existing directories: ${skippedFiles.length}`);
       skippedFiles.forEach(file => {
         messages.push(`  - ${file}`);
       });
@@ -267,18 +269,18 @@ export class InitTool {
   }
 
   /**
-   * 입력 유효성 검사 및 실행
+   * Input validation and execution
    */
   static async executeWithValidation(args: unknown): Promise<InitToolResponse> {
-    // Zod 스키마로 입력 검증
+    // Validate input with Zod schema
     const validatedArgs = InitToolSchema.parse(args);
 
-    // 비즈니스 로직 실행
+    // Execute business logic
     return this.execute(validatedArgs.projectRoot);
   }
 
   /**
-   * CLI용 헬퍼 함수 - 직접 매개변수 전달
+   * Helper function for CLI - direct parameter passing
    */
   static async executeFromParams(): Promise<InitToolResponse> {
     return this.execute();
@@ -286,14 +288,14 @@ export class InitTool {
 }
 
 /**
- * 간단한 함수형 인터페이스 (선택사항)
+ * Simple functional interface (optional)
  */
 export async function initProject(): Promise<InitToolResponse> {
   return InitTool.executeFromParams();
 }
 
 /**
- * MCP 도구용 헬퍼 함수
+ * Helper function for MCP tools
  */
 export async function executeInitTool(
   args: unknown
