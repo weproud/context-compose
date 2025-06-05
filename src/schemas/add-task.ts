@@ -17,6 +17,13 @@ export const AddTaskToolSchema = z.object({
     .optional()
     .default('.taskaction')
     .describe('설정 디렉토리 경로'),
+  enhancedPrompt: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'Use enhanced prompts with detailed guidelines instead of simple prompts'
+    ),
 });
 
 /**

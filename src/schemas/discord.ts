@@ -10,6 +10,13 @@ export const DiscordToolSchema = z.object({
     .describe(
       'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
     ),
+  enhancedPrompt: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'Use enhanced prompts with detailed guidelines instead of simple prompts'
+    ),
 });
 
 /**

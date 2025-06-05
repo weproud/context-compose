@@ -2,54 +2,59 @@ version: 1
 kind: action
 name: Git Commit
 description: Commit changes to Git with conventional commit messages and best practices
-prompt: Stage and commit changes using conventional commit format (feat:, fix:, docs:, etc.). Review changes with git diff, stage selectively, and write clear, descriptive commit messages.
+prompt: Stage and commit changes using conventional commit format with clear, descriptive messages
+
 enhanced-prompt: |-
-  Commit changes to Git following these comprehensive guidelines:
+  **Create a Git commit with proper conventional commit format and best practices.**
 
-  ## Pre-Commit Process
-  1. **Status Review**:
-     - Run `git status` to review all changed files
-     - Identify untracked, modified, and deleted files
-     - Ensure no sensitive information (secrets, credentials) is included
-     - Review changes with `git diff` for accuracy
+  ## Commit Process
+  1. **Review Changes:**
+     - Run `git status` to see modified files
+     - Use `git diff` to review specific changes
+     - Identify the scope and type of changes made
 
-  2. **Staging Strategy**:
-     - Stage related changes together for logical commits
-     - Use `git add <specific-files>` for selective staging
-     - Avoid `git add .` unless all changes are related
-     - Consider splitting large changes into multiple commits
+  2. **Stage Changes:**
+     - Stage specific files: `git add <file>`
+     - Stage all changes: `git add .`
+     - Use `git add -p` for selective staging of hunks
 
-  ## Commit Message Convention
-  Follow Conventional Commits specification:
+  3. **Write Commit Message:**
+     - Follow conventional commit format
+     - Keep first line under 50 characters
+     - Add detailed description if needed
 
-  **Format**: `<type>[optional scope]: <description>`
+  ## Conventional Commit Format
+  ```
+  <type>(<scope>): <description>
 
-  **Types**:
-  - `feat`: New feature or functionality
-  - `fix`: Bug fix or error correction
-  - `docs`: Documentation changes only
-  - `style`: Code style changes (formatting, semicolons, etc.)
-  - `refactor`: Code refactoring without feature changes
+  [optional body]
+
+  [optional footer]
+  ```
+
+  **Common Types:**
+  - `feat`: New feature
+  - `fix`: Bug fix
+  - `docs`: Documentation changes
+  - `style`: Code style changes (formatting, semicolons)
+  - `refactor`: Code refactoring without changing functionality
   - `test`: Adding or updating tests
   - `chore`: Maintenance tasks, dependency updates
-  - `perf`: Performance improvements
-  - `ci`: CI/CD configuration changes
 
-  **Examples**:
-  - `feat(auth): add user authentication system`
-  - `fix(api): resolve memory leak in request handler`
-  - `docs: update installation instructions`
-  - `refactor(utils): simplify string manipulation functions`
-  - `test(core): add unit tests for task runner`
+  **Examples:**
+  - `feat(auth): add user login functionality`
+  - `fix(api): resolve null pointer exception in user service`
+  - `docs(readme): update installation instructions`
+  - `refactor(utils): simplify string validation logic`
 
-  ## Commit Best Practices
-  - Keep commits atomic (one logical change per commit)
-  - Write clear, concise commit messages (50 chars for title)
-  - Use imperative mood ("add" not "added" or "adds")
-  - Include body text for complex changes (wrap at 72 chars)
-  - Reference issue numbers when applicable: `fixes #123`
+  ## Best Practices
+  - **Be Specific**: Describe what was changed and why
+  - **Use Imperative Mood**: "add feature" not "added feature"
+  - **Reference Issues**: Include issue numbers when relevant
+  - **Keep Focused**: One logical change per commit
 
-  ## Final Verification
-  - Verify commit with `git log --oneline -1`
-  - Ensure commit message follows conventions
-  - Confirm all intended changes are included
+  ## Execution Steps
+  1. Review all changes with `git diff`
+  2. Stage appropriate files
+  3. Write clear commit message following format
+  4. Commit with `git commit -m "message"` or `git commit` for editor

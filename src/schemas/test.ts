@@ -32,6 +32,13 @@ const BaseTestToolSchema = z.object({
     .describe(
       'Custom branch name for create-branch action. If not provided, auto-generated name will be used.'
     ),
+  enhancedPrompt: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'Use enhanced prompts with detailed guidelines instead of simple prompts'
+    ),
 });
 
 /**
@@ -83,6 +90,13 @@ export const ListTestsToolSchema = z.object({
     .describe(
       'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
     ),
+  enhancedPrompt: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'Use enhanced prompts with detailed guidelines instead of simple prompts'
+    ),
 });
 
 /**
@@ -99,6 +113,13 @@ export const CheckTestEnvToolSchema = z.object({
     .string()
     .describe(
       'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
+    ),
+  enhancedPrompt: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe(
+      'Use enhanced prompts with detailed guidelines instead of simple prompts'
     ),
 });
 
