@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { AddTaskTool } from '../../core/tools/index.js';
 import { executeStartTaskTool } from '../../core/tools/start-task.js';
 import { ValidateTaskTool } from '../../core/tools/validate-task.js';
+import { TaskStatusTool } from '../../core/tools/task-status.js';
 import type { StartTaskToolInput } from '../../schemas/start-task.js';
 
 /**
@@ -89,6 +90,22 @@ export function createTaskCommand(): Command {
         options: { configPath: string; enhancedPrompt?: boolean }
       ) => {
         try {
+          // Task 시작 시 status를 'in-progress'로 업데이트
+          console.log(`🚀 Task "${taskId}" 시작 중...`);
+
+          const statusResult = await TaskStatusTool.executeFromParams(
+            taskId,
+            'in-progress',
+            process.cwd(),
+            options.configPath
+          );
+
+          if (!statusResult.success) {
+            console.warn(`⚠️ Status 업데이트 실패: ${statusResult.message}`);
+          } else {
+            console.log(`✅ Task status가 'in-progress'로 업데이트되었습니다.`);
+          }
+
           const input: StartTaskToolInput = {
             taskId,
             projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
@@ -248,10 +265,82 @@ export function createTaskCommand(): Command {
       }
     );
 
+  // status 하위 명령 추가
+  const statusSubCommand = new Command('status');
+  statusSubCommand
+    .description('Task의 상태를 업데이트합니다')
+    .argument('<task-id>', 'Task ID')
+    .argument('<status>', 'Task 상태 (todo, ready, in-progress, done)')
+    .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
+    .option('-v, --verbose', '상세한 출력 표시')
+    .action(
+      async (
+        taskId: string,
+        status: string,
+        options: { configPath?: string; verbose?: boolean }
+      ) => {
+        try {
+          const { configPath = '.taskaction', verbose = false } = options;
+
+          if (verbose) {
+            console.error(
+              `[INFO] Task Status 명령 실행 시작 ${JSON.stringify({ taskId, status, configPath })}`
+            );
+          }
+
+          // 유효한 status 값 검증
+          const validStatuses = ['todo', 'ready', 'in-progress', 'done'];
+          if (!validStatuses.includes(status)) {
+            console.error(`❌ 유효하지 않은 status 값: "${status}"`);
+            console.error(`   유효한 값: ${validStatuses.join(', ')}`);
+            process.exit(1);
+          }
+
+          console.log(
+            `📝 Task "${taskId}" 상태를 "${status}"로 업데이트 중...`
+          );
+
+          const result = await TaskStatusTool.executeFromParams(
+            taskId,
+            status,
+            process.cwd(),
+            configPath
+          );
+
+          if (result.success) {
+            console.log(`✅ ${result.message}`);
+
+            if (verbose && result.updatedFiles.length > 0) {
+              console.log('\n📁 업데이트된 파일들:');
+              result.updatedFiles.forEach(file => {
+                console.log(`  - ${file}`);
+              });
+            }
+          } else {
+            console.error(`❌ ${result.message}`);
+            process.exit(1);
+          }
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          console.error(`❌ 오류: ${errorMessage}`);
+
+          if (options.verbose) {
+            console.error(
+              `[ERROR] Task Status 명령 실행 실패 ${JSON.stringify({ error: errorMessage })}`
+            );
+          }
+
+          process.exit(1);
+        }
+      }
+    );
+
   // task 명령에 하위 명령들 추가
   taskCommand.addCommand(addSubCommand);
   taskCommand.addCommand(startSubCommand);
   taskCommand.addCommand(validateSubCommand);
+  taskCommand.addCommand(statusSubCommand);
 
   return taskCommand;
 }
@@ -278,6 +367,11 @@ export function showTaskExamples(): void {
   console.log('  $ task-action task validate init');
   console.log('  $ task-action task validate my-feature-task');
   console.log('  $ task-action task validate my-task --verbose');
+  console.log('');
+  console.log('Task 상태 관리:');
+  console.log('  $ task-action task status init done');
+  console.log('  $ task-action task status my-feature-task in-progress');
+  console.log('  $ task-action task status my-task todo --verbose');
   console.log('');
   console.log('옵션 사용:');
   console.log(

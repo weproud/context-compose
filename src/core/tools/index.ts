@@ -22,6 +22,16 @@ export {
 // Validate Task 스키마 (schemas에서 re-export)
 export { ValidateTaskToolSchema } from '../../schemas/validate-task.js';
 
+// Task Status 도구
+export {
+  TaskStatusTool,
+  updateTaskStatus,
+  executeTaskStatusTool,
+} from './task-status.js';
+
+// Task Status 스키마 (schemas에서 re-export)
+export { TaskStatusToolSchema } from '../../schemas/task-status.js';
+
 // Slack 도구
 export { SlackTool, executeSlackTool } from './slack.js';
 

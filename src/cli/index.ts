@@ -118,6 +118,7 @@ function createCLI(): Command {
     console.log('  $ task-action init');
     console.log('  $ task-action task add "create user controller"');
     console.log('  $ task-action task start init');
+    console.log('  $ task-action task status init done');
     console.log('  $ task-action slack send-message "Hello, World!"');
     console.log('  $ task-action discord send-message "Hello, Discord!"');
     console.log('  $ task-action test actions/create-branch');
