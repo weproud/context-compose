@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { AddTaskTool } from '../../core/tools/index.js';
 import { executeStartTaskTool } from '../../core/tools/start-task.js';
+import { ValidateTaskTool } from '../../core/tools/validate-task.js';
 import type { StartTaskToolInput } from '../../schemas/start-task.js';
 
 /**
@@ -157,9 +158,100 @@ export function createTaskCommand(): Command {
       }
     );
 
+  // validate 하위 명령 추가
+  const validateSubCommand = new Command('validate');
+  validateSubCommand
+    .description('Task 파일과 관련 파일들의 유효성을 검사합니다')
+    .argument('<task-id>', 'Task ID')
+    .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
+    .option('-v, --verbose', '상세한 출력 표시')
+    .action(
+      async (
+        taskId: string,
+        options: { configPath?: string; verbose?: boolean }
+      ) => {
+        try {
+          const { configPath = '.taskaction', verbose = false } = options;
+
+          if (verbose) {
+            console.error(
+              `[INFO] Task Validate 명령 실행 시작 ${JSON.stringify({ taskId, configPath })}`
+            );
+          }
+
+          console.log(`🔍 Task validation 시작: "${taskId}"`);
+
+          const result = await ValidateTaskTool.executeFromParams(
+            taskId,
+            process.cwd(),
+            configPath
+          );
+
+          // 결과 출력
+          console.log(result.message);
+          console.log('');
+
+          // 요약 정보 출력
+          const { summary } = result;
+          console.log('📊 Validation 요약:');
+          console.log(`  - 총 검사 항목: ${summary.total}`);
+          console.log(`  - 통과: ${summary.passed}`);
+          console.log(`  - 실패: ${summary.failed}`);
+          console.log(`  - 경고: ${summary.warnings}`);
+
+          if (verbose || summary.failed > 0 || summary.warnings > 0) {
+            console.log('');
+            console.log('📋 상세 결과:');
+
+            // 카테고리별로 그룹화
+            const groupedResults = result.validationResults.reduce(
+              (acc, item) => {
+                if (!acc[item.category]) {
+                  acc[item.category] = [];
+                }
+                acc[item.category]!.push(item);
+                return acc;
+              },
+              {} as Record<string, typeof result.validationResults>
+            );
+
+            for (const [category, items] of Object.entries(groupedResults)) {
+              console.log(`\n  ${category}:`);
+              for (const item of items) {
+                const icon =
+                  item.status === 'pass'
+                    ? '✅'
+                    : item.status === 'fail'
+                      ? '❌'
+                      : '⚠️';
+                console.log(`    ${icon} ${item.item}: ${item.message}`);
+              }
+            }
+          }
+
+          if (!result.success) {
+            process.exit(1);
+          }
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          console.error(`❌ 오류: ${errorMessage}`);
+
+          if (options.verbose) {
+            console.error(
+              `[ERROR] Task Validate 명령 실행 실패 ${JSON.stringify({ error: errorMessage })}`
+            );
+          }
+
+          process.exit(1);
+        }
+      }
+    );
+
   // task 명령에 하위 명령들 추가
   taskCommand.addCommand(addSubCommand);
   taskCommand.addCommand(startSubCommand);
+  taskCommand.addCommand(validateSubCommand);
 
   return taskCommand;
 }
@@ -182,13 +274,25 @@ export function showTaskExamples(): void {
   console.log('  $ task-action task start my-feature-task');
   console.log('  $ task-action task start my-task --enhanced-prompt');
   console.log('');
+  console.log('Task 검증:');
+  console.log('  $ task-action task validate init');
+  console.log('  $ task-action task validate my-feature-task');
+  console.log('  $ task-action task validate my-task --verbose');
+  console.log('');
   console.log('옵션 사용:');
-  console.log('  $ task-action task add "new feature" --config-path ./my-config');
+  console.log(
+    '  $ task-action task add "new feature" --config-path ./my-config'
+  );
   console.log('  $ task-action task add "new feature" --verbose');
   console.log('  $ task-action task start complex-task -e -c .taskaction');
+  console.log('  $ task-action task validate complex-task -v -c .taskaction');
   console.log('');
   console.log('주의사항:');
-  console.log('  - 먼저 task-action init 명령으로 프로젝트를 초기화해야 합니다');
-  console.log('  - .taskaction/task-template.yaml 파일이 템플릿으로 사용됩니다');
+  console.log(
+    '  - 먼저 task-action init 명령으로 프로젝트를 초기화해야 합니다'
+  );
+  console.log(
+    '  - .taskaction/task-template.yaml 파일이 템플릿으로 사용됩니다'
+  );
   console.log('  - Task ID의 공백은 자동으로 하이픈(-)으로 변환됩니다');
 }
