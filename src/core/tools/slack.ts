@@ -22,11 +22,11 @@ export class SlackTool {
    * Slack 메시지 전송 핵심 로직
    */
   static async execute(input: SlackToolInput): Promise<SlackToolResponse> {
-    const { message } = input;
+    const { message, projectRoot } = input;
 
     try {
-      // .env 파일에서 환경변수 로드
-      EnvLoader.load();
+      // .env 파일에서 환경변수 로드 (projectRoot 기준)
+      EnvLoader.load(projectRoot);
 
       // Webhook URL 환경변수에서 가져오기
       const webhookUrl = EnvLoader.get('SLACK_WEBHOOK_URL');
@@ -92,8 +92,11 @@ export class SlackTool {
   /**
    * CLI용 헬퍼 함수 - 직접 매개변수 전달
    */
-  static async executeFromParams(message: string): Promise<SlackToolResponse> {
-    return this.execute({ message });
+  static async executeFromParams(
+    message: string,
+    projectRoot: string = process.cwd()
+  ): Promise<SlackToolResponse> {
+    return this.execute({ message, projectRoot });
   }
 }
 
@@ -101,9 +104,10 @@ export class SlackTool {
  * 간단한 함수형 인터페이스 (선택사항)
  */
 export async function sendSlackMessage(
-  message: string
+  message: string,
+  projectRoot: string = process.cwd()
 ): Promise<SlackToolResponse> {
-  return SlackTool.executeFromParams(message);
+  return SlackTool.executeFromParams(message, projectRoot);
 }
 
 /**

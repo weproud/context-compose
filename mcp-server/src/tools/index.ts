@@ -8,6 +8,7 @@ import { registerAddTaskTool } from './add-task.js';
 import { registerStartTaskTool } from './start-task.js';
 import { registerSlackTool } from './slack.js';
 import { registerDiscordTool } from './discord.js';
+import { registerTestTool } from './test.js';
 import logger from '../logger.js';
 
 /**
@@ -22,6 +23,7 @@ export function registerHelloMCPTools(server: FastMCP): void {
     registerStartTaskTool(server);
     registerSlackTool(server);
     registerDiscordTool(server);
+    registerTestTool(server);
 
     logger.info('All Hello MCP tools registered successfully');
   } catch (error) {

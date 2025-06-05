@@ -136,3 +136,4 @@ Core functionality in `src/core/` is used by both:
 - Unit tests focus on core business logic
 - Integration tests verify CLI and MCP behavior
 - E2E tests ensure end-to-end functionality
+

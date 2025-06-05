@@ -22,11 +22,11 @@ jobs:
     - name: Create a pull request
       uses: actions/create-pull-request.yaml
 
-    - name: Send a message to Slack
-      uses: actions/send-message-slack.yaml
-
     - name: Task Done
       uses: actions/task-done.yaml
+
+    - name: Send a message
+      uses: actions/send-message.yaml
 
 prompt: Execute complete task-action workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
 enhanced-prompt: |-

@@ -1,0 +1,7 @@
+version: 1
+kind: action
+name: Send a Message
+description: Send a Message
+prompt: notify에 등록된 방법을 사용해서 task 완료 메시지를 보낸다
+enhanced-prompt: |-
+  notify에 등록된 방법을 사용해서 task 완료 메시지를 보낸다

@@ -17,7 +17,10 @@ export function createSlackCommand(): Command {
       try {
         console.log(`📤 Slack 메시지 전송 중...`);
 
-        const result = await SlackTool.executeFromParams(message);
+        const result = await SlackTool.executeFromParams(
+          message,
+          process.cwd()
+        );
 
         if (result.success) {
           console.log(result.message);

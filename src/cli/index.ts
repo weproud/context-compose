@@ -8,6 +8,7 @@ import {
   createDiscordCommand,
   showDiscordExamples,
 } from './commands/discord.js';
+import { createTestCommand } from './commands/test-simple.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
@@ -35,6 +36,9 @@ function createCLI(): Command {
   // Discord 명령 추가
   program.addCommand(createDiscordCommand());
 
+  // Test 명령 추가
+  program.addCommand(createTestCommand());
+
   // 환경변수 명령 추가
   // program.addCommand(createEnvCommand());
 
@@ -44,7 +48,7 @@ function createCLI(): Command {
     .description('사용 예시를 보여줍니다')
     .option(
       '-c, --command <command>',
-      '특정 명령의 예시만 표시 (init, task, slack, discord)'
+      '특정 명령의 예시만 표시 (init, task, slack, discord, test)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -61,12 +65,32 @@ function createCLI(): Command {
           case 'discord':
             showDiscordExamples();
             break;
+          case 'test':
+            console.log('🧪 Test 명령 사용 예시\n');
+            console.log('기본 사용법:');
+            console.log('  task-action test actions/create-branch');
+            console.log('  task-action test notify/slack-send-message');
+            console.log('  task-action test actions/git-commit --verbose');
+            console.log(
+              '  task-action test notify/discord-send-message --dry-run'
+            );
+            console.log('\n추가 명령:');
+            console.log(
+              '  task-action test list                    # 사용 가능한 테스트 목록'
+            );
+            console.log(
+              '  task-action test check                   # 환경 설정 확인'
+            );
+            console.log(
+              '  task-action test check --type slack     # Slack 설정만 확인'
+            );
+            break;
           // case 'env':
           //   showEnvExamples();
           //   break;
           default:
             console.error(`❌ 알 수 없는 명령: ${options.command}`);
-            console.log('사용 가능한 명령: init, task, slack, discord');
+            console.log('사용 가능한 명령: init, task, slack, discord, test');
             process.exit(1);
         }
       } else {
@@ -96,6 +120,8 @@ function createCLI(): Command {
     console.log('  $ task-action task start init');
     console.log('  $ task-action slack send-message "Hello, World!"');
     console.log('  $ task-action discord send-message "Hello, Discord!"');
+    console.log('  $ task-action test actions/create-branch');
+    console.log('  $ task-action test notify/slack-send-message');
     console.log('  $ task-action examples');
     console.log('');
     console.log('더 많은 예시를 보려면:');

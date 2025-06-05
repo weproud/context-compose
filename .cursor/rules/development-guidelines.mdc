@@ -95,3 +95,4 @@ pnpm format:check  # Check Prettier formatting
 - Use `pnpm inspect` to test MCP server with Inspector
 - Server runs on stdio transport for local development
 - HTTP SSE transport available for remote usage
+

@@ -5,6 +5,11 @@ import { z } from 'zod';
  */
 export const SlackToolSchema = z.object({
   message: z.string().min(1, 'Slack 메시지는 필수입니다'),
+  projectRoot: z
+    .string()
+    .describe(
+      'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
+    ),
 });
 
 /**

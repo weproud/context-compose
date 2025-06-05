@@ -43,3 +43,4 @@ The project implements several tools that work in both CLI and MCP contexts:
 2. **send-message-slack** - Send messages to Slack via webhook
 3. **send-message-discord** - Send messages to Discord via webhook
 4. **add-task** - Create new task files from templates
+

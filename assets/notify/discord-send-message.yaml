@@ -1,0 +1,127 @@
+version: 1
+kind: action
+name: Send Message to Discord
+description: Send comprehensive status messages to Discord with rich formatting and context
+prompt: Send status message to Discord with rich formatting. Check DISCORD_WEBHOOK_URL, prepare message with attachments and context, and handle errors gracefully.
+enhanced-prompt: |-
+  Send message to Discord channel following these comprehensive guidelines:
+
+  ## Prerequisites & Configuration
+  1. **Environment Setup**:
+     - Verify DISCORD_WEBHOOK_URL environment variable is set
+     - Validate webhook URL format and accessibility
+     - Check network connectivity and permissions
+     - Ensure proper authentication credentials
+
+  2. **Message Context Preparation**:
+     - Gather relevant project information (branch, commit, task details)
+     - Determine message urgency and priority level
+     - Identify target channel and audience
+     - Prepare any necessary attachments or links
+
+  ## Message Formatting Strategy
+  1. **Message Types**:
+     - **Success**: Task completion, deployment success, test passes
+     - **Warning**: Non-critical issues, deprecation notices
+     - **Error**: Build failures, test failures, critical issues
+     - **Info**: Status updates, progress reports, notifications
+
+  2. **Rich Message Structure**:
+     ```json
+     {
+       "text": "Primary message content",
+       "channel": "#development",
+       "username": "Task-Action Bot",
+       "avatar_url": "https://example.com/avatar.png",
+       "attachments": [
+         {
+           "color": "good|warning|danger",
+           "title": "Task Status Update",
+           "title_link": "https://github.com/repo/pull/123",
+           "fields": [
+             {
+               "title": "Branch",
+               "value": "feature/new-feature",
+               "short": true
+             },
+             {
+               "title": "Status",
+               "value": "Completed",
+               "short": true
+             }
+           ],
+           "footer": "Task-Action",
+           "ts": 1234567890
+         }
+       ]
+     }
+     ```
+
+  ## Message Content Guidelines
+  1. **Clear Communication**:
+     - Use concise, actionable language
+     - Include relevant context and links
+     - Mention specific team members when needed (@username)
+     - Provide next steps or required actions
+
+  2. **Status-Specific Templates**:
+     - **Task Completion**: "✅ Task #{id} completed: {description}"
+     - **Build Success**: "🚀 Build successful for {branch} - Ready for review"
+     - **Test Failure**: "❌ Tests failed on {branch} - {failure_count} failures"
+     - **Deployment**: "📦 Deployed {version} to {environment}"
+
+  ## Execution Process
+  1. **Pre-Send Validation**:
+     - Validate message content and format
+     - Check webhook URL accessibility
+     - Verify JSON payload structure
+     - Test with dry-run if available
+
+  2. **Message Delivery**:
+     - Send HTTP POST request with proper headers
+     - Handle rate limiting and retry logic
+     - Monitor response status and error codes
+     - Log successful deliveries and failures
+
+  3. **Error Handling**:
+     - Gracefully handle network failures
+     - Provide fallback notification methods
+     - Log detailed error information
+     - Suggest configuration fixes for common issues
+
+  ## Advanced Features
+  1. **Conditional Messaging**:
+     - Send different messages based on task status
+     - Filter messages by importance level
+     - Customize content for different channels
+     - Include relevant team members based on task type
+
+  2. **Integration Context**:
+     - Include links to Pull Requests, issues, or commits
+     - Add deployment links and environment information
+     - Provide test results and coverage reports
+     - Include performance metrics when relevant
+
+  ## Example Implementation
+  ```bash
+  # Success message example
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "text": "✅ Task completed successfully!",
+      "attachments": [{
+        "color": "good",
+        "title": "Feature Implementation Complete",
+        "fields": [
+          {"title": "Branch", "value": "feature/user-auth", "short": true},
+          {"title": "Tests", "value": "All passing", "short": true}
+        ]
+      }]
+    }' \
+    "${DISCORD_WEBHOOK_URL}"
+  ```
+
+  ## Post-Send Verification
+  - Confirm message delivery success
+  - Verify message appears correctly in target channel
+  - Check for any formatting issues or broken links
+  - Monitor for team responses or required follow-ups

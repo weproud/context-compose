@@ -17,7 +17,10 @@ export function createDiscordCommand(): Command {
       try {
         console.log(`📤 Discord 메시지 전송 중...`);
 
-        const result = await DiscordTool.executeFromParams(message);
+        const result = await DiscordTool.executeFromParams(
+          message,
+          process.cwd()
+        );
 
         if (result.success) {
           console.log(result.message);
