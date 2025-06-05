@@ -70,10 +70,8 @@ function createCLI(): Command {
             console.log('기본 사용법:');
             console.log('  task-action test actions/create-branch');
             console.log('  task-action test notify/slack-send-message');
-            console.log('  task-action test actions/git-commit --verbose');
-            console.log(
-              '  task-action test notify/discord-send-message --dry-run'
-            );
+            console.log('  task-action test actions/git-commit');
+            console.log('  task-action test notify/discord-send-message');
             console.log('\n추가 명령:');
             console.log(
               '  task-action test list                    # 사용 가능한 테스트 목록'

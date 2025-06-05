@@ -1,5 +1,5 @@
-import type { FastMCP } from '@modelcontextprotocol/server-fastmcp';
-import { logger } from '../logger.js';
+import { FastMCP } from 'fastmcp';
+import logger from '../logger.js';
 import { executeTaskStatusTool } from '../../../src/core/tools/task-status.js';
 import { TaskStatusToolSchema } from '../../../src/schemas/task-status.js';
 

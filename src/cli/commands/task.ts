@@ -18,59 +18,31 @@ export function createTaskCommand(): Command {
     .description('새로운 Task 파일을 생성합니다')
     .argument('<task-id>', 'Task ID (예: "create user controller")')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .option('-v, --verbose', '상세한 출력 표시')
-    .action(
-      async (
-        taskId: string,
-        options: { configPath?: string; verbose?: boolean }
-      ) => {
-        try {
-          const { configPath = '.taskaction', verbose = false } = options;
+    .action(async (taskId: string, options: { configPath?: string }) => {
+      try {
+        const { configPath = '.taskaction' } = options;
 
-          if (verbose) {
-            console.error(
-              `[INFO] Task Add 명령 실행 시작 ${JSON.stringify({ taskId, configPath })}`
-            );
-          }
+        console.log(`📝 Task 파일 생성 중: "${taskId}"`);
 
-          console.log(`📝 Task 파일 생성 중: "${taskId}"`);
+        const result = await AddTaskTool.executeFromParams(
+          taskId,
+          process.cwd(),
+          configPath
+        );
 
-          const result = await AddTaskTool.executeFromParams(
-            taskId,
-            process.cwd(),
-            configPath
-          );
-
-          if (result.success) {
-            console.log(result.message);
-
-            if (verbose) {
-              console.log('\n📁 생성된 파일 정보:');
-              console.log(`  - Task ID: ${result.taskId}`);
-              console.log(`  - 파일명: ${result.fileName}`);
-              if (result.filePath) {
-                console.log(`  - 파일 경로: ${result.filePath}`);
-              }
-            }
-          } else {
-            console.error(`❌ ${result.message}`);
-            process.exit(1);
-          }
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : String(error);
-          console.error(`❌ 오류: ${errorMessage}`);
-
-          if (options.verbose) {
-            console.error(
-              `[ERROR] Task Add 명령 실행 실패 ${JSON.stringify({ error: errorMessage })}`
-            );
-          }
-
+        if (result.success) {
+          console.log(result.message);
+        } else {
+          console.error(`❌ ${result.message}`);
           process.exit(1);
         }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error(`❌ 오류: ${errorMessage}`);
+        process.exit(1);
       }
-    );
+    });
 
   // start 하위 명령 추가
   const startSubCommand = new Command('start');
@@ -181,89 +153,70 @@ export function createTaskCommand(): Command {
     .description('Task 파일과 관련 파일들의 유효성을 검사합니다')
     .argument('<task-id>', 'Task ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .option('-v, --verbose', '상세한 출력 표시')
-    .action(
-      async (
-        taskId: string,
-        options: { configPath?: string; verbose?: boolean }
-      ) => {
-        try {
-          const { configPath = '.taskaction', verbose = false } = options;
+    .action(async (taskId: string, options: { configPath?: string }) => {
+      try {
+        const { configPath = '.taskaction' } = options;
 
-          if (verbose) {
-            console.error(
-              `[INFO] Task Validate 명령 실행 시작 ${JSON.stringify({ taskId, configPath })}`
-            );
-          }
+        console.log(`🔍 Task validation 시작: "${taskId}"`);
 
-          console.log(`🔍 Task validation 시작: "${taskId}"`);
+        const result = await ValidateTaskTool.executeFromParams(
+          taskId,
+          process.cwd(),
+          configPath
+        );
 
-          const result = await ValidateTaskTool.executeFromParams(
-            taskId,
-            process.cwd(),
-            configPath
+        // 결과 출력
+        console.log(result.message);
+        console.log('');
+
+        // 요약 정보 출력
+        const { summary } = result;
+        console.log('📊 Validation 요약:');
+        console.log(`  - 총 검사 항목: ${summary.total}`);
+        console.log(`  - 통과: ${summary.passed}`);
+        console.log(`  - 실패: ${summary.failed}`);
+        console.log(`  - 경고: ${summary.warnings}`);
+
+        if (summary.failed > 0 || summary.warnings > 0) {
+          console.log('');
+          console.log('📋 상세 결과:');
+
+          // 카테고리별로 그룹화
+          const groupedResults = result.validationResults.reduce(
+            (acc, item) => {
+              if (!acc[item.category]) {
+                acc[item.category] = [];
+              }
+              acc[item.category]!.push(item);
+              return acc;
+            },
+            {} as Record<string, typeof result.validationResults>
           );
 
-          // 결과 출력
-          console.log(result.message);
-          console.log('');
-
-          // 요약 정보 출력
-          const { summary } = result;
-          console.log('📊 Validation 요약:');
-          console.log(`  - 총 검사 항목: ${summary.total}`);
-          console.log(`  - 통과: ${summary.passed}`);
-          console.log(`  - 실패: ${summary.failed}`);
-          console.log(`  - 경고: ${summary.warnings}`);
-
-          if (verbose || summary.failed > 0 || summary.warnings > 0) {
-            console.log('');
-            console.log('📋 상세 결과:');
-
-            // 카테고리별로 그룹화
-            const groupedResults = result.validationResults.reduce(
-              (acc, item) => {
-                if (!acc[item.category]) {
-                  acc[item.category] = [];
-                }
-                acc[item.category]!.push(item);
-                return acc;
-              },
-              {} as Record<string, typeof result.validationResults>
-            );
-
-            for (const [category, items] of Object.entries(groupedResults)) {
-              console.log(`\n  ${category}:`);
-              for (const item of items) {
-                const icon =
-                  item.status === 'pass'
-                    ? '✅'
-                    : item.status === 'fail'
-                      ? '❌'
-                      : '⚠️';
-                console.log(`    ${icon} ${item.item}: ${item.message}`);
-              }
+          for (const [category, items] of Object.entries(groupedResults)) {
+            console.log(`\n  ${category}:`);
+            for (const item of items) {
+              const icon =
+                item.status === 'pass'
+                  ? '✅'
+                  : item.status === 'fail'
+                    ? '❌'
+                    : '⚠️';
+              console.log(`    ${icon} ${item.item}: ${item.message}`);
             }
           }
+        }
 
-          if (!result.success) {
-            process.exit(1);
-          }
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : String(error);
-          console.error(`❌ 오류: ${errorMessage}`);
-
-          if (options.verbose) {
-            console.error(
-              `[ERROR] Task Validate 명령 실행 실패 ${JSON.stringify({ error: errorMessage })}`
-            );
-          }
-
+        if (!result.success) {
           process.exit(1);
         }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        console.error(`❌ 오류: ${errorMessage}`);
+        process.exit(1);
       }
-    );
+    });
 
   // status 하위 명령 추가
   const statusSubCommand = new Command('status');
@@ -272,21 +225,14 @@ export function createTaskCommand(): Command {
     .argument('<task-id>', 'Task ID')
     .argument('<status>', 'Task 상태 (todo, ready, in-progress, done)')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .option('-v, --verbose', '상세한 출력 표시')
     .action(
       async (
         taskId: string,
         status: string,
-        options: { configPath?: string; verbose?: boolean }
+        options: { configPath?: string }
       ) => {
         try {
-          const { configPath = '.taskaction', verbose = false } = options;
-
-          if (verbose) {
-            console.error(
-              `[INFO] Task Status 명령 실행 시작 ${JSON.stringify({ taskId, status, configPath })}`
-            );
-          }
+          const { configPath = '.taskaction' } = options;
 
           // 유효한 status 값 검증
           const validStatuses = ['todo', 'ready', 'in-progress', 'done'];
@@ -309,13 +255,6 @@ export function createTaskCommand(): Command {
 
           if (result.success) {
             console.log(`✅ ${result.message}`);
-
-            if (verbose && result.updatedFiles.length > 0) {
-              console.log('\n📁 업데이트된 파일들:');
-              result.updatedFiles.forEach(file => {
-                console.log(`  - ${file}`);
-              });
-            }
           } else {
             console.error(`❌ ${result.message}`);
             process.exit(1);
@@ -324,13 +263,6 @@ export function createTaskCommand(): Command {
           const errorMessage =
             error instanceof Error ? error.message : String(error);
           console.error(`❌ 오류: ${errorMessage}`);
-
-          if (options.verbose) {
-            console.error(
-              `[ERROR] Task Status 명령 실행 실패 ${JSON.stringify({ error: errorMessage })}`
-            );
-          }
-
           process.exit(1);
         }
       }
@@ -366,20 +298,16 @@ export function showTaskExamples(): void {
   console.log('Task 검증:');
   console.log('  $ task-action task validate init');
   console.log('  $ task-action task validate my-feature-task');
-  console.log('  $ task-action task validate my-task --verbose');
   console.log('');
   console.log('Task 상태 관리:');
   console.log('  $ task-action task status init done');
   console.log('  $ task-action task status my-feature-task in-progress');
-  console.log('  $ task-action task status my-task todo --verbose');
   console.log('');
   console.log('옵션 사용:');
   console.log(
     '  $ task-action task add "new feature" --config-path ./my-config'
   );
-  console.log('  $ task-action task add "new feature" --verbose');
   console.log('  $ task-action task start complex-task -e -c .taskaction');
-  console.log('  $ task-action task validate complex-task -v -c .taskaction');
   console.log('');
   console.log('주의사항:');
   console.log(

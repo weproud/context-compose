@@ -74,7 +74,7 @@ export class ValidateTaskTool {
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     const formattedId = this.formatTaskId(taskId);
-    
+
     // .taskaction 디렉토리 존재 확인
     const configDir = join(projectRoot, configPath);
     if (!existsSync(configDir)) {
@@ -145,7 +145,11 @@ export class ValidateTaskTool {
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     const formattedId = this.formatTaskId(taskId);
-    const taskFilePath = join(projectRoot, configPath, `task-${formattedId}.yaml`);
+    const taskFilePath = join(
+      projectRoot,
+      configPath,
+      `task-${formattedId}.yaml`
+    );
 
     // YAML 파싱 시도
     const taskYaml = this.readYamlFile<TaskYaml>(taskFilePath);
@@ -181,7 +185,7 @@ export class ValidateTaskTool {
 
     for (const field of requiredFields) {
       const value = taskYaml[field.key as keyof TaskYaml];
-      
+
       if (value === undefined || value === null) {
         results.push(
           this.createValidationResult(
@@ -255,7 +259,11 @@ export class ValidateTaskTool {
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     const formattedId = this.formatTaskId(taskId);
-    const taskFilePath = join(projectRoot, configPath, `task-${formattedId}.yaml`);
+    const taskFilePath = join(
+      projectRoot,
+      configPath,
+      `task-${formattedId}.yaml`
+    );
 
     const taskYaml = this.readYamlFile<TaskYaml>(taskFilePath);
     if (!taskYaml || !taskYaml.jobs) {
@@ -306,7 +314,10 @@ export class ValidateTaskTool {
           );
 
           // 파일 구조 검사
-          const componentResults = this.validateComponentFile(filePath, sectionValue);
+          const componentResults = this.validateComponentFile(
+            filePath,
+            sectionValue
+          );
           results.push(...componentResults);
         }
       } else if (Array.isArray(sectionValue)) {
@@ -333,7 +344,10 @@ export class ValidateTaskTool {
             );
 
             // 파일 구조 검사
-            const componentResults = this.validateComponentFile(fullPath, filePath);
+            const componentResults = this.validateComponentFile(
+              fullPath,
+              filePath
+            );
             results.push(...componentResults);
           }
         }
@@ -346,9 +360,12 @@ export class ValidateTaskTool {
   /**
    * 개별 컴포넌트 파일 검사
    */
-  static validateComponentFile(filePath: string, fileName: string): ValidationResult[] {
+  static validateComponentFile(
+    filePath: string,
+    fileName: string
+  ): ValidationResult[] {
     const results: ValidationResult[] = [];
-    
+
     const componentYaml = this.readYamlFile<ComponentYaml>(filePath);
     if (!componentYaml) {
       results.push(
@@ -364,10 +381,10 @@ export class ValidateTaskTool {
 
     // 컴포넌트 파일의 필수 필드 검사
     const requiredFields = ['version', 'kind', 'name', 'description', 'prompt'];
-    
+
     for (const field of requiredFields) {
       const value = componentYaml[field as keyof ComponentYaml];
-      
+
       if (value === undefined || value === null) {
         results.push(
           this.createValidationResult(
@@ -407,13 +424,19 @@ export class ValidateTaskTool {
   /**
    * Validate Task 핵심 로직
    */
-  static async execute(input: ValidateTaskToolInput): Promise<ValidateTaskToolResponse> {
+  static async execute(
+    input: ValidateTaskToolInput
+  ): Promise<ValidateTaskToolResponse> {
     const { taskId, projectRoot, configPath } = input;
     const allResults: ValidationResult[] = [];
 
     try {
       // 1. 파일 존재성 검사
-      const fileExistenceResults = this.validateTaskFileExists(projectRoot, configPath, taskId);
+      const fileExistenceResults = this.validateTaskFileExists(
+        projectRoot,
+        configPath,
+        taskId
+      );
       allResults.push(...fileExistenceResults);
 
       // Task 파일이 존재하지 않으면 더 이상 진행하지 않음
@@ -433,11 +456,19 @@ export class ValidateTaskTool {
       }
 
       // 2. YAML 구조 및 필수 필드 검사
-      const structureResults = this.validateYamlStructure(projectRoot, configPath, taskId);
+      const structureResults = this.validateYamlStructure(
+        projectRoot,
+        configPath,
+        taskId
+      );
       allResults.push(...structureResults);
 
       // 3. 참조 파일들 검사
-      const referencedFilesResults = this.validateReferencedFiles(projectRoot, configPath, taskId);
+      const referencedFilesResults = this.validateReferencedFiles(
+        projectRoot,
+        configPath,
+        taskId
+      );
       allResults.push(...referencedFilesResults);
 
       // 4. 결과 요약
@@ -447,8 +478,8 @@ export class ValidateTaskTool {
       const message = hasFailures
         ? `❌ Task '${taskId}' validation 실패: ${summary.failed}개의 오류가 발견되었습니다`
         : summary.warnings > 0
-        ? `⚠️  Task '${taskId}' validation 완료: ${summary.warnings}개의 경고가 있습니다`
-        : `✅ Task '${taskId}' validation 성공: 모든 검사를 통과했습니다`;
+          ? `⚠️  Task '${taskId}' validation 완료: ${summary.warnings}개의 경고가 있습니다`
+          : `✅ Task '${taskId}' validation 성공: 모든 검사를 통과했습니다`;
 
       return {
         success: !hasFailures,
@@ -457,10 +488,10 @@ export class ValidateTaskTool {
         validationResults: allResults,
         summary,
       };
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
       allResults.push(
         this.createValidationResult(
           'system-error',
@@ -485,7 +516,9 @@ export class ValidateTaskTool {
   /**
    * 입력 유효성 검사 및 실행
    */
-  static async executeWithValidation(args: unknown): Promise<ValidateTaskToolResponse> {
+  static async executeWithValidation(
+    args: unknown
+  ): Promise<ValidateTaskToolResponse> {
     // Zod 스키마로 입력 검증
     const validatedInput = ValidateTaskToolSchema.parse(args);
 
@@ -501,7 +534,12 @@ export class ValidateTaskTool {
     projectRoot: string,
     configPath = '.taskaction'
   ): Promise<ValidateTaskToolResponse> {
-    return this.execute({ taskId, projectRoot, configPath });
+    return this.execute({
+      taskId,
+      projectRoot,
+      configPath,
+      enhancedPrompt: false,
+    });
   }
 }
 
@@ -519,6 +557,8 @@ export async function validateTask(
 /**
  * MCP 도구용 헬퍼 함수
  */
-export async function executeValidateTaskTool(args: unknown): Promise<ValidateTaskToolResponse> {
+export async function executeValidateTaskTool(
+  args: unknown
+): Promise<ValidateTaskToolResponse> {
   return ValidateTaskTool.executeWithValidation(args);
 }

@@ -23,7 +23,6 @@
     "test:actions:mock": "tsx scripts/test-actions.ts all --mode mock",
     "test:actions:integration": "tsx scripts/test-actions.ts all --mode integration",
     "test:actions:e2e": "tsx scripts/test-actions.ts all --mode e2e",
-    "test:actions:verbose": "tsx scripts/test-actions.ts all --verbose",
     "test:actions:html": "tsx scripts/test-actions.ts all --output html",
     "test:action:create-branch": "tsx scripts/test-actions.ts single create-branch",
     "test:action:slack": "tsx scripts/test-actions.ts single send-message-slack",

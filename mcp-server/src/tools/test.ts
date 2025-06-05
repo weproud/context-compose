@@ -22,8 +22,7 @@ async function executeTest(
   try {
     logger.info(`${toolName} tool called with target: ${input.testTarget}`);
 
-    const { testTarget, projectRoot, dryRun, verbose, cleanup, branchName } =
-      input;
+    const { testTarget, projectRoot, cleanup, branchName } = input;
 
     // testTarget 형식 정규화
     let normalizedTarget = testTarget;
@@ -57,35 +56,6 @@ async function executeTest(
 
     const testRunner = new TestRunner(projectRoot, testRunnerOptions);
 
-    // Show test information
-    const testInfo = {
-      originalTarget: testTarget,
-      normalizedTarget,
-      projectRoot,
-      dryRun,
-      verbose,
-      cleanup,
-      branchName,
-      timestamp: new Date().toISOString(),
-    };
-
-    if (verbose) {
-      logger.info(`Test configuration: ${JSON.stringify(testInfo, null, 2)}`);
-    }
-
-    // Execute test
-    if (dryRun) {
-      const dryRunResponse = {
-        success: true,
-        message: `🧪 Dry run for test target: ${testTarget} (normalized: ${normalizedTarget})`,
-        details: {
-          ...testInfo,
-          note: 'This was a dry run - no actual execution performed',
-        },
-      };
-      return JSON.stringify(dryRunResponse);
-    }
-
     // Run actual test
     const result = await testRunner.runTest(normalizedTarget);
 
@@ -111,13 +81,6 @@ async function executeTest(
       response.details = {
         ...response.details,
         error: result.error,
-      };
-    }
-
-    if (verbose) {
-      response.details = {
-        ...response.details,
-        testConfiguration: testInfo,
       };
     }
 

@@ -9,16 +9,6 @@ const BaseTestToolSchema = z.object({
     .describe(
       'The root directory for the project. ALWAYS SET THIS TO THE PROJECT ROOT DIRECTORY. IF NOT SET, THE TOOL WILL NOT WORK.'
     ),
-  dryRun: z
-    .boolean()
-    .optional()
-    .default(false)
-    .describe('Perform dry run without actual execution'),
-  verbose: z
-    .boolean()
-    .optional()
-    .default(false)
-    .describe('Enable verbose output'),
   cleanup: z
     .boolean()
     .optional()

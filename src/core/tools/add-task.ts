@@ -351,7 +351,12 @@ export class AddTaskTool {
     projectRoot: string,
     configPath = '.taskaction'
   ): Promise<AddTaskToolResponse> {
-    return this.execute({ taskId, projectRoot, configPath });
+    return this.execute({
+      taskId,
+      projectRoot,
+      configPath,
+      enhancedPrompt: false,
+    });
   }
 }
 

@@ -22,7 +22,7 @@ export class SlackTool {
    * Slack 메시지 전송 핵심 로직
    */
   static async execute(input: SlackToolInput): Promise<SlackToolResponse> {
-    const { message, projectRoot } = input;
+    const { message } = input;
 
     try {
       // .env 파일에서 환경변수 로드
@@ -96,7 +96,7 @@ export class SlackTool {
     message: string,
     projectRoot: string = process.cwd()
   ): Promise<SlackToolResponse> {
-    return this.execute({ message, projectRoot });
+    return this.execute({ message, projectRoot, enhancedPrompt: false });
   }
 }
 

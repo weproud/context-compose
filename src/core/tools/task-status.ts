@@ -113,7 +113,7 @@ export async function updateTaskStatus(
 
       if (taskIndex !== -1) {
         // 기존 task 업데이트
-        tasksYaml.tasks[taskIndex].status = status;
+        tasksYaml.tasks[taskIndex]!.status = status;
       } else {
         // 새로운 task 추가
         tasksYaml.tasks.push({
@@ -139,8 +139,7 @@ export async function updateTaskStatus(
       updatedFiles,
     };
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : String(error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
 
     return {
       success: false,

@@ -267,7 +267,7 @@ pnpm task-action --help
 
 ```bash
 # Using tsx directly
-npx tsx src/cli/index.ts init --verbose
+npx tsx src/cli/index.ts init
 npx tsx src/cli/index.ts examples
 ```
 
@@ -278,7 +278,7 @@ npx tsx src/cli/index.ts examples
 pnpm link
 
 # Use anywhere
-task-action init --verbose
+task-action init
 task-action examples
 task-action --help
 ```
@@ -292,9 +292,7 @@ task-action --help
 pnpm task-action init
 # Result: Creates .hellomcp directory and hello.yaml file
 
-# Verbose output
-pnpm task-action init --verbose
-# Result: Detailed initialization information
+
 
 # Force overwrite
 pnpm task-action init --force
