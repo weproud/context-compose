@@ -1,6 +1,6 @@
 version: 1
 kind: workflow
-name: Default Workflow
+name: Fix Workflow
 description: Comprehensive task-action workflow with quality gates and validation
 jobs:
   steps:

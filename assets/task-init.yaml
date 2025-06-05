@@ -6,7 +6,7 @@ description: 'task action init'
 id: init
 status: done
 jobs:
-  workflow: workflows/workflow.yaml
+  workflow: workflows/feature.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/development.yaml
