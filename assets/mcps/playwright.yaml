@@ -1,170 +1,79 @@
 version: 1
 kind: mcp
 name: playwright
-description: Comprehensive browser automation and end-to-end testing with Playwright
-prompt: Perform browser automation and E2E testing with Playwright. Write user-centric tests, implement cross-browser testing, use robust selectors, handle async operations, and include visual/performance/accessibility testing.
+description: Browser automation and end-to-end testing with Playwright
+prompt: Create E2E tests and browser automation using Playwright with best practices
+
 enhanced-prompt: |-
-  Utilize Playwright for comprehensive browser automation and testing following these guidelines:
+  **Create comprehensive browser automation and E2E tests using Playwright.**
 
-  ## Core Testing Capabilities
-  1. **End-to-End Testing**:
-     - User journey and workflow testing
-     - Form submission and validation testing
-     - Navigation and routing verification
-     - Authentication and authorization flows
+  ## Test Development Process
+  1. **Test Planning:**
+     - Identify user flows and critical paths to test
+     - Define test scenarios and acceptance criteria
+     - Plan cross-browser testing strategy
+     - Determine test data requirements
 
-  2. **Cross-Browser Testing**:
-     - Test across Chromium, Firefox, and WebKit
-     - Verify consistent behavior across browsers
-     - Handle browser-specific quirks and differences
-     - Optimize tests for different browser capabilities
+  2. **Test Implementation:**
+     - Write user-centric test cases focusing on real workflows
+     - Use robust selectors (data-testid, role, text)
+     - Implement proper wait strategies for async operations
+     - Handle dynamic content and loading states
 
-  ## Test Development Strategy
-  1. **User-Centric Test Design**:
-     - Write tests from user perspective
-     - Focus on critical user journeys and business flows
-     - Test real-world scenarios and edge cases
-     - Validate user experience and interface interactions
+  3. **Test Enhancement:**
+     - Add visual regression testing with screenshots
+     - Include accessibility testing checks
+     - Monitor performance metrics during tests
+     - Implement retry logic for flaky tests
 
-  2. **Page Object Model Implementation**:
-     - Create reusable page object classes
-     - Encapsulate page-specific logic and selectors
-     - Maintain clean separation between test logic and page structure
-     - Enable easy maintenance and updates
+  ## Playwright Best Practices
+  **Selector Strategy:**
+  - Prefer `data-testid` attributes for test-specific selectors
+  - Use semantic selectors: `page.getByRole()`, `page.getByText()`
+  - Avoid CSS selectors that depend on styling
+  - Chain locators for precise element targeting
 
-  ## Advanced Testing Features
-  1. **Visual Testing**:
-     - Screenshot comparison testing
-     - Visual regression detection
-     - Cross-browser visual consistency
-     - Responsive design validation
+  **Async Handling:**
+  - Use `page.waitForSelector()` for element visibility
+  - Implement `page.waitForResponse()` for API calls
+  - Use `expect(locator).toBeVisible()` for assertions
+  - Handle network requests with `page.route()`
 
-  2. **Performance Testing**:
-     - Page load time measurement
-     - Network request monitoring
-     - Resource usage analysis
-     - Core Web Vitals validation
+  ## Common Test Patterns
+  ```typescript
+  // Page Object Model
+  class LoginPage {
+    constructor(private page: Page) {}
+    
+    async login(email: string, password: string) {
+      await this.page.getByTestId('email').fill(email);
+      await this.page.getByTestId('password').fill(password);
+      await this.page.getByRole('button', { name: 'Login' }).click();
+    }
+  }
 
-  3. **Accessibility Testing**:
-     - Automated accessibility checks
-     - Keyboard navigation testing
-     - Screen reader compatibility
-     - WCAG compliance validation
+  // Visual Testing
+  await expect(page).toHaveScreenshot('homepage.png');
 
-  ## Test Implementation Best Practices
-  1. **Robust Selector Strategies**:
-     - Use data-testid attributes for reliable element selection
-     - Prefer semantic selectors over brittle CSS selectors
-     - Implement fallback selector strategies
-     - Avoid selectors dependent on styling or layout
+  // Accessibility Testing
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+  expect(accessibilityScanResults.violations).toEqual([]);
+  ```
 
-  2. **Wait Strategies & Synchronization**:
-     - Use explicit waits for dynamic content
-     - Wait for network requests to complete
-     - Handle loading states and animations
-     - Implement proper timeout configurations
+  ## Cross-Browser Testing
+  - Configure multiple browser contexts (Chromium, Firefox, WebKit)
+  - Test responsive design across different viewport sizes
+  - Validate browser-specific features and compatibility
+  - Use parallel execution for faster test runs
 
-  3. **Test Data Management**:
-     - Use fixtures for consistent test data
-     - Implement data cleanup and isolation
-     - Handle dynamic data and timestamps
-     - Manage test environment configurations
+  ## Test Structure
+  - **Setup**: Browser launch, context creation, test data preparation
+  - **Execution**: User action simulation and state verification
+  - **Teardown**: Cleanup, screenshot capture, artifact collection
+  - **Reporting**: Test results, failure analysis, performance metrics
 
-  ## Browser Automation Scenarios
-  1. **Form Interactions**:
-     - Input field validation and error handling
-     - File upload and download testing
-     - Multi-step form workflows
-     - Dynamic form field interactions
-
-  2. **Navigation & Routing**:
-     - Single Page Application (SPA) navigation
-     - Deep linking and URL parameter handling
-     - Browser history and back/forward navigation
-     - External link and popup handling
-
-  3. **Authentication Flows**:
-     - Login and logout processes
-     - Session management and persistence
-     - Multi-factor authentication
-     - Role-based access control testing
-
-  ## Performance & Monitoring
-  1. **Network Monitoring**:
-     - API request/response validation
-     - Network error handling
-     - Request timing and performance
-     - Mock external services for testing
-
-  2. **Resource Optimization**:
-     - Bundle size and loading performance
-     - Image optimization and lazy loading
-     - Cache behavior validation
-     - CDN and asset delivery testing
-
-  ## Test Organization & Maintenance
-  1. **Test Structure**:
-     - Organize tests by feature or user journey
-     - Use descriptive test names and documentation
-     - Implement proper test setup and teardown
-     - Group related tests with appropriate tags
-
-  2. **CI/CD Integration**:
-     - Configure tests for continuous integration
-     - Implement parallel test execution
-     - Generate comprehensive test reports
-     - Handle test failures and retries
-
-  ## Debugging & Troubleshooting
-  1. **Debug Tools**:
-     - Use Playwright Inspector for step-by-step debugging
-     - Capture screenshots and videos on failures
-     - Generate trace files for detailed analysis
-     - Implement custom logging and reporting
-
-  2. **Error Handling**:
-     - Implement graceful error recovery
-     - Provide meaningful error messages
-     - Handle flaky tests and timing issues
-     - Document known issues and workarounds
-
-  ## Mobile & Responsive Testing
-  1. **Device Emulation**:
-     - Test on various device sizes and orientations
-     - Validate touch interactions and gestures
-     - Test mobile-specific features and behaviors
-     - Verify responsive design breakpoints
-
-  2. **Mobile-Specific Scenarios**:
-     - App-like behavior testing (PWA)
-     - Offline functionality validation
-     - Mobile performance optimization
-     - Touch accessibility testing
-
-  ## Security Testing
-  1. **Input Validation**:
-     - XSS prevention testing
-     - SQL injection protection
-     - CSRF token validation
-     - Input sanitization verification
-
-  2. **Authentication Security**:
-     - Session security testing
-     - Password policy enforcement
-     - Secure cookie handling
-     - Authorization bypass testing
-
-  ## Reporting & Documentation
-  1. **Test Results**:
-     - Generate detailed HTML reports
-     - Include screenshots and videos
-     - Provide performance metrics
-     - Document test coverage and gaps
-
-  2. **Maintenance Documentation**:
-     - Document test scenarios and expected behaviors
-     - Maintain selector and page object documentation
-     - Record known issues and limitations
-     - Provide troubleshooting guides for common problems
-
-  Always ensure tests are reliable, maintainable, and provide valuable feedback about application quality and user experience.
+  ## Quality Assurance
+  - Use Page Object Model for maintainable test code
+  - Implement proper error handling and debugging
+  - Add test timeouts and retry mechanisms
+  - Include test data management and cleanup

@@ -1,99 +1,58 @@
 version: 1
 kind: mcp
 name: context7
-description: Comprehensive library documentation research and implementation guidance through Context7
-prompt: Research library documentation through Context7 for accurate implementation. Verify latest versions, understand best practices, follow official patterns, and document findings with links and compatibility information.
+description: Research library documentation and implementation guidance through Context7
+prompt: Research library documentation using Context7 for accurate implementation and best practices
+
 enhanced-prompt: |-
-  Utilize Context7 for comprehensive library and framework research following these guidelines:
+  **Use Context7 to research library documentation and provide accurate implementation guidance.**
 
-  ## When to Use Context7
-  1. **Library Integration**:
-     - Before implementing any new library or framework
-     - When encountering unfamiliar APIs or methods
-     - For understanding best practices and patterns
-     - When troubleshooting library-specific issues
+  ## Research Objectives
+  1. **Library Information:**
+     - Find latest stable version and release notes
+     - Identify key features and capabilities
+     - Check compatibility requirements and dependencies
+     - Review breaking changes between versions
 
-  2. **Documentation Research**:
-     - Verify latest version compatibility and features
-     - Understand breaking changes between versions
-     - Find official examples and implementation patterns
-     - Research performance implications and limitations
+  2. **Implementation Guidance:**
+     - Extract official code examples and patterns
+     - Identify best practices and recommended approaches
+     - Find common pitfalls and troubleshooting solutions
+     - Locate relevant API references and guides
 
-  ## Research Strategy
-  1. **Comprehensive Investigation**:
-     - Start with official documentation and getting started guides
-     - Look for migration guides and changelog information
-     - Research community best practices and common patterns
-     - Identify potential security considerations and vulnerabilities
+  ## Context7 Research Process
+  1. **Query Strategy:**
+     - Search for official documentation sites
+     - Look for GitHub repositories and README files
+     - Find community resources and tutorials
+     - Check for recent updates and changelogs
 
-  2. **Version-Specific Research**:
-     - Always target the latest stable version unless constrained
-     - Check for LTS (Long Term Support) versions for production use
-     - Understand deprecation timelines and migration paths
-     - Verify compatibility with existing project dependencies
+  2. **Information Validation:**
+     - Verify information from multiple sources
+     - Check publication dates for currency
+     - Cross-reference official vs community content
+     - Prioritize official documentation over third-party sources
 
-  ## Implementation Guidelines
-  1. **Best Practices Application**:
-     - Follow official recommended patterns and architectures
-     - Implement proper error handling as documented
-     - Use TypeScript definitions and type safety features
-     - Apply security best practices from official guidelines
+  ## Documentation Areas to Cover
+  - **Installation & Setup**: Package managers, configuration
+  - **API Reference**: Methods, parameters, return types
+  - **Usage Examples**: Common use cases and patterns
+  - **Best Practices**: Performance, security, maintenance
+  - **Troubleshooting**: Common issues and solutions
+  - **Compatibility**: Version requirements, browser support
 
-  2. **Performance Considerations**:
-     - Understand bundle size implications
-     - Implement lazy loading where recommended
-     - Follow performance optimization guidelines
-     - Consider tree-shaking and dead code elimination
-
-  ## Documentation Integration
-  1. **Code Documentation**:
-     - Reference official documentation in code comments
-     - Include links to relevant documentation sections
-     - Document any deviations from standard patterns
-     - Explain complex configurations or customizations
-
-  2. **Team Knowledge Sharing**:
-     - Share discovered best practices with team
-     - Document common patterns for future reference
-     - Create internal guides for complex integrations
-     - Update project documentation with new learnings
+  ## Output Format
+  Provide research findings with:
+  - **Library Version**: Current stable version number
+  - **Key Features**: Main capabilities and use cases
+  - **Installation**: Step-by-step setup instructions
+  - **Code Examples**: Working implementation samples
+  - **Best Practices**: Recommended patterns and approaches
+  - **References**: Links to official documentation and resources
+  - **Compatibility Notes**: Version requirements and limitations
 
   ## Quality Assurance
-  1. **Validation Process**:
-     - Verify implementation against official examples
-     - Test edge cases mentioned in documentation
-     - Validate security recommendations are followed
-     - Ensure accessibility guidelines are met
-
-  2. **Continuous Learning**:
-     - Stay updated with library releases and updates
-     - Monitor for security advisories and patches
-     - Participate in community discussions and forums
-     - Contribute back to open source when possible
-
-  ## Common Research Areas
-  1. **Configuration & Setup**:
-     - Installation and setup procedures
-     - Configuration options and environment variables
-     - Build tool integration and optimization
-     - Development vs production configurations
-
-  2. **API Usage & Patterns**:
-     - Core API methods and their proper usage
-     - Event handling and lifecycle management
-     - State management patterns and recommendations
-     - Testing strategies and utilities
-
-  3. **Advanced Features**:
-     - Plugin systems and extensibility
-     - Custom hooks and middleware patterns
-     - Performance monitoring and debugging tools
-     - Integration with other tools and frameworks
-
-  ## Research Output
-  Always document your Context7 research findings including:
-  - Library version and compatibility information
-  - Key implementation decisions and rationale
-  - Links to relevant documentation sections
-  - Any discovered limitations or considerations
-  - Recommended patterns for the specific use case
+  - Ensure all code examples are current and functional
+  - Verify compatibility information is up-to-date
+  - Include links to official sources for verification
+  - Note any deprecated features or migration paths

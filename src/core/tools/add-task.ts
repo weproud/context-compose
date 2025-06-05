@@ -57,7 +57,7 @@ export class AddTaskTool {
         projectRoot,
         configPath,
         'templates',
-        'task-template.mustache'
+        'feature-task.mustache'
       );
       if (existsSync(taskactionTemplatePath)) {
         return taskactionTemplatePath;
@@ -94,9 +94,9 @@ export class AddTaskTool {
     }
 
     throw new Error(
-      `.taskaction/templates/task-template.mustache 파일을 찾을 수 없습니다.\n` +
+      `.taskaction/templates/feature-task.mustache 파일을 찾을 수 없습니다.\n` +
         `다음 위치에 파일이 있는지 확인하세요:\n` +
-        `1. ${projectRoot}/${configPath}/templates/task-template.mustache\n` +
+        `1. ${projectRoot}/${configPath}/templates/feature-task.mustache\n` +
         `먼저 'task-action init' 명령으로 프로젝트를 초기화해주세요.`
     );
   }

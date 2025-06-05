@@ -5,7 +5,7 @@ description: Send status messages to Discord with rich embeds and error handling
 prompt: Send a message to Discord with proper formatting and error handling
 
 enhanced-prompt: |-
-  Send a message to Discord channel with the following approach:
+  **Send a message to Discord channel with rich embeds and proper error handling.**
 
   ## Setup & Validation
   - Check DISCORD_WEBHOOK_URL environment variable exists

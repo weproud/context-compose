@@ -292,7 +292,7 @@ export function showTaskExamples(): void {
     '  - 먼저 task-action init 명령으로 프로젝트를 초기화해야 합니다'
   );
   console.log(
-    '  - .taskaction/task-template.yaml 파일이 템플릿으로 사용됩니다'
+    '  - .taskaction/templates/feature-task.mustache 파일이 템플릿으로 사용됩니다'
   );
   console.log('  - Task ID의 공백은 자동으로 하이픈(-)으로 변환됩니다');
 }

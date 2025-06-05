@@ -1,132 +1,74 @@
 version: 1
 kind: mcp
 name: sequential-thinking
-description: Systematic sequential thinking process for complex problem solving and decision making
-prompt: Apply systematic problem-solving for complex tasks. Break down problems step-by-step, analyze dependencies, design solutions iteratively, validate each step, and document the thought process and decisions.
+description: Systematic sequential thinking process for complex problem solving
+prompt: Apply systematic step-by-step problem-solving for complex tasks with validation
+
 enhanced-prompt: |-
-  Utilize sequential-thinking for systematic problem solving following these comprehensive guidelines:
+  **Use systematic sequential thinking to break down and solve complex problems step-by-step.**
 
-  ## When to Use Sequential-Thinking
-  1. **Complex Problem Scenarios**:
-     - Multi-step technical implementations
-     - Architecture design decisions
-     - Debugging complex issues with multiple potential causes
-     - Planning large feature implementations
+  ## Sequential Thinking Process
+  1. **Problem Definition:**
+     - Clearly define the problem or task at hand
+     - Identify goals, constraints, and success criteria
+     - Gather all relevant context and requirements
+     - List assumptions and dependencies
 
-  2. **Decision-Making Processes**:
-     - Technology stack selection
-     - Performance optimization strategies
-     - Security implementation planning
-     - Refactoring complex legacy code
+  2. **Problem Decomposition:**
+     - Break complex problem into smaller, manageable parts
+     - Identify sequential steps and parallel tasks
+     - Map dependencies between different components
+     - Prioritize steps by importance and logical order
 
-  ## Sequential Thinking Framework
-  1. **Problem Definition Phase**:
-     - Clearly articulate the problem or challenge
-     - Identify all stakeholders and requirements
-     - Define success criteria and acceptance conditions
-     - Establish constraints and limitations
+  3. **Solution Design:**
+     - Design approach for each sub-problem
+     - Consider multiple solution alternatives
+     - Evaluate trade-offs and potential risks
+     - Select optimal approach for each step
 
-  2. **Analysis & Decomposition**:
-     - Break down complex problems into smaller, manageable components
-     - Identify dependencies between different parts
-     - Prioritize components by importance and complexity
-     - Map out potential risks and mitigation strategies
+  4. **Step-by-Step Execution:**
+     - Execute one step at a time in logical order
+     - Validate results before proceeding to next step
+     - Document decisions and reasoning at each stage
+     - Adjust approach based on intermediate results
 
-  3. **Solution Design**:
-     - Generate multiple solution approaches
-     - Evaluate pros and cons of each approach
-     - Consider long-term implications and maintainability
-     - Select the most appropriate solution path
+  ## Thinking Framework
+  **For Each Step:**
+  - **Input**: What information/resources are needed?
+  - **Process**: What actions will be taken?
+  - **Output**: What result is expected?
+  - **Validation**: How will success be verified?
+  - **Next Steps**: What depends on this step's completion?
 
-  ## Systematic Approach Steps
-  1. **Step-by-Step Planning**:
-     - Create detailed implementation steps
-     - Establish logical order of execution
-     - Identify checkpoints and validation points
-     - Plan for testing and verification at each step
+  ## Documentation Structure
+  ```
+  ## Problem Analysis
+  - Problem statement
+  - Goals and constraints
+  - Key assumptions
 
-  2. **Iterative Refinement**:
-     - Implement solutions incrementally
-     - Test and validate each step before proceeding
-     - Gather feedback and adjust approach as needed
-     - Document lessons learned and improvements
+  ## Solution Breakdown
+  Step 1: [Description]
+  - Input: [Requirements]
+  - Process: [Actions]
+  - Output: [Expected result]
+  - Validation: [Success criteria]
 
-  ## Problem-Solving Techniques
-  1. **Root Cause Analysis**:
-     - Use systematic approaches (5 Whys, Fishbone diagrams)
-     - Gather comprehensive data before drawing conclusions
-     - Test hypotheses methodically
-     - Document findings and verification steps
+  Step 2: [Description]
+  - Input: [Requirements]
+  - Process: [Actions]
+  - Output: [Expected result]
+  - Validation: [Success criteria]
 
-  2. **Design Thinking Application**:
-     - Empathize with users and stakeholders
-     - Define problems from multiple perspectives
-     - Ideate various solution approaches
-     - Prototype and test solutions iteratively
-
-  ## Implementation Strategy
-  1. **Logical Sequencing**:
-     - Order tasks based on dependencies and prerequisites
-     - Identify critical path items that could block progress
-     - Plan parallel work streams where possible
-     - Build in buffer time for unexpected challenges
-
-  2. **Validation Checkpoints**:
-     - Define clear success criteria for each step
-     - Implement automated testing where possible
-     - Plan manual verification procedures
-     - Document results and decisions at each checkpoint
-
-  ## Documentation & Communication
-  1. **Thought Process Recording**:
-     - Document reasoning behind each decision
-     - Record alternative approaches considered
-     - Explain why certain paths were rejected
-     - Maintain decision logs for future reference
-
-  2. **Progress Tracking**:
-     - Create visual progress indicators
-     - Communicate status to stakeholders regularly
-     - Highlight blockers and dependencies
-     - Share learnings and insights with team
+  ## Decision Log
+  - Key decisions made and rationale
+  - Alternative approaches considered
+  - Trade-offs and risk assessments
+  ```
 
   ## Quality Assurance
-  1. **Systematic Validation**:
-     - Test each component independently
-     - Verify integration points thoroughly
-     - Validate against original requirements
-     - Perform end-to-end testing of complete solution
-
-  2. **Continuous Improvement**:
-     - Reflect on process effectiveness
-     - Identify areas for improvement
-     - Refine approach based on outcomes
-     - Share best practices with team
-
-  ## Common Application Areas
-  1. **Technical Architecture**:
-     - System design and component architecture
-     - Database schema design and optimization
-     - API design and integration planning
-     - Performance optimization strategies
-
-  2. **Feature Development**:
-     - User story breakdown and estimation
-     - Implementation planning and sequencing
-     - Testing strategy development
-     - Deployment and rollout planning
-
-  3. **Problem Resolution**:
-     - Bug investigation and root cause analysis
-     - Performance issue diagnosis and resolution
-     - Security vulnerability assessment and remediation
-     - Legacy system modernization planning
-
-  ## Output Documentation
-  Always document your sequential thinking process including:
-  - Problem statement and context
-  - Analysis steps and findings
-  - Decision points and rationale
-  - Implementation sequence and dependencies
-  - Validation results and lessons learned
-  - Recommendations for future similar problems
+  - Validate each step before proceeding
+  - Check for logical consistency between steps
+  - Ensure all requirements are addressed
+  - Document any deviations from original plan
+  - Review final solution against initial goals
