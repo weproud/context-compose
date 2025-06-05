@@ -4,23 +4,11 @@ name: Fix Workflow
 description: Comprehensive task-action workflow with quality gates and validation
 jobs:
   steps:
-    - name: Create a new feature branch
-      uses: actions/create-branch.yaml
-
     - name: Development
       uses: actions/development.yaml
 
     - name: Test
       uses: actions/test.yaml
-
-    - name: Commit the changes
-      uses: actions/git-commit.yaml
-
-    - name: Push the changes
-      uses: actions/git-push.yaml
-
-    - name: Create a pull request
-      uses: actions/create-pull-request.yaml
 
     - name: Task Done
       uses: actions/task-done.yaml

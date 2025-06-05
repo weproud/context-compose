@@ -1,13 +1,9 @@
 import { z } from 'zod';
 
 /**
- * Test 도구 스키마
- * Task Action의 actions와 notifications를 실제 환경에서 테스트하는 도구의 입력 매개변수를 정의합니다.
+ * 공통 테스트 도구 베이스 스키마
  */
-export const TestToolSchema = z.object({
-  testTarget: z
-    .string()
-    .describe('Test target in format: actions/<n> or notify/<n>'),
+const BaseTestToolSchema = z.object({
   projectRoot: z
     .string()
     .describe(
@@ -23,6 +19,40 @@ export const TestToolSchema = z.object({
     .optional()
     .default(false)
     .describe('Enable verbose output'),
+});
+
+/**
+ * Test Action 도구 스키마
+ * Task Action의 actions를 실제 환경에서 테스트하는 도구의 입력 매개변수를 정의합니다.
+ */
+export const TestActionToolSchema = BaseTestToolSchema.extend({
+  testTarget: z
+    .string()
+    .describe(
+      'Test target in format: actions/<action-name> (e.g., actions/create-branch, actions/git-commit)'
+    ),
+});
+
+/**
+ * Test Notify 도구 스키마
+ * Task Action의 notifications를 실제 환경에서 테스트하는 도구의 입력 매개변수를 정의합니다.
+ */
+export const TestNotifyToolSchema = BaseTestToolSchema.extend({
+  testTarget: z
+    .string()
+    .describe(
+      'Test target in format: notify/<notify-name> (e.g., notify/slack-send-message, notify/discord-send-message)'
+    ),
+});
+
+/**
+ * Test 도구 스키마 (기존 호환성을 위해 유지, deprecated)
+ * Task Action의 actions와 notifications를 실제 환경에서 테스트하는 도구의 입력 매개변수를 정의합니다.
+ */
+export const TestToolSchema = BaseTestToolSchema.extend({
+  testTarget: z
+    .string()
+    .describe('Test target in format: actions/<n> or notify/<n>'),
 });
 
 /**
@@ -60,7 +90,17 @@ export const CheckTestEnvToolSchema = z.object({
 });
 
 /**
- * Test 도구 입력 타입
+ * Test Action 도구 입력 타입
+ */
+export type TestActionToolInput = z.infer<typeof TestActionToolSchema>;
+
+/**
+ * Test Notify 도구 입력 타입
+ */
+export type TestNotifyToolInput = z.infer<typeof TestNotifyToolSchema>;
+
+/**
+ * Test 도구 입력 타입 (기존 호환성을 위해 유지, deprecated)
  */
 export type TestToolInput = z.infer<typeof TestToolSchema>;
 
@@ -108,8 +148,11 @@ export interface CheckTestEnvToolResponse {
   success: boolean;
   message: string;
   timestamp: string;
-  checks?: Record<string, {
-    status: 'pass' | 'fail' | 'warning';
-    message: string;
-  }>;
+  checks?: Record<
+    string,
+    {
+      status: 'pass' | 'fail' | 'warning';
+      message: string;
+    }
+  >;
 }
