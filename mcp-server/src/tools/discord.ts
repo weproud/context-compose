@@ -9,7 +9,7 @@ import logger from '../logger.js';
  */
 export function registerDiscordTool(server: FastMCP): void {
   server.addTool({
-    name: 'send_message_discord',
+    name: 'discord_send_message',
     description:
       'Discord로 메시지를 전송합니다 (DISCORD_WEBHOOK_URL 환경변수 필요)',
     parameters: DiscordToolSchema,

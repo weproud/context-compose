@@ -44,7 +44,7 @@ function createCLI(): Command {
     .description('사용 예시를 보여줍니다')
     .option(
       '-c, --command <command>',
-      '특정 명령의 예시만 표시 (init, task, send-message-slack, send-message-discord)'
+      '특정 명령의 예시만 표시 (init, task, slack, discord)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -55,10 +55,10 @@ function createCLI(): Command {
           case 'task':
             showTaskExamples();
             break;
-          case 'send-message-slack':
+          case 'slack':
             showSlackExamples();
             break;
-          case 'send-message-discord':
+          case 'discord':
             showDiscordExamples();
             break;
           // case 'env':
@@ -66,9 +66,7 @@ function createCLI(): Command {
           //   break;
           default:
             console.error(`❌ 알 수 없는 명령: ${options.command}`);
-            console.log(
-              '사용 가능한 명령: init, task, send-message-slack, send-message-discord'
-            );
+            console.log('사용 가능한 명령: init, task, slack, discord');
             process.exit(1);
         }
       } else {
@@ -82,7 +80,7 @@ function createCLI(): Command {
         showDiscordExamples();
         console.log('\n더 자세한 정보는 각 명령에 --help 옵션을 사용하세요.');
         console.log(
-          '예: task-action init --help, task-action task --help, task-action send-message-slack --help, task-action send-message-discord --help'
+          '예: task-action init --help, task-action task --help, task-action slack --help, task-action discord --help'
         );
       }
     });
@@ -96,8 +94,8 @@ function createCLI(): Command {
     console.log('  $ task-action init');
     console.log('  $ task-action task add "create user controller"');
     console.log('  $ task-action task start init');
-    console.log('  $ task-action send-message-slack "Hello, World!"');
-    console.log('  $ task-action send-message-discord "Hello, Discord!"');
+    console.log('  $ task-action slack send-message "Hello, World!"');
+    console.log('  $ task-action discord send-message "Hello, Discord!"');
     console.log('  $ task-action examples');
     console.log('');
     console.log('더 많은 예시를 보려면:');

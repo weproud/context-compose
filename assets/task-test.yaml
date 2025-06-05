@@ -1,0 +1,19 @@
+version: 1
+kind: task
+name: 'task-action-init'
+description: 'task action init'
+
+id: init
+status: done
+jobs:
+  workflow: workflows/feature.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/development.yaml
+    - rules/refactoring.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/playwright.yaml
+prompt: |
+  task-action start task가 remote agent에서 제대로 동작하는지 확인

@@ -210,7 +210,7 @@ npx fastmcp inspect dist/mcp-server/server.js
 ### How to Use MCP Inspector
 
 1. **Start Server**: Run one of the commands above - a web browser will open automatically
-2. **Test Tools**: Test tools like `init`, `send_message_slack` directly in the web UI
+2. **Test Tools**: Test tools like `init`, `slack_send_message` directly in the web UI
 3. **Check Resources**: Explore available resources like `logs://application`
 4. **Real-time Debugging**: Monitor server logs and request/response in real-time
 
@@ -234,7 +234,7 @@ npx fastmcp inspect dist/mcp-server/server.js
 
 #### Testing Messaging Tools
 
-1. Select "send_message_slack" tool
+1. Select "slack_send_message" tool
 2. Enter parameters: `{"message": "Hello from MCP!"}`
 3. Execute and check results (requires SLACK_WEBHOOK_URL in environment)
 
@@ -251,7 +251,7 @@ The CLI provides the same functionality as the MCP server tools, allowing direct
 pnpm task-action init
 
 # Send Slack message
-pnpm task-action send-message-slack "Hello, World!"
+pnpm task-action slack send-message "Hello, World!"
 
 # Send Discord message
 pnpm task-action send-message-discord "Hello, Discord!"
@@ -323,10 +323,10 @@ pnpm task-action start-task complex-task -e -c .taskaction
 
 ```bash
 # Send Slack message (requires SLACK_WEBHOOK_URL environment variable)
-SLACK_WEBHOOK_URL="your-webhook-url" pnpm task-action send-message-slack "Hello from CLI!"
+SLACK_WEBHOOK_URL="your-webhook-url" pnpm task-action slack send-message "Hello from CLI!"
 
 # Send Discord message (requires DISCORD_WEBHOOK_URL environment variable)
-DISCORD_WEBHOOK_URL="your-webhook-url" pnpm task-action send-message-discord "Hello from CLI!"
+DISCORD_WEBHOOK_URL="your-webhook-url" pnpm task-action discord send-message "Hello from CLI!"
 ```
 
 ## 🔧 MCP Server Usage
@@ -389,18 +389,18 @@ The MCP server exposes the following tools:
   - `projectRoot`: Project root directory (absolute path)
   - `configPath`: Configuration directory path (default: `.taskaction`)
   - `enhancedPrompt`: Use detailed enhanced prompts instead of simple prompts (default: `false`)
-- **`send_message_slack`**: Send messages to Slack via webhook
-- **`send_message_discord`**: Send messages to Discord via webhook
+- **`slack_send_message`**: Send messages to Slack via webhook
+- **`discord_send_message`**: Send messages to Discord via webhook
 
 ### Environment Variables
 
 Configure the following environment variables for messaging tools:
 
 ```bash
-# Slack webhook URL for send_message_slack tool
+# Slack webhook URL for slack_send_message tool
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 
-# Discord webhook URL for send_message_discord tool
+# Discord webhook URL for discord_send_message tool
 DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
 ```
 
@@ -480,7 +480,7 @@ User: "Initialize a new MCP project"
 Claude: Uses the init tool to create .hellomcp directory and hello.yaml
 
 User: "Send a message to Slack saying 'Hello team!'"
-Claude: Uses send_message_slack tool to send the message
+Claude: Uses slack_send_message tool to send the message
 ```
 
 ### Using CLI
@@ -494,8 +494,8 @@ pnpm task-action start-task init                    # Simple prompts
 pnpm task-action start-task init --enhanced-prompt  # Enhanced prompts
 
 # Send messages
-SLACK_WEBHOOK_URL="..." pnpm task-action send-message-slack "Deployment complete!"
-DISCORD_WEBHOOK_URL="..." pnpm task-action send-message-discord "Server is online!"
+SLACK_WEBHOOK_URL="..." pnpm task-action slack send-message "Deployment complete!"
+DISCORD_WEBHOOK_URL="..." pnpm task-action discord send-message "Server is online!"
 ```
 
 ## 🤝 Contributing

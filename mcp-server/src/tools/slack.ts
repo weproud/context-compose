@@ -9,7 +9,7 @@ import logger from '../logger.js';
  */
 export function registerSlackTool(server: FastMCP): void {
   server.addTool({
-    name: 'send_message_slack',
+    name: 'slack_send_message',
     description:
       'Slack으로 메시지를 전송합니다 (SLACK_WEBHOOK_URL 환경변수 필요)',
     parameters: SlackToolSchema,
