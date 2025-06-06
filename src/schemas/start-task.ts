@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Start Task 도구 스키마
- * Task Action 프로젝트에서 특정 task를 시작하는 도구의 입력 매개변수를 정의합니다.
+ * Start Task tool schema
+ * Defines input parameters for the tool that starts specific tasks in Task Action projects.
  */
 export const StartTaskToolSchema = z.object({
   taskId: z
     .string()
-    .min(1, 'Task ID는 필수입니다')
-    .describe('시작할 task의 고유 식별자'),
+    .min(1, 'Task ID is required')
+    .describe('Unique identifier for the task to start'),
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
@@ -16,7 +16,7 @@ export const StartTaskToolSchema = z.object({
     .string()
     .optional()
     .default('.taskaction')
-    .describe('설정 디렉토리 경로'),
+    .describe('Configuration directory path'),
   enhancedPrompt: z
     .boolean()
     .optional()
@@ -27,12 +27,12 @@ export const StartTaskToolSchema = z.object({
 });
 
 /**
- * Start Task 도구 입력 타입
+ * Start Task tool input type
  */
 export type StartTaskToolInput = z.infer<typeof StartTaskToolSchema>;
 
 /**
- * Start Task 도구 응답 타입
+ * Start Task tool response type
  */
 export interface StartTaskToolResponse {
   success: boolean;
@@ -43,6 +43,6 @@ export interface StartTaskToolResponse {
     workflow?: string;
     rules?: string[];
     mcps?: string[];
-    [key: string]: string | string[] | undefined; // 동적 섹션 지원
+    [key: string]: string | string[] | undefined; // Dynamic section support
   };
 }

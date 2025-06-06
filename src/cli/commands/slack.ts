@@ -2,20 +2,20 @@ import { Command } from 'commander';
 import { SlackTool } from '../../core/tools/slack.js';
 
 /**
- * Slack 명령 생성
+ * Create Slack command
  */
 export function createSlackCommand(): Command {
   const slackCommand = new Command('slack');
-  slackCommand.description('Slack 관련 명령들');
+  slackCommand.description('Slack related commands');
 
-  // send-message 하위 명령 추가
+  // Add send-message subcommand
   const sendMessageSubCommand = new Command('send-message');
   sendMessageSubCommand
-    .description('Slack으로 메시지를 전송합니다')
-    .argument('<message>', 'Slack으로 전송할 메시지')
+    .description('Send message to Slack')
+    .argument('<message>', 'Message to send to Slack')
     .action(async (message: string) => {
       try {
-        console.log(`📤 Slack 메시지 전송 중...`);
+        console.log(`📤 Sending Slack message...`);
 
         const result = await SlackTool.executeFromParams(
           message,
@@ -24,8 +24,8 @@ export function createSlackCommand(): Command {
 
         if (result.success) {
           console.log(result.message);
-          console.log('📋 전송된 메시지 정보:');
-          console.log(`  - 메시지: "${result.sentMessage.text}"`);
+          console.log('📋 Sent message information:');
+          console.log(`  - Message: "${result.sentMessage.text}"`);
         } else {
           console.error(`❌ ${result.message}`);
           process.exit(1);
@@ -33,33 +33,35 @@ export function createSlackCommand(): Command {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
-        console.error(`❌ Slack 메시지 전송 중 오류 발생: ${errorMessage}`);
+        console.error(
+          `❌ Error occurred while sending Slack message: ${errorMessage}`
+        );
         process.exit(1);
       }
     });
 
   slackCommand.addCommand(sendMessageSubCommand);
 
-  // 도움말 개선
+  // Improve help
   slackCommand.on('--help', () => {
     console.log('');
-    console.log('사용 예시:');
+    console.log('Usage examples:');
     console.log('  $ task-action slack send-message "Hello, World!"');
-    console.log('  $ task-action slack send-message "배포 완료!"');
-    console.log('  $ task-action slack send-message "알림 메시지"');
+    console.log('  $ task-action slack send-message "Deployment completed!"');
+    console.log('  $ task-action slack send-message "Notification message"');
     console.log('');
-    console.log('환경 변수:');
-    console.log('  SLACK_WEBHOOK_URL  Slack Webhook URL (필수)');
+    console.log('Environment variables:');
+    console.log('  SLACK_WEBHOOK_URL  Slack Webhook URL (required)');
     console.log('');
-    console.log('설명:');
-    console.log('  이 명령은 Slack Webhook을 사용하여 메시지를 전송합니다.');
-    console.log('  환경변수 SLACK_WEBHOOK_URL을 설정해야 합니다.');
+    console.log('Description:');
+    console.log('  This command sends messages using Slack Webhook.');
+    console.log('  You must set the SLACK_WEBHOOK_URL environment variable.');
     console.log('');
-    console.log('Slack Webhook URL 설정 방법:');
-    console.log('  1. Slack 앱에서 Incoming Webhooks 활성화');
-    console.log('  2. 채널 선택 후 Webhook URL 복사');
+    console.log('How to set up Slack Webhook URL:');
+    console.log('  1. Enable Incoming Webhooks in Slack app');
+    console.log('  2. Select channel and copy Webhook URL');
     console.log(
-      '  3. 환경변수 설정: export SLACK_WEBHOOK_URL="https://hooks.slack.com/..."'
+      '  3. Set environment variable: export SLACK_WEBHOOK_URL="https://hooks.slack.com/..."'
     );
   });
 
@@ -67,23 +69,27 @@ export function createSlackCommand(): Command {
 }
 
 /**
- * Slack 명령 사용 예시 표시
+ * Display Slack command usage examples
  */
 export function showSlackExamples(): void {
-  console.log('📤 Slack 명령 사용 예시:');
+  console.log('📤 Slack Command Usage Examples:');
   console.log('');
-  console.log('기본 사용법:');
+  console.log('Basic usage:');
   console.log('  $ task-action slack send-message "Hello, World!"');
-  console.log('  → Slack으로 메시지 전송');
+  console.log('  → Send message to Slack');
   console.log('');
-  console.log('다양한 메시지:');
-  console.log('  $ task-action slack send-message "배포 완료!"');
-  console.log('  $ task-action slack send-message "알림 메시지"');
-  console.log('  $ task-action slack send-message "시스템 점검 완료"');
+  console.log('Various messages:');
+  console.log('  $ task-action slack send-message "Deployment completed!"');
+  console.log('  $ task-action slack send-message "Notification message"');
+  console.log(
+    '  $ task-action slack send-message "System maintenance completed"'
+  );
   console.log('');
-  console.log('환경 변수 설정:');
+  console.log('Environment variable setup:');
   console.log(
     '  $ export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/..."'
   );
-  console.log('  $ task-action slack send-message "환경변수로 전송"');
+  console.log(
+    '  $ task-action slack send-message "Send via environment variable"'
+  );
 }

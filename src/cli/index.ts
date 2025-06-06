@@ -12,7 +12,7 @@ import { createTestCommand } from './commands/test-simple.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
- * MCP CLI 도구 메인 프로그램
+ * MCP CLI tool main program
  */
 function createCLI(): Command {
   const program = new Command();
@@ -20,35 +20,35 @@ function createCLI(): Command {
   program
     .name('task-action')
     .description(
-      'Task Action Model Context Protocol (MCP) 서버 도구들을 위한 CLI'
+      'CLI for Task Action Model Context Protocol (MCP) server tools'
     )
     .version('1.0.0');
 
-  // Init 명령 추가
+  // Add Init command
   program.addCommand(createInitCommand());
 
-  // Task 명령 추가 (add, start 하위 명령 포함)
+  // Add Task command (includes add, start subcommands)
   program.addCommand(createTaskCommand());
 
-  // Slack 명령 추가
+  // Add Slack command
   program.addCommand(createSlackCommand());
 
-  // Discord 명령 추가
+  // Add Discord command
   program.addCommand(createDiscordCommand());
 
-  // Test 명령 추가
+  // Add Test command
   program.addCommand(createTestCommand());
 
-  // 환경변수 명령 추가
+  // Add environment variable command
   // program.addCommand(createEnvCommand());
 
-  // Examples 명령 추가
+  // Add Examples command
   const examplesCommand = new Command('examples');
   examplesCommand
-    .description('사용 예시를 보여줍니다')
+    .description('Show usage examples')
     .option(
       '-c, --command <command>',
-      '특정 명령의 예시만 표시 (init, task, slack, discord, test)'
+      'Show examples for specific command only (init, task, slack, discord, test)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -66,33 +66,33 @@ function createCLI(): Command {
             showDiscordExamples();
             break;
           case 'test':
-            console.log('🧪 Test 명령 사용 예시\n');
-            console.log('기본 사용법:');
+            console.log('🧪 Test Command Usage Examples\n');
+            console.log('Basic usage:');
             console.log('  task-action test actions/create-branch');
             console.log('  task-action test notify/slack-send-message');
             console.log('  task-action test actions/git-commit');
             console.log('  task-action test notify/discord-send-message');
-            console.log('\n추가 명령:');
+            console.log('\nAdditional commands:');
             console.log(
-              '  task-action test list                    # 사용 가능한 테스트 목록'
+              '  task-action test list                    # List available tests'
             );
             console.log(
-              '  task-action test check                   # 환경 설정 확인'
+              '  task-action test check                   # Check environment settings'
             );
             console.log(
-              '  task-action test check --type slack     # Slack 설정만 확인'
+              '  task-action test check --type slack     # Check Slack settings only'
             );
             break;
           // case 'env':
           //   showEnvExamples();
           //   break;
           default:
-            console.error(`❌ 알 수 없는 명령: ${options.command}`);
-            console.log('사용 가능한 명령: init, task, slack, discord, test');
+            console.error(`❌ Unknown command: ${options.command}`);
+            console.log('Available commands: init, task, slack, discord, test');
             process.exit(1);
         }
       } else {
-        console.log('🛠️  MCP CLI 도구 사용 예시\n');
+        console.log('🛠️  MCP CLI Tool Usage Examples\n');
         showInitExamples();
         console.log('');
         showTaskExamples();
@@ -100,19 +100,21 @@ function createCLI(): Command {
         showSlackExamples();
         console.log('');
         showDiscordExamples();
-        console.log('\n더 자세한 정보는 각 명령에 --help 옵션을 사용하세요.');
         console.log(
-          '예: task-action init --help, task-action task --help, task-action slack --help, task-action discord --help'
+          '\nFor more detailed information, use the --help option for each command.'
+        );
+        console.log(
+          'Example: task-action init --help, task-action task --help, task-action slack --help, task-action discord --help'
         );
       }
     });
 
   program.addCommand(examplesCommand);
 
-  // 도움말 개선
+  // Improve help
   program.on('--help', () => {
     console.log('');
-    console.log('사용 예시:');
+    console.log('Usage examples:');
     console.log('  $ task-action init');
     console.log('  $ task-action task add "create user controller"');
     console.log('  $ task-action task start init');
@@ -123,7 +125,7 @@ function createCLI(): Command {
     console.log('  $ task-action test notify/slack-send-message');
     console.log('  $ task-action examples');
     console.log('');
-    console.log('더 많은 예시를 보려면:');
+    console.log('To see more examples:');
     console.log('  $ task-action examples');
   });
 

@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 /**
- * Slack 메시지 전송 도구 입력 스키마
+ * Slack message sending tool input schema
  */
 export const SlackToolSchema = z.object({
-  message: z.string().min(1, 'Slack 메시지는 필수입니다'),
+  message: z.string().min(1, 'Slack message is required'),
   projectRoot: z
     .string()
     .describe(
@@ -20,12 +20,12 @@ export const SlackToolSchema = z.object({
 });
 
 /**
- * Slack 도구 입력 타입
+ * Slack tool input type
  */
 export type SlackToolInput = z.infer<typeof SlackToolSchema>;
 
 /**
- * Slack 도구 응답 타입
+ * Slack tool response type
  */
 export interface SlackToolResponse {
   success: boolean;

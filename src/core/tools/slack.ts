@@ -7,57 +7,57 @@ import {
 } from '../../schemas/index.js';
 
 /**
- * Slack webhook 페이로드 인터페이스
+ * Slack webhook payload interface
  */
 interface SlackWebhookPayload {
   text: string;
 }
 
 /**
- * 공통 Slack 메시지 전송 비즈니스 로직
- * CLI와 MCP 서버에서 모두 사용할 수 있는 순수 함수
+ * Common Slack message sending business logic
+ * Pure functions that can be used by both CLI and MCP server
  */
 export class SlackTool {
   /**
-   * Slack 메시지 전송 핵심 로직
+   * Slack message sending core logic
    */
   static async execute(input: SlackToolInput): Promise<SlackToolResponse> {
     const { message } = input;
 
     try {
-      // .env 파일에서 환경변수 로드
+      // Load environment variables from .env file
       EnvLoader.load();
 
-      // Webhook URL 환경변수에서 가져오기
+      // Get webhook URL from environment variables
       const webhookUrl = EnvLoader.get('SLACK_WEBHOOK_URL');
 
       if (!webhookUrl) {
         return {
           success: false,
           message:
-            'Slack Webhook URL이 설정되지 않았습니다. SLACK_WEBHOOK_URL 환경변수를 설정해주세요.',
+            'Slack Webhook URL is not configured. Please set the SLACK_WEBHOOK_URL environment variable.',
           sentMessage: {
             text: message,
           },
         };
       }
 
-      // Slack webhook 페이로드 구성
+      // Configure Slack webhook payload
       const payload: SlackWebhookPayload = {
         text: message,
       };
 
-      // Slack webhook으로 POST 요청 전송
+      // Send POST request to Slack webhook
       const response = await FetchUtil.post<string>(webhookUrl, payload, {
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 10000, // 10초 타임아웃
+        timeout: 10000, // 10 second timeout
       });
 
       return {
         success: true,
-        message: `✅ Slack 메시지가 성공적으로 전송되었습니다!`,
+        message: `✅ Slack message sent successfully!`,
         slackResponse: response,
         sentMessage: {
           text: message,
@@ -68,7 +68,7 @@ export class SlackTool {
         error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        message: `Slack 메시지 전송 실패: ${errorMessage}`,
+        message: `Failed to send Slack message: ${errorMessage}`,
         sentMessage: {
           text: message,
         },
@@ -77,20 +77,20 @@ export class SlackTool {
   }
 
   /**
-   * 입력 유효성 검사 및 실행
+   * Input validation and execution
    */
   static async executeWithValidation(
     args: unknown
   ): Promise<SlackToolResponse> {
-    // Zod 스키마로 입력 검증
+    // Validate input with Zod schema
     const validatedInput = SlackToolSchema.parse(args);
 
-    // 비즈니스 로직 실행
+    // Execute business logic
     return this.execute(validatedInput);
   }
 
   /**
-   * CLI용 헬퍼 함수 - 직접 매개변수 전달
+   * CLI helper function - direct parameter passing
    */
   static async executeFromParams(
     message: string,
@@ -101,7 +101,7 @@ export class SlackTool {
 }
 
 /**
- * 간단한 함수형 인터페이스 (선택사항)
+ * Simple functional interface (optional)
  */
 export async function sendSlackMessage(
   message: string,
@@ -111,7 +111,7 @@ export async function sendSlackMessage(
 }
 
 /**
- * MCP 도구용 헬퍼 함수
+ * MCP tool helper function
  */
 export async function executeSlackTool(
   args: unknown

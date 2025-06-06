@@ -2,20 +2,20 @@ import { Command } from 'commander';
 import { DiscordTool } from '../../core/tools/discord.js';
 
 /**
- * Discord 명령 생성
+ * Create Discord command
  */
 export function createDiscordCommand(): Command {
   const discordCommand = new Command('discord');
-  discordCommand.description('Discord 관련 명령들');
+  discordCommand.description('Discord related commands');
 
-  // send-message 하위 명령 추가
+  // Add send-message subcommand
   const sendMessageSubCommand = new Command('send-message');
   sendMessageSubCommand
-    .description('Discord로 메시지를 전송합니다')
-    .argument('<message>', 'Discord로 전송할 메시지')
+    .description('Send message to Discord')
+    .argument('<message>', 'Message to send to Discord')
     .action(async (message: string) => {
       try {
-        console.log(`📤 Discord 메시지 전송 중...`);
+        console.log(`📤 Sending Discord message...`);
 
         const result = await DiscordTool.executeFromParams(
           message,
@@ -24,8 +24,8 @@ export function createDiscordCommand(): Command {
 
         if (result.success) {
           console.log(result.message);
-          console.log('📋 전송된 메시지 정보:');
-          console.log(`  - 메시지: "${result.sentMessage.content}"`);
+          console.log('📋 Sent message information:');
+          console.log(`  - Message: "${result.sentMessage.content}"`);
         } else {
           console.error(`❌ ${result.message}`);
           process.exit(1);
@@ -33,7 +33,9 @@ export function createDiscordCommand(): Command {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
-        console.error(`❌ Discord 메시지 전송 중 오류 발생: ${errorMessage}`);
+        console.error(
+          `❌ Error occurred while sending Discord message: ${errorMessage}`
+        );
         process.exit(1);
       }
     });

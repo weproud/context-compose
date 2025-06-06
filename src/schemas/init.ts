@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 /**
- * Init 도구 스키마
- * Task Action 프로젝트를 초기화하는 도구의 입력 매개변수를 정의합니다.
+ * Init tool schema
+ * Defines input parameters for the tool that initializes Task Action projects.
  */
 export const InitToolSchema = z.object({
   projectRoot: z
@@ -20,12 +20,12 @@ export const InitToolSchema = z.object({
 });
 
 /**
- * Init 도구 입력 타입
+ * Init tool input type
  */
 export type InitToolInput = z.infer<typeof InitToolSchema>;
 
 /**
- * Init 도구 응답 타입
+ * Init tool response type
  */
 export interface InitToolResponse {
   success: boolean;

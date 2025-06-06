@@ -3,7 +3,7 @@ discord_webhook_url: https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
 github_token: YOUR_GITHUB_TOKEN
 project:
   name: task-action
-  description: task-action 프로젝트
+  description: task-action project
   author: raiiz
   version: 1.0.0
   repository: https://github.com/weproud/task-action.git

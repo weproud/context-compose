@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 /**
- * Discord 메시지 전송 도구 입력 스키마
+ * Discord message sending tool input schema
  */
 export const DiscordToolSchema = z.object({
-  message: z.string().min(1, 'Discord 메시지는 필수입니다'),
+  message: z.string().min(1, 'Discord message is required'),
   projectRoot: z
     .string()
     .describe(
@@ -20,12 +20,12 @@ export const DiscordToolSchema = z.object({
 });
 
 /**
- * Discord 도구 입력 타입
+ * Discord tool input type
  */
 export type DiscordToolInput = z.infer<typeof DiscordToolSchema>;
 
 /**
- * Discord 도구 응답 타입
+ * Discord tool response type
  */
 export interface DiscordToolResponse {
   success: boolean;

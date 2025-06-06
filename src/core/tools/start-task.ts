@@ -8,7 +8,7 @@ import type {
 import { StartTaskToolSchema } from '../../schemas/start-task.js';
 
 /**
- * Task YAML 파일 구조 타입
+ * Task YAML file structure type
  */
 interface TaskYaml {
   version: number;
@@ -21,13 +21,13 @@ interface TaskYaml {
     workflow?: string;
     rules?: string[];
     mcps?: string[];
-    [key: string]: string | string[] | undefined; // 동적 섹션 지원
+    [key: string]: string | string[] | undefined; // Dynamic section support
   };
   prompt?: string;
 }
 
 /**
- * Workflow/Rule/MCP YAML 파일 구조 타입
+ * Workflow/Rule/MCP YAML file structure type
  */
 interface ComponentYaml {
   version: number;
@@ -39,22 +39,22 @@ interface ComponentYaml {
 }
 
 /**
- * Start Task 도구 핵심 로직
+ * Start Task tool core logic
  */
 export class StartTaskTool {
   /**
-   * Task ID 포맷팅 (하이픈 유지)
+   * Task ID formatting (preserve hyphens)
    */
   static formatTaskId(taskId: string): string {
     return taskId;
   }
 
   /**
-   * YAML 파일 읽기 및 파싱
+   * Read and parse YAML file
    */
   static readYamlFile<T = ComponentYaml>(filePath: string): T {
     if (!existsSync(filePath)) {
-      throw new Error(`파일을 찾을 수 없습니다: ${filePath}`);
+      throw new Error(`File not found: ${filePath}`);
     }
 
     try {
@@ -63,13 +63,13 @@ export class StartTaskTool {
       return parsed;
     } catch (error) {
       throw new Error(
-        `YAML 파일 파싱 실패 (${filePath}): ${error instanceof Error ? error.message : String(error)}`
+        `YAML file parsing failed (${filePath}): ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
 
   /**
-   * Task 파일 읽기
+   * Read task file
    */
   static readTaskFile(
     projectRoot: string,
@@ -87,7 +87,7 @@ export class StartTaskTool {
   }
 
   /**
-   * Workflow 파일 읽기
+   * Read workflow file
    */
   static readWorkflowFile(
     projectRoot: string,
@@ -99,7 +99,7 @@ export class StartTaskTool {
   }
 
   /**
-   * Rules 파일들 읽기
+   * Read rules files
    */
   static readRulesFiles(
     projectRoot: string,
@@ -113,7 +113,7 @@ export class StartTaskTool {
   }
 
   /**
-   * MCPs 파일들 읽기
+   * Read MCPs files
    */
   static readMcpsFiles(
     projectRoot: string,
@@ -167,7 +167,7 @@ export class StartTaskTool {
 
       try {
         if (typeof sectionValue === 'string') {
-          // 단일 파일 (예: workflow)
+          // Single file (e.g., workflow)
           const component = this.readComponentFile(
             projectRoot,
             configPath,
@@ -175,7 +175,7 @@ export class StartTaskTool {
           );
           processedSections[sectionName] = [component];
         } else if (Array.isArray(sectionValue)) {
-          // 파일 배열 (예: rules, mcps, notify, issue 등)
+          // File array (e.g., rules, mcps, notify, issue, etc.)
           const components = this.readComponentFiles(
             projectRoot,
             configPath,
@@ -185,7 +185,7 @@ export class StartTaskTool {
         }
       } catch (error) {
         console.warn(
-          `⚠️  ${sectionName} 파일 읽기 실패: ${error instanceof Error ? error.message : String(error)}`
+          `⚠️  Failed to read ${sectionName} files: ${error instanceof Error ? error.message : String(error)}`
         );
         processedSections[sectionName] = [];
       }
@@ -218,11 +218,11 @@ export class StartTaskTool {
     for (const [sectionName, components] of Object.entries(processedSections)) {
       if (components.length === 0) continue;
 
-      // 섹션 제목 생성
+      // Generate section title
       const sectionTitle = this.getSectionTitle(sectionName);
       sections.push(`\n## ${sectionTitle}`);
 
-      // 단일 컴포넌트인 경우 (예: workflow)
+      // Single component case (e.g., workflow)
       if (components.length === 1) {
         const component = components[0];
         if (component) {
@@ -235,7 +235,7 @@ export class StartTaskTool {
           sections.push(`\n${promptToUse}`);
         }
       } else {
-        // 다중 컴포넌트인 경우 (예: rules, mcps, notify, issue 등)
+        // Multiple components case (e.g., rules, mcps, notify, issue, etc.)
         components.forEach((component, index) => {
           if (component) {
             sections.push(`\n### ${index + 1}. ${component.name}`);
@@ -254,7 +254,7 @@ export class StartTaskTool {
   }
 
   /**
-   * 섹션 이름을 사용자 친화적인 제목으로 변환
+   * Convert section name to user-friendly title
    */
   static getSectionTitle(sectionName: string): string {
     const titleMap: Record<string, string> = {
@@ -272,7 +272,7 @@ export class StartTaskTool {
   }
 
   /**
-   * Start Task 핵심 로직
+   * Start Task core logic
    */
   static async execute(
     input: StartTaskToolInput
@@ -280,7 +280,7 @@ export class StartTaskTool {
     const { taskId, projectRoot, configPath, enhancedPrompt = false } = input;
 
     try {
-      // 1. Task 파일 읽기
+      // 1. Read task file
       const taskYaml = this.readTaskFile(projectRoot, configPath, taskId);
 
       // 2. Check task status - return completion message if already done
@@ -310,7 +310,7 @@ export class StartTaskTool {
 
       return {
         success: true,
-        message: `✅ Task '${taskId}' 시작 준비가 완료되었습니다.`,
+        message: `✅ Task '${taskId}' is ready to start.`,
         taskId,
         combinedPrompt,
         files: taskYaml.jobs,
@@ -318,7 +318,7 @@ export class StartTaskTool {
     } catch (error) {
       return {
         success: false,
-        message: `❌ Task 시작 실패: ${error instanceof Error ? error.message : String(error)}`,
+        message: `❌ Failed to start task: ${error instanceof Error ? error.message : String(error)}`,
         taskId,
       };
     }
@@ -326,7 +326,7 @@ export class StartTaskTool {
 }
 
 /**
- * Start Task 도구 실행 함수
+ * Start Task tool execution function
  */
 export async function executeStartTaskTool(
   args: unknown

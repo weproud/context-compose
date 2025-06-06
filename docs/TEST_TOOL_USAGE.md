@@ -1,28 +1,28 @@
-# Task Action Test Tool 사용 가이드
+# Task Action Test Tool Usage Guide
 
-## 개요
+## Overview
 
-Task Action Test Tool은 AI 코딩 도구(Cursor, Windsurf 등)가 task-action의 개별 액션과 알림을 실제 환경에서 테스트할 수 있도록 하는 도구입니다.
+Task Action Test Tool is a tool that allows AI coding tools (Cursor, Windsurf, etc.) to test individual actions and notifications of task-action in a real environment.
 
-## 🎯 주요 기능
+## 🎯 Key Features
 
-### 1. **MCP 도구로 사용**
+### 1. **Use as MCP Tool**
 
-- `task-action-test`: 개별 액션/알림 테스트 실행
-- `task-action-list-tests`: 사용 가능한 테스트 목록 조회
-- `task-action-check-test-env`: 테스트 환경 설정 확인
+- `task-action-test`: Execute individual action/notification tests
+- `task-action-list-tests`: Query available test list
+- `task-action-check-test-env`: Check test environment settings
 
-### 2. **CLI 도구로 사용**
+### 2. **Use as CLI Tool**
 
-- `task-action test <target>`: 직접 테스트 실행
-- `task-action test list`: 사용 가능한 테스트 목록
-- `task-action test check`: 환경 설정 확인
+- `task-action test <target>`: Direct test execution
+- `task-action test list`: Available test list
+- `task-action test check`: Environment settings check
 
-## 🚀 사용 방법
+## 🚀 Usage
 
-### **MCP 도구 사용 (AI 코딩 도구에서)**
+### **Using MCP Tool (in AI Coding Tools)**
 
-#### 1. 액션 테스트
+#### 1. Action Test
 
 ```json
 {
@@ -33,7 +33,7 @@ Task Action Test Tool은 AI 코딩 도구(Cursor, Windsurf 등)가 task-action�
 }
 ```
 
-#### 2. 알림 테스트
+#### 2. Notification Test
 
 ```json
 {
@@ -44,7 +44,7 @@ Task Action Test Tool은 AI 코딩 도구(Cursor, Windsurf 등)가 task-action�
 }
 ```
 
-#### 3. 상세 옵션
+#### 3. Detailed Options
 
 ```json
 {
@@ -58,87 +58,87 @@ Task Action Test Tool은 AI 코딩 도구(Cursor, Windsurf 등)가 task-action�
 }
 ```
 
-### **CLI 사용**
+### **CLI Usage**
 
-#### 1. 기본 테스트 실행
+#### 1. Basic Test Execution
 
 ```bash
-# Git 브랜치 생성 테스트
+# Git branch creation test
 task-action test actions/create-branch
 
-# Slack 메시지 전송 테스트
+# Slack message sending test
 task-action test notify/slack-send-message
 
-# Discord 메시지 전송 테스트
+# Discord message sending test
 task-action test notify/discord-send-message
 ```
 
-#### 2. 옵션 사용
+#### 2. Using Options
 
 ```bash
-# 작업 디렉토리 지정
+# Specify working directory
 task-action test actions/git-commit --working-dir /path/to/project
 ```
 
-#### 3. 도움말 명령
+#### 3. Help Commands
 
 ```bash
-# 사용 가능한 테스트 목록
+# Available test list
 task-action test list
 
-# 환경 설정 확인
+# Environment settings check
 task-action test check
 
-# 특정 환경만 확인
+# Check specific environment only
 task-action test check --type slack
 ```
 
-## 📋 지원하는 테스트
+## 📋 Supported Tests
 
-### **Actions (액션)**
+### **Actions**
 
-- `create-branch`: Git 브랜치 생성 테스트
-- `git-commit`: Git 커밋 생성 테스트
-- `git-push`: Git push 테스트 (dry-run)
-- `create-pull-request`: Pull Request 생성 테스트
-- `development`: 개발 워크플로우 테스트
-- `task-done`: 작업 완료 처리 테스트
+- `create-branch`: Git branch creation test
+- `git-commit`: Git commit creation test
+- `git-push`: Git push test (dry-run)
+- `create-pull-request`: Pull Request creation test
+- `development`: Development workflow test
+- `task-done`: Task completion handling test
 
-### **Notifications (알림)**
+### **Notifications**
 
-- `slack-send-message`: Slack 메시지 전송 테스트
-- `discord-send-message`: Discord 메시지 전송 테스트
+- `slack-send-message`: Slack message sending test
+- `discord-send-message`: Discord message sending test
 
-## 🔧 환경 설정
+## 🔧 Environment Setup
 
-### **필수 환경변수**
+### **Required Environment Variables**
 
 ```bash
-# Slack 알림용
+# For Slack notifications
 export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
 
-# Discord 알림용
+# For Discord notifications
 export DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK"
 ```
 
-### **선택적 환경변수**
+### **Optional Environment Variables**
 
 ```bash
-# Slack 채널 지정 (기본값: #general)
+# Specify Slack channel (default: #general)
 export SLACK_CHANNEL="#development"
 
-# GitHub 작업용
+# For GitHub operations
 export GITHUB_TOKEN="your_github_token"
 ```
 
-## 🎯 AI 코딩 도구 사용 예시
+## 🎯 AI Coding Tool Usage Examples
 
-### **Cursor에서 사용**
+### **Using in Cursor**
 
 ```
-사용자: "task-action test actions/create-branch 해줘"
+User: "Please test task-action test actions/create-branch"
 
-AI가 실행할 MCP 도구:
+MCP tool to be executed by AI:
 {
   "tool": "task-action-test",
   "parameters": {
@@ -147,12 +147,12 @@ AI가 실행할 MCP 도구:
 }
 ```
 
-### **Windsurf에서 사용**
+### **Using in Windsurf**
 
 ```
-사용자: "Slack으로 테스트 메시지 보내는 거 테스트해줘"
+User: "Please test sending a test message to Slack"
 
-AI가 실행할 MCP 도구:
+MCP tool to be executed by AI:
 {
   "tool": "task-action-test",
   "parameters": {
@@ -162,112 +162,108 @@ AI가 실행할 MCP 도구:
 }
 ```
 
-## 📊 테스트 결과 예시
+## 📊 Test Result Examples
 
-### **성공 케이스**
+### **Success Case**
 
 ```json
 {
   "success": true,
   "message": "✅ Action 'Create Branch' executed successfully",
   "testTarget": "actions/create-branch",
-  "executionTime": "1234ms",
-  "timestamp": "2024-01-01T12:00:00.000Z",
+  "executionTime": "1.2s",
   "details": {
-    "actionName": "Create Branch",
-    "description": "Create a new Git branch with proper naming conventions",
+    "branch": "test-branch-1704110400000",
     "output": "Created and cleaned up test branch: test-branch-1704110400000"
   }
 }
 ```
 
-### **실패 케이스**
+### **Failure Case**
 
 ```json
 {
   "success": false,
   "message": "❌ Notification 'slack-send-message' failed",
   "testTarget": "notify/slack-send-message",
-  "executionTime": "567ms",
-  "timestamp": "2024-01-01T12:00:00.000Z",
+  "executionTime": "0.5s",
   "details": {
-    "notifyName": "slack-send-message",
     "error": "SLACK_WEBHOOK_URL environment variable not set"
   }
 }
 ```
 
-## 🔍 문제 해결
+## 🔍 Troubleshooting
 
-### **일반적인 오류**
+### **Common Errors**
 
-#### 1. 환경변수 누락
+#### 1. Missing Environment Variables
 
 ```
 Error: SLACK_WEBHOOK_URL environment variable not set
 ```
 
-**해결방법**: 필요한 환경변수를 설정하세요.
+**Solution**: Set the required environment variables.
 
-#### 2. Git 설정 오류
+#### 2. Git Configuration Error
 
 ```
 Error: Git not found or not configured
 ```
 
-**해결방법**: Git을 설치하고 설정하세요.
+**Solution**: Install and configure Git.
 
-#### 3. 권한 오류
+#### 3. Permission Error
 
 ```
 Error: Permission denied
 ```
 
-**해결방법**: 적절한 권한을 설정하거나 sudo를 사용하세요.
+**Solution**: Set appropriate permissions or use sudo.
 
-### **환경 확인 명령**
+### **Environment Check Commands**
 
 ```bash
-# 전체 환경 확인
+# Check entire environment
 task-action test check
 
-# 특정 서비스만 확인
+# Check specific service only
 task-action test check --type slack
 task-action test check --type discord
 task-action test check --type git
 ```
 
-## 🎉 실제 사용 시나리오
+## 🎉 Real Usage Scenarios
 
-### **개발 워크플로우 테스트**
+### **Development Workflow Testing**
 
-1. 새 기능 브랜치 생성 테스트
-2. 코드 변경 후 커밋 테스트
-3. Slack으로 진행 상황 알림 테스트
-4. Pull Request 생성 테스트
+1. New feature branch creation test
+2. Code change and commit test
+3. Slack progress notification test
+4. Pull Request creation test
 
 ```bash
-# 1. 브랜치 생성 테스트
+# 1. Branch creation test
 task-action test actions/create-branch
 
-# 2. 커밋 테스트
+# 2. Commit test
 task-action test actions/git-commit
 
-# 3. Slack 알림 테스트
+# 3. Slack notification test
 task-action test notify/slack-send-message
 
-# 4. PR 생성 테스트
+# 4. PR creation test
 task-action test actions/create-pull-request
 ```
 
-### **CI/CD 파이프라인 테스트**
+### **CI/CD Pipeline Testing**
 
 ```bash
-# 배포 성공 알림 테스트
+# Deployment success notification test
 task-action test notify/slack-send-message --verbose
 
-# Discord 팀 알림 테스트
+# Discord team notification test
 task-action test notify/discord-send-message --verbose
 ```
 
-이 도구를 통해 AI 코딩 도구가 task-action의 모든 기능을 안전하고 효율적으로 테스트할 수 있습니다.
+This tool allows AI coding tools to safely and efficiently test all features of task-action.

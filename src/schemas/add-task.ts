@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Add Task 도구 스키마
- * Task Action 프로젝트에 새로운 task를 추가하는 도구의 입력 매개변수를 정의합니다.
+ * Add Task tool schema
+ * Defines input parameters for the tool that adds new tasks to Task Action projects.
  */
 export const AddTaskToolSchema = z.object({
   taskId: z
     .string()
-    .min(1, 'Task ID는 필수입니다')
-    .describe('생성할 task의 고유 식별자'),
+    .min(1, 'Task ID is required')
+    .describe('Unique identifier for the task to be created'),
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
@@ -16,7 +16,7 @@ export const AddTaskToolSchema = z.object({
     .string()
     .optional()
     .default('.taskaction')
-    .describe('설정 디렉토리 경로'),
+    .describe('Configuration directory path'),
   enhancedPrompt: z
     .boolean()
     .optional()
@@ -27,12 +27,12 @@ export const AddTaskToolSchema = z.object({
 });
 
 /**
- * Add Task 도구 입력 타입
+ * Add Task tool input type
  */
 export type AddTaskToolInput = z.infer<typeof AddTaskToolSchema>;
 
 /**
- * Add Task 도구 응답 타입
+ * Add Task tool response type
  */
 export interface AddTaskToolResponse {
   success: boolean;
