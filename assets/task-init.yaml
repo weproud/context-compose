@@ -15,7 +15,6 @@ jobs:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/playwright.yaml
-  notify:
-    - notify/slack-send-message.yaml
+  notify: []
 prompt: |
   this is init task

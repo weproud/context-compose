@@ -31,9 +31,3 @@ export {
 
 // Task Status 스키마 (schemas에서 re-export)
 export { TaskStatusToolSchema } from '../../schemas/task-status.js';
-
-// Slack 도구
-export { SlackTool, executeSlackTool } from './slack.js';
-
-// Discord 도구
-export { DiscordTool, executeDiscordTool } from './discord.js';

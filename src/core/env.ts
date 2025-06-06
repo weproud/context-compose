@@ -81,29 +81,6 @@ export class EnvLoader {
   }
 
   /**
-   * 메시징 관련 환경변수들을 확인합니다.
-   * @returns 설정된 메시징 서비스 목록
-   */
-  static checkMessagingConfig(): {
-    slack: boolean;
-    discord: boolean;
-    slackUrl?: string;
-    discordUrl?: string;
-  } {
-    this.load();
-
-    const slackUrl = process.env.SLACK_WEBHOOK_URL;
-    const discordUrl = process.env.DISCORD_WEBHOOK_URL;
-
-    return {
-      slack: !!slackUrl,
-      discord: !!discordUrl,
-      ...(slackUrl && { slackUrl }),
-      ...(discordUrl && { discordUrl }),
-    };
-  }
-
-  /**
    * 환경변수 설정 상태를 출력합니다.
    */
   static printStatus(): void {
@@ -111,11 +88,6 @@ export class EnvLoader {
 
     console.log('🔧 환경변수 설정 상태:');
     console.log(`  NODE_ENV: ${process.env.NODE_ENV || '미설정'}`);
-
-    const messaging = this.checkMessagingConfig();
-    console.log('📤 메시징 설정:');
-    console.log(`  Slack: ${messaging.slack ? '✅ 설정됨' : '❌ 미설정'}`);
-    console.log(`  Discord: ${messaging.discord ? '✅ 설정됨' : '❌ 미설정'}`);
 
     if (process.env.OPENWEATHER_API_KEY) {
       console.log(`  OpenWeather API: ✅ 설정됨`);

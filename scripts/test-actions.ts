@@ -306,7 +306,7 @@ program
 
 program
   .command('type <actionType>')
-  .description('Test actions by type (e.g., git, slack, discord)')
+  .description('Test actions by type (e.g., git)')
   .option('-m, --mode <mode>', 'Test mode: mock, integration, e2e', 'mock')
   .option('-v, --verbose', 'Verbose output', false)
   .option(

@@ -9,10 +9,7 @@ export function createTestCommand(): Command {
 
   testCommand
     .description('Test task-action actions and notifications')
-    .argument(
-      '<target>',
-      'Test target in format: actions/<name> or notify/<name>'
-    )
+    .argument('<target>', 'Test target in format: actions/<n> or notify/<n>')
     .option(
       '-w, --working-dir <dir>',
       'Working directory for test execution',
@@ -81,23 +78,12 @@ export function createTestCommand(): Command {
       console.log('  • create-pull-request - Create a pull request');
       console.log('');
 
-      console.log('📢 Notifications:');
-      console.log('  • slack-send-message - Send message to Slack');
-      console.log('  • discord-send-message - Send message to Discord');
-      console.log('');
-
       console.log('💡 Usage Examples:');
       console.log('  task-action test actions/create-branch');
-      console.log('  task-action test notify/slack-send-message');
       console.log('  task-action test actions/git-commit');
-      console.log('  task-action test notify/discord-send-message');
 
       console.log('\n🔧 Environment Variables:');
-      console.log('  Required:');
-      console.log('    SLACK_WEBHOOK_URL - For Slack notifications');
-      console.log('    DISCORD_WEBHOOK_URL - For Discord notifications');
       console.log('  Optional:');
-      console.log('    SLACK_CHANNEL - Slack channel (defaults to #general)');
       console.log('    GITHUB_TOKEN - For GitHub operations');
     });
 

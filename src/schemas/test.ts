@@ -51,7 +51,7 @@ export const TestNotifyToolSchema = BaseTestToolSchema.extend({
   testTarget: z
     .string()
     .describe(
-      'Test target in format: <notify-name> or notify/<notify-name> (e.g., slack-send-message, notify/slack-send-message, discord-send-message). When using simple name, searches in assets/notify first, then .taskaction/notify'
+      'Test target in format: <notify-name> or notify/<notify-name>. When using simple name, searches in assets/notify first, then .taskaction/notify'
     ),
 });
 
@@ -95,7 +95,7 @@ export const ListTestsToolSchema = z.object({
  */
 export const CheckTestEnvToolSchema = z.object({
   checkType: z
-    .enum(['all', 'slack', 'discord', 'git'])
+    .enum(['all', 'git'])
     .optional()
     .default('all')
     .describe('Type of environment check'),

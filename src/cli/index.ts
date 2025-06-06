@@ -3,11 +3,6 @@
 import { Command } from 'commander';
 import { createInitCommand, showInitExamples } from './commands/init.js';
 import { createTaskCommand, showTaskExamples } from './commands/task.js';
-import { createSlackCommand, showSlackExamples } from './commands/slack.js';
-import {
-  createDiscordCommand,
-  showDiscordExamples,
-} from './commands/discord.js';
 import { createTestCommand } from './commands/test-simple.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
@@ -30,12 +25,6 @@ function createCLI(): Command {
   // Add Task command (includes add, start subcommands)
   program.addCommand(createTaskCommand());
 
-  // Add Slack command
-  program.addCommand(createSlackCommand());
-
-  // Add Discord command
-  program.addCommand(createDiscordCommand());
-
   // Add Test command
   program.addCommand(createTestCommand());
 
@@ -48,7 +37,7 @@ function createCLI(): Command {
     .description('Show usage examples')
     .option(
       '-c, --command <command>',
-      'Show examples for specific command only (init, task, slack, discord, test)'
+      'Show examples for specific command only (init, task, test)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -59,19 +48,11 @@ function createCLI(): Command {
           case 'task':
             showTaskExamples();
             break;
-          case 'slack':
-            showSlackExamples();
-            break;
-          case 'discord':
-            showDiscordExamples();
-            break;
           case 'test':
             console.log('🧪 Test Command Usage Examples\n');
             console.log('Basic usage:');
             console.log('  task-action test actions/create-branch');
-            console.log('  task-action test notify/slack-send-message');
             console.log('  task-action test actions/git-commit');
-            console.log('  task-action test notify/discord-send-message');
             console.log('\nAdditional commands:');
             console.log(
               '  task-action test list                    # List available tests'
@@ -79,16 +60,13 @@ function createCLI(): Command {
             console.log(
               '  task-action test check                   # Check environment settings'
             );
-            console.log(
-              '  task-action test check --type slack     # Check Slack settings only'
-            );
             break;
           // case 'env':
           //   showEnvExamples();
           //   break;
           default:
             console.error(`❌ Unknown command: ${options.command}`);
-            console.log('Available commands: init, task, slack, discord, test');
+            console.log('Available commands: init, task, test');
             process.exit(1);
         }
       } else {
@@ -96,15 +74,11 @@ function createCLI(): Command {
         showInitExamples();
         console.log('');
         showTaskExamples();
-        console.log('');
-        showSlackExamples();
-        console.log('');
-        showDiscordExamples();
         console.log(
           '\nFor more detailed information, use the --help option for each command.'
         );
         console.log(
-          'Example: task-action init --help, task-action task --help, task-action slack --help, task-action discord --help'
+          'Example: task-action init --help, task-action task --help'
         );
       }
     });
@@ -119,10 +93,7 @@ function createCLI(): Command {
     console.log('  $ task-action task add "create user controller"');
     console.log('  $ task-action task start init');
     console.log('  $ task-action task status init done');
-    console.log('  $ task-action slack send-message "Hello, World!"');
-    console.log('  $ task-action discord send-message "Hello, Discord!"');
     console.log('  $ task-action test actions/create-branch');
-    console.log('  $ task-action test notify/slack-send-message');
     console.log('  $ task-action examples');
     console.log('');
     console.log('To see more examples:');

@@ -9,26 +9,12 @@ export {
   type InitToolResponse,
 } from './init.js';
 
-// Slack tool schema
-export {
-  SlackToolSchema,
-  type SlackToolInput,
-  type SlackToolResponse,
-} from './slack.js';
-
 // Add Task tool schema
 export {
   AddTaskToolSchema,
   type AddTaskToolInput,
   type AddTaskToolResponse,
 } from './add-task.js';
-
-// Discord tool schema
-export {
-  DiscordToolSchema,
-  type DiscordToolInput,
-  type DiscordToolResponse,
-} from './discord.js';
 
 // Start Task tool schema
 export { StartTaskToolSchema, type StartTaskToolInput } from './start-task.js';
