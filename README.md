@@ -87,10 +87,7 @@ task-action/
 │   │   └── feature.yaml         # 기능 개발 워크플로우
 │   ├── templates/               # Mustache 템플릿
 │   │   └── feature-task.mustache # 기능 작업 템플릿
-│   ├── task-init.yaml           # 초기화 작업 정의
-│   ├── task-test.yaml           # 테스트 작업 정의
-│   ├── tasks.yaml               # 작업 목록
-│   └── vars.yaml                # 변수 정의
+│   └── task-init.yaml           # 초기화 작업 정의
 ├── mcp-server/                  # MCP 서버 (FastMCP 기반)
 │   ├── src/                     # MCP 서버 소스 코드
 │   │   ├── tools/               # 도구 정의
@@ -223,9 +220,7 @@ assets/
 ├── rules/              # 개발 규칙 및 가이드라인
 ├── mcps/               # MCP 도구 설정
 ├── notify/             # 알림 설정
-├── templates/          # Mustache 템플릿
-├── tasks.yaml          # 작업 목록
-└── vars.yaml           # 전역 변수
+└── templates/          # Mustache 템플릿
 ```
 
 #### 공유 비즈니스 로직

@@ -11,7 +11,7 @@ export function registerTaskStatusTool(server: FastMCP): void {
   server.addTool({
     name: 'task_status',
     description:
-      'Update task status (todo, ready, in-progress, done). Synchronizes status in both individual task files and tasks.yaml file. The projectRoot parameter must specify the project root directory.',
+      'Update task status (todo, ready, in-progress, done). Updates status in individual task files. The projectRoot parameter must specify the project root directory.',
     parameters: TaskStatusToolSchema,
     execute: async (args: unknown) => {
       try {

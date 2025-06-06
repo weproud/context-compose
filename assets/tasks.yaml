@@ -1,7 +1,0 @@
-version: 1
-kind: tasklist
-name: task-action task list
-description: task-action 프로젝트
-tasks:
-  - id: init
-    status: todo

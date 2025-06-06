@@ -26,19 +26,7 @@ interface TaskYaml {
   prompt?: string;
 }
 
-/**
- * Tasks List YAML 파일 구조 타입
- */
-interface TasksListYaml {
-  version: number;
-  kind: string;
-  name: string;
-  description: string;
-  tasks: Array<{
-    id: string;
-    status: string;
-  }>;
-}
+// TasksListYaml interface removed - tasks.yaml is no longer used
 
 /**
  * Task Status 업데이트 도구 클래스
@@ -101,35 +89,7 @@ export async function updateTaskStatus(
     writeFileSync(taskFilePath, updatedTaskContent, 'utf-8');
     updatedFiles.push(taskFilePath);
 
-    // 2. tasks.yaml 파일 업데이트
-    const tasksFilePath = join(configDir, 'tasks.yaml');
-
-    if (existsSync(tasksFilePath)) {
-      const tasksFileContent = readFileSync(tasksFilePath, 'utf-8');
-      const tasksYaml: TasksListYaml = parseYaml(tasksFileContent);
-
-      // 해당 task 찾기 및 업데이트
-      const taskIndex = tasksYaml.tasks.findIndex(task => task.id === taskId);
-
-      if (taskIndex !== -1) {
-        // 기존 task 업데이트
-        tasksYaml.tasks[taskIndex]!.status = status;
-      } else {
-        // 새로운 task 추가
-        tasksYaml.tasks.push({
-          id: taskId,
-          status: status,
-        });
-      }
-
-      // tasks.yaml 파일 저장
-      const updatedTasksContent = stringifyYaml(tasksYaml, {
-        lineWidth: 0,
-        minContentWidth: 0,
-      });
-      writeFileSync(tasksFilePath, updatedTasksContent, 'utf-8');
-      updatedFiles.push(tasksFilePath);
-    }
+    // 2. tasks.yaml 파일은 더 이상 사용하지 않음 - 개별 task 파일로만 관리
 
     return {
       success: true,

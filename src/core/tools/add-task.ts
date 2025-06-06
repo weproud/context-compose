@@ -7,13 +7,7 @@ import {
   type AddTaskToolResponse,
 } from '../../schemas/add-task.js';
 
-/**
- * Task item type
- */
-export interface TaskItem {
-  id: string;
-  status: string;
-}
+// TaskItem interface removed - tasks.yaml is no longer used
 
 /**
  * Add Task tool class
@@ -132,134 +126,7 @@ export class AddTaskTool {
     }
   }
 
-  /**
-   * Read tasks.yaml file
-   */
-  static readTasksYaml(projectRoot: string, configPath: string): string {
-    const tasksYamlPath = join(projectRoot, configPath, 'tasks.yaml');
-
-    if (!existsSync(tasksYamlPath)) {
-      throw new Error(
-        `Cannot find tasks.yaml file: ${tasksYamlPath}\n` +
-          'Please initialize the project first with task-action init command.'
-      );
-    }
-
-    try {
-      return readFileSync(tasksYamlPath, 'utf8');
-    } catch (error) {
-      throw new Error(
-        `Cannot read tasks.yaml file: ${tasksYamlPath}\n` +
-          `Error: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  }
-
-  /**
-   * Add new task to tasks.yaml file
-   */
-  static addTaskToTasksYaml(
-    tasksYamlContent: string,
-    taskId: string,
-    status: string = 'todo'
-  ): string {
-    const formattedId = this.formatTaskId(taskId);
-
-    // Find tasks: section and add new task
-    const lines = tasksYamlContent.split('\n');
-    const newTaskEntry = `  - id: ${formattedId}\n    status: ${status}`;
-
-    // Find tasks: section
-    let tasksLineIndex = -1;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line !== undefined && line.trim() === 'tasks:') {
-        tasksLineIndex = i;
-        break;
-      }
-    }
-
-    if (tasksLineIndex === -1) {
-      throw new Error('Cannot find tasks: section in tasks.yaml file.');
-    }
-
-    // Check if existing task exists
-    const existingTaskPattern = new RegExp(
-      `^\\s*-\\s+id:\\s+${formattedId}\\s*$`,
-      'm'
-    );
-    if (existingTaskPattern.test(tasksYamlContent)) {
-      throw new Error(
-        `Task ID '${formattedId}' already exists in tasks.yaml.\n` +
-          'Please use a different Task ID or delete the existing entry.'
-      );
-    }
-
-    // Add new task after the last task entry
-    let insertIndex = lines.length;
-
-    // Search from the line after tasks: to find the last task entry
-    for (let i = tasksLineIndex + 1; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Skip if line is undefined
-      if (line === undefined) {
-        continue;
-      }
-
-      // Skip if empty line or comment
-      if (line.trim() === '' || line.trim().startsWith('#')) {
-        continue;
-      }
-
-      // Insert before if another section (not task entry) starts
-      if (line.match(/^[a-zA-Z]/)) {
-        insertIndex = i;
-        break;
-      }
-
-      // Continue if it's a task entry
-      if (line.match(/^\s*-\s+id:/)) {
-        continue;
-      }
-
-      // Continue if it's a sub-property of task entry
-      if (line.match(/^\s+\w+:/)) {
-        continue;
-      }
-    }
-
-    // Insert new task entry
-    lines.splice(insertIndex, 0, newTaskEntry);
-
-    return lines.join('\n');
-  }
-
-  /**
-   * Update tasks.yaml file
-   */
-  static updateTasksYaml(
-    projectRoot: string,
-    configPath: string,
-    taskId: string,
-    status: string = 'todo'
-  ): void {
-    try {
-      const tasksYamlContent = this.readTasksYaml(projectRoot, configPath);
-      const updatedContent = this.addTaskToTasksYaml(
-        tasksYamlContent,
-        taskId,
-        status
-      );
-
-      const tasksYamlPath = join(projectRoot, configPath, 'tasks.yaml');
-      writeFileSync(tasksYamlPath, updatedContent, 'utf8');
-    } catch (error) {
-      throw new Error(
-        `Failed to update tasks.yaml file: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  }
+  // tasks.yaml related methods removed - no longer used
 
   /**
    * Add Task core logic
@@ -293,21 +160,7 @@ export class AddTaskTool {
       );
       const fileName = `task-${formattedId}.yaml`;
 
-      // 5. Update tasks.yaml file
-      let tasksYamlUpdated = false;
-      try {
-        this.updateTasksYaml(projectRoot, configPath, taskId, 'todo');
-        tasksYamlUpdated = true;
-      } catch (tasksYamlError) {
-        // Treat tasks.yaml update failure as warning and continue
-        console.warn(
-          `⚠️  Failed to update tasks.yaml: ${tasksYamlError instanceof Error ? tasksYamlError.message : String(tasksYamlError)}`
-        );
-      }
-
-      const successMessage = tasksYamlUpdated
-        ? `✅ Task file created successfully: ${fileName}\n📝 tasks.yaml file has also been updated.`
-        : `✅ Task file created successfully: ${fileName}\n⚠️  Failed to update tasks.yaml file.`;
+      const successMessage = `✅ Task file created successfully: ${fileName}`;
 
       return {
         success: true,
@@ -315,7 +168,7 @@ export class AddTaskTool {
         taskId: formattedId,
         fileName,
         filePath,
-        tasksYamlUpdated,
+        tasksYamlUpdated: false, // tasks.yaml is no longer used
       };
     } catch (error) {
       const errorMessage =
