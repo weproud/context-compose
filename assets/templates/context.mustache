@@ -1,5 +1,5 @@
 version: 1
-kind: task
+kind: context
 name: '{{name}}'
 description: |
   {{description}}
@@ -16,6 +16,7 @@ jobs:
     - mcps/context7.yaml
     - mcps/sequential-thinking.yaml
     - mcps/playwright.yaml
-  notify: []
+  notify:
+    - notify/slack.yaml 
 prompt: |
   {{prompt}}

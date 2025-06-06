@@ -1,0 +1,75 @@
+version: 1
+kind: action
+name: Send Message to Slack
+description: Send status messages to Slack with rich formatting and error handling
+prompt: Send a message to Slack with proper formatting and error handling
+
+enhanced-prompt: |-
+  Send a message to Slack channel with the following approach:
+
+  ## Setup & Validation
+  - Check SLACK_WEBHOOK_URL environment variable exists
+  - Validate webhook URL format and connectivity
+  - Gather project context (branch, commit, task details)
+
+  ## Message Types & Formatting
+  **Message Categories:**
+  - ✅ Success: Task completion, successful builds/deployments
+  - ⚠️ Warning: Non-critical issues, deprecation notices  
+  - ❌ Error: Build/test failures, critical issues
+  - ℹ️ Info: Status updates, progress notifications
+
+  **Rich Message Format:**
+  ```json
+  {
+    "text": "Primary message text",
+    "attachments": [{
+      "color": "good|warning|danger",
+      "title": "Task Status",
+      "fields": [
+        {"title": "Branch", "value": "feature/auth", "short": true},
+        {"title": "Status", "value": "Completed", "short": true}
+      ],
+      "footer": "Task-Action",
+      "ts": 1234567890
+    }]
+  }
+  ```
+
+  ## Implementation Steps
+  1. **Prepare Message:**
+     - Choose appropriate emoji and color based on status
+     - Include relevant context (branch, commit, links)
+     - Add @mentions for team members if needed
+
+  2. **Send Request:**
+     - POST to webhook URL with proper headers
+     - Include retry logic for failed requests
+     - Handle rate limiting appropriately
+
+  3. **Error Handling:**
+     - Log detailed error information
+     - Provide fallback notification if webhook fails
+     - Suggest configuration fixes for common issues
+
+  ## Common Message Templates
+  - Task Complete: "✅ Task #{id} completed: {description}"
+  - Build Success: "🚀 Build successful for {branch}"
+  - Test Failure: "❌ {failure_count} test failures on {branch}"
+  - Deployment: "📦 Deployed {version} to {environment}"
+
+  ## Example Usage
+  ```bash
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "text": "✅ Feature implementation complete",
+      "attachments": [{
+        "color": "good",
+        "fields": [
+          {"title": "Branch", "value": "feature/user-auth", "short": true},
+          {"title": "Tests", "value": "All passing", "short": true}
+        ]
+      }]
+    }' \
+    "${SLACK_WEBHOOK_URL}"
+  ```
