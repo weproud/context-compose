@@ -12,11 +12,6 @@ export const ValidateTaskToolSchema = z.object({
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
-  configPath: z
-    .string()
-    .optional()
-    .default('.taskaction')
-    .describe('설정 디렉토리 경로'),
   enhancedPrompt: z
     .boolean()
     .optional()

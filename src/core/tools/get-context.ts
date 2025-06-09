@@ -131,12 +131,10 @@ export class GetContextTool {
    */
   static readComponentFiles(
     projectRoot: string,
-    filePaths: string[],
-    configPath?: string
+    filePaths: string[]
   ): ComponentYaml[] {
-    const actualConfigPath = configPath || '.taskaction';
     return filePaths.map(filePath => {
-      const fullPath = join(projectRoot, actualConfigPath, filePath);
+      const fullPath = join(projectRoot, '.taskaction', filePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -146,11 +144,9 @@ export class GetContextTool {
    */
   static readComponentFile(
     projectRoot: string,
-    filePath: string,
-    configPath?: string
+    filePath: string
   ): ComponentYaml {
-    const actualConfigPath = configPath || '.taskaction';
-    const fullPath = join(projectRoot, actualConfigPath, filePath);
+    const fullPath = join(projectRoot, '.taskaction', filePath);
     return this.readYamlFile(fullPath);
   }
 
@@ -165,7 +161,7 @@ export class GetContextTool {
     const processedSections: Record<string, ComponentYaml[]> = {};
 
     // For 'default' context, use 'assets' directory instead of .taskaction
-    const actualConfigPath = contextId === 'default' ? 'assets' : '.taskaction';
+    const configPath = contextId === 'default' ? 'assets' : '.taskaction';
 
     for (const [sectionName, sectionValue] of Object.entries(context)) {
       if (!sectionValue) continue;
@@ -173,19 +169,15 @@ export class GetContextTool {
       try {
         if (typeof sectionValue === 'string') {
           // Single file (e.g., workflow)
-          const component = this.readComponentFile(
-            projectRoot,
-            sectionValue,
-            actualConfigPath
-          );
+          const fullPath = join(projectRoot, configPath, sectionValue);
+          const component = this.readYamlFile<ComponentYaml>(fullPath);
           processedSections[sectionName] = [component];
         } else if (Array.isArray(sectionValue)) {
           // File array (e.g., rules, mcps, notify, issue, etc.)
-          const components = this.readComponentFiles(
-            projectRoot,
-            sectionValue,
-            actualConfigPath
-          );
+          const components = sectionValue.map(filePath => {
+            const fullPath = join(projectRoot, configPath, filePath);
+            return this.readYamlFile<ComponentYaml>(fullPath);
+          });
           processedSections[sectionName] = components;
         }
       } catch (error) {
