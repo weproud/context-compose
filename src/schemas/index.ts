@@ -16,8 +16,11 @@ export {
   type AddTaskToolResponse,
 } from './add-task.js';
 
-// Start Task tool schema
-export { StartTaskToolSchema, type StartTaskToolInput } from './start-task.js';
+// Get Context tool schema
+export {
+  GetContextToolSchema,
+  type GetContextToolInput,
+} from './get-context.js';
 
 // Validate Task tool schema
 export {

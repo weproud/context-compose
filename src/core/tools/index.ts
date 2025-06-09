@@ -12,6 +12,12 @@ export { AddTaskTool, addTask, executeAddTaskTool } from './add-task.js';
 // Add Task 스키마 (schemas에서 re-export)
 export { AddTaskToolSchema } from '../../schemas/add-task.js';
 
+// Get Context 도구
+export { GetContextTool, executeGetContextTool } from './get-context.js';
+
+// Get Context 스키마 (schemas에서 re-export)
+export { GetContextToolSchema } from '../../schemas/get-context.js';
+
 // Validate Task 도구
 export {
   ValidateTaskTool,

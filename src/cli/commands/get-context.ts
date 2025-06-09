@@ -1,21 +1,21 @@
 import { Command } from 'commander';
-import { executeStartTaskTool } from '../../core/tools/start-task.js';
-import type { StartTaskToolInput } from '../../schemas/start-task.js';
+import { executeGetContextTool } from '../../core/tools/get-context.js';
+import type { GetContextToolInput } from '../../schemas/get-context.js';
 
 /**
- * Create Task Start CLI command
+ * Create Get Context CLI command
  */
-export function createStartTaskCommand(): Command {
-  const taskCommand = new Command('task');
+export function createGetContextCommand(): Command {
+  const contextCommand = new Command('context');
 
-  // Add start subcommand
-  const startSubCommand = new Command('start');
+  // Add get subcommand
+  const getSubCommand = new Command('get');
 
-  startSubCommand
+  getSubCommand
     .description(
-      'Start a task. Reads task-<task-id>.yaml file and combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
+      'Get context for a task. Reads task-<context-id>.yaml file and combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
     )
-    .argument('<taskId>', 'Task ID')
+    .argument('<contextId>', 'Context ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
     .option(
       '-e, --enhanced-prompt',
@@ -23,18 +23,18 @@ export function createStartTaskCommand(): Command {
     )
     .action(
       async (
-        taskId: string,
+        contextId: string,
         options: { configPath: string; enhancedPrompt?: boolean }
       ) => {
         try {
-          const input: StartTaskToolInput = {
-            taskId,
+          const input: GetContextToolInput = {
+            contextId,
             projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
             configPath: options.configPath,
             enhancedPrompt: options.enhancedPrompt || false,
           };
 
-          const result = await executeStartTaskTool(input);
+          const result = await executeGetContextTool(input);
 
           if (result.success) {
             console.log(result.message);
@@ -89,29 +89,29 @@ export function createStartTaskCommand(): Command {
           }
         } catch (error) {
           console.error(
-            `❌ Task Start 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
+            `❌ Get Context 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
           );
           process.exit(1);
         }
       }
     );
 
-  // task 명령에 start 하위 명령 추가
-  taskCommand.addCommand(startSubCommand);
+  // context 명령에 get 하위 명령 추가
+  contextCommand.addCommand(getSubCommand);
 
-  return taskCommand;
+  return contextCommand;
 }
 
 /**
- * Task Start 명령어 사용 예시 출력
+ * Get Context 명령어 사용 예시 출력
  */
-export function showStartTaskExamples(): void {
-  console.log('\n📖 Task Start 사용 예시:');
-  console.log('  task-action task start context');
-  console.log('  task-action task start my-feature-task');
+export function showGetContextExamples(): void {
+  console.log('\n📖 Get Context 사용 예시:');
+  console.log('  task-action context get my-context');
+  console.log('  task-action context get feature-context');
   console.log(
-    '  task-action task start test-task-creation --config-path .taskaction'
+    '  task-action context get test-context --config-path .taskaction'
   );
-  console.log('  task-action task start my-task --enhanced-prompt');
-  console.log('  task-action task start complex-task -e -c .taskaction');
+  console.log('  task-action context get my-context --enhanced-prompt');
+  console.log('  task-action context get complex-context -e -c .taskaction');
 }

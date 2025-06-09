@@ -5,8 +5,8 @@
 import { FastMCP } from 'fastmcp';
 import logger from '../logger.js';
 import { registerAddTaskTool } from './add-task.js';
+import { registerGetContextTool } from './get-context.js';
 import { registerInitTool } from './init.js';
-import { registerStartTaskTool } from './start-task.js';
 
 /**
  * Register all Hello MCP tools with the MCP server
@@ -17,7 +17,7 @@ export function registerMCPTools(server: FastMCP): void {
     // Register each tool
     registerInitTool(server);
     registerAddTaskTool(server);
-    registerStartTaskTool(server);
+    registerGetContextTool(server);
 
     logger.info('All Hello MCP tools registered successfully');
   } catch (error) {

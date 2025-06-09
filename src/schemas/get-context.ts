@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Start Task tool schema
- * Defines input parameters for the tool that starts specific tasks in Task Action projects.
+ * Get Context tool schema
+ * Defines input parameters for the tool that gets context for specific tasks in Task Action projects.
  */
-export const StartTaskToolSchema = z.object({
-  taskId: z
+export const GetContextToolSchema = z.object({
+  contextId: z
     .string()
-    .min(1, 'Task ID is required')
-    .describe('Unique identifier for the task to start'),
+    .min(1, 'Context ID is required')
+    .describe('Unique identifier for the context to retrieve'),
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
@@ -27,17 +27,17 @@ export const StartTaskToolSchema = z.object({
 });
 
 /**
- * Start Task tool input type
+ * Get Context tool input type
  */
-export type StartTaskToolInput = z.infer<typeof StartTaskToolSchema>;
+export type GetContextToolInput = z.infer<typeof GetContextToolSchema>;
 
 /**
- * Start Task tool response type
+ * Get Context tool response type
  */
-export interface StartTaskToolResponse {
+export interface GetContextToolResponse {
   success: boolean;
   message: string;
-  taskId: string;
+  contextId: string;
   combinedPrompt?: string;
   files?: {
     workflow?: string;

@@ -1,8 +1,8 @@
 import { Command } from 'commander';
+import { executeGetContextTool } from '../../core/tools/get-context.js';
 import { AddTaskTool } from '../../core/tools/index.js';
-import { executeStartTaskTool } from '../../core/tools/start-task.js';
 import { ValidateTaskTool } from '../../core/tools/validate-task.js';
-import type { StartTaskToolInput } from '../../schemas/start-task.js';
+import type { GetContextToolInput } from '../../schemas/get-context.js';
 
 /**
  * Task 명령을 위한 CLI 핸들러 (add, start 하위 명령 포함)
@@ -63,14 +63,14 @@ export function createTaskCommand(): Command {
         try {
           console.log(`🚀 Task "${taskId}" 시작 중...`);
 
-          const input: StartTaskToolInput = {
-            taskId,
+          const input: GetContextToolInput = {
+            contextId: taskId,
             projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
             configPath: options.configPath,
             enhancedPrompt: options.enhancedPrompt || false,
           };
 
-          const result = await executeStartTaskTool(input);
+          const result = await executeGetContextTool(input);
 
           if (result.success) {
             console.log(result.message);

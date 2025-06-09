@@ -1,11 +1,11 @@
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { readFileSync, existsSync } from 'fs';
 import { parse as parseYaml } from 'yaml';
 import type {
-  StartTaskToolInput,
-  StartTaskToolResponse,
-} from '../../schemas/start-task.js';
-import { StartTaskToolSchema } from '../../schemas/start-task.js';
+  GetContextToolInput,
+  GetContextToolResponse,
+} from '../../schemas/get-context.js';
+import { GetContextToolSchema } from '../../schemas/get-context.js';
 
 /**
  * Task YAML file structure type
@@ -39,14 +39,14 @@ interface ComponentYaml {
 }
 
 /**
- * Start Task tool core logic
+ * Get Context tool core logic
  */
-export class StartTaskTool {
+export class GetContextTool {
   /**
-   * Task ID formatting (preserve hyphens)
+   * Context ID formatting (preserve hyphens)
    */
-  static formatTaskId(taskId: string): string {
-    return taskId;
+  static formatContextId(contextId: string): string {
+    return contextId;
   }
 
   /**
@@ -69,21 +69,21 @@ export class StartTaskTool {
   }
 
   /**
-   * Read task file
+   * Read context file
    */
-  static readTaskFile(
+  static readContextFile(
     projectRoot: string,
     configPath: string,
-    taskId: string
+    contextId: string
   ): TaskYaml {
-    const formattedId = this.formatTaskId(taskId);
-    const taskFilePath = join(
+    const formattedId = this.formatContextId(contextId);
+    const contextFilePath = join(
       projectRoot,
       configPath,
       `task-${formattedId}.yaml`
     );
 
-    return this.readYamlFile<TaskYaml>(taskFilePath);
+    return this.readYamlFile<TaskYaml>(contextFilePath);
   }
 
   /**
@@ -272,23 +272,28 @@ export class StartTaskTool {
   }
 
   /**
-   * Start Task core logic
+   * Get Context core logic
    */
   static async execute(
-    input: StartTaskToolInput
-  ): Promise<StartTaskToolResponse> {
-    const { taskId, projectRoot, configPath, enhancedPrompt = false } = input;
+    input: GetContextToolInput
+  ): Promise<GetContextToolResponse> {
+    const {
+      contextId,
+      projectRoot,
+      configPath,
+      enhancedPrompt = false,
+    } = input;
 
     try {
-      // 1. Read task file
-      const taskYaml = this.readTaskFile(projectRoot, configPath, taskId);
+      // 1. Read context file
+      const taskYaml = this.readContextFile(projectRoot, configPath, contextId);
 
       // 2. Check task status - return completion message if already done
       if (taskYaml.status === 'done') {
         return {
           success: true,
-          message: `✅ Task '${taskId}' is already completed. (Status: ${taskYaml.status})`,
-          taskId,
+          message: `✅ Context '${contextId}' is already completed. (Status: ${taskYaml.status})`,
+          contextId,
           combinedPrompt: `# Task: ${taskYaml.name}\n**Description:** ${taskYaml.description}\n**ID:** ${taskYaml.id}\n**Status:** ${taskYaml.status}\n\nThis task is already completed.`,
           files: taskYaml.jobs,
         };
@@ -310,27 +315,27 @@ export class StartTaskTool {
 
       return {
         success: true,
-        message: `✅ Task '${taskId}' is ready to start.`,
-        taskId,
+        message: `✅ Context '${contextId}' is ready.`,
+        contextId,
         combinedPrompt,
         files: taskYaml.jobs,
       };
     } catch (error) {
       return {
         success: false,
-        message: `❌ Failed to start task: ${error instanceof Error ? error.message : String(error)}`,
-        taskId,
+        message: `❌ Failed to get context: ${error instanceof Error ? error.message : String(error)}`,
+        contextId,
       };
     }
   }
 }
 
 /**
- * Start Task tool execution function
+ * Get Context tool execution function
  */
-export async function executeStartTaskTool(
+export async function executeGetContextTool(
   args: unknown
-): Promise<StartTaskToolResponse> {
-  const input = StartTaskToolSchema.parse(args);
-  return StartTaskTool.execute(input);
+): Promise<GetContextToolResponse> {
+  const input = GetContextToolSchema.parse(args);
+  return GetContextTool.execute(input);
 }
