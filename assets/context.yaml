@@ -1,9 +1,9 @@
 version: 1
 kind: task
-name: 'task-action-init'
-description: 'task action init'
+name: 'task-action-context'
+description: 'task action context'
 
-id: init
+id: context
 status: done
 jobs:
   workflow: workflows/feature.yaml
@@ -17,4 +17,4 @@ jobs:
     - mcps/playwright.yaml
   notify: []
 prompt: |
-  this is init task
+  this is context task

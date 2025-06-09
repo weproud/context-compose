@@ -74,7 +74,7 @@ function createCLI(): Command {
     console.log('Usage examples:');
     console.log('  $ task-action init');
     console.log('  $ task-action task add "create user controller"');
-    console.log('  $ task-action task start init');
+    console.log('  $ task-action task start context');
     console.log('  $ task-action examples');
     console.log('');
     console.log('To see more examples:');

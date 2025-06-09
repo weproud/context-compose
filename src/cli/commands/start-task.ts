@@ -107,7 +107,7 @@ export function createStartTaskCommand(): Command {
  */
 export function showStartTaskExamples(): void {
   console.log('\n📖 Task Start 사용 예시:');
-  console.log('  task-action task start init');
+  console.log('  task-action task start context');
   console.log('  task-action task start my-feature-task');
   console.log(
     '  task-action task start test-task-creation --config-path .taskaction'

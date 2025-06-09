@@ -225,12 +225,12 @@ export function showTaskExamples(): void {
   console.log('  → task-setup-database.yaml 파일 생성');
   console.log('');
   console.log('Task 시작:');
-  console.log('  $ task-action task start init');
+  console.log('  $ task-action task start context');
   console.log('  $ task-action task start my-feature-task');
   console.log('  $ task-action task start my-task --enhanced-prompt');
   console.log('');
   console.log('Task 검증:');
-  console.log('  $ task-action task validate init');
+  console.log('  $ task-action task validate context');
   console.log('  $ task-action task validate my-feature-task');
   console.log('');
   console.log('옵션 사용:');
