@@ -3,7 +3,6 @@ kind: action
 name: Development
 description: Develop task implementation with TypeScript best practices and testing
 prompt: Develop the task's prompt into working code
-
 enhanced-prompt: |-
   **Develop the task's prompt requirements into functional code.**
 

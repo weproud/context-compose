@@ -10,14 +10,13 @@ import { GetContextToolSchema } from '../../schemas/get-context.js';
 /**
  * Task YAML file structure type
  */
-interface TaskYaml {
+interface ContextYaml {
   version: number;
   kind: string;
   name: string;
   description: string;
   id: string;
-  status: string;
-  jobs: {
+  context: {
     workflow?: string;
     rules?: string[];
     mcps?: string[];
@@ -71,31 +70,23 @@ export class GetContextTool {
   /**
    * Read context file
    */
-  static readContextFile(
-    projectRoot: string,
-    configPath: string,
-    contextId: string
-  ): TaskYaml {
+  static readContextFile(projectRoot: string, contextId: string): ContextYaml {
     const formattedId = this.formatContextId(contextId);
 
-    // Special handling for 'default' context - read from assets/context-default.yaml
+    let contextFilePath: string;
     if (formattedId === 'default') {
-      const contextFilePath = join(
+      // For 'default' context, use assets directory
+      contextFilePath = join(projectRoot, 'assets', 'context-default.yaml');
+    } else {
+      // For other contexts, use the standard path
+      contextFilePath = join(
         projectRoot,
-        'assets',
-        'context-default.yaml'
+        '.taskaction',
+        `context-${formattedId}.yaml`
       );
-      return this.readYamlFile<TaskYaml>(contextFilePath);
     }
 
-    // For other contexts, use the standard path
-    const contextFilePath = join(
-      projectRoot,
-      configPath,
-      `task-${formattedId}.yaml`
-    );
-
-    return this.readYamlFile<TaskYaml>(contextFilePath);
+    return this.readYamlFile<ContextYaml>(contextFilePath);
   }
 
   /**
@@ -103,10 +94,9 @@ export class GetContextTool {
    */
   static readWorkflowFile(
     projectRoot: string,
-    configPath: string,
     workflowPath: string
   ): ComponentYaml {
-    const fullPath = join(projectRoot, configPath, workflowPath);
+    const fullPath = join(projectRoot, '.taskaction', workflowPath);
     return this.readYamlFile(fullPath);
   }
 
@@ -115,11 +105,10 @@ export class GetContextTool {
    */
   static readRulesFiles(
     projectRoot: string,
-    configPath: string,
     rulesPaths: string[]
   ): ComponentYaml[] {
     return rulesPaths.map(rulePath => {
-      const fullPath = join(projectRoot, configPath, rulePath);
+      const fullPath = join(projectRoot, '.taskaction', rulePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -129,11 +118,10 @@ export class GetContextTool {
    */
   static readMcpsFiles(
     projectRoot: string,
-    configPath: string,
     mcpsPaths: string[]
   ): ComponentYaml[] {
     return mcpsPaths.map(mcpPath => {
-      const fullPath = join(projectRoot, configPath, mcpPath);
+      const fullPath = join(projectRoot, '.taskaction', mcpPath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -143,11 +131,12 @@ export class GetContextTool {
    */
   static readComponentFiles(
     projectRoot: string,
-    configPath: string,
-    filePaths: string[]
+    filePaths: string[],
+    configPath?: string
   ): ComponentYaml[] {
+    const actualConfigPath = configPath || '.taskaction';
     return filePaths.map(filePath => {
-      const fullPath = join(projectRoot, configPath, filePath);
+      const fullPath = join(projectRoot, actualConfigPath, filePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -157,10 +146,11 @@ export class GetContextTool {
    */
   static readComponentFile(
     projectRoot: string,
-    configPath: string,
-    filePath: string
+    filePath: string,
+    configPath?: string
   ): ComponentYaml {
-    const fullPath = join(projectRoot, configPath, filePath);
+    const actualConfigPath = configPath || '.taskaction';
+    const fullPath = join(projectRoot, actualConfigPath, filePath);
     return this.readYamlFile(fullPath);
   }
 
@@ -169,16 +159,15 @@ export class GetContextTool {
    */
   static processJobsSection(
     projectRoot: string,
-    configPath: string,
-    jobs: TaskYaml['jobs'],
+    context: ContextYaml['context'],
     contextId?: string
   ): Record<string, ComponentYaml[]> {
     const processedSections: Record<string, ComponentYaml[]> = {};
 
-    // For 'default' context, use 'assets' directory instead of configPath
-    const actualConfigPath = contextId === 'default' ? 'assets' : configPath;
+    // For 'default' context, use 'assets' directory instead of .taskaction
+    const actualConfigPath = contextId === 'default' ? 'assets' : '.taskaction';
 
-    for (const [sectionName, sectionValue] of Object.entries(jobs)) {
+    for (const [sectionName, sectionValue] of Object.entries(context)) {
       if (!sectionValue) continue;
 
       try {
@@ -186,16 +175,16 @@ export class GetContextTool {
           // Single file (e.g., workflow)
           const component = this.readComponentFile(
             projectRoot,
-            actualConfigPath,
-            sectionValue
+            sectionValue,
+            actualConfigPath
           );
           processedSections[sectionName] = [component];
         } else if (Array.isArray(sectionValue)) {
           // File array (e.g., rules, mcps, notify, issue, etc.)
           const components = this.readComponentFiles(
             projectRoot,
-            actualConfigPath,
-            sectionValue
+            sectionValue,
+            actualConfigPath
           );
           processedSections[sectionName] = components;
         }
@@ -214,20 +203,19 @@ export class GetContextTool {
    * Combine all prompts (with dynamic section support)
    */
   static combinePrompts(
-    taskYaml: TaskYaml,
+    contextYaml: ContextYaml,
     processedSections: Record<string, ComponentYaml[]>,
     useEnhancedPrompt: boolean = false
   ): string {
     const sections: string[] = [];
 
     // Task basic information
-    sections.push(`# Task: ${taskYaml.name}`);
-    sections.push(`**Description:** ${taskYaml.description}`);
-    sections.push(`**ID:** ${taskYaml.id}`);
-    sections.push(`**Status:** ${taskYaml.status}`);
+    sections.push(`# Task: ${contextYaml.name}`);
+    sections.push(`**Description:** ${contextYaml.description}`);
+    sections.push(`**ID:** ${contextYaml.id}`);
 
-    if (taskYaml.prompt) {
-      sections.push(`\n## Task Prompt\n${taskYaml.prompt}`);
+    if (contextYaml.prompt) {
+      sections.push(`\n## Task Prompt\n${contextYaml.prompt}`);
     }
 
     // Process all sections dynamically
@@ -293,39 +281,29 @@ export class GetContextTool {
   static async execute(
     input: GetContextToolInput
   ): Promise<GetContextToolResponse> {
-    const {
-      contextId,
-      projectRoot,
-      configPath,
-      enhancedPrompt = false,
-    } = input;
+    const { contextId, projectRoot, enhancedPrompt = false } = input;
 
     try {
       // 1. Read context file
-      const taskYaml = this.readContextFile(projectRoot, configPath, contextId);
+      const contextYaml = this.readContextFile(projectRoot, contextId);
 
-      // 2. Check task status - return completion message if already done
-      if (taskYaml.status === 'done') {
-        return {
-          success: true,
-          message: `✅ Context '${contextId}' is already completed. (Status: ${taskYaml.status})`,
-          contextId,
-          combinedPrompt: `# Task: ${taskYaml.name}\n**Description:** ${taskYaml.description}\n**ID:** ${taskYaml.id}\n**Status:** ${taskYaml.status}\n\nThis task is already completed.`,
-          files: taskYaml.jobs,
-        };
+      // 2. Validate context structure
+      if (!contextYaml || !contextYaml.context) {
+        throw new Error(
+          `Invalid context structure: context property is missing or null`
+        );
       }
 
       // 3. Process all Jobs sections dynamically
       const processedSections = this.processJobsSection(
         projectRoot,
-        configPath,
-        taskYaml.jobs,
+        contextYaml.context,
         contextId
       );
 
       // 4. Combine all prompts
       const combinedPrompt = this.combinePrompts(
-        taskYaml,
+        contextYaml,
         processedSections,
         enhancedPrompt
       );
@@ -335,7 +313,7 @@ export class GetContextTool {
         message: `✅ Context '${contextId}' is ready.`,
         contextId,
         combinedPrompt,
-        files: taskYaml.jobs,
+        files: contextYaml.context,
       };
     } catch (error) {
       return {

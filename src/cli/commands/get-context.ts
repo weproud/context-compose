@@ -13,21 +13,16 @@ export function createGetContextCommand(): Command {
       'Get context for a task. For contextId "default", reads assets/context-default.yaml file directly. For other contextIds, reads task-<context-id>.yaml file from the config directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
     )
     .argument('<contextId>', 'Context ID')
-    .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
     .option(
       '-e, --enhanced-prompt',
       '상세한 enhanced prompt 사용 (기본값: 간단한 prompt)'
     )
     .action(
-      async (
-        contextId: string,
-        options: { configPath: string; enhancedPrompt?: boolean }
-      ) => {
+      async (contextId: string, options: { enhancedPrompt?: boolean }) => {
         try {
           const input: GetContextToolInput = {
             contextId,
             projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
-            configPath: options.configPath,
             enhancedPrompt: options.enhancedPrompt || false,
           };
 
@@ -35,13 +30,7 @@ export function createGetContextCommand(): Command {
 
           if (result.success) {
             console.log(result.message);
-            const promptType = options.enhancedPrompt ? 'ENHANCED' : 'SIMPLE';
-            console.log(`\n📋 Prompt Type: ${promptType}`);
-            console.log('\n' + '='.repeat(80));
-            console.log('COMBINED PROMPT');
-            console.log('='.repeat(80));
             console.log(result.combinedPrompt);
-            console.log('='.repeat(80));
 
             // 참조된 파일들 표시
             if (result.files) {
@@ -103,9 +92,6 @@ export function showGetContextExamples(): void {
   console.log('\n📖 Get Context 사용 예시:');
   console.log('  task-action get-context context-default');
   console.log('  task-action get-context feature-context');
-  console.log(
-    '  task-action get-context test-context --config-path .taskaction'
-  );
   console.log('  task-action get-context context-default --enhanced-prompt');
-  console.log('  task-action get-context complex-context -e -c .taskaction');
+  console.log('  task-action get-context complex-context -e');
 }

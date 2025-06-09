@@ -3,7 +3,6 @@ kind: action
 name: Send Message to Slack
 description: Send status messages to Slack with rich formatting and error handling
 prompt: Send a message to Slack with proper formatting and error handling
-
 enhanced-prompt: |-
   Send a message to Slack channel with the following approach:
 

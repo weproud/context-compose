@@ -3,7 +3,6 @@ kind: mcp
 name: playwright
 description: Browser automation and end-to-end testing with Playwright
 prompt: Create E2E tests and browser automation using Playwright with best practices
-
 enhanced-prompt: |-
   **Create comprehensive browser automation and E2E tests using Playwright.**
 

@@ -3,7 +3,6 @@ kind: mcp
 name: sequential-thinking
 description: Systematic sequential thinking process for complex problem solving
 prompt: Apply systematic step-by-step problem-solving for complex tasks with validation
-
 enhanced-prompt: |-
   **Use systematic sequential thinking to break down and solve complex problems step-by-step.**
 

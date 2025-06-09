@@ -2,6 +2,8 @@ version: 1
 kind: task
 name: 'default'
 description: 'default context'
+
+id: context-default
 context:
   workflow: workflows/workflow.yaml
   rules:
@@ -12,6 +14,7 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/playwright.yaml
-  notify: []
+  notify:
+    - notify/slack.yaml
 prompt: |
   this is context task

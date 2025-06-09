@@ -3,7 +3,6 @@ kind: mcp
 name: context7
 description: Research library documentation and implementation guidance through Context7
 prompt: Research library documentation using Context7 for accurate implementation and best practices
-
 enhanced-prompt: |-
   **Use Context7 to research library documentation and provide accurate implementation guidance.**
 

@@ -12,11 +12,6 @@ export const GetContextToolSchema = z.object({
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
-  configPath: z
-    .string()
-    .optional()
-    .default('.taskaction')
-    .describe('Configuration directory path'),
   enhancedPrompt: z
     .boolean()
     .optional()

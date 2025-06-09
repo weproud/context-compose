@@ -3,7 +3,6 @@ kind: action
 name: Git Commit
 description: Commit changes to Git with conventional commit messages and best practices
 prompt: Stage and commit changes using conventional commit format with clear, descriptive messages
-
 enhanced-prompt: |-
   **Create a Git commit with proper conventional commit format and best practices.**
 
