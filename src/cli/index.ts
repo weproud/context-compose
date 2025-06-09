@@ -2,7 +2,10 @@
 
 import { Command } from 'commander';
 import { createInitCommand, showInitExamples } from './commands/init.js';
-import { createTaskCommand, showTaskExamples } from './commands/task.js';
+import {
+  createGetContextCommand,
+  showGetContextExamples,
+} from './commands/get-context.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
@@ -21,8 +24,8 @@ function createCLI(): Command {
   // Add Init command
   program.addCommand(createInitCommand());
 
-  // Add Task command (includes add, start subcommands)
-  program.addCommand(createTaskCommand());
+  // Add Get Context command (direct command)
+  program.addCommand(createGetContextCommand());
 
   // Add environment variable command
   // program.addCommand(createEnvCommand());
@@ -33,7 +36,7 @@ function createCLI(): Command {
     .description('Show usage examples')
     .option(
       '-c, --command <command>',
-      'Show examples for specific command only (init, task)'
+      'Show examples for specific command only (init, task, get-context)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -41,27 +44,27 @@ function createCLI(): Command {
           case 'init':
             showInitExamples();
             break;
-          case 'task':
-            showTaskExamples();
+          case 'get-context':
+            showGetContextExamples();
             break;
           // case 'env':
           //   showEnvExamples();
           //   break;
           default:
             console.error(`❌ Unknown command: ${options.command}`);
-            console.log('Available commands: init, task');
+            console.log('Available commands: init, task, get-context');
             process.exit(1);
         }
       } else {
         console.log('🛠️  MCP CLI Tool Usage Examples\n');
         showInitExamples();
         console.log('');
-        showTaskExamples();
+        showGetContextExamples();
         console.log(
           '\nFor more detailed information, use the --help option for each command.'
         );
         console.log(
-          'Example: task-action init --help, task-action task --help'
+          'Example: task-action init --help, task-action task --help, task-action get-context --help'
         );
       }
     });
@@ -73,6 +76,7 @@ function createCLI(): Command {
     console.log('');
     console.log('Usage examples:');
     console.log('  $ task-action init');
+    console.log('  $ task-action get-context context-default');
     console.log('  $ task-action task validate context-default');
     console.log('  $ task-action examples');
     console.log('');

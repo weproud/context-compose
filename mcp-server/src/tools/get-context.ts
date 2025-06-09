@@ -9,9 +9,9 @@ import logger from '../logger.js';
  */
 export function registerGetContextTool(server: FastMCP): void {
   server.addTool({
-    name: 'task_get_context',
+    name: 'get-context',
     description:
-      'Get context for a task. Reads task-<context-id>.yaml file and combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections) to provide context for AI development. The projectRoot parameter must specify the project root directory. The enhancedPrompt option allows you to choose whether to use detailed guidelines.',
+      'Get context for a task. For contextId "default", reads assets/context-default.yaml file directly. For other contextIds, reads task-<context-id>.yaml file from the config directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections) to provide context for AI development. The projectRoot parameter must specify the project root directory. The enhancedPrompt option allows you to choose whether to use detailed guidelines.',
     parameters: GetContextToolSchema,
     execute: async (args: unknown) => {
       try {

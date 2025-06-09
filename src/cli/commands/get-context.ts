@@ -6,14 +6,11 @@ import type { GetContextToolInput } from '../../schemas/get-context.js';
  * Create Get Context CLI command
  */
 export function createGetContextCommand(): Command {
-  const contextCommand = new Command('context');
+  const getContextCommand = new Command('get-context');
 
-  // Add get subcommand
-  const getSubCommand = new Command('get');
-
-  getSubCommand
+  getContextCommand
     .description(
-      'Get context for a task. Reads task-<context-id>.yaml file and combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
+      'Get context for a task. For contextId "default", reads assets/context-default.yaml file directly. For other contextIds, reads task-<context-id>.yaml file from the config directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
     )
     .argument('<contextId>', 'Context ID')
     .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
@@ -96,10 +93,7 @@ export function createGetContextCommand(): Command {
       }
     );
 
-  // context 명령에 get 하위 명령 추가
-  contextCommand.addCommand(getSubCommand);
-
-  return contextCommand;
+  return getContextCommand;
 }
 
 /**
@@ -107,11 +101,11 @@ export function createGetContextCommand(): Command {
  */
 export function showGetContextExamples(): void {
   console.log('\n📖 Get Context 사용 예시:');
-  console.log('  task-action context get context-default');
-  console.log('  task-action context get feature-context');
+  console.log('  task-action get-context context-default');
+  console.log('  task-action get-context feature-context');
   console.log(
-    '  task-action context get test-context --config-path .taskaction'
+    '  task-action get-context test-context --config-path .taskaction'
   );
-  console.log('  task-action context get context-default --enhanced-prompt');
-  console.log('  task-action context get complex-context -e -c .taskaction');
+  console.log('  task-action get-context context-default --enhanced-prompt');
+  console.log('  task-action get-context complex-context -e -c .taskaction');
 }

@@ -77,6 +77,18 @@ export class GetContextTool {
     contextId: string
   ): TaskYaml {
     const formattedId = this.formatContextId(contextId);
+
+    // Special handling for 'default' context - read from assets/context-default.yaml
+    if (formattedId === 'default') {
+      const contextFilePath = join(
+        projectRoot,
+        'assets',
+        'context-default.yaml'
+      );
+      return this.readYamlFile<TaskYaml>(contextFilePath);
+    }
+
+    // For other contexts, use the standard path
     const contextFilePath = join(
       projectRoot,
       configPath,
@@ -158,9 +170,13 @@ export class GetContextTool {
   static processJobsSection(
     projectRoot: string,
     configPath: string,
-    jobs: TaskYaml['jobs']
+    jobs: TaskYaml['jobs'],
+    contextId?: string
   ): Record<string, ComponentYaml[]> {
     const processedSections: Record<string, ComponentYaml[]> = {};
+
+    // For 'default' context, use 'assets' directory instead of configPath
+    const actualConfigPath = contextId === 'default' ? 'assets' : configPath;
 
     for (const [sectionName, sectionValue] of Object.entries(jobs)) {
       if (!sectionValue) continue;
@@ -170,7 +186,7 @@ export class GetContextTool {
           // Single file (e.g., workflow)
           const component = this.readComponentFile(
             projectRoot,
-            configPath,
+            actualConfigPath,
             sectionValue
           );
           processedSections[sectionName] = [component];
@@ -178,7 +194,7 @@ export class GetContextTool {
           // File array (e.g., rules, mcps, notify, issue, etc.)
           const components = this.readComponentFiles(
             projectRoot,
-            configPath,
+            actualConfigPath,
             sectionValue
           );
           processedSections[sectionName] = components;
@@ -303,7 +319,8 @@ export class GetContextTool {
       const processedSections = this.processJobsSection(
         projectRoot,
         configPath,
-        taskYaml.jobs
+        taskYaml.jobs,
+        contextId
       );
 
       // 4. Combine all prompts
