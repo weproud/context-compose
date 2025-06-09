@@ -12,12 +12,5 @@ export { GetContextTool, executeGetContextTool } from './get-context.js';
 // Get Context 스키마 (schemas에서 re-export)
 export { GetContextToolSchema } from '../../schemas/get-context.js';
 
-// Validate Task 도구
-export {
-  ValidateTaskTool,
-  executeValidateTaskTool,
-  validateTask,
-} from './validate-task.js';
-
 // Validate Task 스키마 (schemas에서 re-export)
 export { ValidateTaskToolSchema } from '../../schemas/validate-task.js';

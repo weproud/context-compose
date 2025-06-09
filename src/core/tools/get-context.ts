@@ -42,9 +42,13 @@ interface ComponentYaml {
  */
 export class GetContextTool {
   /**
-   * Context ID formatting (preserve hyphens)
+   * Context ID formatting (preserve hyphens and handle context- prefix)
    */
   static formatContextId(contextId: string): string {
+    // If contextId already starts with 'context-', remove it to avoid duplication
+    if (contextId.startsWith('context-')) {
+      return contextId.substring(8); // Remove 'context-' prefix
+    }
     return contextId;
   }
 
@@ -73,18 +77,12 @@ export class GetContextTool {
   static readContextFile(projectRoot: string, contextId: string): ContextYaml {
     const formattedId = this.formatContextId(contextId);
 
-    let contextFilePath: string;
-    if (formattedId === 'default') {
-      // For 'default' context, use assets directory
-      contextFilePath = join(projectRoot, 'assets', 'context-default.yaml');
-    } else {
-      // For other contexts, use the standard path
-      contextFilePath = join(
-        projectRoot,
-        '.taskaction',
-        `context-${formattedId}.yaml`
-      );
-    }
+    // All contexts use .taskaction directory
+    const contextFilePath = join(
+      projectRoot,
+      '.taskaction',
+      `context-${formattedId}.yaml`
+    );
 
     return this.readYamlFile<ContextYaml>(contextFilePath);
   }
@@ -155,13 +153,12 @@ export class GetContextTool {
    */
   static processJobsSection(
     projectRoot: string,
-    context: ContextYaml['context'],
-    contextId?: string
+    context: ContextYaml['context']
   ): Record<string, ComponentYaml[]> {
     const processedSections: Record<string, ComponentYaml[]> = {};
 
-    // For 'default' context, use 'assets' directory instead of .taskaction
-    const configPath = contextId === 'default' ? 'assets' : '.taskaction';
+    // All contexts use .taskaction directory
+    const configPath = '.taskaction';
 
     for (const [sectionName, sectionValue] of Object.entries(context)) {
       if (!sectionValue) continue;
@@ -206,13 +203,13 @@ export class GetContextTool {
     sections.push(`**Description:** ${contextYaml.description}`);
     sections.push(`**ID:** ${contextYaml.id}`);
 
-    if (contextYaml.prompt) {
-      sections.push(`\n## Task Prompt\n${contextYaml.prompt}`);
-    }
+    // Define the desired order for sections
+    const sectionOrder = ['workflow', 'rules', 'mcps', 'notify', 'context'];
 
-    // Process all sections dynamically
-    for (const [sectionName, components] of Object.entries(processedSections)) {
-      if (components.length === 0) continue;
+    // Process sections in the specified order FIRST
+    for (const sectionName of sectionOrder) {
+      const components = processedSections[sectionName];
+      if (!components || components.length === 0) continue;
 
       // Generate section title
       const sectionTitle = this.getSectionTitle(sectionName);
@@ -244,6 +241,48 @@ export class GetContextTool {
           }
         });
       }
+    }
+
+    // Process any remaining sections that are not in the predefined order
+    for (const [sectionName, components] of Object.entries(processedSections)) {
+      if (sectionOrder.includes(sectionName) || components.length === 0)
+        continue;
+
+      // Generate section title
+      const sectionTitle = this.getSectionTitle(sectionName);
+      sections.push(`\n## ${sectionTitle}`);
+
+      // Single component case
+      if (components.length === 1) {
+        const component = components[0];
+        if (component) {
+          sections.push(`**Name:** ${component.name}`);
+          sections.push(`**Description:** ${component.description}`);
+          const promptToUse =
+            useEnhancedPrompt && component['prompt-enhanced']
+              ? component['prompt-enhanced']
+              : component.prompt;
+          sections.push(`\n${promptToUse}`);
+        }
+      } else {
+        // Multiple components case
+        components.forEach((component, index) => {
+          if (component) {
+            sections.push(`\n### ${index + 1}. ${component.name}`);
+            sections.push(`**Description:** ${component.description}`);
+            const promptToUse =
+              useEnhancedPrompt && component['prompt-enhanced']
+                ? component['prompt-enhanced']
+                : component.prompt;
+            sections.push(`\n${promptToUse}`);
+          }
+        });
+      }
+    }
+
+    // Add context prompt LAST (after all component prompts)
+    if (contextYaml.prompt) {
+      sections.push(`\n## Task Prompt\n${contextYaml.prompt}`);
     }
 
     return sections.join('\n');
@@ -289,8 +328,7 @@ export class GetContextTool {
       // 3. Process all Jobs sections dynamically
       const processedSections = this.processJobsSection(
         projectRoot,
-        contextYaml.context,
-        contextId
+        contextYaml.context
       );
 
       // 4. Combine all prompts

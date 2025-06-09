@@ -10,7 +10,7 @@ export function createGetContextCommand(): Command {
 
   getContextCommand
     .description(
-      'Get context for a task. For contextId "default", reads assets/context-default.yaml file directly. For other contextIds, reads task-<context-id>.yaml file from the config directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
+      'Get context for a task. Reads context-<context-id>.yaml file from the .taskaction directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections).'
     )
     .argument('<contextId>', 'Context ID')
     .option(
