@@ -1,8 +1,8 @@
 import { FastMCP } from 'fastmcp';
+import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFileSync } from 'fs';
-import { registerHelloMCPTools } from './tools/index.js';
+import { registerMCPTools } from './tools/index.js';
 
 // Constants
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +48,7 @@ class TaskActionServer {
     if (this.initialized) return;
 
     // Register all Task Action tools
-    registerHelloMCPTools(this.server);
+    registerMCPTools(this.server);
 
     this.initialized = true;
     return this;

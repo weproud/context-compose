@@ -4,7 +4,7 @@
  */
 
 // Init 도구
-export { InitTool, initProject, executeInitTool } from './init.js';
+export { InitTool, executeInitTool, initProject } from './init.js';
 
 // Add Task 도구
 export { AddTaskTool, addTask, executeAddTaskTool } from './add-task.js';
@@ -15,19 +15,9 @@ export { AddTaskToolSchema } from '../../schemas/add-task.js';
 // Validate Task 도구
 export {
   ValidateTaskTool,
-  validateTask,
   executeValidateTaskTool,
+  validateTask,
 } from './validate-task.js';
 
 // Validate Task 스키마 (schemas에서 re-export)
 export { ValidateTaskToolSchema } from '../../schemas/validate-task.js';
-
-// Task Status 도구
-export {
-  TaskStatusTool,
-  updateTaskStatus,
-  executeTaskStatusTool,
-} from './task-status.js';
-
-// Task Status 스키마 (schemas에서 re-export)
-export { TaskStatusToolSchema } from '../../schemas/task-status.js';

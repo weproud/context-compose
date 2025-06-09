@@ -3,7 +3,6 @@
 import { Command } from 'commander';
 import { createInitCommand, showInitExamples } from './commands/init.js';
 import { createTaskCommand, showTaskExamples } from './commands/task.js';
-import { createTestCommand } from './commands/test-simple.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
@@ -25,9 +24,6 @@ function createCLI(): Command {
   // Add Task command (includes add, start subcommands)
   program.addCommand(createTaskCommand());
 
-  // Add Test command
-  program.addCommand(createTestCommand());
-
   // Add environment variable command
   // program.addCommand(createEnvCommand());
 
@@ -37,7 +33,7 @@ function createCLI(): Command {
     .description('Show usage examples')
     .option(
       '-c, --command <command>',
-      'Show examples for specific command only (init, task, test)'
+      'Show examples for specific command only (init, task)'
     )
     .action((options: { command?: string }) => {
       if (options.command) {
@@ -48,25 +44,12 @@ function createCLI(): Command {
           case 'task':
             showTaskExamples();
             break;
-          case 'test':
-            console.log('🧪 Test Command Usage Examples\n');
-            console.log('Basic usage:');
-            console.log('  task-action test actions/create-branch');
-            console.log('  task-action test actions/git-commit');
-            console.log('\nAdditional commands:');
-            console.log(
-              '  task-action test list                    # List available tests'
-            );
-            console.log(
-              '  task-action test check                   # Check environment settings'
-            );
-            break;
           // case 'env':
           //   showEnvExamples();
           //   break;
           default:
             console.error(`❌ Unknown command: ${options.command}`);
-            console.log('Available commands: init, task, test');
+            console.log('Available commands: init, task');
             process.exit(1);
         }
       } else {
@@ -92,8 +75,6 @@ function createCLI(): Command {
     console.log('  $ task-action init');
     console.log('  $ task-action task add "create user controller"');
     console.log('  $ task-action task start init');
-    console.log('  $ task-action task status init done');
-    console.log('  $ task-action test actions/create-branch');
     console.log('  $ task-action examples');
     console.log('');
     console.log('To see more examples:');

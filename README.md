@@ -94,7 +94,7 @@ task-action/
 │   │   │   ├── init.ts          # 프로젝트 초기화 도구
 │   │   │   ├── add-task.ts      # 작업 추가 도구
 │   │   │   ├── start-task.ts    # 작업 시작 도구
-│   │   │   ├── task-status.ts   # 작업 상태 도구
+
 │   │   │   ├── test.ts          # 테스트 도구
 │   │   │   ├── slack.ts         # Slack 메시징 도구
 │   │   │   ├── discord.ts       # Discord 메시징 도구
@@ -108,7 +108,7 @@ task-action/
 │   │   ├── init.ts              # 초기화 도구 스키마
 │   │   ├── add-task.ts          # 작업 추가 스키마
 │   │   ├── start-task.ts        # 작업 시작 스키마
-│   │   ├── task-status.ts       # 작업 상태 스키마
+
 │   │   ├── test.ts              # 테스트 스키마
 │   │   ├── slack.ts             # Slack 스키마
 │   │   ├── discord.ts           # Discord 스키마
@@ -130,8 +130,7 @@ task-action/
 ├── bin/                         # 실행 파일
 │   └── task-action-cli.js       # CLI 실행 파일
 ├── scripts/                     # 스크립트
-│   ├── inspect.sh               # MCP Inspector 스크립트
-│   └── test-actions.ts          # 액션 테스트 스크립트
+│   └── inspect.sh               # MCP Inspector 스크립트
 ├── docs/                        # 문서
 ├── tsconfig.json                # TypeScript 구성
 ├── package.json                 # 패키지 구성
@@ -184,9 +183,6 @@ npm run task-action start-task <task-id>
 
 # 작업 추가
 npm run task-action add-task
-
-# 작업 상태 확인
-npm run task-action task-status
 
 # Slack 메시지 전송 (SLACK_WEBHOOK_URL 필요)
 npm run task-action slack send-message "Hello, World!"
@@ -318,9 +314,6 @@ npm run task-action start-task <task-id>
 # 작업 추가
 npm run task-action add-task
 
-# 작업 상태 확인
-npm run task-action task-status
-
 # 테스트 실행
 npm run task-action test
 
@@ -392,9 +385,6 @@ npm run task-action start-task complex-task -e -c .taskaction
 ```bash
 # 작업 추가
 npm run task-action add-task
-
-# 작업 상태 확인
-npm run task-action task-status
 
 # 테스트 실행
 npm run task-action test
@@ -481,11 +471,6 @@ MCP 서버는 다음 도구들을 제공합니다:
   - `projectRoot`: 프로젝트 루트 디렉토리 (절대 경로)
   - `configPath`: 구성 디렉토리 경로 (기본값: `.taskaction`)
 
-- **`task_status`**: 작업 상태 확인 및 관리
-
-  - `projectRoot`: 프로젝트 루트 디렉토리 (절대 경로)
-  - `configPath`: 구성 디렉토리 경로 (기본값: `.taskaction`)
-
 - **`test`**: 테스트 실행 및 검증
 
   - `projectRoot`: 프로젝트 루트 디렉토리 (절대 경로)
@@ -517,38 +502,6 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/YOUR/DISCORD/WEBHOOK
 ```bash
 # 단위 테스트 실행
 npm test
-
-# 액션 테스트 실행
-npm run test:actions
-
-# 모든 액션 테스트 실행
-npm run test:actions:all
-
-# 모의(Mock) 모드로 액션 테스트
-npm run test:actions:mock
-
-# 통합 모드로 액션 테스트
-npm run test:actions:integration
-
-# E2E 모드로 액션 테스트
-npm run test:actions:e2e
-
-# HTML 출력으로 액션 테스트
-npm run test:actions:html
-
-# 특정 액션 테스트
-npm run test:action:create-branch
-npm run test:action:slack
-npm run test:action:discord
-
-# 타입별 액션 테스트
-npm run test:actions:git
-npm run test:actions:messaging
-
-# 라이브 테스트
-npm run test:live
-npm run test:live:actions
-npm run test:live:notify
 ```
 
 ### 테스트 구조
@@ -556,7 +509,6 @@ npm run test:live:notify
 - **단위 테스트**: `tests/unit/`에 위치, Vitest 사용
 - **통합 테스트**: `tests/integration/`에 위치, CLI와 MCP 서버 통합 테스트
 - **E2E 테스트**: `tests/e2e/`에 위치, Playwright 사용
-- **액션 테스트**: `tests/actions/`에 위치, 액션별 테스트
 - **유틸리티**: `tests/utils/`에 위치, 테스트 유틸리티
 
 ## 🛠️ 개발
@@ -628,9 +580,6 @@ Claude: slack_send_message 도구를 사용하여 메시지 전송
 
 사용자: "새로운 작업을 추가해줘"
 Claude: add_task 도구를 사용하여 대화형으로 새 작업 추가
-
-사용자: "현재 작업 상태를 확인해줘"
-Claude: task_status 도구를 사용하여 작업 상태 표시
 ```
 
 ### CLI에서 사용
@@ -645,7 +594,6 @@ npm run task-action start-task init --enhanced-prompt  # 향상된 프롬프트
 
 # 작업 관리
 npm run task-action add-task                           # 새 작업 추가
-npm run task-action task-status                       # 작업 상태 확인
 
 # 테스트 실행
 npm run task-action test                               # 테스트 실행

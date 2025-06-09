@@ -24,16 +24,3 @@ export {
   ValidateTaskToolSchema,
   type ValidateTaskToolInput,
 } from './validate-task.js';
-
-// Test 도구 스키마
-export {
-  TestToolSchema,
-  type TestToolInput,
-  type TestToolResponse,
-  ListTestsToolSchema,
-  type ListTestsToolInput,
-  type ListTestsToolResponse,
-  CheckTestEnvToolSchema,
-  type CheckTestEnvToolInput,
-  type CheckTestEnvToolResponse,
-} from './test.js';
