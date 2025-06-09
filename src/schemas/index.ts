@@ -9,13 +9,6 @@ export {
   type InitToolResponse,
 } from './init.js';
 
-// Add Task tool schema
-export {
-  AddTaskToolSchema,
-  type AddTaskToolInput,
-  type AddTaskToolResponse,
-} from './add-task.js';
-
 // Get Context tool schema
 export {
   GetContextToolSchema,

@@ -1,12 +1,12 @@
 version: 1
 kind: task
-name: 'task-action-context'
-description: 'task action context'
+name: 'default'
+description: 'default context'
 
-id: context
+id: context-default
 status: done
 jobs:
-  workflow: workflows/feature.yaml
+  workflow: workflows/workflow.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/development.yaml

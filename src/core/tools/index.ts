@@ -6,12 +6,6 @@
 // Init 도구
 export { InitTool, executeInitTool, initProject } from './init.js';
 
-// Add Task 도구
-export { AddTaskTool, addTask, executeAddTaskTool } from './add-task.js';
-
-// Add Task 스키마 (schemas에서 re-export)
-export { AddTaskToolSchema } from '../../schemas/add-task.js';
-
 // Get Context 도구
 export { GetContextTool, executeGetContextTool } from './get-context.js';
 

@@ -1,136 +1,12 @@
 import { Command } from 'commander';
-import { executeGetContextTool } from '../../core/tools/get-context.js';
-import { AddTaskTool } from '../../core/tools/index.js';
 import { ValidateTaskTool } from '../../core/tools/validate-task.js';
-import type { GetContextToolInput } from '../../schemas/get-context.js';
 
 /**
- * Task 명령을 위한 CLI 핸들러 (add, start 하위 명령 포함)
+ * Task 명령을 위한 CLI 핸들러 (validate 하위 명령 포함)
  */
 export function createTaskCommand(): Command {
   const taskCommand = new Command('task');
   taskCommand.description('Task 관련 명령어들');
-
-  // add 하위 명령 추가
-  const addSubCommand = new Command('add');
-  addSubCommand
-    .description('새로운 Task 파일을 생성합니다')
-    .argument('<task-id>', 'Task ID (예: "create user controller")')
-    .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .action(async (taskId: string, options: { configPath?: string }) => {
-      try {
-        const { configPath = '.taskaction' } = options;
-
-        console.log(`📝 Task 파일 생성 중: "${taskId}"`);
-
-        const result = await AddTaskTool.executeFromParams(
-          taskId,
-          process.cwd(),
-          configPath
-        );
-
-        if (result.success) {
-          console.log(result.message);
-        } else {
-          console.error(`❌ ${result.message}`);
-          process.exit(1);
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        console.error(`❌ 오류: ${errorMessage}`);
-        process.exit(1);
-      }
-    });
-
-  // start 하위 명령 추가
-  const startSubCommand = new Command('start');
-  startSubCommand
-    .description(
-      'Task를 시작합니다. task-<task-id>.yaml 파일을 읽어서 jobs 섹션의 모든 파일들(workflow, rules, mcps, notify, issue 등 커스텀 섹션 포함)의 prompt를 조합합니다.'
-    )
-    .argument('<taskId>', 'Task ID')
-    .option('-c, --config-path <path>', '설정 디렉토리 경로', '.taskaction')
-    .option(
-      '-e, --enhanced-prompt',
-      '상세한 enhanced prompt 사용 (기본값: 간단한 prompt)'
-    )
-    .action(
-      async (
-        taskId: string,
-        options: { configPath: string; enhancedPrompt?: boolean }
-      ) => {
-        try {
-          console.log(`🚀 Task "${taskId}" 시작 중...`);
-
-          const input: GetContextToolInput = {
-            contextId: taskId,
-            projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
-            configPath: options.configPath,
-            enhancedPrompt: options.enhancedPrompt || false,
-          };
-
-          const result = await executeGetContextTool(input);
-
-          if (result.success) {
-            console.log(result.message);
-            const promptType = options.enhancedPrompt ? 'ENHANCED' : 'SIMPLE';
-            console.log(`\n📋 Prompt Type: ${promptType}`);
-            console.log('\n' + '='.repeat(80));
-            console.log('COMBINED PROMPT');
-            console.log('='.repeat(80));
-            console.log(result.combinedPrompt);
-            console.log('='.repeat(80));
-
-            // 참조된 파일들 표시
-            if (result.files) {
-              console.log('\n📁 참조된 파일들:');
-              const filesList: string[] = [];
-
-              if (result.files.workflow) {
-                filesList.push(`Workflow: ${result.files.workflow}`);
-              }
-
-              if (result.files.rules && result.files.rules.length > 0) {
-                filesList.push(`Rules: ${result.files.rules.join(', ')}`);
-              }
-
-              if (result.files.mcps && result.files.mcps.length > 0) {
-                filesList.push(`MCPs: ${result.files.mcps.join(', ')}`);
-              }
-
-              // 기타 동적 섹션들 처리
-              Object.entries(result.files).forEach(([key, value]) => {
-                if (
-                  key !== 'workflow' &&
-                  key !== 'rules' &&
-                  key !== 'mcps' &&
-                  value
-                ) {
-                  if (Array.isArray(value)) {
-                    filesList.push(`${key}: ${value.join(', ')}`);
-                  } else {
-                    filesList.push(`${key}: ${value}`);
-                  }
-                }
-              });
-
-              if (filesList.length > 0) {
-                console.log(`  - ${filesList.join('\n  - ')}`);
-              }
-            }
-          } else {
-            console.error(result.message);
-            process.exit(1);
-          }
-        } catch (error) {
-          console.error(
-            `❌ Task Start 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
-          );
-          process.exit(1);
-        }
-      }
-    );
 
   // validate 하위 명령 추가
   const validateSubCommand = new Command('validate');
@@ -204,8 +80,6 @@ export function createTaskCommand(): Command {
     });
 
   // task 명령에 하위 명령들 추가
-  taskCommand.addCommand(addSubCommand);
-  taskCommand.addCommand(startSubCommand);
   taskCommand.addCommand(validateSubCommand);
 
   return taskCommand;
@@ -217,34 +91,12 @@ export function createTaskCommand(): Command {
 export function showTaskExamples(): void {
   console.log('📝 Task 명령 사용 예시:');
   console.log('');
-  console.log('Task 추가:');
-  console.log('  $ task-action task add "create user controller"');
-  console.log('  → task-create-user-controller.yaml 파일 생성');
-  console.log('');
-  console.log('  $ task-action task add "setup database"');
-  console.log('  → task-setup-database.yaml 파일 생성');
-  console.log('');
-  console.log('Task 시작:');
-  console.log('  $ task-action task start context');
-  console.log('  $ task-action task start my-feature-task');
-  console.log('  $ task-action task start my-task --enhanced-prompt');
-  console.log('');
   console.log('Task 검증:');
-  console.log('  $ task-action task validate context');
+  console.log('  $ task-action task validate context-default');
   console.log('  $ task-action task validate my-feature-task');
-  console.log('');
-  console.log('옵션 사용:');
-  console.log(
-    '  $ task-action task add "new feature" --config-path ./my-config'
-  );
-  console.log('  $ task-action task start complex-task -e -c .taskaction');
   console.log('');
   console.log('주의사항:');
   console.log(
     '  - 먼저 task-action init 명령으로 프로젝트를 초기화해야 합니다'
   );
-  console.log(
-    '  - .taskaction/templates/feature-task.mustache 파일이 템플릿으로 사용됩니다'
-  );
-  console.log('  - Task ID의 공백은 자동으로 하이픈(-)으로 변환됩니다');
 }

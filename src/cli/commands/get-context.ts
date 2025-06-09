@@ -107,11 +107,11 @@ export function createGetContextCommand(): Command {
  */
 export function showGetContextExamples(): void {
   console.log('\n📖 Get Context 사용 예시:');
-  console.log('  task-action context get my-context');
+  console.log('  task-action context get context-default');
   console.log('  task-action context get feature-context');
   console.log(
     '  task-action context get test-context --config-path .taskaction'
   );
-  console.log('  task-action context get my-context --enhanced-prompt');
+  console.log('  task-action context get context-default --enhanced-prompt');
   console.log('  task-action context get complex-context -e -c .taskaction');
 }

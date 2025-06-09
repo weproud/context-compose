@@ -87,7 +87,7 @@ task-action/
 │   │   └── feature.yaml         # 기능 개발 워크플로우
 │   ├── templates/               # Mustache 템플릿
 │   │   └── feature-task.mustache # 기능 작업 템플릿
-│   └── context.yaml             # 컨텍스트 작업 정의
+│   └── context-default.yaml     # 기본 컨텍스트 작업 정의
 ├── mcp-server/                  # MCP 서버 (FastMCP 기반)
 │   ├── src/                     # MCP 서버 소스 코드
 │   │   ├── tools/               # 도구 정의
@@ -129,8 +129,6 @@ task-action/
 │   └── utils/                   # 테스트 유틸리티
 ├── bin/                         # 실행 파일
 │   └── task-action-cli.js       # CLI 실행 파일
-├── scripts/                     # 스크립트
-│   └── inspect.sh               # MCP Inspector 스크립트
 ├── docs/                        # 문서
 ├── tsconfig.json                # TypeScript 구성
 ├── package.json                 # 패키지 구성
@@ -332,7 +330,7 @@ npm run task-action --help
 ```bash
 # tsx를 사용하여 직접 실행
 npx tsx src/cli/index.ts init
-npx tsx src/cli/index.ts start-task <task-id>
+npx tsx src/cli/index.ts task validate <task-id>
 npx tsx src/cli/index.ts test
 ```
 
@@ -344,7 +342,7 @@ npm link
 
 # 어디서나 사용
 task-action init
-task-action start-task <task-id>
+task-action task validate <task-id>
 task-action --help
 ```
 
@@ -362,30 +360,9 @@ npm run task-action init --force
 # 결과: 기존 파일들을 덮어씀
 ```
 
-#### 작업 시작 명령어
-
-```bash
-# 간단한 프롬프트로 작업 시작 (기본값)
-npm run task-action start-task context
-# 결과: 작업, 워크플로우, 규칙, MCP 프롬프트를 간단한 형식으로 결합
-
-# 향상된 프롬프트로 작업 시작 (상세 가이드라인)
-npm run task-action start-task context --enhanced-prompt
-# 결과: 포괄적인 가이드를 위한 상세한 프롬프트 향상 콘텐츠 사용
-
-# 사용자 정의 구성 경로로 작업 시작
-npm run task-action start-task my-feature-task --config-path .taskaction
-
-# 향상된 프롬프트와 사용자 정의 구성 (단축 형식)
-npm run task-action start-task complex-task -e -c .taskaction
-```
-
 #### 작업 관리 명령어
 
 ```bash
-# 작업 추가
-npm run task-action add-task
-
 # 테스트 실행
 npm run task-action test
 ```
@@ -572,14 +549,14 @@ npm run format:check
 사용자: "새로운 Task Action 프로젝트를 초기화해줘"
 Claude: init 도구를 사용하여 .taskaction 디렉토리와 구성 파일들 생성
 
-사용자: "context 작업을 시작해줘"
-Claude: start_task 도구를 사용하여 작업, 워크플로우, 규칙, MCP 프롬프트를 결합
+사용자: "context-default 작업을 검증해줘"
+Claude: validate_task 도구를 사용하여 작업 파일과 관련 파일들의 유효성 검사
 
 사용자: "Slack에 '팀 안녕하세요!' 메시지를 보내줘"
 Claude: slack_send_message 도구를 사용하여 메시지 전송
 
-사용자: "새로운 작업을 추가해줘"
-Claude: add_task 도구를 사용하여 대화형으로 새 작업 추가
+사용자: "작업을 검증해줘"
+Claude: validate_task 도구를 사용하여 작업 파일과 관련 파일들의 유효성 검사
 ```
 
 ### CLI에서 사용
@@ -587,6 +564,9 @@ Claude: add_task 도구를 사용하여 대화형으로 새 작업 추가
 ```bash
 # 프로젝트 초기화
 npm run task-action init
+
+# 작업 검증
+npm run task-action task validate context-default
 
 # 작업 시작
 npm run task-action start-task context                    # 간단한 프롬프트
