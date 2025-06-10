@@ -22,7 +22,8 @@
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 80
+    "lineWidth": 80,
+    "formatWithErrors": true
   },
   "organizeImports": {
     "enabled": true
@@ -43,6 +44,10 @@
       "correctness": {
         "noUnusedVariables": "error",
         "useExhaustiveDependencies": "warn"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "warn",
+        "noForEach": "warn"
       }
     }
   },
