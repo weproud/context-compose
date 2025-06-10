@@ -1,0 +1,308 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 모범 사례 및 코드 패턴
+
+## 코드 작성 원칙
+
+### 클린 코드 원칙
+- **단일 책임 원칙**: 각 함수와 클래스는 하나의 명확한 책임만 가짐
+- **명확한 네이밍**: 변수, 함수, 클래스 이름이 목적을 명확히 표현
+- **작은 함수**: 함수는 한 화면에 들어갈 수 있는 크기로 제한
+- **의존성 주입**: 하드코딩된 의존성보다는 주입받는 구조
+
+### TypeScript 모범 사례
+
+#### 타입 정의
+```typescript
+// 좋은 예시: 명확하고 구체적인 타입
+interface ContextConfig {
+  readonly version: number;
+  readonly kind: 'task' | 'role' | 'workflow';
+  readonly name: string;
+  readonly description: string;
+  readonly context: {
+    workflow?: string;
+    roles?: readonly string[];
+    rules?: readonly string[];
+    mcps?: readonly string[];
+  };
+}
+
+// 피해야 할 예시: any 타입 사용
+const config: any = loadConfig();
+```
+
+#### 유니온 타입 활용
+```typescript
+// 상태 관리에 유니온 타입 사용
+type LoadingState = 
+  | { status: 'loading' }
+  | { status: 'success'; data: ContextConfig }
+  | { status: 'error'; error: string };
+```
+
+#### 타입 가드 패턴
+```typescript
+function isContextConfig(obj: unknown): obj is ContextConfig {
+  return typeof obj === 'object' && 
+         obj !== null && 
+         'version' in obj && 
+         'kind' in obj;
+}
+```
+
+## 파일 구조 모범 사례
+
+### 모듈 분리 원칙
+```
+src/
+├── cli/
+│   ├── commands/        # CLI 명령어별 모듈
+│   ├── utils/          # CLI 유틸리티
+│   └── index.ts        # CLI 진입점
+├── core/
+│   ├── context/        # 컨텍스트 관련 로직
+│   ├── workflow/       # 워크플로우 엔진
+│   ├── notification/   # 알림 시스템
+│   └── types.ts        # 공통 타입 정의
+├── schemas/
+│   ├── context.ts      # 컨텍스트 스키마
+│   ├── workflow.ts     # 워크플로우 스키마
+│   └── index.ts        # 스키마 export
+└── types/
+    ├── cli.ts          # CLI 관련 타입
+    ├── mcp.ts          # MCP 관련 타입
+    └── index.ts        # 타입 export
+```
+
+### Export/Import 패턴
+```typescript
+// 명명된 export 사용 (default export 지양)
+export { ContextManager } from './context-manager';
+export { WorkflowEngine } from './workflow-engine';
+
+// index.ts에서 재export
+export * from './context';
+export * from './workflow';
+export * from './notification';
+```
+
+## 에러 처리 모범 사례
+
+### 구조화된 에러 클래스
+```typescript
+abstract class BaseError extends Error {
+  abstract readonly code: string;
+  abstract readonly statusCode: number;
+  
+  constructor(
+    message: string,
+    public readonly details?: Record<string, unknown>
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+class ContextNotFoundError extends BaseError {
+  readonly code = 'CONTEXT_NOT_FOUND';
+  readonly statusCode = 404;
+}
+
+class ValidationError extends BaseError {
+  readonly code = 'VALIDATION_ERROR';
+  readonly statusCode = 400;
+}
+```
+
+### Result 패턴 활용
+```typescript
+type Result<T, E = Error> = 
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+async function loadContext(path: string): Promise<Result<ContextConfig>> {
+  try {
+    const config = await fs.readFile(path, 'utf-8');
+    const parsed = YAML.parse(config);
+    const validated = contextSchema.parse(parsed);
+    return { success: true, data: validated };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error : new Error('Unknown error')
+    };
+  }
+}
+```
+
+## 비동기 처리 모범 사례
+
+### Promise 패턴
+```typescript
+// 병렬 처리
+const [contexts, workflows, roles] = await Promise.all([
+  loadContexts(),
+  loadWorkflows(),
+  loadRoles()
+]);
+
+// 에러 핸들링과 함께
+const results = await Promise.allSettled([
+  loadContext('feature'),
+  loadContext('fix'),
+  loadContext('refactor')
+]);
+
+// 실패한 작업 필터링
+const failed = results
+  .filter((result): result is PromiseRejectedResult => 
+    result.status === 'rejected'
+  )
+  .map(result => result.reason);
+```
+
+### 재시도 로직
+```typescript
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delay: number = 1000
+): Promise<T> {
+  let lastError: Error;
+  
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error('Unknown error');
+      
+      if (i === maxRetries) break;
+      
+      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+    }
+  }
+  
+  throw lastError!;
+}
+```
+
+## 테스트 모범 사례
+
+### 단위 테스트 구조
+```typescript
+// AAA 패턴: Arrange, Act, Assert
+describe('ContextManager', () => {
+  describe('loadContext', () => {
+    it('should load valid context successfully', async () => {
+      // Arrange
+      const contextPath = 'test-context.yaml';
+      const expectedContext = createMockContext();
+      
+      // Act
+      const result = await contextManager.loadContext(contextPath);
+      
+      // Assert
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(expectedContext);
+      }
+    });
+    
+    it('should return error for invalid context', async () => {
+      // Arrange
+      const invalidPath = 'non-existent.yaml';
+      
+      // Act
+      const result = await contextManager.loadContext(invalidPath);
+      
+      // Assert
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toBeInstanceOf(ContextNotFoundError);
+      }
+    });
+  });
+});
+```
+
+### Mock 패턴
+```typescript
+// 의존성 모킹
+jest.mock('fs-extra', () => ({
+  readFile: jest.fn(),
+  pathExists: jest.fn(),
+  ensureDir: jest.fn()
+}));
+
+const mockedFs = fs as jest.Mocked<typeof fs>;
+```
+
+## 성능 최적화
+
+### 메모이제이션
+```typescript
+const memoize = <T extends (...args: any[]) => any>(fn: T): T => {
+  const cache = new Map();
+  return ((...args: any[]) => {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  }) as T;
+};
+
+const loadContextMemoized = memoize(loadContext);
+```
+
+### 지연 로딩
+```typescript
+class ContextManager {
+  private _workflows?: Map<string, Workflow>;
+  
+  async getWorkflows(): Promise<Map<string, Workflow>> {
+    if (!this._workflows) {
+      this._workflows = await this.loadWorkflows();
+    }
+    return this._workflows;
+  }
+}
+```
+
+## 보안 고려사항
+
+### 입력 검증
+```typescript
+// Zod를 사용한 입력 검증
+const contextInputSchema = z.object({
+  contextId: z.string().min(1).max(100).regex(/^[a-zA-Z0-9-_]+$/),
+  options: z.object({
+    enhancedPrompt: z.boolean().optional(),
+    verbose: z.boolean().optional()
+  }).optional()
+});
+
+function validateInput(input: unknown) {
+  return contextInputSchema.parse(input);
+}
+```
+
+### 파일 경로 검증
+```typescript
+function validatePath(inputPath: string): string {
+  const resolved = path.resolve(inputPath);
+  const allowedDir = path.resolve(process.cwd(), '.contextcompose');
+  
+  if (!resolved.startsWith(allowedDir)) {
+    throw new Error('접근이 허용되지 않은 경로입니다');
+  }
+  
+  return resolved;
+}
+```

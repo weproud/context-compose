@@ -1,0 +1,112 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# MCP 개발 가이드라인
+
+## Model Context Protocol (MCP) 아키텍처
+
+### MCP 서버 구조
+- **메인 서버**: [mcp-server/server.ts](mdc:mcp-server/server.ts)
+- **FastMCP 프레임워크**: 빠르고 효율적인 MCP 서버 구현
+- **도구 등록**: MCP 도구들을 서버에 등록하고 관리
+
+### 핵심 MCP 도구들
+
+1. **get-context**: 프로젝트 컨텍스트 조회
+2. **init**: 프로젝트 초기화
+
+### MCP 서버 개발 패턴
+
+```typescript
+// MCP 도구 등록 예시
+server.tool('tool-name', {
+  description: '도구 설명',
+  parameters: {
+    // Zod 스키마를 사용한 파라미터 검증
+  }
+}, async (params) => {
+  // 도구 로직 구현
+});
+```
+
+## CLI와 MCP 서버 통합
+
+### 이중 진입점 구조
+- **CLI 진입점**: `context-compose` → [src/cli/index.ts](mdc:src/cli/index.ts)
+- **MCP 진입점**: `context-compose-mcp` → [mcp-server/server.ts](mcp-server/server.ts)
+
+### 공통 핵심 로직 공유
+- **core 모듈**: CLI와 MCP 서버가 공통으로 사용하는 비즈니스 로직
+- **타입 안전성**: 동일한 TypeScript 타입과 스키마 공유
+
+## AI 모델 통합
+
+### Claude Desktop 설정
+```json
+{
+  "mcpServers": {
+    "context-compose": {
+      "command": "context-compose-mcp",
+      "args": [],
+      "cwd": "/path/to/project"
+    }
+  }
+}
+```
+
+### MCP 도구 디버깅
+- **검사 명령어**: `npm run inspect` - 개발 중인 MCP 서버 검사
+- **빌드된 버전 검사**: `npm run inspect:built` - 빌드된 MCP 서버 검사
+
+## Context 시스템 설계
+
+### YAML 기반 컨텍스트
+```yaml
+version: 1
+kind: task
+name: 'feature-development'
+description: '새로운 기능 개발을 위한 컨텍스트'
+
+context:
+  workflow: workflows/feature-workflow.yaml
+  roles:
+    - roles/dan-abramov.yaml
+  rules:
+    - rules/clean-code.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+```
+
+### 사전 정의된 컨텍스트들
+- **default**: 기본 개발 컨텍스트
+- **feature**: 새로운 기능 개발
+- **fix**: 버그 수정
+- **refactor**: 코드 리팩토링
+- **api**: API 개발
+- **testing**: 테스트 작성
+- **documentation**: 문서 작업
+- **security**: 보안 관련 작업
+- **performance**: 성능 최적화
+
+## 워크플로우 엔진
+
+### 자동화된 작업 흐름
+- 개발, 테스트, 배포 단계 자동화
+- 역할 기반 개발 적용
+- 알림 시스템과 통합
+
+### 역할 기반 개발
+- **전문가 페르소나**: Dan Abramov, Martin Fowler 등
+- **컨텍스트별 역할 적용**: 각 컨텍스트에 적합한 전문가 관점 제공
+
+## 테스트 전략
+
+### MCP 서버 테스트
+- **통합 테스트**: MCP 도구들의 정상 동작 검증
+- **Playwright 테스트**: 실제 AI 모델과의 통합 테스트
+
+### CLI 테스트
+- **단위 테스트**: 개별 CLI 명령어 테스트
+- **E2E 테스트**: 전체 워크플로우 테스트

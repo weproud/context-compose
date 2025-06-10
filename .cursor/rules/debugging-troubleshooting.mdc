@@ -1,0 +1,191 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 디버깅 및 문제 해결 가이드
+
+## 일반적인 디버깅 전략
+
+### 로그 및 콘솔 출력
+- **개발 모드**: `console.log`를 사용한 디버깅 정보 출력
+- **구조화된 로깅**: JSON 형태의 구조화된 로그 메시지
+- **에러 스택 추적**: 상세한 에러 정보와 스택 트레이스 포함
+
+### TypeScript 타입 에러
+- **타입 검사**: `npm run type-check`로 전체 프로젝트 타입 검사
+- **점진적 타입 적용**: `any` 타입 사용을 최소화하고 구체적인 타입 정의
+- **타입 가드**: 런타임에서 타입 안전성 보장
+
+## MCP 서버 디버깅
+
+### MCP 서버 검사 도구
+```bash
+# 개발 중인 MCP 서버 검사
+npm run inspect
+
+# 빌드된 MCP 서버 검사
+npm run inspect:built
+```
+
+### 일반적인 MCP 문제들
+
+#### 1. 도구 등록 실패
+```typescript
+// 잘못된 예시
+server.tool('invalid-tool', {
+  // 파라미터 스키마 누락
+}, handler);
+
+// 올바른 예시
+server.tool('valid-tool', {
+  description: '명확한 설명',
+  parameters: z.object({
+    param: z.string().describe('파라미터 설명')
+  })
+}, handler);
+```
+
+#### 2. 타입 불일치 문제
+- **Zod 스키마 검증**: 입력 파라미터의 타입 검증
+- **TypeScript 타입 정의**: 컴파일 타임 타입 안전성
+
+#### 3. 비동기 처리 오류
+```typescript
+// Promise 체인 적절히 처리
+server.tool('async-tool', schema, async (params) => {
+  try {
+    const result = await someAsyncOperation(params);
+    return { result };
+  } catch (error) {
+    throw new Error(`작업 실패: ${error.message}`);
+  }
+});
+```
+
+## CLI 디버깅
+
+### CLI 명령어 테스트
+```bash
+# 로컬 개발 모드에서 CLI 실행
+npm run context-compose -- --help
+
+# 특정 명령어 디버깅
+npm run context-compose -- get-context default --verbose
+```
+
+### 일반적인 CLI 문제들
+
+#### 1. 명령어 파싱 오류
+- **Commander.js 설정 확인**: [src/cli/index.ts](mdc:src/cli/index.ts)에서 명령어 정의 검토
+- **인자 검증**: 필수 인자와 선택적 인자 구분
+
+#### 2. 파일 경로 문제
+```typescript
+// 상대 경로 처리
+import path from 'path';
+const configPath = path.resolve(process.cwd(), '.contextcompose');
+
+// 파일 존재 확인
+import fs from 'fs-extra';
+if (!await fs.pathExists(configPath)) {
+  throw new Error('설정 디렉토리가 존재하지 않습니다');
+}
+```
+
+## 빌드 및 배포 문제
+
+### TypeScript 컴파일 오류
+```bash
+# 전체 타입 검사
+npm run type-check
+
+# 점진적 빌드
+npm run build
+```
+
+### 의존성 문제
+```bash
+# 의존성 재설치
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+
+# 의존성 버전 충돌 확인
+pnpm list --depth=0
+```
+
+### 패키지 배포 문제
+```bash
+# 로컬 패키지 테스트
+npm pack
+npm install -g context-compose-1.0.5.tgz
+
+# 배포 전 검증
+npm run lint && npm run test && npm run build
+```
+
+## 테스트 디버깅
+
+### Vitest 테스트 실행
+```bash
+# 전체 테스트 실행
+npm test
+
+# 특정 테스트 파일 실행
+npx vitest run tests/specific-test.test.ts
+
+# 감시 모드로 테스트 실행
+npx vitest --watch
+```
+
+### Playwright E2E 테스트
+```bash
+# E2E 테스트 실행
+npx playwright test
+
+# 헤드리스 모드 비활성화 (디버깅용)
+npx playwright test --headed
+
+# 특정 브라우저에서만 테스트
+npx playwright test --project=chromium
+```
+
+## 성능 디버깅
+
+### 프로파일링
+- **Node.js 프로파일러**: `--inspect` 플래그 사용
+- **메모리 사용량 모니터링**: 메모리 리크 감지
+- **비동기 작업 병목 지점**: 느린 I/O 작업 식별
+
+### 최적화 전략
+- **번들 크기 최소화**: 불필요한 의존성 제거
+- **비동기 작업 병렬화**: Promise.all 활용
+- **캐싱 전략**: 반복적인 파일 읽기 작업 최적화
+
+## 에러 핸들링 패턴
+
+### 구조화된 에러 처리
+```typescript
+class ContextComposeError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'ContextComposeError';
+  }
+}
+
+// 사용 예시
+throw new ContextComposeError(
+  '컨텍스트 파일을 찾을 수 없습니다',
+  'CONTEXT_NOT_FOUND',
+  { path: contextPath }
+);
+```
+
+### 우아한 실패 처리
+- **기본값 제공**: 설정 파일 누락 시 기본 설정 사용
+- **사용자 친화적 메시지**: 기술적 오류를 이해하기 쉬운 메시지로 변환
+- **복구 가능한 오류**: 자동으로 복구 시도할 수 있는 오류 구분
