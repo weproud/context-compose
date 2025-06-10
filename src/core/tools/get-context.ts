@@ -81,7 +81,7 @@ export class GetContextTool {
     const contextFilePath = join(
       projectRoot,
       '.taskaction',
-      `context-${formattedId}.yaml`
+      `${formattedId}-context.yaml`
     );
 
     return this.readYamlFile<ContextYaml>(contextFilePath);

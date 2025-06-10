@@ -3,12 +3,15 @@ kind: task
 name: 'default'
 description: 'default context'
 
-id: context-default
+id: default-context
 context:
   workflow: workflows/workflow.yaml
+  roles:
+    - roles/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/development.yaml
+    - rules/clean-code.yaml
+    - rules/solid-principles.yaml
     - rules/refactoring.yaml
   mcps:
     - mcps/sequential-thinking.yaml

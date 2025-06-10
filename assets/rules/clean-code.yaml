@@ -1,0 +1,181 @@
+version: 1
+kind: rule
+name: Clean Code Rule
+description: Comprehensive clean code principles and practices for writing maintainable, readable, and robust code
+prompt: Write clean, readable code following SOLID principles, meaningful naming, proper function design, comprehensive error handling, and maintain high code quality standards with proper documentation and testing.
+enhanced-prompt: |-
+  Follow these comprehensive clean code principles when writing task-action code:
+
+  ## Fundamental Clean Code Principles
+  1. **Readability First**:
+     - Code should read like well-written prose
+     - Use intention-revealing names for variables, functions, and classes
+     - Write code that tells a story and expresses intent clearly
+     - Prefer explicit over implicit behavior
+
+  2. **Simplicity & Clarity**:
+     - Keep functions small and focused on single responsibility
+     - Avoid complex nested conditions and deep indentation
+     - Use simple, straightforward solutions over clever tricks
+     - Write code that is easy to understand and modify
+
+  3. **Consistency**:
+     - Follow consistent naming conventions throughout the codebase
+     - Apply consistent formatting and code organization patterns
+     - Use consistent error handling and logging approaches
+     - Maintain consistent abstraction levels
+
+  ## Naming Conventions
+  1. **Variables & Functions**:
+     - Use descriptive, meaningful names that reveal intent
+     - Avoid abbreviations and single-letter variables (except loop counters)
+     - Use verbs for functions and nouns for variables
+     - Make boolean variables clearly indicate true/false states
+     - Examples: `getUserById()`, `isValidEmail()`, `totalOrderAmount`
+
+  2. **Classes & Interfaces**:
+     - Use PascalCase for class and interface names
+     - Choose names that clearly describe the entity or concept
+     - Avoid generic names like `Manager`, `Helper`, `Utility`
+     - Use descriptive suffixes when appropriate: `UserService`, `EmailValidator`
+
+  3. **Constants & Enums**:
+     - Use UPPER_SNAKE_CASE for constants
+     - Group related constants in enums or const objects
+     - Use descriptive names that explain the purpose
+     - Examples: `MAX_RETRY_ATTEMPTS`, `API_ENDPOINTS`, `UserRole.ADMIN`
+
+  ## Function Design
+  1. **Single Responsibility**:
+     - Each function should do one thing and do it well
+     - Functions should be small (ideally 20 lines or less)
+     - Extract complex logic into separate, well-named functions
+     - Avoid functions with multiple responsibilities or side effects
+
+  2. **Function Parameters**:
+     - Limit function parameters (ideally 3 or fewer)
+     - Use objects for multiple related parameters
+     - Provide default values for optional parameters
+     - Use TypeScript interfaces for complex parameter objects
+
+  3. **Return Values**:
+     - Functions should have predictable return types
+     - Avoid returning null; use Optional or Result types
+     - Return meaningful error objects instead of throwing exceptions
+     - Use consistent return patterns across similar functions
+
+  ## Code Organization
+  1. **File Structure**:
+     - Organize files by feature or domain, not by file type
+     - Keep related functionality together
+     - Use clear, descriptive file and folder names
+     - Maintain consistent project structure
+
+  2. **Import Organization**:
+     - Group imports logically (external libraries, internal modules, types)
+     - Use absolute imports for better maintainability
+     - Avoid circular dependencies
+     - Keep imports clean and organized
+
+  3. **Code Grouping**:
+     - Group related functions and variables together
+     - Use blank lines to separate logical sections
+     - Order code logically (public before private, important before utility)
+     - Keep related code close together
+
+  ## Error Handling
+  1. **Comprehensive Error Management**:
+     - Handle all possible error conditions explicitly
+     - Use typed error objects with meaningful messages
+     - Implement proper error boundaries and fallbacks
+     - Log errors with sufficient context for debugging
+
+  2. **Graceful Degradation**:
+     - Provide fallback behavior for non-critical failures
+     - Validate inputs and handle edge cases
+     - Use defensive programming techniques
+     - Implement retry mechanisms for transient failures
+
+  3. **Error Communication**:
+     - Provide clear, actionable error messages
+     - Include relevant context and suggested solutions
+     - Use appropriate error levels (warning, error, critical)
+     - Maintain error message consistency
+
+  ## Comments & Documentation
+  1. **Strategic Commenting**:
+     - Write comments that explain WHY, not WHAT
+     - Document complex business logic and algorithms
+     - Explain non-obvious decisions and trade-offs
+     - Keep comments up-to-date with code changes
+
+  2. **API Documentation**:
+     - Use JSDoc for all public functions and classes
+     - Document parameters, return values, and exceptions
+     - Provide usage examples for complex APIs
+     - Maintain comprehensive README files
+
+  3. **Code Self-Documentation**:
+     - Write self-documenting code through good naming
+     - Use meaningful variable names instead of comments
+     - Extract complex expressions into well-named functions
+     - Prefer clear code over clever code with comments
+
+  ## Testing & Quality
+  1. **Testable Code**:
+     - Write code that is easy to test in isolation
+     - Avoid hard dependencies and global state
+     - Use dependency injection for better testability
+     - Design functions with predictable inputs and outputs
+
+  2. **Test Quality**:
+     - Write tests that document expected behavior
+     - Use descriptive test names that explain the scenario
+     - Follow AAA pattern (Arrange, Act, Assert)
+     - Maintain test code quality equal to production code
+
+  ## Performance Considerations
+  1. **Efficient Algorithms**:
+     - Choose appropriate data structures for the use case
+     - Avoid premature optimization but be aware of performance
+     - Use efficient algorithms for data processing
+     - Consider time and space complexity
+
+  2. **Resource Management**:
+     - Clean up resources properly (event listeners, timers, connections)
+     - Avoid memory leaks through proper cleanup
+     - Use lazy loading and caching where appropriate
+     - Monitor and optimize critical performance paths
+
+  ## Security Best Practices
+  1. **Input Validation**:
+     - Validate and sanitize all user inputs
+     - Use type-safe parsing and validation libraries
+     - Implement proper authentication and authorization
+     - Follow principle of least privilege
+
+  2. **Secure Coding**:
+     - Avoid hardcoded secrets and credentials
+     - Use secure communication protocols
+     - Implement proper error handling without information leakage
+     - Regular security audits and dependency updates
+
+  ## Code Review Guidelines
+  1. **Review Criteria**:
+     - Check for adherence to clean code principles
+     - Verify proper error handling and edge cases
+     - Ensure adequate test coverage
+     - Validate performance and security considerations
+
+  2. **Constructive Feedback**:
+     - Provide specific, actionable feedback
+     - Suggest improvements with examples
+     - Focus on code quality and maintainability
+     - Encourage learning and knowledge sharing
+
+  ## Continuous Improvement
+  - Regularly refactor code to maintain quality
+  - Stay updated with best practices and new patterns
+  - Gather feedback from code reviews and team discussions
+  - Invest in tools and automation for code quality
+  - Measure and monitor code quality metrics

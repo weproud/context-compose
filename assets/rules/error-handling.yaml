@@ -1,0 +1,530 @@
+version: 1
+kind: rule
+name: Error Handling Rule
+description: Comprehensive error handling strategies for robust, resilient applications with proper logging and user experience
+prompt: Implement comprehensive error handling with typed exceptions, graceful degradation, proper logging, user-friendly messages, retry mechanisms, and circuit breakers for system resilience.
+enhanced-prompt: |-
+  Follow these comprehensive error handling principles for task-action development:
+
+  ## Error Classification & Types
+  1. **Error Categories**:
+     - **System Errors**: Infrastructure failures, network issues, database connectivity
+     - **Business Logic Errors**: Domain rule violations, invalid state transitions
+     - **Validation Errors**: Input validation failures, schema violations
+     - **Security Errors**: Authentication failures, authorization denials
+     - **External Service Errors**: Third-party API failures, timeout errors
+
+  2. **Error Severity Levels**:
+     - **Critical**: System-wide failures requiring immediate attention
+     - **Error**: Functional failures affecting user operations
+     - **Warning**: Potential issues that don't break functionality
+     - **Info**: Informational messages for debugging and monitoring
+
+  ## Typed Error Handling
+  1. **Custom Error Classes**:
+     ```typescript
+     // Base error class
+     abstract class TaskActionError extends Error {
+       abstract readonly code: string;
+       abstract readonly severity: 'critical' | 'error' | 'warning' | 'info';
+       readonly timestamp: Date;
+       readonly context?: Record<string, any>;
+
+       constructor(message: string, context?: Record<string, any>) {
+         super(message);
+         this.name = this.constructor.name;
+         this.timestamp = new Date();
+         this.context = context;
+         Error.captureStackTrace(this, this.constructor);
+       }
+     }
+
+     // Specific error types
+     class ValidationError extends TaskActionError {
+       readonly code = 'VALIDATION_ERROR';
+       readonly severity = 'error' as const;
+     }
+
+     class ConfigurationError extends TaskActionError {
+       readonly code = 'CONFIGURATION_ERROR';
+       readonly severity = 'error' as const;
+     }
+
+     class ExternalServiceError extends TaskActionError {
+       readonly code = 'EXTERNAL_SERVICE_ERROR';
+       readonly severity = 'warning' as const;
+     }
+     ```
+
+  2. **Result Pattern Implementation**:
+     ```typescript
+     type Result<T, E = Error> = {
+       success: true;
+       data: T;
+     } | {
+       success: false;
+       error: E;
+     };
+
+     async function executeAction(action: Action): Promise<Result<ActionResult, TaskActionError>> {
+       try {
+         const result = await performAction(action);
+         return { success: true, data: result };
+       } catch (error) {
+         if (error instanceof TaskActionError) {
+           return { success: false, error };
+         }
+         return { 
+           success: false, 
+           error: new SystemError('Unexpected error occurred', { originalError: error })
+         };
+       }
+     }
+     ```
+
+  ## Error Handling Strategies
+  1. **Graceful Degradation**:
+     ```typescript
+     async function sendNotification(message: string): Promise<void> {
+       const notificationServices = [slackService, discordService, emailService];
+       
+       for (const service of notificationServices) {
+         try {
+           await service.send(message);
+           return; // Success, exit early
+         } catch (error) {
+           logger.warn(`Notification service ${service.name} failed`, { error });
+           // Continue to next service
+         }
+       }
+       
+       // All services failed, log critical error but don't throw
+       logger.error('All notification services failed', { message });
+     }
+     ```
+
+  2. **Retry Mechanisms**:
+     ```typescript
+     async function withRetry<T>(
+       operation: () => Promise<T>,
+       options: {
+         maxAttempts: number;
+         delay: number;
+         backoffMultiplier?: number;
+         retryCondition?: (error: Error) => boolean;
+       }
+     ): Promise<T> {
+       let lastError: Error;
+       
+       for (let attempt = 1; attempt <= options.maxAttempts; attempt++) {
+         try {
+           return await operation();
+         } catch (error) {
+           lastError = error as Error;
+           
+           if (options.retryCondition && !options.retryCondition(lastError)) {
+             throw lastError; // Don't retry if condition not met
+           }
+           
+           if (attempt === options.maxAttempts) {
+             throw lastError; // Last attempt failed
+           }
+           
+           const delay = options.delay * Math.pow(options.backoffMultiplier || 1, attempt - 1);
+           await new Promise(resolve => setTimeout(resolve, delay));
+         }
+       }
+       
+       throw lastError!;
+     }
+     ```
+
+  3. **Circuit Breaker Pattern**:
+     ```typescript
+     class CircuitBreaker {
+       private failures = 0;
+       private lastFailureTime?: Date;
+       private state: 'closed' | 'open' | 'half-open' = 'closed';
+
+       constructor(
+         private threshold: number,
+         private timeout: number
+       ) {}
+
+       async execute<T>(operation: () => Promise<T>): Promise<T> {
+         if (this.state === 'open') {
+           if (this.shouldAttemptReset()) {
+             this.state = 'half-open';
+           } else {
+             throw new Error('Circuit breaker is open');
+           }
+         }
+
+         try {
+           const result = await operation();
+           this.onSuccess();
+           return result;
+         } catch (error) {
+           this.onFailure();
+           throw error;
+         }
+       }
+
+       private shouldAttemptReset(): boolean {
+         return this.lastFailureTime && 
+                Date.now() - this.lastFailureTime.getTime() > this.timeout;
+       }
+
+       private onSuccess(): void {
+         this.failures = 0;
+         this.state = 'closed';
+       }
+
+       private onFailure(): void {
+         this.failures++;
+         this.lastFailureTime = new Date();
+         
+         if (this.failures >= this.threshold) {
+           this.state = 'open';
+         }
+       }
+     }
+     ```
+
+  ## Logging & Monitoring
+  1. **Structured Logging**:
+     ```typescript
+     interface LogContext {
+       userId?: string;
+       requestId?: string;
+       actionType?: string;
+       taskId?: string;
+       [key: string]: any;
+     }
+
+     class Logger {
+       error(message: string, context?: LogContext & { error?: Error }): void {
+         const logEntry = {
+           level: 'error',
+           message,
+           timestamp: new Date().toISOString(),
+           ...context,
+           stack: context?.error?.stack
+         };
+         
+         console.error(JSON.stringify(logEntry));
+         // Send to monitoring service
+       }
+
+       warn(message: string, context?: LogContext): void {
+         // Similar implementation
+       }
+     }
+     ```
+
+  2. **Error Tracking Integration**:
+     ```typescript
+     import * as Sentry from '@sentry/node';
+
+     function setupErrorTracking(): void {
+       Sentry.init({
+         dsn: process.env.SENTRY_DSN,
+         environment: process.env.NODE_ENV,
+         beforeSend(event) {
+           // Filter sensitive information
+           if (event.exception) {
+             // Remove sensitive data from error context
+           }
+           return event;
+         }
+       });
+     }
+
+     function captureError(error: Error, context?: Record<string, any>): void {
+       Sentry.withScope(scope => {
+         if (context) {
+           Object.entries(context).forEach(([key, value]) => {
+             scope.setTag(key, value);
+           });
+         }
+         Sentry.captureException(error);
+       });
+     }
+     ```
+
+  ## User-Friendly Error Messages
+  1. **Error Message Guidelines**:
+     ```typescript
+     class ErrorMessageBuilder {
+       static buildUserMessage(error: TaskActionError): string {
+         switch (error.code) {
+           case 'VALIDATION_ERROR':
+             return `Invalid input: ${error.message}. Please check your configuration and try again.`;
+           
+           case 'EXTERNAL_SERVICE_ERROR':
+             return `Service temporarily unavailable: ${error.message}. Please try again in a few minutes.`;
+           
+           case 'CONFIGURATION_ERROR':
+             return `Configuration error: ${error.message}. Please check your settings.`;
+           
+           default:
+             return 'An unexpected error occurred. Please contact support if the problem persists.';
+         }
+       }
+
+       static buildDeveloperMessage(error: TaskActionError): string {
+         return {
+           code: error.code,
+           message: error.message,
+           timestamp: error.timestamp,
+           context: error.context,
+           stack: error.stack
+         };
+       }
+     }
+     ```
+
+  2. **Internationalization Support**:
+     ```typescript
+     interface ErrorMessages {
+       [key: string]: {
+         [locale: string]: string;
+       };
+     }
+
+     const errorMessages: ErrorMessages = {
+       'VALIDATION_ERROR': {
+         'en': 'Invalid input provided',
+         'ko': '잘못된 입력이 제공되었습니다'
+       },
+       'NETWORK_ERROR': {
+         'en': 'Network connection failed',
+         'ko': '네트워크 연결에 실패했습니다'
+       }
+     };
+     ```
+
+  ## Input Validation & Sanitization
+  1. **Schema Validation**:
+     ```typescript
+     import Joi from 'joi';
+
+     const actionSchema = Joi.object({
+       type: Joi.string().required(),
+       parameters: Joi.object().required(),
+       timeout: Joi.number().min(1000).max(300000).default(30000)
+     });
+
+     function validateAction(action: unknown): Action {
+       const { error, value } = actionSchema.validate(action);
+       
+       if (error) {
+         throw new ValidationError(
+           `Action validation failed: ${error.details.map(d => d.message).join(', ')}`,
+           { validationDetails: error.details }
+         );
+       }
+       
+       return value as Action;
+     }
+     ```
+
+  2. **Input Sanitization**:
+     ```typescript
+     import DOMPurify from 'isomorphic-dompurify';
+
+     function sanitizeInput(input: string): string {
+       // Remove potentially dangerous characters
+       const sanitized = DOMPurify.sanitize(input);
+       
+       // Additional custom sanitization
+       return sanitized
+         .replace(/[<>]/g, '') // Remove angle brackets
+         .trim()
+         .substring(0, 1000); // Limit length
+     }
+     ```
+
+  ## Error Recovery Strategies
+  1. **Automatic Recovery**:
+     ```typescript
+     class ActionExecutor {
+       async executeWithRecovery(action: Action): Promise<ActionResult> {
+         try {
+           return await this.execute(action);
+         } catch (error) {
+           if (error instanceof RecoverableError) {
+             logger.info('Attempting automatic recovery', { action: action.type });
+             return await this.attemptRecovery(action, error);
+           }
+           throw error;
+         }
+       }
+
+       private async attemptRecovery(action: Action, error: RecoverableError): Promise<ActionResult> {
+         switch (error.recoveryStrategy) {
+           case 'retry':
+             return await withRetry(() => this.execute(action), { maxAttempts: 3, delay: 1000 });
+           
+           case 'fallback':
+             return await this.executeFallback(action);
+           
+           default:
+             throw error;
+         }
+       }
+     }
+     ```
+
+  2. **Manual Recovery Options**:
+     ```typescript
+     interface RecoveryOption {
+       id: string;
+       description: string;
+       action: () => Promise<void>;
+     }
+
+     function getRecoveryOptions(error: TaskActionError): RecoveryOption[] {
+       switch (error.code) {
+         case 'NETWORK_ERROR':
+           return [
+             {
+               id: 'retry',
+               description: 'Retry the operation',
+               action: () => retryLastOperation()
+             },
+             {
+               id: 'offline',
+               description: 'Continue in offline mode',
+               action: () => enableOfflineMode()
+             }
+           ];
+         
+         default:
+           return [];
+       }
+     }
+     ```
+
+  ## Task-Action Specific Error Handling
+  1. **Action Execution Errors**:
+     ```typescript
+     class ActionExecutionError extends TaskActionError {
+       readonly code = 'ACTION_EXECUTION_ERROR';
+       readonly severity = 'error' as const;
+       
+       constructor(
+         message: string,
+         public readonly actionType: string,
+         public readonly actionId: string,
+         context?: Record<string, any>
+       ) {
+         super(message, { actionType, actionId, ...context });
+       }
+     }
+
+     async function executeAction(action: Action): Promise<ActionResult> {
+       try {
+         // Validate action
+         validateAction(action);
+         
+         // Execute action
+         const result = await performAction(action);
+         
+         return result;
+       } catch (error) {
+         if (error instanceof ValidationError) {
+           throw new ActionExecutionError(
+             `Action validation failed: ${error.message}`,
+             action.type,
+             action.id,
+             { validationError: error }
+           );
+         }
+         
+         throw new ActionExecutionError(
+           `Action execution failed: ${error.message}`,
+           action.type,
+           action.id,
+           { originalError: error }
+         );
+       }
+     }
+     ```
+
+  2. **MCP Server Error Handling**:
+     ```typescript
+     function handleMCPError(error: Error): MCPErrorResponse {
+       if (error instanceof TaskActionError) {
+         return {
+           content: [{
+             type: 'text',
+             text: ErrorMessageBuilder.buildUserMessage(error)
+           }],
+           isError: true,
+           meta: {
+             errorCode: error.code,
+             severity: error.severity,
+             timestamp: error.timestamp
+           }
+         };
+       }
+       
+       // Unknown error
+       logger.error('Unexpected MCP error', { error });
+       return {
+         content: [{
+           type: 'text',
+           text: 'An unexpected error occurred. Please try again.'
+         }],
+         isError: true
+       };
+     }
+     ```
+
+  ## Testing Error Scenarios
+  1. **Error Testing Strategies**:
+     ```typescript
+     describe('Error Handling', () => {
+       it('should handle validation errors gracefully', async () => {
+         const invalidAction = { type: 'invalid' };
+         
+         const result = await executeAction(invalidAction);
+         
+         expect(result.success).toBe(false);
+         expect(result.error).toBeInstanceOf(ValidationError);
+         expect(result.error.code).toBe('VALIDATION_ERROR');
+       });
+
+       it('should retry on transient failures', async () => {
+         const mockService = jest.fn()
+           .mockRejectedValueOnce(new Error('Transient error'))
+           .mockResolvedValueOnce('success');
+
+         const result = await withRetry(mockService, { maxAttempts: 2, delay: 100 });
+
+         expect(result).toBe('success');
+         expect(mockService).toHaveBeenCalledTimes(2);
+       });
+     });
+     ```
+
+  ## Performance Considerations
+  1. **Error Handling Performance**:
+     - Avoid throwing exceptions in hot paths
+     - Use Result types for expected failures
+     - Implement efficient error logging
+     - Cache error messages and recovery options
+
+  2. **Memory Management**:
+     - Clean up resources in finally blocks
+     - Avoid memory leaks in error handlers
+     - Implement proper error object disposal
+     - Monitor error handling memory usage
+
+  ## Continuous Improvement
+  - Monitor error rates and patterns
+  - Regularly review and update error messages
+  - Analyze error logs for improvement opportunities
+  - Implement error handling metrics and alerts
+  - Train team on error handling best practices

@@ -1,0 +1,525 @@
+version: 1
+kind: action
+name: Performance Optimization
+description: Comprehensive performance analysis and optimization with profiling, benchmarking, and improvement recommendations
+prompt: Analyze application performance, identify bottlenecks, implement optimizations, and measure improvements with detailed benchmarking and monitoring.
+enhanced-prompt: |-
+  # ⚡ Performance Optimization Workflow
+
+  **Analyze and optimize application performance with systematic profiling and benchmarking.**
+
+  ## 📊 Step 1: Performance Baseline Establishment
+  ```bash
+  echo "=== Performance Baseline Establishment ==="
+  
+  PROJECT_NAME=$(basename $(pwd))
+  OPTIMIZATION_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+  BASELINE_ID="baseline-$(date +%Y%m%d-%H%M%S)"
+  
+  echo "⚡ Project: $PROJECT_NAME"
+  echo "📅 Date: $OPTIMIZATION_DATE"
+  echo "🆔 Baseline ID: $BASELINE_ID"
+  echo ""
+  
+  # Create performance directory
+  mkdir -p performance-analysis/$BASELINE_ID
+  PERF_DIR="performance-analysis/$BASELINE_ID"
+  
+  echo "📁 Performance directory: $PERF_DIR"
+  echo "✅ Performance analysis initialized"
+  echo ""
+  ```
+
+  ## 🔍 Step 2: Application Profiling
+  ```bash
+  echo "=== Application Profiling ==="
+  
+  echo "🔍 Starting application profiling..."
+  
+  # Node.js profiling
+  if [ -f "package.json" ]; then
+    echo "📦 Node.js application detected"
+    
+    # Check if app is running
+    echo "🚀 Starting application for profiling..."
+    
+    # Memory usage baseline
+    echo "💾 Measuring memory usage..."
+    if command -v node >/dev/null 2>&1; then
+      node -e "
+        const used = process.memoryUsage();
+        console.log('Memory Usage Baseline:');
+        for (let key in used) {
+          console.log(\`\${key}: \${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB\`);
+        }
+      " > "$PERF_DIR/memory-baseline.txt"
+    fi
+    
+    # Bundle size analysis
+    echo "📦 Analyzing bundle size..."
+    if [ -d "dist" ] || [ -d "build" ]; then
+      find dist/ build/ -name "*.js" -o -name "*.css" 2>/dev/null | xargs ls -lh > "$PERF_DIR/bundle-sizes.txt" 2>/dev/null || true
+    fi
+    
+    # Dependency analysis
+    echo "📊 Analyzing dependencies..."
+    npm ls --depth=0 > "$PERF_DIR/dependencies.txt" 2>/dev/null || true
+    
+    # Check for performance monitoring tools
+    if grep -q "clinic\|0x\|autocannon" package.json; then
+      echo "✅ Performance tools detected"
+    else
+      echo "⚠️  Consider installing performance tools: clinic, 0x, autocannon"
+    fi
+  fi
+  
+  echo "✅ Application profiling completed"
+  echo ""
+  ```
+
+  ## 🧪 Step 3: Performance Benchmarking
+  ```bash
+  echo "=== Performance Benchmarking ==="
+  
+  echo "🧪 Running performance benchmarks..."
+  
+  # Build performance
+  echo "🔨 Measuring build performance..."
+  if [ -f "package.json" ]; then
+    echo "⏱️  Build time measurement:"
+    time npm run build > "$PERF_DIR/build-time.txt" 2>&1 || echo "No build script available"
+  fi
+  
+  # Test performance
+  echo "🧪 Measuring test performance..."
+  if [ -f "package.json" ]; then
+    echo "⏱️  Test execution time:"
+    time npm test > "$PERF_DIR/test-time.txt" 2>&1 || echo "No test script available"
+  fi
+  
+  # Startup time
+  echo "🚀 Measuring startup time..."
+  if [ -f "package.json" ]; then
+    node -e "
+      const start = Date.now();
+      require('./package.json');
+      const end = Date.now();
+      console.log('Package.json load time: ' + (end - start) + 'ms');
+    " > "$PERF_DIR/startup-time.txt" 2>/dev/null || true
+  fi
+  
+  # File system analysis
+  echo "📁 Analyzing file system performance..."
+  echo "File count and sizes:" > "$PERF_DIR/filesystem-analysis.txt"
+  find . -type f -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" | wc -l >> "$PERF_DIR/filesystem-analysis.txt"
+  du -sh . >> "$PERF_DIR/filesystem-analysis.txt" 2>/dev/null || true
+  
+  echo "✅ Performance benchmarking completed"
+  echo ""
+  ```
+
+  ## 📈 Step 4: Code Performance Analysis
+  ```bash
+  echo "=== Code Performance Analysis ==="
+  
+  echo "📈 Analyzing code for performance issues..."
+  
+  # Large file detection
+  echo "📄 Detecting large files..."
+  find . -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" | xargs wc -l | sort -nr | head -20 > "$PERF_DIR/large-files.txt"
+  
+  # Complex function detection
+  echo "🧮 Detecting complex functions..."
+  grep -r "for.*for\|while.*while" --include="*.js" --include="*.ts" . > "$PERF_DIR/nested-loops.txt" 2>/dev/null || true
+  
+  # Synchronous operations
+  echo "⏳ Detecting synchronous operations..."
+  grep -r "readFileSync\|writeFileSync\|execSync" --include="*.js" --include="*.ts" . > "$PERF_DIR/sync-operations.txt" 2>/dev/null || true
+  
+  # Memory leak patterns
+  echo "💾 Detecting potential memory leaks..."
+  grep -r "setInterval\|setTimeout" --include="*.js" --include="*.ts" . > "$PERF_DIR/timers.txt" 2>/dev/null || true
+  grep -r "addEventListener" --include="*.js" --include="*.ts" . > "$PERF_DIR/event-listeners.txt" 2>/dev/null || true
+  
+  # Database query patterns
+  echo "🗄️  Analyzing database queries..."
+  grep -r "SELECT.*\*\|JOIN.*JOIN" --include="*.js" --include="*.ts" --include="*.sql" . > "$PERF_DIR/database-queries.txt" 2>/dev/null || true
+  
+  echo "✅ Code performance analysis completed"
+  echo ""
+  ```
+
+  ## 🔧 Step 5: Optimization Implementation
+  ```bash
+  echo "=== Optimization Implementation ==="
+  
+  echo "🔧 Implementing performance optimizations..."
+  
+  # Bundle optimization
+  echo "📦 Bundle optimization recommendations:"
+  echo "  1. Code splitting implementation"
+  echo "  2. Tree shaking configuration"
+  echo "  3. Minification and compression"
+  echo "  4. Asset optimization"
+  
+  # Create webpack optimization config (if applicable)
+  if [ -f "webpack.config.js" ] || grep -q "webpack" package.json 2>/dev/null; then
+    echo "⚙️  Creating webpack optimization config..."
+    cat << EOF > "$PERF_DIR/webpack-optimization.js"
+  // Webpack Performance Optimization Configuration
+  module.exports = {
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\\\/]node_modules[\\\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
+      usedExports: true,
+      sideEffects: false,
+    },
+    performance: {
+      maxAssetSize: 250000,
+      maxEntrypointSize: 250000,
+      hints: 'warning',
+    },
+  };
+  EOF
+  fi
+  
+  # Database optimization
+  echo "🗄️  Database optimization recommendations:"
+  echo "  1. Add database indexes"
+  echo "  2. Optimize query patterns"
+  echo "  3. Implement connection pooling"
+  echo "  4. Add query caching"
+  
+  # Caching strategy
+  echo "🗂️  Caching optimization recommendations:"
+  echo "  1. HTTP caching headers"
+  echo "  2. Redis/Memcached implementation"
+  echo "  3. CDN configuration"
+  echo "  4. Browser caching strategy"
+  
+  echo "✅ Optimization recommendations generated"
+  echo ""
+  ```
+
+  ## 📊 Step 6: Performance Monitoring Setup
+  ```bash
+  echo "=== Performance Monitoring Setup ==="
+  
+  echo "📊 Setting up performance monitoring..."
+  
+  # Create performance monitoring script
+  cat << 'EOF' > "$PERF_DIR/performance-monitor.js"
+  // Performance Monitoring Script
+  const fs = require('fs');
+  const path = require('path');
+  
+  class PerformanceMonitor {
+    constructor() {
+      this.metrics = {
+        startTime: Date.now(),
+        memoryUsage: [],
+        responseTime: [],
+        errorCount: 0
+      };
+    }
+    
+    recordMemoryUsage() {
+      const usage = process.memoryUsage();
+      this.metrics.memoryUsage.push({
+        timestamp: Date.now(),
+        heapUsed: usage.heapUsed,
+        heapTotal: usage.heapTotal,
+        external: usage.external,
+        rss: usage.rss
+      });
+    }
+    
+    recordResponseTime(duration) {
+      this.metrics.responseTime.push({
+        timestamp: Date.now(),
+        duration: duration
+      });
+    }
+    
+    recordError() {
+      this.metrics.errorCount++;
+    }
+    
+    generateReport() {
+      const report = {
+        uptime: Date.now() - this.metrics.startTime,
+        averageMemory: this.calculateAverageMemory(),
+        averageResponseTime: this.calculateAverageResponseTime(),
+        errorRate: this.metrics.errorCount / this.metrics.responseTime.length,
+        timestamp: new Date().toISOString()
+      };
+      
+      return report;
+    }
+    
+    calculateAverageMemory() {
+      if (this.metrics.memoryUsage.length === 0) return 0;
+      const total = this.metrics.memoryUsage.reduce((sum, usage) => sum + usage.heapUsed, 0);
+      return total / this.metrics.memoryUsage.length;
+    }
+    
+    calculateAverageResponseTime() {
+      if (this.metrics.responseTime.length === 0) return 0;
+      const total = this.metrics.responseTime.reduce((sum, time) => sum + time.duration, 0);
+      return total / this.metrics.responseTime.length;
+    }
+  }
+  
+  module.exports = PerformanceMonitor;
+  EOF
+  
+  # Create performance test script
+  cat << 'EOF' > "$PERF_DIR/performance-test.js"
+  // Performance Test Script
+  const PerformanceMonitor = require('./performance-monitor');
+  
+  const monitor = new PerformanceMonitor();
+  
+  // Simulate application load
+  function simulateLoad() {
+    const start = Date.now();
+    
+    // Simulate some work
+    for (let i = 0; i < 1000000; i++) {
+      Math.random();
+    }
+    
+    const duration = Date.now() - start;
+    monitor.recordResponseTime(duration);
+    monitor.recordMemoryUsage();
+  }
+  
+  // Run performance test
+  console.log('Starting performance test...');
+  
+  const interval = setInterval(() => {
+    simulateLoad();
+  }, 100);
+  
+  setTimeout(() => {
+    clearInterval(interval);
+    const report = monitor.generateReport();
+    console.log('Performance Test Results:');
+    console.log(JSON.stringify(report, null, 2));
+  }, 5000);
+  EOF
+  
+  echo "✅ Performance monitoring setup completed"
+  echo ""
+  ```
+
+  ## 📈 Step 7: Performance Testing
+  ```bash
+  echo "=== Performance Testing ==="
+  
+  echo "📈 Running performance tests..."
+  
+  # Load testing (if autocannon is available)
+  if command -v autocannon >/dev/null 2>&1; then
+    echo "🔥 Running load test with autocannon..."
+    autocannon -c 10 -d 30 http://localhost:3000 > "$PERF_DIR/load-test.txt" 2>/dev/null || echo "Application not running on port 3000"
+  else
+    echo "⚠️  Autocannon not installed - run: npm install -g autocannon"
+  fi
+  
+  # Memory stress test
+  echo "💾 Running memory stress test..."
+  node "$PERF_DIR/performance-test.js" > "$PERF_DIR/memory-stress-test.txt" 2>/dev/null || echo "Node.js not available"
+  
+  # Bundle analysis
+  if [ -f "package.json" ] && grep -q "webpack-bundle-analyzer" package.json; then
+    echo "📊 Generating bundle analysis..."
+    npm run analyze > "$PERF_DIR/bundle-analysis.txt" 2>/dev/null || echo "Bundle analyzer not configured"
+  fi
+  
+  echo "✅ Performance testing completed"
+  echo ""
+  ```
+
+  ## 📊 Step 8: Performance Report Generation
+  ```bash
+  echo "=== Performance Report Generation ==="
+  
+  echo "📊 Generating comprehensive performance report..."
+  
+  # Calculate metrics
+  LARGE_FILES_COUNT=$(wc -l < "$PERF_DIR/large-files.txt" 2>/dev/null || echo "0")
+  SYNC_OPS_COUNT=$(wc -l < "$PERF_DIR/sync-operations.txt" 2>/dev/null || echo "0")
+  NESTED_LOOPS_COUNT=$(wc -l < "$PERF_DIR/nested-loops.txt" 2>/dev/null || echo "0")
+  
+  # Generate performance report
+  cat << EOF > "$PERF_DIR/performance-report.md"
+  # Performance Optimization Report
+  
+  **Project:** $PROJECT_NAME  
+  **Analysis Date:** $OPTIMIZATION_DATE  
+  **Baseline ID:** $BASELINE_ID
+  
+  ## Executive Summary
+  
+  This report contains the results of a comprehensive performance analysis and optimization recommendations for $PROJECT_NAME.
+  
+  ## Performance Metrics
+  
+  | Metric | Count | Impact |
+  |--------|-------|--------|
+  | Large Files (>500 lines) | $LARGE_FILES_COUNT | 📄 Medium |
+  | Synchronous Operations | $SYNC_OPS_COUNT | ⏳ High |
+  | Nested Loops | $NESTED_LOOPS_COUNT | 🧮 Medium |
+  
+  ## Detailed Analysis
+  
+  ### 1. Code Performance
+  - Large files detected: $LARGE_FILES_COUNT
+  - Synchronous operations: $SYNC_OPS_COUNT
+  - Complex nested loops: $NESTED_LOOPS_COUNT
+  
+  ### 2. Bundle Performance
+  - Bundle size analysis completed
+  - Code splitting opportunities identified
+  - Tree shaking recommendations provided
+  
+  ### 3. Memory Usage
+  - Memory baseline established
+  - Potential memory leaks identified
+  - Optimization recommendations provided
+  
+  ## Optimization Recommendations
+  
+  ### Immediate Actions (High Impact)
+  1. Replace synchronous operations with async alternatives
+  2. Implement code splitting for large bundles
+  3. Add database indexes for slow queries
+  4. Implement caching strategy
+  
+  ### Short-term Actions (Medium Impact)
+  1. Optimize large files and complex functions
+  2. Implement lazy loading for components
+  3. Add performance monitoring
+  4. Optimize asset delivery (CDN, compression)
+  
+  ### Long-term Actions (Low Impact)
+  1. Regular performance audits
+  2. Performance budgets implementation
+  3. Advanced caching strategies
+  4. Microservices architecture consideration
+  
+  ## Implementation Guide
+  
+  ### Bundle Optimization
+  \`\`\`javascript
+  // webpack.config.js optimization
+  module.exports = {
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\\\/]node_modules[\\\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
+      },
+    },
+  };
+  \`\`\`
+  
+  ### Caching Implementation
+  \`\`\`javascript
+  // Express.js caching middleware
+  const cache = require('memory-cache');
+  
+  app.use((req, res, next) => {
+    const key = req.originalUrl;
+    const cached = cache.get(key);
+    
+    if (cached) {
+      return res.send(cached);
+    }
+    
+    res.sendResponse = res.send;
+    res.send = (body) => {
+      cache.put(key, body, 300000); // 5 minutes
+      res.sendResponse(body);
+    };
+    
+    next();
+  });
+  \`\`\`
+  
+  ## Performance Monitoring
+  
+  Implement continuous performance monitoring:
+  
+  1. Response time tracking
+  2. Memory usage monitoring
+  3. Error rate monitoring
+  4. User experience metrics
+  
+  ## Next Steps
+  
+  1. Implement high-impact optimizations
+  2. Set up performance monitoring
+  3. Establish performance budgets
+  4. Schedule regular performance reviews
+  
+  ---
+  *Generated by task-action performance optimization*
+  EOF
+  
+  echo "📄 Performance report generated: $PERF_DIR/performance-report.md"
+  echo ""
+  ```
+
+  ## 🎯 Step 9: Optimization Summary
+  ```bash
+  echo "=== Performance Optimization Summary ==="
+  
+  echo "⚡ Performance optimization analysis completed!"
+  echo ""
+  echo "📊 Key Findings:"
+  echo "  📄 Large files: $LARGE_FILES_COUNT"
+  echo "  ⏳ Sync operations: $SYNC_OPS_COUNT"
+  echo "  🧮 Nested loops: $NESTED_LOOPS_COUNT"
+  echo ""
+  echo "🎯 Priority Actions:"
+  if [ $SYNC_OPS_COUNT -gt 0 ]; then
+    echo "  🚨 HIGH: Replace $SYNC_OPS_COUNT synchronous operations"
+  fi
+  if [ $LARGE_FILES_COUNT -gt 5 ]; then
+    echo "  ⚠️  MEDIUM: Refactor $LARGE_FILES_COUNT large files"
+  fi
+  if [ $NESTED_LOOPS_COUNT -gt 0 ]; then
+    echo "  ⚠️  MEDIUM: Optimize $NESTED_LOOPS_COUNT nested loops"
+  fi
+  echo ""
+  echo "📁 Generated Files:"
+  echo "  - performance-report.md"
+  echo "  - performance-monitor.js"
+  echo "  - performance-test.js"
+  echo "  - webpack-optimization.js"
+  echo ""
+  echo "🔄 Next Steps:"
+  echo "  1. Review performance report"
+  echo "  2. Implement high-priority optimizations"
+  echo "  3. Set up performance monitoring"
+  echo "  4. Schedule follow-up analysis"
+  echo ""
+  echo "📈 Performance optimization workflow completed!"
+  ```
+
+  **⚡ Comprehensive performance analysis completed with actionable optimization recommendations!**

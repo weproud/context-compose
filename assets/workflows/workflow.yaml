@@ -1,7 +1,7 @@
 version: 1
 kind: workflow
 name: Default Workflow
-description: Comprehensive task-action workflow with quality gates and validation
+description: Comprehensive workflow with quality gates and validation
 jobs:
   steps:
     - name: Development
@@ -10,16 +10,10 @@ jobs:
     - name: Test
       uses: actions/test.yaml
 
-    - name: Task Done
-      uses: actions/complete.yaml
-
-    - name: Send a message
-      uses: actions/send-message.yaml
-
 prompt: |
-  Execute complete task-action workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
+  Execute complete workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
 enhanced-prompt: |-
-  Execute the complete task-action workflow following these comprehensive guidelines:
+  Execute the complete workflow following these comprehensive guidelines:
 
   ## Workflow Execution Strategy
   1. **Sequential Processing**:

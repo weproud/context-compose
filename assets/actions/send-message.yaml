@@ -1,7 +1,224 @@
 version: 1
 kind: action
 name: Send a Message
-description: Send a Message
+description: Send notifications through configured channels with rich formatting and error handling
 prompt: notify에 등록된 방법을 사용해서 task 완료 메시지를 보낸다
 enhanced-prompt: |-
-  notify에 등록된 방법을 사용해서 task 완료 메시지를 보낸다
+  # 📱 Smart Message Notification System
+
+  **Send professional notifications through multiple channels with rich formatting.**
+
+  ## 🔍 Step 1: Discover Available Notification Channels
+  ```bash
+  echo "=== Available Notification Channels ==="
+
+  # Check for notification configurations
+  if [ -d ".taskaction/notify" ]; then
+    echo "📁 Configured channels:"
+    ls -la .taskaction/notify/ | grep -E '\.(yaml|yml)$' | awk '{print "  - " $9}' | sed 's/\.ya*ml$//'
+  else
+    echo "⚠️  No notification channels configured"
+    echo "Run 'task-action init' to set up notification channels"
+  fi
+  echo ""
+  ```
+
+  ## 📝 Step 2: Prepare Message Content
+  ```bash
+  # Get project context
+  PROJECT_NAME=$(basename $(pwd))
+  CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+  LAST_COMMIT=$(git log -1 --pretty=format:'%h - %s' 2>/dev/null || echo "No commits")
+  TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+  echo "=== Message Context ==="
+  echo "📁 Project: $PROJECT_NAME"
+  echo "🌿 Branch: $CURRENT_BRANCH"
+  echo "📝 Last commit: $LAST_COMMIT"
+  echo "⏰ Time: $TIMESTAMP"
+  echo ""
+  ```
+
+  ## 🎨 Step 3: Format Message Templates
+  ```bash
+  # Task completion message template
+  cat << EOF > /tmp/task_completion_message.md
+  ## ✅ Task Completed: $PROJECT_NAME
+
+  **Branch:** \`$CURRENT_BRANCH\`
+  **Completed:** $TIMESTAMP
+  **Last Commit:** $LAST_COMMIT
+
+  ### 📋 Summary
+  - All requirements implemented
+  - Tests passing ✅
+  - Documentation updated 📖
+  - Ready for review 🔍
+
+  ### 🔗 Next Steps
+  - Code review requested
+  - Awaiting approval for merge
+  - Deployment pending review
+
+  ---
+  *Automated notification from task-action*
+  EOF
+
+  echo "📄 Message template created"
+  ```
+
+  ## 🚀 Step 4: Send to Slack (if configured)
+  ```bash
+  if [ -f ".taskaction/notify/slack.yaml" ]; then
+    echo "📤 Sending to Slack..."
+
+    # Use task-action slack command
+    task-action slack send-message \
+      --title "✅ Task Completed: $PROJECT_NAME" \
+      --message "$(cat /tmp/task_completion_message.md)" \
+      --color "good" \
+      --channel "#development"
+
+    if [ $? -eq 0 ]; then
+      echo "✅ Slack notification sent successfully"
+    else
+      echo "❌ Failed to send Slack notification"
+    fi
+  else
+    echo "⚠️  Slack not configured"
+  fi
+  echo ""
+  ```
+
+  ## 💬 Step 5: Send to Discord (if configured)
+  ```bash
+  if [ -f ".taskaction/notify/discord.yaml" ]; then
+    echo "📤 Sending to Discord..."
+
+    # Use task-action discord command
+    task-action discord send-message \
+      --title "✅ Task Completed" \
+      --description "**Project:** $PROJECT_NAME\n**Branch:** $CURRENT_BRANCH\n**Status:** Ready for review" \
+      --color "3066993" \
+      --footer "task-action notification"
+
+    if [ $? -eq 0 ]; then
+      echo "✅ Discord notification sent successfully"
+    else
+      echo "❌ Failed to send Discord notification"
+    fi
+  else
+    echo "⚠️  Discord not configured"
+  fi
+  echo ""
+  ```
+
+  ## 📧 Step 6: Send Email (if configured)
+  ```bash
+  if [ -f ".taskaction/notify/email.yaml" ]; then
+    echo "📤 Sending email notification..."
+
+    # Prepare email content
+    EMAIL_SUBJECT="✅ Task Completed: $PROJECT_NAME"
+    EMAIL_BODY=$(cat /tmp/task_completion_message.md)
+
+    # Use task-action email command (if available)
+    task-action email send \
+      --subject "$EMAIL_SUBJECT" \
+      --body "$EMAIL_BODY" \
+      --to "team@company.com"
+
+    if [ $? -eq 0 ]; then
+      echo "✅ Email notification sent successfully"
+    else
+      echo "❌ Failed to send email notification"
+    fi
+  else
+    echo "⚠️  Email not configured"
+  fi
+  echo ""
+  ```
+
+  ## 🔔 Step 7: Custom Webhook Notifications
+  ```bash
+  if [ -f ".taskaction/notify/webhook.yaml" ]; then
+    echo "📤 Sending webhook notification..."
+
+    # Prepare JSON payload
+    cat << EOF > /tmp/webhook_payload.json
+  {
+    "project": "$PROJECT_NAME",
+    "branch": "$CURRENT_BRANCH",
+    "status": "completed",
+    "timestamp": "$TIMESTAMP",
+    "commit": "$LAST_COMMIT",
+    "message": "Task implementation completed and ready for review"
+  }
+  EOF
+
+    # Send webhook
+    task-action webhook send \
+      --payload /tmp/webhook_payload.json \
+      --event "task.completed"
+
+    if [ $? -eq 0 ]; then
+      echo "✅ Webhook notification sent successfully"
+    else
+      echo "❌ Failed to send webhook notification"
+    fi
+  else
+    echo "⚠️  Webhook not configured"
+  fi
+  echo ""
+  ```
+
+  ## 📊 Step 8: Notification Summary
+  ```bash
+  echo "=== Notification Summary ==="
+  echo "📱 Channels attempted:"
+
+  # Check which channels were attempted
+  [ -f ".taskaction/notify/slack.yaml" ] && echo "  ✅ Slack" || echo "  ⚪ Slack (not configured)"
+  [ -f ".taskaction/notify/discord.yaml" ] && echo "  ✅ Discord" || echo "  ⚪ Discord (not configured)"
+  [ -f ".taskaction/notify/email.yaml" ] && echo "  ✅ Email" || echo "  ⚪ Email (not configured)"
+  [ -f ".taskaction/notify/webhook.yaml" ] && echo "  ✅ Webhook" || echo "  ⚪ Webhook (not configured)"
+
+  echo ""
+  echo "📝 Message content:"
+  echo "  - Project: $PROJECT_NAME"
+  echo "  - Branch: $CURRENT_BRANCH"
+  echo "  - Status: Task completed"
+  echo "  - Time: $TIMESTAMP"
+  echo ""
+  echo "🎉 Notification workflow completed!"
+  ```
+
+  ## 🛠️ Step 9: Troubleshooting
+  ```bash
+  echo "=== Troubleshooting Guide ==="
+  echo ""
+  echo "🔧 If notifications failed:"
+  echo "1. Check notification configuration files in .taskaction/notify/"
+  echo "2. Verify API tokens and webhook URLs"
+  echo "3. Test connectivity to notification services"
+  echo "4. Check task-action logs for detailed error messages"
+  echo ""
+  echo "📖 Setup help:"
+  echo "- Run 'task-action init' to configure notification channels"
+  echo "- Check documentation for channel-specific setup"
+  echo "- Test notifications with 'task-action test-notify <channel>'"
+  ```
+
+  ## 🎯 Quick Send Options
+  ```bash
+  # Quick Slack message
+  task-action slack send-message --quick "✅ Task completed: $PROJECT_NAME"
+
+  # Quick Discord message
+  task-action discord send-message --quick "✅ Task completed: $PROJECT_NAME"
+
+  # Quick notification to all configured channels
+  task-action notify all --message "Task completed: $PROJECT_NAME" --type "success"
+  ```
+
+  **📱 Professional notifications sent to keep your team informed!**

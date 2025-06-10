@@ -1,0 +1,379 @@
+version: 1
+kind: rule
+name: API Design Rule
+description: Comprehensive API design principles for RESTful APIs, GraphQL, and MCP server interfaces
+prompt: Design consistent, intuitive APIs following REST principles, proper HTTP methods and status codes, comprehensive error handling, versioning strategies, and thorough documentation with OpenAPI specifications.
+enhanced-prompt: |-
+  Follow these comprehensive API design principles for task-action interfaces:
+
+  ## RESTful API Design Principles
+  1. **Resource-Oriented Design**:
+     - Use nouns for resource names, not verbs
+     - Represent resources with clear, hierarchical URLs
+     - Use plural nouns for collections
+     - Maintain consistent naming conventions
+
+     ```
+     Good:
+     GET /api/v1/tasks
+     GET /api/v1/tasks/123
+     POST /api/v1/tasks
+     PUT /api/v1/tasks/123
+     DELETE /api/v1/tasks/123
+     
+     Bad:
+     GET /api/v1/getTasks
+     POST /api/v1/createTask
+     PUT /api/v1/updateTask/123
+     ```
+
+  2. **HTTP Methods Usage**:
+     - **GET**: Retrieve resources (idempotent, safe)
+     - **POST**: Create new resources or non-idempotent operations
+     - **PUT**: Update entire resource (idempotent)
+     - **PATCH**: Partial resource updates
+     - **DELETE**: Remove resources (idempotent)
+     - **HEAD**: Get resource metadata only
+     - **OPTIONS**: Get allowed methods for resource
+
+  3. **URL Structure Best Practices**:
+     ```
+     # Resource collections
+     GET /api/v1/tasks
+     POST /api/v1/tasks
+     
+     # Individual resources
+     GET /api/v1/tasks/{taskId}
+     PUT /api/v1/tasks/{taskId}
+     PATCH /api/v1/tasks/{taskId}
+     DELETE /api/v1/tasks/{taskId}
+     
+     # Nested resources
+     GET /api/v1/tasks/{taskId}/actions
+     POST /api/v1/tasks/{taskId}/actions
+     
+     # Actions on resources
+     POST /api/v1/tasks/{taskId}/execute
+     POST /api/v1/tasks/{taskId}/cancel
+     ```
+
+  ## HTTP Status Codes
+  1. **Success Codes (2xx)**:
+     - **200 OK**: Successful GET, PUT, PATCH
+     - **201 Created**: Successful POST with resource creation
+     - **202 Accepted**: Request accepted for async processing
+     - **204 No Content**: Successful DELETE or PUT with no response body
+
+  2. **Client Error Codes (4xx)**:
+     - **400 Bad Request**: Invalid request syntax or parameters
+     - **401 Unauthorized**: Authentication required
+     - **403 Forbidden**: Authenticated but not authorized
+     - **404 Not Found**: Resource doesn't exist
+     - **409 Conflict**: Resource conflict (e.g., duplicate)
+     - **422 Unprocessable Entity**: Valid syntax but semantic errors
+     - **429 Too Many Requests**: Rate limiting
+
+  3. **Server Error Codes (5xx)**:
+     - **500 Internal Server Error**: Generic server error
+     - **502 Bad Gateway**: Invalid response from upstream
+     - **503 Service Unavailable**: Temporary service unavailability
+     - **504 Gateway Timeout**: Upstream timeout
+
+  ## Request/Response Design
+  1. **Request Structure**:
+     ```json
+     {
+       "data": {
+         "type": "task",
+         "attributes": {
+           "name": "Deploy to production",
+           "description": "Deploy version 1.2.0 to production environment",
+           "priority": "high"
+         },
+         "relationships": {
+           "assignee": {
+             "data": { "type": "user", "id": "123" }
+           }
+         }
+       }
+     }
+     ```
+
+  2. **Response Structure**:
+     ```json
+     {
+       "data": {
+         "type": "task",
+         "id": "456",
+         "attributes": {
+           "name": "Deploy to production",
+           "status": "pending",
+           "createdAt": "2024-01-15T10:30:00Z",
+           "updatedAt": "2024-01-15T10:30:00Z"
+         }
+       },
+       "meta": {
+         "version": "1.0",
+         "timestamp": "2024-01-15T10:30:00Z"
+       }
+     }
+     ```
+
+  3. **Collection Responses**:
+     ```json
+     {
+       "data": [
+         { "type": "task", "id": "1", "attributes": {...} },
+         { "type": "task", "id": "2", "attributes": {...} }
+       ],
+       "meta": {
+         "pagination": {
+           "page": 1,
+           "perPage": 20,
+           "total": 150,
+           "totalPages": 8
+         }
+       },
+       "links": {
+         "self": "/api/v1/tasks?page=1",
+         "next": "/api/v1/tasks?page=2",
+         "last": "/api/v1/tasks?page=8"
+       }
+     }
+     ```
+
+  ## Error Handling
+  1. **Error Response Format**:
+     ```json
+     {
+       "errors": [
+         {
+           "id": "error-123",
+           "status": "400",
+           "code": "VALIDATION_ERROR",
+           "title": "Validation Error",
+           "detail": "The 'name' field is required",
+           "source": {
+             "pointer": "/data/attributes/name"
+           },
+           "meta": {
+             "timestamp": "2024-01-15T10:30:00Z"
+           }
+         }
+       ]
+     }
+     ```
+
+  2. **Error Categories**:
+     - **Validation Errors**: Input validation failures
+     - **Business Logic Errors**: Domain-specific rule violations
+     - **System Errors**: Infrastructure or dependency failures
+     - **Security Errors**: Authentication or authorization failures
+
+  3. **Error Handling Best Practices**:
+     - Provide clear, actionable error messages
+     - Include error codes for programmatic handling
+     - Specify which field caused validation errors
+     - Don't expose sensitive system information
+     - Log detailed errors server-side for debugging
+
+  ## API Versioning
+  1. **Versioning Strategies**:
+     ```
+     # URL Path Versioning (Recommended)
+     /api/v1/tasks
+     /api/v2/tasks
+     
+     # Header Versioning
+     Accept: application/vnd.taskaction.v1+json
+     
+     # Query Parameter Versioning
+     /api/tasks?version=1
+     ```
+
+  2. **Version Management**:
+     - Use semantic versioning for API versions
+     - Maintain backward compatibility when possible
+     - Provide migration guides for breaking changes
+     - Deprecate old versions gradually with clear timelines
+     - Support multiple versions simultaneously during transitions
+
+  ## MCP Server Design
+  1. **Tool Definition Structure**:
+     ```typescript
+     {
+       name: "task-action-execute",
+       description: "Execute a task action with specified parameters",
+       inputSchema: {
+         type: "object",
+         properties: {
+           projectRoot: {
+             type: "string",
+             description: "Root directory of the project"
+           },
+           actionName: {
+             type: "string", 
+             description: "Name of the action to execute"
+           },
+           parameters: {
+             type: "object",
+             description: "Action-specific parameters"
+           }
+         },
+         required: ["projectRoot", "actionName"]
+       }
+     }
+     ```
+
+  2. **MCP Response Format**:
+     ```typescript
+     {
+       content: [
+         {
+           type: "text",
+           text: "Action executed successfully"
+         }
+       ],
+       isError: false,
+       meta: {
+         executionTime: 1500,
+         actionType: "git-branch",
+         timestamp: "2024-01-15T10:30:00Z"
+       }
+     }
+     ```
+
+  ## Authentication & Authorization
+  1. **Authentication Methods**:
+     - **API Keys**: Simple, suitable for server-to-server
+     - **JWT Tokens**: Stateless, good for distributed systems
+     - **OAuth 2.0**: Standard for third-party integrations
+     - **Basic Auth**: Simple but less secure (HTTPS only)
+
+  2. **Authorization Patterns**:
+     ```http
+     # Bearer Token
+     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+     
+     # API Key
+     X-API-Key: your-api-key-here
+     
+     # Basic Auth
+     Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+     ```
+
+  3. **Security Best Practices**:
+     - Always use HTTPS in production
+     - Implement rate limiting and throttling
+     - Validate and sanitize all inputs
+     - Use CORS policies appropriately
+     - Implement proper session management
+
+  ## Pagination & Filtering
+  1. **Pagination Strategies**:
+     ```
+     # Offset-based pagination
+     GET /api/v1/tasks?page=2&limit=20
+     
+     # Cursor-based pagination (for large datasets)
+     GET /api/v1/tasks?cursor=eyJpZCI6MTIzfQ&limit=20
+     
+     # Range-based pagination
+     GET /api/v1/tasks?range=20-39
+     ```
+
+  2. **Filtering & Sorting**:
+     ```
+     # Filtering
+     GET /api/v1/tasks?status=pending&priority=high
+     GET /api/v1/tasks?created_after=2024-01-01
+     
+     # Sorting
+     GET /api/v1/tasks?sort=created_at&order=desc
+     GET /api/v1/tasks?sort=priority,created_at&order=desc,asc
+     
+     # Field selection
+     GET /api/v1/tasks?fields=id,name,status
+     ```
+
+  ## API Documentation
+  1. **OpenAPI Specification**:
+     ```yaml
+     openapi: 3.0.3
+     info:
+       title: Task Action API
+       version: 1.0.0
+       description: API for managing task actions and workflows
+     
+     paths:
+       /api/v1/tasks:
+         get:
+           summary: List tasks
+           parameters:
+             - name: status
+               in: query
+               schema:
+                 type: string
+                 enum: [pending, in_progress, completed]
+           responses:
+             '200':
+               description: List of tasks
+               content:
+                 application/json:
+                   schema:
+                     $ref: '#/components/schemas/TaskList'
+     ```
+
+  2. **Documentation Best Practices**:
+     - Provide comprehensive examples for all endpoints
+     - Document all possible error responses
+     - Include authentication requirements
+     - Provide SDK examples in multiple languages
+     - Keep documentation synchronized with implementation
+
+  ## Performance Considerations
+  1. **Caching Strategies**:
+     - Use ETags for conditional requests
+     - Implement appropriate cache headers
+     - Consider Redis for session and data caching
+     - Use CDN for static content
+
+  2. **Optimization Techniques**:
+     - Implement database query optimization
+     - Use connection pooling
+     - Implement request/response compression
+     - Consider GraphQL for flexible data fetching
+     - Use async processing for long-running operations
+
+  ## Testing API Design
+  1. **API Testing Levels**:
+     - **Contract Testing**: Verify API contracts
+     - **Integration Testing**: Test API endpoints
+     - **Load Testing**: Performance under load
+     - **Security Testing**: Vulnerability assessment
+
+  2. **Testing Tools & Approaches**:
+     - Use Postman or Insomnia for manual testing
+     - Implement automated API tests with Jest/Supertest
+     - Use OpenAPI generators for test scaffolding
+     - Implement contract testing with Pact
+
+  ## Task-Action Specific Guidelines
+  1. **Action Execution API**:
+     - Design idempotent action execution
+     - Provide action status tracking
+     - Implement proper timeout handling
+     - Support batch action execution
+
+  2. **Configuration API**:
+     - Validate YAML configurations
+     - Provide configuration templates
+     - Support environment-specific configs
+     - Implement configuration versioning
+
+  ## Continuous Improvement
+  - Monitor API usage and performance metrics
+  - Gather feedback from API consumers
+  - Regularly review and update API design
+  - Stay current with API design best practices
+  - Implement API analytics and monitoring
