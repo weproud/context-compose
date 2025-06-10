@@ -1,7 +1,7 @@
 {
   "name": "@lagom/context-compose",
   "version": "1.0.0",
-  "description": "Model Context Protocol (MCP) 서버 및 CLI 도구 - 단일 패키지, 다중 진입점",
+  "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
   "type": "module",
   "main": "dist/mcp-server/src/index.js",
   "bin": {
