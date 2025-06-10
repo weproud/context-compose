@@ -37,7 +37,7 @@ test.describe('Task Action Get Context CLI', () => {
 
     // 임시 테스트 디렉토리 생성
     testProjectRoot = join(tmpdir(), `test-project-${Date.now()}`);
-    testConfigDir = join(testProjectRoot, '.taskaction');
+    testConfigDir = join(testProjectRoot, '.contextcompose');
 
     mkdirSync(testProjectRoot, { recursive: true });
     mkdirSync(testConfigDir, { recursive: true });

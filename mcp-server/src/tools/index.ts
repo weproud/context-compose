@@ -18,10 +18,12 @@ export function registerMCPTools(server: FastMCP): void {
     registerInitTool(server);
     registerGetContextTool(server);
 
-    logger.info('All Hello MCP tools registered successfully');
+    logger.info('All Context-Compose MCP tools registered successfully');
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logger.error(`Error registering Hello MCP tools: ${errorMessage}`);
+    logger.error(
+      `Error registering Context-Compose MCP tools: ${errorMessage}`
+    );
     throw error;
   }
 }

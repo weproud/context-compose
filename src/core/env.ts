@@ -41,7 +41,7 @@ export class EnvLoader {
             '⚠️  .env 파일을 찾을 수 없습니다. 환경변수는 시스템에서 로드됩니다.'
           );
         }
-      } catch (parseError) {
+      } catch (_parseError) {
         console.warn(
           '⚠️  .env 파일 파싱 중 오류 발생. 시스템 환경변수만 사용합니다.'
         );
@@ -61,7 +61,7 @@ export class EnvLoader {
    */
   static get(key: string, defaultValue?: string): string | undefined {
     this.load(); // 자동으로 로드
-    return process.env[key] || defaultValue;
+    return process.env[key] ?? defaultValue;
   }
 
   /**
@@ -87,7 +87,7 @@ export class EnvLoader {
     this.load();
 
     console.log('🔧 환경변수 설정 상태:');
-    console.log(`  NODE_ENV: ${process.env.NODE_ENV || '미설정'}`);
+    console.log(`  NODE_ENV: ${process.env.NODE_ENV ?? '미설정'}`);
 
     if (process.env.OPENWEATHER_API_KEY) {
       console.log(`  OpenWeather API: ✅ 설정됨`);

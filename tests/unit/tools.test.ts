@@ -31,7 +31,7 @@ describe('MCP Tools', () => {
     beforeEach(() => {
       // 임시 테스트 디렉토리 생성
       testProjectRoot = join(tmpdir(), `test-project-${Date.now()}`);
-      testConfigDir = join(testProjectRoot, '.taskaction');
+      testConfigDir = join(testProjectRoot, '.contextcompose');
 
       mkdirSync(testProjectRoot, { recursive: true });
       mkdirSync(testConfigDir, { recursive: true });
@@ -72,7 +72,7 @@ prompt: |
   this is feature context task`;
 
       writeFileSync(
-        join(testConfigDir, 'context-feature.yaml'),
+        join(testConfigDir, 'feature-context.yaml'),
         contextFeatureContent,
         'utf8'
       );
@@ -133,6 +133,18 @@ prompt: 'Test notify prompt'`;
         'utf8'
       );
 
+      // 디버깅을 위한 파일 경로 출력
+      console.log('testProjectRoot:', testProjectRoot);
+      console.log('testConfigDir:', testConfigDir);
+      console.log(
+        'context file path:',
+        join(testConfigDir, 'feature-context.yaml')
+      );
+      console.log(
+        'workflow file path:',
+        join(testConfigDir, 'workflows', 'workflow.yaml')
+      );
+
       // GetContextTool 실행
       const result = await GetContextTool.execute({
         contextId: 'feature',
@@ -140,7 +152,10 @@ prompt: 'Test notify prompt'`;
         enhancedPrompt: false,
       });
 
-      // 결과 검증
+      // 결과 검증 - 실패 시 에러 메시지 출력
+      if (!result.success) {
+        console.log('Test failed with message:', result.message);
+      }
       expect(result.success).toBe(true);
       expect(result.contextId).toBe('feature');
       expect(result.message).toContain("Context 'feature' is ready");
@@ -182,7 +197,7 @@ prompt: |
   this is feature context task`;
 
       writeFileSync(
-        join(testConfigDir, 'context-feature.yaml'),
+        join(testConfigDir, 'feature-context.yaml'),
         contextFeatureContent,
         'utf8'
       );
@@ -208,6 +223,13 @@ prompt-enhanced: 'Enhanced workflow prompt with detailed guidelines'`;
         enhancedPrompt: true,
       });
 
+      // 실패 시 에러 메시지 출력
+      if (!result.success) {
+        console.log(
+          'Enhanced prompt test failed with message:',
+          result.message
+        );
+      }
       expect(result.success).toBe(true);
       expect(result.combinedPrompt).toContain(
         'Enhanced workflow prompt with detailed guidelines'

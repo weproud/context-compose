@@ -9,7 +9,7 @@ export function createInitCommand(): Command {
 
   initCommand
     .description(
-      'Initialize Task Action project (copy assets directory to .taskaction)'
+      'Initialize Context Compose project (copy assets directory to .contextcompose)'
     )
     .action(async () => {
       try {

@@ -5,7 +5,7 @@ export interface MCPTool {
   name: string;
   description: string;
   inputSchema: z.ZodSchema;
-  handler: (args: unknown) => Promise<unknown>;
+  handler: (_args: unknown) => Promise<unknown>;
 }
 
 // MCP 자원 타입
@@ -28,15 +28,15 @@ export interface LogEntry {
 export interface CLICommand {
   name: string;
   description: string;
-  action: (...args: unknown[]) => Promise<void>;
+  action: (..._args: unknown[]) => Promise<void>;
 }
 
 // 에러 타입
 export class MCPError extends Error {
   constructor(
     message: string,
-    public code: string,
-    public statusCode: number = 500
+    public _code: string,
+    public _statusCode: number = 500
   ) {
     super(message);
     this.name = 'MCPError';
