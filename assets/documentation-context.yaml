@@ -1,0 +1,401 @@
+version: 1
+kind: task
+name: 'documentation'
+description: 'Context for comprehensive documentation with user-centric approach'
+
+id: documentation-context
+context:
+  workflow: workflows/workflow.yaml
+  roles:
+    - roles/sindre-sorhus.yaml
+    - roles/dan-abramov.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/documentation-standards.yaml
+    - rules/clean-code.yaml
+    - rules/api-design.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/web-search.yaml
+  notify:
+    - notify/slack.yaml
+prompt: |
+  # 문서화 전용 컨텍스트
+
+  ## 문서화 철학
+  문서화는 **지식 공유**와 **개발자 경험 향상**의 핵심입니다. **사용자 중심적 접근**으로 실용적이고 접근 가능한 문서를 작성하며, **코드와 함께 진화**하는 살아있는 문서를 만듭니다.
+
+  ## 문서화 원칙
+  1. **사용자 중심**: 독자의 관점에서 필요한 정보 제공
+  2. **실용성**: 실제 사용 가능한 예제와 가이드
+  3. **일관성**: 통일된 형식과 스타일 유지
+  4. **최신성**: 코드 변경과 함께 문서 업데이트
+  5. **접근성**: 다양한 수준의 사용자 고려
+
+  ## 문서화 프로세스
+  1. **문서 계획 수립**
+     - 대상 독자 분석 및 요구사항 파악
+     - 문서 구조 및 정보 아키텍처 설계
+     - 문서 유형별 템플릿 및 가이드라인 정의
+     - 문서 관리 및 업데이트 프로세스 수립
+
+  2. **콘텐츠 작성**
+     - 명확하고 간결한 설명 작성
+     - 실용적인 예제 및 코드 샘플 포함
+     - 단계별 가이드 및 튜토리얼 제공
+     - 시각적 요소 (다이어그램, 스크린샷) 활용
+
+  3. **검토 및 개선**
+     - 기술적 정확성 검증
+     - 사용자 피드백 수집 및 반영
+     - 문서 품질 및 가독성 개선
+     - 지속적인 업데이트 및 유지보수
+
+  ## 문서 유형별 가이드
+  1. **README 문서**
+     ```markdown
+     # 프로젝트명
+
+     간단하고 명확한 프로젝트 설명
+
+     ## 🚀 빠른 시작
+
+     ```bash
+     # 설치
+     npm install project-name
+
+     # 실행
+     npm start
+     ```
+
+     ## ✨ 주요 기능
+
+     - ✅ 기능 1: 간단한 설명
+     - ✅ 기능 2: 간단한 설명
+     - 🚧 기능 3: 개발 중
+
+     ## 📖 사용법
+
+     ### 기본 사용법
+     ```typescript
+     import { ProjectClass } from 'project-name';
+
+     const instance = new ProjectClass({
+       apiKey: 'your-api-key'
+     });
+
+     const result = await instance.performAction();
+     console.log(result);
+     ```
+
+     ## 📚 문서
+
+     - [API 문서](./docs/api.md)
+     - [설치 가이드](./docs/installation.md)
+     - [예제 모음](./examples/)
+
+     ## 🤝 기여하기
+
+     1. Fork the repository
+     2. Create your feature branch
+     3. Commit your changes
+     4. Push to the branch
+     5. Open a Pull Request
+
+     ## 📄 라이선스
+
+     MIT License - [LICENSE](LICENSE) 파일 참조
+     ```
+
+  2. **API 문서**
+     ```markdown
+     # API 문서
+
+     ## 인증
+
+     모든 API 요청에는 Bearer 토큰이 필요합니다.
+
+     ```bash
+     curl -H "Authorization: Bearer YOUR_TOKEN" \
+          https://api.example.com/v1/users
+     ```
+
+     ## 엔드포인트
+
+     ### 사용자 관리
+
+     #### GET /api/v1/users
+
+     사용자 목록을 조회합니다.
+
+     **매개변수:**
+     - `page` (선택): 페이지 번호 (기본값: 1)
+     - `limit` (선택): 페이지당 항목 수 (기본값: 10)
+
+     **응답:**
+     ```json
+     {
+       "success": true,
+       "data": [
+         {
+           "id": "123",
+           "name": "John Doe",
+           "email": "john@example.com"
+         }
+       ],
+       "pagination": {
+         "page": 1,
+         "limit": 10,
+         "total": 100
+       }
+     }
+     ```
+
+     **예제:**
+     ```bash
+     curl "https://api.example.com/v1/users?page=1&limit=5" \
+          -H "Authorization: Bearer YOUR_TOKEN"
+     ```
+     ```
+
+  3. **설치 및 설정 가이드**
+     ```markdown
+     # 설치 가이드
+
+     ## 시스템 요구사항
+
+     - Node.js 18.0 이상
+     - npm 8.0 이상 또는 yarn 1.22 이상
+     - PostgreSQL 14 이상 (선택사항)
+
+     ## 단계별 설치
+
+     ### 1. 저장소 클론
+
+     ```bash
+     git clone https://github.com/username/project.git
+     cd project
+     ```
+
+     ### 2. 의존성 설치
+
+     ```bash
+     # npm 사용
+     npm install
+
+     # 또는 yarn 사용
+     yarn install
+     ```
+
+     ### 3. 환경 변수 설정
+
+     ```bash
+     cp .env.example .env
+     ```
+
+     `.env` 파일을 편집하여 필요한 설정을 입력하세요:
+
+     ```env
+     # 데이터베이스 설정
+     DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+
+     # JWT 설정
+     JWT_SECRET=your-secret-key
+     JWT_EXPIRES_IN=24h
+
+     # 외부 서비스
+     REDIS_URL=redis://localhost:6379
+     ```
+
+     ### 4. 데이터베이스 설정
+
+     ```bash
+     # 마이그레이션 실행
+     npm run db:migrate
+
+     # 시드 데이터 생성 (선택사항)
+     npm run db:seed
+     ```
+
+     ### 5. 애플리케이션 실행
+
+     ```bash
+     # 개발 모드
+     npm run dev
+
+     # 프로덕션 모드
+     npm run build
+     npm start
+     ```
+
+     ## 문제 해결
+
+     ### 일반적인 문제
+
+     **Q: 포트 3000이 이미 사용 중입니다**
+     A: `.env` 파일에서 `PORT=3001`로 변경하거나 다른 포트를 사용하세요.
+
+     **Q: 데이터베이스 연결 오류**
+     A: PostgreSQL이 실행 중인지 확인하고 `.env` 파일의 DATABASE_URL을 검증하세요.
+     ```
+
+  ## 코드 문서화
+  1. **JSDoc 주석**
+     ```typescript
+     /**
+      * 사용자 프로필을 업데이트합니다.
+      * 
+      * @param userId - 업데이트할 사용자의 고유 식별자
+      * @param updateData - 업데이트할 사용자 데이터
+      * @param options - 업데이트 옵션
+      * @param options.validateEmail - 이메일 유효성 검사 여부 (기본값: true)
+      * @returns 업데이트된 사용자 정보를 포함하는 Promise
+      * 
+      * @example
+      * ```typescript
+      * const updatedUser = await updateUserProfile('123', {
+      *   name: 'John Doe',
+      *   email: 'john@example.com'
+      * });
+      * console.log(updatedUser.name); // 'John Doe'
+      * ```
+      * 
+      * @throws {UserNotFoundError} 사용자를 찾을 수 없는 경우
+      * @throws {ValidationError} 입력 데이터가 유효하지 않은 경우
+      * 
+      * @since 1.2.0
+      */
+     async function updateUserProfile(
+       userId: string,
+       updateData: Partial<UserProfile>,
+       options: { validateEmail?: boolean } = {}
+     ): Promise<UserProfile> {
+       // 구현...
+     }
+     ```
+
+  2. **인라인 주석**
+     ```typescript
+     export class UserService {
+       async createUser(userData: CreateUserDto): Promise<User> {
+         // 이메일 중복 검사 - 동일한 이메일로 가입된 사용자가 있는지 확인
+         const existingUser = await this.userRepository.findByEmail(userData.email);
+         if (existingUser) {
+           throw new ConflictException('Email already exists');
+         }
+
+         // 비밀번호 해싱 - bcrypt를 사용하여 안전하게 저장
+         const hashedPassword = await bcrypt.hash(userData.password, 12);
+
+         // 사용자 생성 및 저장
+         const user = this.userRepository.create({
+           ...userData,
+           password: hashedPassword,
+           // 기본값 설정 - 새 사용자는 비활성 상태로 시작
+           isActive: false,
+           emailVerified: false
+         });
+
+         return this.userRepository.save(user);
+       }
+     }
+     ```
+
+  ## 아키텍처 문서화
+  ```markdown
+  # 시스템 아키텍처
+
+  ## 개요
+
+  이 시스템은 마이크로서비스 아키텍처를 기반으로 구축되었습니다.
+
+  ```mermaid
+  graph TB
+      A[Client] --> B[API Gateway]
+      B --> C[Auth Service]
+      B --> D[User Service]
+      B --> E[Order Service]
+      
+      C --> F[Auth DB]
+      D --> G[User DB]
+      E --> H[Order DB]
+      
+      D --> I[Redis Cache]
+      E --> I
+  ```
+
+  ## 서비스 구성
+
+  ### API Gateway
+  - **역할**: 요청 라우팅, 인증, 레이트 리미팅
+  - **기술**: Express.js, JWT
+  - **포트**: 3000
+
+  ### Auth Service
+  - **역할**: 사용자 인증 및 권한 관리
+  - **기술**: Node.js, JWT, bcrypt
+  - **포트**: 3001
+  - **데이터베이스**: PostgreSQL
+
+  ### User Service
+  - **역할**: 사용자 정보 관리
+  - **기술**: Node.js, TypeORM
+  - **포트**: 3002
+  - **데이터베이스**: PostgreSQL
+  - **캐시**: Redis
+
+  ## 데이터 플로우
+
+  1. 클라이언트가 API Gateway로 요청 전송
+  2. API Gateway에서 인증 토큰 검증
+  3. 해당 서비스로 요청 라우팅
+  4. 서비스에서 비즈니스 로직 처리
+  5. 데이터베이스 조회/수정
+  6. 응답을 클라이언트로 반환
+  ```
+
+  ## 문서 자동화
+  ```typescript
+  // TypeDoc을 사용한 자동 문서 생성
+  {
+    "scripts": {
+      "docs:generate": "typedoc src --out docs --theme minimal",
+      "docs:serve": "http-server docs -p 8080"
+    }
+  }
+
+  // Swagger/OpenAPI 자동 생성
+  const config = new DocumentBuilder()
+    .setTitle('API Documentation')
+    .setDescription('자동 생성된 API 문서')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+  ```
+
+  ## 문서 품질 관리
+  1. **문서 리뷰 프로세스**
+     - 기술적 정확성 검증
+     - 가독성 및 명확성 평가
+     - 예제 코드 동작 확인
+     - 사용자 관점에서 유용성 검토
+
+  2. **문서 메트릭**
+     - 문서 커버리지 (API 대비 문서화 비율)
+     - 사용자 피드백 점수
+     - 문서 업데이트 빈도
+     - 검색 및 접근성 지표
+
+  ## 성공 기준
+  - ✅ 모든 공개 API 문서화 완료
+  - ✅ 설치 및 설정 가이드 제공
+  - ✅ 실용적인 예제 및 튜토리얼 포함
+  - ✅ 코드 주석 및 인라인 문서화
+  - ✅ 아키텍처 및 설계 문서 작성
+  - ✅ 자동화된 문서 생성 및 배포
+  - ✅ 사용자 피드백 수집 및 개선
+
+  **문서화를 시작하겠습니다. 어떤 문서를 작성하시겠습니까?**

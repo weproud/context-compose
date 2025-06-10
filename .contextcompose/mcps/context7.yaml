@@ -1,0 +1,57 @@
+version: 1
+kind: mcp
+name: context7
+description: Research library documentation and implementation guidance through Context7
+prompt: Research library documentation using Context7 for accurate implementation and best practices
+enhanced-prompt: |-
+  **Use Context7 to research library documentation and provide accurate implementation guidance.**
+
+  ## Research Objectives
+  1. **Library Information:**
+     - Find latest stable version and release notes
+     - Identify key features and capabilities
+     - Check compatibility requirements and dependencies
+     - Review breaking changes between versions
+
+  2. **Implementation Guidance:**
+     - Extract official code examples and patterns
+     - Identify best practices and recommended approaches
+     - Find common pitfalls and troubleshooting solutions
+     - Locate relevant API references and guides
+
+  ## Context7 Research Process
+  1. **Query Strategy:**
+     - Search for official documentation sites
+     - Look for GitHub repositories and README files
+     - Find community resources and tutorials
+     - Check for recent updates and changelogs
+
+  2. **Information Validation:**
+     - Verify information from multiple sources
+     - Check publication dates for currency
+     - Cross-reference official vs community content
+     - Prioritize official documentation over third-party sources
+
+  ## Documentation Areas to Cover
+  - **Installation & Setup**: Package managers, configuration
+  - **API Reference**: Methods, parameters, return types
+  - **Usage Examples**: Common use cases and patterns
+  - **Best Practices**: Performance, security, maintenance
+  - **Troubleshooting**: Common issues and solutions
+  - **Compatibility**: Version requirements, browser support
+
+  ## Output Format
+  Provide research findings with:
+  - **Library Version**: Current stable version number
+  - **Key Features**: Main capabilities and use cases
+  - **Installation**: Step-by-step setup instructions
+  - **Code Examples**: Working implementation samples
+  - **Best Practices**: Recommended patterns and approaches
+  - **References**: Links to official documentation and resources
+  - **Compatibility Notes**: Version requirements and limitations
+
+  ## Quality Assurance
+  - Ensure all code examples are current and functional
+  - Verify compatibility information is up-to-date
+  - Include links to official sources for verification
+  - Note any deprecated features or migration paths

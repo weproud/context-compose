@@ -1,0 +1,216 @@
+version: 1
+kind: rule
+name: Testing Principles Rule
+description: Comprehensive testing principles and best practices for reliable, maintainable test suites
+prompt: Follow testing pyramid principles, write comprehensive unit/integration/E2E tests, maintain high code coverage, use TDD/BDD methodologies, and ensure test reliability with proper mocking and data management.
+enhanced-prompt: |-
+  Follow these comprehensive testing principles when developing task-action:
+
+  ## Testing Pyramid & Strategy
+  1. **Test Pyramid Structure**:
+     - **Unit Tests (70%)**: Fast, isolated tests for individual functions/classes
+     - **Integration Tests (20%)**: Test component interactions and API endpoints
+     - **End-to-End Tests (10%)**: Full user workflow testing
+     - Maintain proper ratio to ensure fast feedback and reliable builds
+
+  2. **Test Categories**:
+     - **Unit Tests**: Pure functions, business logic, utilities
+     - **Integration Tests**: Database operations, external API calls, file I/O
+     - **Contract Tests**: API contracts, interface compliance
+     - **Performance Tests**: Load testing, memory usage, response times
+     - **Security Tests**: Input validation, authentication, authorization
+
+  ## Test-Driven Development (TDD)
+  1. **Red-Green-Refactor Cycle**:
+     - **Red**: Write failing test first
+     - **Green**: Write minimal code to make test pass
+     - **Refactor**: Improve code while keeping tests green
+     - Repeat cycle for each new feature or bug fix
+
+  2. **TDD Benefits**:
+     - Better code design and architecture
+     - Higher test coverage by default
+     - Reduced debugging time
+     - Living documentation through tests
+
+  3. **TDD Best Practices**:
+     - Write tests for behavior, not implementation
+     - Keep tests simple and focused
+     - Use descriptive test names that explain the scenario
+     - Test edge cases and error conditions
+
+  ## Behavior-Driven Development (BDD)
+  1. **Given-When-Then Structure**:
+     - **Given**: Set up initial state and preconditions
+     - **When**: Execute the action being tested
+     - **Then**: Verify the expected outcome
+     - Use this structure for clear, readable tests
+
+  2. **BDD Implementation**:
+     ```typescript
+     describe('Task Action Execution', () => {
+       it('should create git branch when git-branch action is executed', async () => {
+         // Given: A valid git-branch action configuration
+         const action = {
+           type: 'git-branch',
+           branch: 'feature/new-feature',
+           from: 'main'
+         };
+         
+         // When: The action is executed
+         const result = await executeAction(action);
+         
+         // Then: A new branch should be created
+         expect(result.success).toBe(true);
+         expect(await branchExists('feature/new-feature')).toBe(true);
+       });
+     });
+     ```
+
+  ## Test Quality & Maintainability
+  1. **Test Code Quality**:
+     - Apply same quality standards as production code
+     - Use meaningful variable and function names
+     - Keep tests DRY but prefer clarity over brevity
+     - Refactor test code regularly
+
+  2. **Test Organization**:
+     - Group related tests in describe blocks
+     - Use consistent file naming conventions
+     - Mirror production code structure in test directories
+     - Separate unit, integration, and E2E tests
+
+  3. **Test Data Management**:
+     - Use factories or builders for test data creation
+     - Isolate test data between tests
+     - Clean up test data after each test
+     - Use realistic but anonymized data
+
+  ## Mocking & Stubbing
+  1. **When to Mock**:
+     - External dependencies (APIs, databases, file system)
+     - Slow or unreliable operations
+     - Components with side effects
+     - Third-party services
+
+  2. **Mocking Best Practices**:
+     ```typescript
+     // Good: Mock external dependencies
+     jest.mock('../services/slackService');
+     const mockSlackService = slackService as jest.Mocked<typeof slackService>;
+     
+     beforeEach(() => {
+       mockSlackService.sendMessage.mockResolvedValue({ success: true });
+     });
+     
+     // Test focuses on business logic, not external dependencies
+     it('should send notification when task is completed', async () => {
+       await completeTask('task-123');
+       expect(mockSlackService.sendMessage).toHaveBeenCalledWith({
+         channel: '#notifications',
+         message: 'Task task-123 completed successfully'
+       });
+     });
+     ```
+
+  3. **Avoid Over-Mocking**:
+     - Don't mock what you own (internal modules)
+     - Mock at the boundary of your system
+     - Use real objects when possible for better integration testing
+
+  ## Test Coverage & Metrics
+  1. **Coverage Targets**:
+     - Minimum 80% line coverage for new code
+     - 100% coverage for critical business logic
+     - Focus on meaningful coverage, not just numbers
+     - Monitor coverage trends over time
+
+  2. **Coverage Types**:
+     - **Line Coverage**: Percentage of executed lines
+     - **Branch Coverage**: Percentage of executed branches
+     - **Function Coverage**: Percentage of called functions
+     - **Statement Coverage**: Percentage of executed statements
+
+  3. **Quality Metrics**:
+     - Test execution time (aim for fast feedback)
+     - Test flakiness rate (should be near zero)
+     - Test maintenance burden
+     - Defect detection rate
+
+  ## Task-Action Specific Testing
+  1. **Action Testing**:
+     - Test each action type independently
+     - Verify action validation logic
+     - Test action execution with various parameters
+     - Mock external services (Git, Slack, Discord)
+
+  2. **MCP Server Testing**:
+     - Test tool registration and discovery
+     - Verify parameter validation and schemas
+     - Test error handling and response formats
+     - Integration tests with MCP clients
+
+  3. **Configuration Testing**:
+     - Test YAML parsing and validation
+     - Verify template rendering with various data
+     - Test configuration inheritance and overrides
+     - Validate environment-specific configurations
+
+  ## Test Automation & CI/CD
+  1. **Continuous Testing**:
+     - Run tests automatically on every commit
+     - Fail builds on test failures
+     - Run different test suites at different stages
+     - Parallel test execution for faster feedback
+
+  2. **Test Environments**:
+     - Isolated test environments for each test run
+     - Consistent environment setup and teardown
+     - Database seeding and cleanup
+     - Mock external services in CI
+
+  ## Error Testing & Edge Cases
+  1. **Error Scenarios**:
+     - Test invalid inputs and edge cases
+     - Verify proper error messages and codes
+     - Test timeout and retry mechanisms
+     - Validate graceful degradation
+
+  2. **Boundary Testing**:
+     - Test minimum and maximum values
+     - Empty and null inputs
+     - Large datasets and memory limits
+     - Network failures and service unavailability
+
+  ## Performance Testing
+  1. **Performance Benchmarks**:
+     - Establish baseline performance metrics
+     - Test with realistic data volumes
+     - Monitor memory usage and CPU consumption
+     - Set performance budgets and alerts
+
+  2. **Load Testing**:
+     - Test concurrent action execution
+     - Verify system behavior under stress
+     - Test resource cleanup and garbage collection
+     - Monitor system recovery after load
+
+  ## Test Documentation
+  1. **Test Documentation**:
+     - Document test scenarios and expected outcomes
+     - Maintain test data requirements
+     - Document known limitations and assumptions
+     - Keep test setup instructions current
+
+  2. **Living Documentation**:
+     - Use tests as specification documentation
+     - Generate test reports and coverage reports
+     - Maintain examples of proper usage
+     - Document testing patterns and conventions
+
+  ## Continuous Improvement
+  - Regularly review and update test suites
+  - Remove obsolete or redundant tests
+  - Improve test performance and reliability
+  - Share testing knowledge and best practices
+  - Invest in testing tools and infrastructure

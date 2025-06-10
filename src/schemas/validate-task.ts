@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /**
  * Validate Task 도구 스키마
- * Task Action 프로젝트의 task 파일과 관련 파일들의 유효성을 검사하는 도구의 입력 매개변수를 정의합니다.
+ * Context Compose 프로젝트의 task 파일과 관련 파일들의 유효성을 검사하는 도구의 입력 매개변수를 정의합니다.
  */
 export const ValidateTaskToolSchema = z.object({
   taskId: z

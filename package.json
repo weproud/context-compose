@@ -1,20 +1,20 @@
 {
-  "name": "@madeinnook/task-action",
+  "name": "@lagom/context-compose",
   "version": "1.0.0",
   "description": "Model Context Protocol (MCP) 서버 및 CLI 도구 - 단일 패키지, 다중 진입점",
   "type": "module",
   "main": "dist/mcp-server/src/index.js",
   "bin": {
-    "task-action": "bin/task-action-cli.js",
-    "task-action-server": "mcp-server/server.js"
+    "context-compose": "bin/context-compose-cli.js",
+    "context-compose-server": "mcp-server/server.js"
   },
   "scripts": {
     "build": "tsc",
     "dev:server": "tsx mcp-server/src/index.ts",
     "dev:cli": "tsx src/cli/index.ts",
     "start:server": "node dist/mcp-server/src/index.js",
-    "start:cli": "npx tsx bin/task-action-cli.ts",
-    "task-action": "tsx src/cli/index.ts",
+    "start:cli": "npx tsx bin/context-compose-cli.js",
+    "context-compose": "tsx src/cli/index.ts",
     "inspect": "npx fastmcp inspect mcp-server/server.ts",
     "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
     "test": "vitest",
@@ -26,12 +26,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/weproud/task-action.git"
+    "url": "git+https://github.com/weproud/context-compose.git"
   },
   "keywords": [
     "mcp",
     "model-context-protocol",
-    "task-action",
+    "context-compose",
     "typescript",
     "fastmcp",
     "cli",
@@ -41,9 +41,9 @@
   "author": "weproud",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/weproud/task-action/issues"
+    "url": "https://github.com/weproud/context-compose/issues"
   },
-  "homepage": "https://github.com/weproud/task-action#readme",
+  "homepage": "https://github.com/weproud/context-compose#readme",
   "dependencies": {
     "commander": "^11.1.0",
     "dotenv": "^16.4.5",

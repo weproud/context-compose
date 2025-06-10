@@ -1,0 +1,49 @@
+version: 1
+kind: task
+name: 'default'
+description: 'default context'
+
+id: default-context
+context:
+  workflow: workflows/workflow.yaml
+  roles:
+    - roles/dan-abramov.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/clean-code.yaml
+    - rules/solid-principles.yaml
+    - rules/refactoring.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/playwright.yaml
+  notify:
+    - notify/slack.yaml
+prompt: |
+  # 중요: get-context 응답 처리 방식
+  이 프롬프트를 get-context로 받은 경우, 응답 내용을 다시 정리하거나 요약하지 말고 아래 지침을 그대로 실행하세요.
+
+  # 개발 작업 진행 지침
+  위에서 제공된 모든 컨텍스트 정보(workflow, rules, mcps, notify)를 기준으로 개발 작업을 진행합니다.
+
+  ## 필수 준수 사항
+  1. **컨텍스트 분석**: 제공된 모든 컨텍스트와 요구사항을 정확히 분석하고 이해한 후 작업 시작
+  2. **사전 조사**: 코드 변경 전에 codebase-retrieval 도구를 사용하여 관련 파일들을 조사하고 현재 구조 파악
+  3. **계획 수립**: 변경사항에 대한 상세하고 구체적인 계획을 수립하고 사용자 확인 후 진행
+  4. **패키지 관리**: 적절한 패키지 매니저 사용, 설정 파일 수동 편집 금지
+  5. **코드 컨벤션**: 기존 코드베이스의 패턴, 스타일, 아키텍처 존중
+  6. **테스트**: 작업 완료 후 반드시 테스트 작성 및 실행 제안
+  7. **한글 응답**: 모든 응답은 한글로 제공, 에러 발생 시 원인 설명 및 단계적 해결
+  8. **보수적 접근**: 사용자가 명시적으로 요청하지 않은 작업은 수행하지 않고 먼저 확인 요청
+
+  ## 추가 개발 가이드라인
+  - **정보 수집**: 불확실한 부분이 있으면 추가 정보 수집 도구 활용
+  - **점진적 개발**: 큰 변경사항은 작은 단위로 나누어 단계적 진행
+  - **에러 처리**: 문제 발생 시 즉시 중단하고 원인 분석 후 해결 방안 제시
+  - **문서화**: 중요한 변경사항은 적절한 주석이나 문서 업데이트 포함
+  - **백업 고려**: 중요한 파일 변경 시 백업 또는 버전 관리 확인
+
+  ## 작업 요청 대기
+  구체적인 작업 내용을 사용자로부터 요청받은 후, 위의 모든 지침을 준수하여 개발을 시작합니다.
+
+  **사용자님, 어떤 개발 작업을 진행하시겠습니까?**

@@ -1,0 +1,40 @@
+version: 1
+kind: action
+name: Development
+description: Develop task implementation with TypeScript best practices and testing
+prompt: Develop the task's prompt into working code
+enhanced-prompt: |-
+  **Develop the task's prompt requirements into functional code.**
+
+  ## Core Mission
+  Transform the given task prompt into working TypeScript implementation that fulfills all specified requirements.
+
+  ## Development Process
+  1. **Analyze the Prompt:**
+     - Identify what the task needs to accomplish
+     - Extract input/output requirements
+     - Note any specific constraints or edge cases
+
+  2. **Implement with Quality:**
+     - Write TypeScript code with proper typing
+     - Follow clean code principles
+     - Handle errors and edge cases appropriately
+     - Structure code for readability and maintenance
+
+  3. **Validate Implementation:**
+     - Write tests to verify functionality works as expected
+     - Ensure all prompt requirements are met
+     - Check TypeScript compilation passes
+     - Apply ESLint/Prettier formatting
+
+  ## Key Focus Areas
+  - **Prompt Compliance**: Code must do exactly what the task prompt asks for
+  - **Type Safety**: Use TypeScript features for robust code
+  - **Error Handling**: Handle edge cases and potential failures
+  - **Documentation**: Add comments and update docs as needed
+
+  ## Success Criteria
+  - ✅ Task prompt requirements fully implemented
+  - ✅ Code compiles without TypeScript errors
+  - ✅ Tests validate expected behavior
+  - ✅ Code follows project standards

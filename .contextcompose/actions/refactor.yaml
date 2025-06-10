@@ -1,0 +1,334 @@
+version: 1
+kind: action
+name: Refactor
+description: Systematic code refactoring with safety checks, test preservation, and quality improvements
+prompt: Perform systematic code refactoring to improve code quality, maintainability, and performance while preserving functionality and tests.
+enhanced-prompt: |-
+  # 🔧 Systematic Code Refactoring Workflow
+
+  **Improve code quality and maintainability with safe, systematic refactoring.**
+
+  ## 📋 Step 1: Pre-Refactoring Analysis
+  ```bash
+  echo "=== Pre-Refactoring Analysis ==="
+  
+  PROJECT_NAME=$(basename $(pwd))
+  REFACTOR_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+  CURRENT_BRANCH=$(git branch --show-current)
+  
+  echo "📁 Project: $PROJECT_NAME"
+  echo "🌿 Branch: $CURRENT_BRANCH"
+  echo "📅 Date: $REFACTOR_DATE"
+  echo ""
+  
+  # Create refactoring branch
+  REFACTOR_BRANCH="refactor/$(date +%m%d)-code-improvements"
+  echo "🌿 Creating refactoring branch: $REFACTOR_BRANCH"
+  git checkout -b "$REFACTOR_BRANCH"
+  
+  echo "✅ Refactoring environment prepared"
+  echo ""
+  ```
+
+  ## 🧪 Step 2: Baseline Test Execution
+  ```bash
+  echo "=== Baseline Test Execution ==="
+  
+  echo "🧪 Running baseline tests to ensure current functionality..."
+  
+  # Run all tests
+  npm test 2>/dev/null || echo "⚠️  No unit tests configured"
+  
+  # Check test coverage
+  npm run test:coverage 2>/dev/null || echo "⚠️  No coverage report available"
+  
+  # Store baseline metrics
+  echo "📊 Storing baseline metrics..."
+  
+  # Count lines of code
+  BASELINE_LOC=$(find src/ -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" 2>/dev/null | xargs wc -l | tail -1 | awk '{print $1}')
+  echo "📏 Baseline LOC: $BASELINE_LOC"
+  
+  # Count files
+  BASELINE_FILES=$(find src/ -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" 2>/dev/null | wc -l)
+  echo "📄 Baseline files: $BASELINE_FILES"
+  
+  echo "✅ Baseline established"
+  echo ""
+  ```
+
+  ## 🔍 Step 3: Code Quality Analysis
+  ```bash
+  echo "=== Code Quality Analysis ==="
+  
+  echo "🔍 Analyzing code quality issues..."
+  
+  # ESLint analysis
+  echo "📝 Running ESLint analysis..."
+  npm run lint 2>/dev/null || echo "⚠️  No linter configured"
+  
+  # TypeScript analysis
+  if [ -f "tsconfig.json" ]; then
+    echo "🔧 Running TypeScript analysis..."
+    npx tsc --noEmit 2>/dev/null || echo "⚠️  TypeScript issues found"
+  fi
+  
+  # Complexity analysis
+  echo "🧮 Analyzing code complexity..."
+  
+  # Find large functions (>50 lines)
+  LARGE_FUNCTIONS=$(grep -r "function\|=>" src/ 2>/dev/null | wc -l)
+  echo "📊 Functions found: $LARGE_FUNCTIONS"
+  
+  # Find long files (>300 lines)
+  LONG_FILES=$(find src/ -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" 2>/dev/null | xargs wc -l | awk '$1 > 300 {print $2}' | grep -v total | wc -l)
+  echo "📄 Long files (>300 lines): $LONG_FILES"
+  
+  # Find duplicate code patterns
+  echo "🔄 Checking for code duplication..."
+  # Add duplication detection logic here
+  
+  echo "✅ Code analysis completed"
+  echo ""
+  ```
+
+  ## 🛠️ Step 4: Refactoring Execution
+  ```bash
+  echo "=== Refactoring Execution ==="
+  
+  echo "🔧 Starting systematic refactoring..."
+  
+  # 1. Extract Constants
+  echo "📝 Step 4.1: Extract magic numbers and strings..."
+  echo "  - Look for hardcoded values"
+  echo "  - Create constants file if needed"
+  echo "  - Replace magic numbers with named constants"
+  
+  # 2. Extract Functions
+  echo "🔧 Step 4.2: Extract reusable functions..."
+  echo "  - Identify repeated code blocks"
+  echo "  - Extract into utility functions"
+  echo "  - Create shared utilities directory"
+  
+  # 3. Improve Naming
+  echo "📝 Step 4.3: Improve variable and function names..."
+  echo "  - Replace unclear variable names"
+  echo "  - Use descriptive function names"
+  echo "  - Follow naming conventions"
+  
+  # 4. Simplify Complex Functions
+  echo "🧮 Step 4.4: Simplify complex functions..."
+  echo "  - Break down large functions"
+  echo "  - Reduce cyclomatic complexity"
+  echo "  - Apply single responsibility principle"
+  
+  # 5. Remove Dead Code
+  echo "🗑️  Step 4.5: Remove dead code..."
+  echo "  - Remove unused imports"
+  echo "  - Delete commented-out code"
+  echo "  - Remove unused variables and functions"
+  
+  echo "✅ Refactoring steps outlined"
+  echo ""
+  ```
+
+  ## 🔧 Step 5: Automated Refactoring Tools
+  ```bash
+  echo "=== Automated Refactoring Tools ==="
+  
+  # Prettier formatting
+  echo "🎨 Running Prettier formatting..."
+  npm run format 2>/dev/null || npx prettier --write src/ 2>/dev/null || echo "⚠️  No formatter available"
+  
+  # ESLint auto-fix
+  echo "🔧 Running ESLint auto-fix..."
+  npm run lint:fix 2>/dev/null || npx eslint src/ --fix 2>/dev/null || echo "⚠️  No auto-fix available"
+  
+  # TypeScript organize imports
+  if [ -f "tsconfig.json" ]; then
+    echo "📦 Organizing TypeScript imports..."
+    # Add TypeScript import organization
+    echo "  - Remove unused imports"
+    echo "  - Sort import statements"
+    echo "  - Group imports by type"
+  fi
+  
+  # Remove unused dependencies
+  echo "📦 Checking for unused dependencies..."
+  npx depcheck 2>/dev/null || echo "⚠️  Depcheck not available"
+  
+  echo "✅ Automated refactoring completed"
+  echo ""
+  ```
+
+  ## 🧪 Step 6: Test Validation
+  ```bash
+  echo "=== Test Validation ==="
+  
+  echo "🧪 Validating refactored code with tests..."
+  
+  # Run all tests again
+  echo "🔍 Running test suite..."
+  npm test
+  
+  if [ $? -eq 0 ]; then
+    echo "✅ All tests passing after refactoring"
+  else
+    echo "❌ Tests failing - refactoring may have broken functionality"
+    echo "🔄 Consider reverting problematic changes"
+    exit 1
+  fi
+  
+  # Check test coverage
+  echo "📊 Checking test coverage..."
+  npm run test:coverage 2>/dev/null || echo "⚠️  No coverage report available"
+  
+  # Performance check
+  echo "⚡ Performance validation..."
+  echo "  - Check if refactoring improved performance"
+  echo "  - Run benchmarks if available"
+  echo "  - Monitor memory usage"
+  
+  echo "✅ Test validation completed"
+  echo ""
+  ```
+
+  ## 📊 Step 7: Refactoring Metrics
+  ```bash
+  echo "=== Refactoring Metrics ==="
+  
+  # Calculate new metrics
+  NEW_LOC=$(find src/ -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" 2>/dev/null | xargs wc -l | tail -1 | awk '{print $1}')
+  NEW_FILES=$(find src/ -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" 2>/dev/null | wc -l)
+  
+  # Calculate improvements
+  LOC_CHANGE=$((NEW_LOC - BASELINE_LOC))
+  FILES_CHANGE=$((NEW_FILES - BASELINE_FILES))
+  
+  echo "📊 Refactoring Impact:"
+  echo "  📏 Lines of Code: $BASELINE_LOC → $NEW_LOC ($([ $LOC_CHANGE -gt 0 ] && echo "+$LOC_CHANGE" || echo "$LOC_CHANGE"))"
+  echo "  📄 File Count: $BASELINE_FILES → $NEW_FILES ($([ $FILES_CHANGE -gt 0 ] && echo "+$FILES_CHANGE" || echo "$FILES_CHANGE"))"
+  echo ""
+  
+  # Quality improvements
+  echo "✨ Quality Improvements:"
+  echo "  - [ ] Reduced code duplication"
+  echo "  - [ ] Improved function naming"
+  echo "  - [ ] Extracted reusable utilities"
+  echo "  - [ ] Simplified complex functions"
+  echo "  - [ ] Removed dead code"
+  echo "  - [ ] Improved type safety"
+  echo ""
+  ```
+
+  ## 📝 Step 8: Documentation Update
+  ```bash
+  echo "=== Documentation Update ==="
+  
+  # Create refactoring summary
+  cat << EOF > REFACTORING_SUMMARY.md
+  # Refactoring Summary - $REFACTOR_DATE
+  
+  ## Overview
+  Systematic code refactoring to improve maintainability and code quality.
+  
+  ## Changes Made
+  
+  ### Code Quality Improvements
+  - [ ] Extracted magic numbers to constants
+  - [ ] Improved variable and function naming
+  - [ ] Simplified complex functions
+  - [ ] Removed dead code
+  - [ ] Organized imports
+  
+  ### Structural Changes
+  - [ ] Created utility functions
+  - [ ] Reorganized file structure
+  - [ ] Improved type definitions
+  - [ ] Enhanced error handling
+  
+  ## Metrics
+  - **Lines of Code**: $BASELINE_LOC → $NEW_LOC
+  - **Files**: $BASELINE_FILES → $NEW_FILES
+  - **Test Coverage**: Maintained
+  - **Performance**: Improved/Maintained
+  
+  ## Testing
+  - ✅ All existing tests pass
+  - ✅ No functionality broken
+  - ✅ Test coverage maintained
+  
+  ## Next Steps
+  - [ ] Code review
+  - [ ] Performance testing
+  - [ ] Documentation updates
+  - [ ] Deployment to staging
+  
+  ---
+  *Generated by task-action refactor workflow*
+  EOF
+  
+  echo "📄 Refactoring summary created: REFACTORING_SUMMARY.md"
+  echo ""
+  ```
+
+  ## 🔄 Step 9: Commit Refactored Code
+  ```bash
+  echo "=== Commit Refactored Code ==="
+  
+  # Stage all changes
+  git add .
+  
+  # Create detailed commit message
+  git commit -m "refactor: systematic code quality improvements
+
+  - Extract magic numbers to constants
+  - Improve variable and function naming
+  - Simplify complex functions
+  - Remove dead code and unused imports
+  - Organize imports and format code
+  - Maintain all existing functionality
+  
+  Metrics:
+  - LOC: $BASELINE_LOC → $NEW_LOC
+  - Files: $BASELINE_FILES → $NEW_FILES
+  - Tests: ✅ All passing
+  - Coverage: Maintained"
+  
+  echo "✅ Refactored code committed"
+  
+  # Push to remote
+  git push -u origin "$REFACTOR_BRANCH"
+  echo "✅ Refactoring branch pushed to remote"
+  echo ""
+  ```
+
+  ## 🔍 Step 10: Code Review Preparation
+  ```bash
+  echo "=== Code Review Preparation ==="
+  
+  echo "📋 Refactoring ready for review:"
+  echo "  🌿 Branch: $REFACTOR_BRANCH"
+  echo "  📊 Changes: Code quality improvements"
+  echo "  🧪 Tests: All passing"
+  echo "  📄 Documentation: Updated"
+  echo ""
+  
+  echo "🔗 Create Pull Request with:"
+  echo "  Title: 'refactor: systematic code quality improvements'"
+  echo "  Description: See REFACTORING_SUMMARY.md for details"
+  echo "  Labels: refactoring, code-quality"
+  echo ""
+  
+  echo "📝 Review checklist:"
+  echo "  - [ ] Code quality improved"
+  echo "  - [ ] No functionality broken"
+  echo "  - [ ] Tests still passing"
+  echo "  - [ ] Performance maintained/improved"
+  echo "  - [ ] Documentation updated"
+  echo ""
+  
+  echo "🎉 Refactoring workflow completed successfully!"
+  ```
+
+  **🔧 Systematic refactoring completed with quality improvements and safety checks!**

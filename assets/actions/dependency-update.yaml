@@ -1,0 +1,111 @@
+version: 1
+kind: action
+name: Dependency Update
+description: Safe dependency updates with compatibility checking and testing
+prompt: Update project dependencies safely with compatibility validation
+enhanced-prompt: |-
+  **Update project dependencies safely with comprehensive compatibility validation and testing.**
+
+  ## Update Objectives
+  1. **Security & Maintenance:**
+     - Update packages with known security vulnerabilities
+     - Apply critical bug fixes and patches
+     - Maintain compatibility with current codebase
+     - Ensure stable dependency tree
+
+  2. **Version Management:**
+     - Follow semantic versioning principles
+     - Prioritize patch and minor updates
+     - Carefully evaluate major version updates
+     - Maintain lock file consistency
+
+  ## Update Process
+  1. **Pre-update Analysis:**
+     - Audit current dependencies for vulnerabilities
+     - Check for outdated packages and available updates
+     - Analyze dependency tree for conflicts
+     - Review breaking changes in changelogs
+
+  2. **Update Strategy:**
+     - Start with security patches (highest priority)
+     - Apply patch updates (bug fixes)
+     - Consider minor updates (new features)
+     - Evaluate major updates (breaking changes)
+
+  3. **Compatibility Validation:**
+     - Run full test suite after each update batch
+     - Check TypeScript compilation
+     - Validate build process
+     - Test critical application paths
+
+  ## Update Categories
+  1. **Security Updates (Critical):**
+     - Packages with known CVEs
+     - Dependencies flagged by security audits
+     - Transitive dependencies with vulnerabilities
+     - Apply immediately with testing
+
+  2. **Maintenance Updates (High):**
+     - Bug fixes and stability improvements
+     - Performance enhancements
+     - Compatibility updates for Node.js/browser
+     - Regular maintenance releases
+
+  3. **Feature Updates (Medium):**
+     - New functionality that could benefit project
+     - Developer experience improvements
+     - Tooling and build process enhancements
+     - Optional but recommended updates
+
+  4. **Major Updates (Low):**
+     - Breaking changes requiring code modifications
+     - API changes and deprecations
+     - Significant architectural changes
+     - Require careful planning and testing
+
+  ## Testing & Validation
+  1. **Automated Testing:**
+     - Run unit tests after each update batch
+     - Execute integration tests
+     - Perform end-to-end testing
+     - Validate build and deployment processes
+
+  2. **Manual Validation:**
+     - Test critical user workflows
+     - Check for visual regressions
+     - Validate performance characteristics
+     - Review error handling and edge cases
+
+  ## Rollback Strategy
+  1. **Failure Detection:**
+     - Monitor test failures and build errors
+     - Check for runtime errors and exceptions
+     - Validate performance degradation
+     - Review user-facing functionality
+
+  2. **Rollback Process:**
+     - Restore previous package.json and lock files
+     - Clear node_modules and reinstall
+     - Re-run tests to confirm stability
+     - Document issues for future reference
+
+  ## Documentation & Communication
+  1. **Update Documentation:**
+     - Record all dependency changes
+     - Note any breaking changes or migrations
+     - Update README and setup instructions
+     - Document new features or capabilities
+
+  2. **Team Communication:**
+     - Notify team of significant updates
+     - Share breaking changes and migration steps
+     - Provide testing instructions
+     - Schedule review sessions for major updates
+
+  ## Success Criteria
+  - ✅ All security vulnerabilities addressed
+  - ✅ Dependencies updated without breaking functionality
+  - ✅ All tests pass after updates
+  - ✅ Build process remains stable
+  - ✅ No performance regressions detected
+  - ✅ Documentation updated appropriately

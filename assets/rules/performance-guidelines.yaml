@@ -1,0 +1,249 @@
+version: 1
+kind: rule
+name: Performance Guidelines
+description: Comprehensive performance optimization guidelines for web applications
+prompt: Follow performance optimization best practices for fast, efficient applications
+enhanced-prompt: |-
+  Follow these comprehensive performance optimization guidelines when developing applications:
+
+  ## Core Performance Principles
+  1. **Measure First, Optimize Second:**
+     - Use performance profiling tools before optimizing
+     - Establish baseline metrics and performance budgets
+     - Focus on bottlenecks with the highest impact
+     - Validate optimizations with real-world data
+
+  2. **User-Centric Performance:**
+     - Prioritize Core Web Vitals (LCP, FID, CLS)
+     - Optimize for perceived performance
+     - Consider different devices and network conditions
+     - Focus on critical user journeys
+
+  ## Loading Performance
+  1. **Resource Optimization:**
+     ```javascript
+     // Critical resource preloading
+     <link rel="preload" href="critical.css" as="style">
+     <link rel="preload" href="hero-image.webp" as="image">
+     
+     // DNS prefetching for external resources
+     <link rel="dns-prefetch" href="//fonts.googleapis.com">
+     <link rel="preconnect" href="//api.example.com">
+     ```
+
+  2. **Code Splitting & Lazy Loading:**
+     ```typescript
+     // Route-based code splitting
+     const LazyComponent = lazy(() => import('./HeavyComponent'));
+     
+     // Dynamic imports for features
+     const loadFeature = async () => {
+       const { feature } = await import('./feature');
+       return feature;
+     };
+     
+     // Image lazy loading
+     <img loading="lazy" src="image.jpg" alt="Description" />
+     ```
+
+  3. **Bundle Optimization:**
+     - Implement tree shaking to remove unused code
+     - Use webpack-bundle-analyzer to identify large dependencies
+     - Split vendor and application code
+     - Implement long-term caching strategies
+
+  ## Runtime Performance
+  1. **Efficient DOM Manipulation:**
+     ```javascript
+     // Batch DOM updates
+     const fragment = document.createDocumentFragment();
+     items.forEach(item => {
+       const element = createItemElement(item);
+       fragment.appendChild(element);
+     });
+     container.appendChild(fragment);
+     
+     // Use requestAnimationFrame for animations
+     function animate() {
+       // Update animation state
+       requestAnimationFrame(animate);
+     }
+     ```
+
+  2. **Memory Management:**
+     ```javascript
+     // Clean up event listeners
+     useEffect(() => {
+       const handleScroll = () => { /* handler */ };
+       window.addEventListener('scroll', handleScroll);
+       
+       return () => {
+         window.removeEventListener('scroll', handleScroll);
+       };
+     }, []);
+     
+     // Avoid memory leaks in closures
+     const processData = (data) => {
+       // Process data without retaining references
+       return data.map(item => ({ id: item.id, name: item.name }));
+     };
+     ```
+
+  ## Network Performance
+  1. **HTTP Optimization:**
+     - Use HTTP/2 for multiplexing
+     - Implement proper caching headers
+     - Compress responses with gzip/brotli
+     - Minimize HTTP requests
+
+  2. **API Optimization:**
+     ```typescript
+     // Implement request deduplication
+     const requestCache = new Map();
+     
+     async function fetchWithCache(url: string) {
+       if (requestCache.has(url)) {
+         return requestCache.get(url);
+       }
+       
+       const promise = fetch(url).then(r => r.json());
+       requestCache.set(url, promise);
+       return promise;
+     }
+     
+     // Use pagination for large datasets
+     interface PaginatedResponse<T> {
+       data: T[];
+       pagination: {
+         page: number;
+         limit: number;
+         total: number;
+       };
+     }
+     ```
+
+  ## Image & Media Optimization
+  1. **Modern Image Formats:**
+     ```html
+     <picture>
+       <source srcset="image.avif" type="image/avif">
+       <source srcset="image.webp" type="image/webp">
+       <img src="image.jpg" alt="Description" loading="lazy">
+     </picture>
+     ```
+
+  2. **Responsive Images:**
+     ```html
+     <img 
+       srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w"
+       sizes="(max-width: 480px) 100vw, (max-width: 800px) 50vw, 25vw"
+       src="medium.jpg" 
+       alt="Description"
+     >
+     ```
+
+  ## JavaScript Performance
+  1. **Efficient Algorithms:**
+     ```typescript
+     // Use appropriate data structures
+     const userMap = new Map(users.map(user => [user.id, user]));
+     const getUser = (id: string) => userMap.get(id); // O(1) lookup
+     
+     // Debounce expensive operations
+     const debouncedSearch = debounce((query: string) => {
+       performSearch(query);
+     }, 300);
+     ```
+
+  2. **Avoid Performance Anti-patterns:**
+     ```typescript
+     // ❌ Avoid: Expensive operations in render
+     function Component({ items }) {
+       const expensiveValue = items.map(item => 
+         heavyComputation(item)
+       ); // Runs on every render
+     }
+     
+     // ✅ Better: Memoize expensive computations
+     function Component({ items }) {
+       const expensiveValue = useMemo(() => 
+         items.map(item => heavyComputation(item)),
+         [items]
+       );
+     }
+     ```
+
+  ## CSS Performance
+  1. **Efficient Selectors:**
+     ```css
+     /* ❌ Avoid: Complex selectors */
+     .container div > ul li:nth-child(odd) a { }
+     
+     /* ✅ Better: Simple, specific selectors */
+     .nav-link { }
+     .nav-link--active { }
+     ```
+
+  2. **Layout Optimization:**
+     ```css
+     /* Use transform for animations (GPU accelerated) */
+     .element {
+       transform: translateX(100px);
+       will-change: transform;
+     }
+     
+     /* Avoid layout thrashing */
+     .container {
+       contain: layout style paint;
+     }
+     ```
+
+  ## Performance Monitoring
+  1. **Core Web Vitals Tracking:**
+     ```javascript
+     // Measure LCP
+     new PerformanceObserver((list) => {
+       const entries = list.getEntries();
+       const lastEntry = entries[entries.length - 1];
+       // Send to analytics
+       analytics.track('LCP', lastEntry.startTime);
+     }).observe({ entryTypes: ['largest-contentful-paint'] });
+     ```
+
+  2. **Performance Budgets:**
+     ```json
+     {
+       "budgets": [
+         {
+           "type": "bundle",
+           "name": "main",
+           "baseline": "250kb",
+           "maximum": "350kb"
+         },
+         {
+           "type": "initial",
+           "maximum": "500kb"
+         }
+       ]
+     }
+     ```
+
+  ## Performance Testing
+  1. **Automated Testing:**
+     - Integrate Lighthouse CI in build pipeline
+     - Set up performance regression testing
+     - Monitor Core Web Vitals in production
+     - Use synthetic monitoring for critical paths
+
+  2. **Load Testing:**
+     - Test with realistic user loads
+     - Simulate different network conditions
+     - Test on various devices and browsers
+     - Monitor server-side performance metrics
+
+  ## Success Criteria
+  - ✅ Core Web Vitals meet "Good" thresholds
+  - ✅ Bundle sizes within performance budgets
+  - ✅ Page load times under 3 seconds on 3G
+  - ✅ No memory leaks or performance regressions
+  - ✅ Smooth 60fps animations and interactions

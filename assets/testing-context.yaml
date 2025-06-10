@@ -1,0 +1,399 @@
+version: 1
+kind: task
+name: 'testing'
+description: 'Context for comprehensive testing with TDD and quality assurance focus'
+
+id: testing-context
+context:
+  workflow: workflows/workflow.yaml
+  roles:
+    - roles/kent-c-dodds.yaml
+    - roles/uncle-bob.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/testing-principles.yaml
+    - rules/clean-code.yaml
+    - rules/development.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/playwright.yaml
+    - mcps/web-search.yaml
+  notify:
+    - notify/slack.yaml
+prompt: |
+  # 테스트 개발 전용 컨텍스트
+
+  ## 테스트 철학
+  테스트는 **코드 품질의 안전망**이며 **리팩토링의 자신감**을 제공합니다. **테스트 주도 개발(TDD)**을 통해 더 나은 설계를 유도하고, **테스트 피라미드**를 따라 효율적인 테스트 전략을 구축합니다.
+
+  ## 테스트 전략
+  1. **테스트 피라미드**
+     - **Unit Tests (70%)**: 빠르고 격리된 단위 테스트
+     - **Integration Tests (20%)**: 컴포넌트 간 상호작용 테스트
+     - **E2E Tests (10%)**: 전체 사용자 시나리오 테스트
+
+  2. **테스트 원칙**
+     - **FIRST**: Fast, Independent, Repeatable, Self-validating, Timely
+     - **AAA**: Arrange, Act, Assert 패턴
+     - **Given-When-Then**: BDD 스타일 테스트 작성
+
+  ## 테스트 개발 프로세스
+  1. **테스트 계획 수립**
+     - 테스트 범위 및 우선순위 결정
+     - 테스트 케이스 설계 및 시나리오 정의
+     - 테스트 데이터 및 환경 준비
+     - 자동화 전략 수립
+
+  2. **TDD 사이클 적용**
+     - **Red**: 실패하는 테스트 작성
+     - **Green**: 테스트를 통과하는 최소 코드 작성
+     - **Refactor**: 코드 개선 및 중복 제거
+
+  3. **테스트 구현 및 실행**
+     - 다양한 레벨의 테스트 작성
+     - 테스트 자동화 및 CI/CD 통합
+     - 테스트 커버리지 측정 및 개선
+     - 테스트 유지보수 및 리팩토링
+
+  ## 단위 테스트 (Unit Tests)
+  ```typescript
+  // Jest를 사용한 단위 테스트
+  describe('UserService', () => {
+    let userService: UserService;
+    let userRepository: jest.Mocked<UserRepository>;
+
+    beforeEach(() => {
+      userRepository = {
+        findById: jest.fn(),
+        save: jest.fn(),
+        delete: jest.fn(),
+      } as any;
+      
+      userService = new UserService(userRepository);
+    });
+
+    describe('getUserById', () => {
+      it('should return user when user exists', async () => {
+        // Arrange
+        const userId = '123';
+        const expectedUser = { id: userId, name: 'John Doe' };
+        userRepository.findById.mockResolvedValue(expectedUser);
+
+        // Act
+        const result = await userService.getUserById(userId);
+
+        // Assert
+        expect(result).toEqual(expectedUser);
+        expect(userRepository.findById).toHaveBeenCalledWith(userId);
+      });
+
+      it('should throw error when user not found', async () => {
+        // Arrange
+        const userId = '999';
+        userRepository.findById.mockResolvedValue(null);
+
+        // Act & Assert
+        await expect(userService.getUserById(userId))
+          .rejects.toThrow('User not found');
+      });
+    });
+
+    describe('createUser', () => {
+      it('should create user with valid data', async () => {
+        // Arrange
+        const userData = { name: 'Jane Doe', email: 'jane@example.com' };
+        const savedUser = { id: '456', ...userData };
+        userRepository.save.mockResolvedValue(savedUser);
+
+        // Act
+        const result = await userService.createUser(userData);
+
+        // Assert
+        expect(result).toEqual(savedUser);
+        expect(userRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining(userData)
+        );
+      });
+    });
+  });
+  ```
+
+  ## 통합 테스트 (Integration Tests)
+  ```typescript
+  // API 통합 테스트
+  describe('User API Integration', () => {
+    let app: INestApplication;
+    let database: TestDatabase;
+
+    beforeAll(async () => {
+      database = await TestDatabase.create();
+      
+      const moduleFixture = await Test.createTestingModule({
+        imports: [AppModule],
+      })
+      .overrideProvider(DatabaseService)
+      .useValue(database)
+      .compile();
+
+      app = moduleFixture.createNestApplication();
+      await app.init();
+    });
+
+    afterAll(async () => {
+      await database.cleanup();
+      await app.close();
+    });
+
+    beforeEach(async () => {
+      await database.clear();
+    });
+
+    describe('POST /users', () => {
+      it('should create user and return 201', async () => {
+        const userData = {
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'SecurePassword123!'
+        };
+
+        const response = await request(app.getHttpServer())
+          .post('/api/v1/users')
+          .send(userData)
+          .expect(201);
+
+        expect(response.body.success).toBe(true);
+        expect(response.body.data).toMatchObject({
+          name: userData.name,
+          email: userData.email
+        });
+        expect(response.body.data.password).toBeUndefined();
+
+        // 데이터베이스 검증
+        const savedUser = await database.findUserByEmail(userData.email);
+        expect(savedUser).toBeDefined();
+      });
+
+      it('should return 400 for invalid email', async () => {
+        const invalidData = {
+          name: 'John Doe',
+          email: 'invalid-email',
+          password: 'SecurePassword123!'
+        };
+
+        const response = await request(app.getHttpServer())
+          .post('/api/v1/users')
+          .send(invalidData)
+          .expect(400);
+
+        expect(response.body.success).toBe(false);
+        expect(response.body.error.message).toContain('email');
+      });
+    });
+  });
+  ```
+
+  ## E2E 테스트 (End-to-End Tests)
+  ```typescript
+  // Playwright를 사용한 E2E 테스트
+  import { test, expect } from '@playwright/test';
+
+  test.describe('User Registration Flow', () => {
+    test('should complete user registration successfully', async ({ page }) => {
+      // Given: 사용자가 회원가입 페이지에 접근
+      await page.goto('/register');
+
+      // When: 회원가입 폼을 작성하고 제출
+      await page.fill('[data-testid="name-input"]', 'John Doe');
+      await page.fill('[data-testid="email-input"]', 'john@example.com');
+      await page.fill('[data-testid="password-input"]', 'SecurePassword123!');
+      await page.fill('[data-testid="confirm-password-input"]', 'SecurePassword123!');
+      
+      await page.click('[data-testid="register-button"]');
+
+      // Then: 성공 메시지가 표시되고 로그인 페이지로 이동
+      await expect(page.locator('[data-testid="success-message"]'))
+        .toContainText('Registration successful');
+      
+      await expect(page).toHaveURL('/login');
+    });
+
+    test('should show validation errors for invalid input', async ({ page }) => {
+      await page.goto('/register');
+
+      // 빈 폼 제출
+      await page.click('[data-testid="register-button"]');
+
+      // 검증 에러 메시지 확인
+      await expect(page.locator('[data-testid="name-error"]'))
+        .toContainText('Name is required');
+      await expect(page.locator('[data-testid="email-error"]'))
+        .toContainText('Email is required');
+    });
+  });
+
+  test.describe('User Dashboard', () => {
+    test.beforeEach(async ({ page }) => {
+      // 로그인 상태 설정
+      await page.goto('/login');
+      await page.fill('[data-testid="email-input"]', 'test@example.com');
+      await page.fill('[data-testid="password-input"]', 'password123');
+      await page.click('[data-testid="login-button"]');
+      await expect(page).toHaveURL('/dashboard');
+    });
+
+    test('should display user profile information', async ({ page }) => {
+      await expect(page.locator('[data-testid="user-name"]'))
+        .toContainText('Test User');
+      await expect(page.locator('[data-testid="user-email"]'))
+        .toContainText('test@example.com');
+    });
+
+    test('should allow profile editing', async ({ page }) => {
+      await page.click('[data-testid="edit-profile-button"]');
+      
+      await page.fill('[data-testid="name-input"]', 'Updated Name');
+      await page.click('[data-testid="save-button"]');
+
+      await expect(page.locator('[data-testid="success-message"]'))
+        .toContainText('Profile updated successfully');
+      await expect(page.locator('[data-testid="user-name"]'))
+        .toContainText('Updated Name');
+    });
+  });
+  ```
+
+  ## 테스트 유틸리티 및 헬퍼
+  ```typescript
+  // 테스트 데이터 팩토리
+  export class UserFactory {
+    static create(overrides: Partial<User> = {}): User {
+      return {
+        id: faker.datatype.uuid(),
+        name: faker.name.fullName(),
+        email: faker.internet.email(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...overrides
+      };
+    }
+
+    static createMany(count: number, overrides: Partial<User> = {}): User[] {
+      return Array.from({ length: count }, () => this.create(overrides));
+    }
+  }
+
+  // 테스트 데이터베이스 헬퍼
+  export class TestDatabase {
+    static async create(): Promise<TestDatabase> {
+      const connection = await createConnection({
+        type: 'sqlite',
+        database: ':memory:',
+        entities: [User, Order],
+        synchronize: true
+      });
+      
+      return new TestDatabase(connection);
+    }
+
+    async seed(): Promise<void> {
+      const users = UserFactory.createMany(10);
+      await this.connection.getRepository(User).save(users);
+    }
+
+    async clear(): Promise<void> {
+      const entities = this.connection.entityMetadatas;
+      for (const entity of entities) {
+        const repository = this.connection.getRepository(entity.name);
+        await repository.clear();
+      }
+    }
+  }
+
+  // 커스텀 매처
+  expect.extend({
+    toBeValidEmail(received: string) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const pass = emailRegex.test(received);
+      
+      return {
+        message: () => `expected ${received} ${pass ? 'not ' : ''}to be a valid email`,
+        pass
+      };
+    }
+  });
+  ```
+
+  ## 테스트 커버리지 및 품질
+  ```json
+  // jest.config.js
+  {
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,ts}",
+      "!src/**/*.d.ts",
+      "!src/**/*.spec.ts",
+      "!src/**/*.test.ts"
+    ]
+  }
+  ```
+
+  ## 테스트 자동화 및 CI/CD
+  ```yaml
+  # GitHub Actions 워크플로우
+  name: Test Suite
+  on: [push, pull_request]
+
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+          with:
+            node-version: '18'
+            cache: 'npm'
+        
+        - run: npm ci
+        - run: npm run test:unit
+        - run: npm run test:integration
+        - run: npm run test:e2e
+        
+        - name: Upload coverage reports
+          uses: codecov/codecov-action@v3
+          with:
+            file: ./coverage/lcov.info
+  ```
+
+  ## 테스트 베스트 프랙티스
+  1. **테스트 작성 가이드라인**
+     - 테스트 이름은 명확하고 설명적으로
+     - 하나의 테스트는 하나의 동작만 검증
+     - 테스트 간 의존성 제거
+     - 테스트 데이터는 각 테스트마다 독립적으로
+
+  2. **모킹 전략**
+     - 외부 의존성은 모킹
+     - 데이터베이스는 인메모리 또는 테스트 전용 DB 사용
+     - HTTP 요청은 모킹 또는 테스트 서버 사용
+     - 시간 관련 로직은 모킹으로 제어
+
+  ## 성공 기준
+  - ✅ 테스트 커버리지 90% 이상 달성
+  - ✅ 모든 테스트가 안정적으로 통과
+  - ✅ 테스트 실행 시간 최적화 (단위: <5분, 전체: <15분)
+  - ✅ CI/CD 파이프라인 통합 완료
+  - ✅ 테스트 문서화 및 가이드라인 작성
+  - ✅ 팀 테스트 문화 정착
+
+  **테스트 개발을 시작하겠습니다. 어떤 테스트를 작성하시겠습니까?**

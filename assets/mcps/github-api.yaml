@@ -1,0 +1,143 @@
+version: 1
+kind: mcp
+name: github-api
+description: GitHub API integration for repository management and automation
+prompt: Use GitHub API for repository operations, issue management, and workflow automation
+enhanced-prompt: |-
+  **Use GitHub API for comprehensive repository management and workflow automation.**
+
+  ## GitHub API Capabilities
+  1. **Repository Management:**
+     - Create, update, and manage repositories
+     - Handle branches, tags, and releases
+     - Manage repository settings and permissions
+     - Access repository statistics and insights
+
+  2. **Issue & PR Management:**
+     - Create, update, and close issues
+     - Manage pull requests and reviews
+     - Handle labels, milestones, and projects
+     - Automate issue triage and assignment
+
+  3. **Code Operations:**
+     - Access file contents and commit history
+     - Create and manage branches
+     - Handle merge operations
+     - Manage repository webhooks
+
+  ## API Usage Patterns
+  1. **Authentication:**
+     - Use personal access tokens for authentication
+     - Implement proper token scoping and permissions
+     - Handle rate limiting and API quotas
+     - Secure token storage and rotation
+
+  2. **Error Handling:**
+     - Implement retry logic for transient failures
+     - Handle rate limiting with exponential backoff
+     - Provide meaningful error messages
+     - Log API interactions for debugging
+
+  ## Common Operations
+  1. **Repository Operations:**
+     ```typescript
+     // Get repository information
+     const repo = await github.repos.get({
+       owner: 'username',
+       repo: 'repository'
+     });
+
+     // Create a new branch
+     await github.git.createRef({
+       owner: 'username',
+       repo: 'repository',
+       ref: 'refs/heads/feature-branch',
+       sha: baseSha
+     });
+     ```
+
+  2. **Issue Management:**
+     ```typescript
+     // Create an issue
+     const issue = await github.issues.create({
+       owner: 'username',
+       repo: 'repository',
+       title: 'Issue Title',
+       body: 'Issue description',
+       labels: ['bug', 'priority-high']
+     });
+
+     // Update issue status
+     await github.issues.update({
+       owner: 'username',
+       repo: 'repository',
+       issue_number: issueNumber,
+       state: 'closed'
+     });
+     ```
+
+  3. **Pull Request Operations:**
+     ```typescript
+     // Create pull request
+     const pr = await github.pulls.create({
+       owner: 'username',
+       repo: 'repository',
+       title: 'PR Title',
+       head: 'feature-branch',
+       base: 'main',
+       body: 'PR description'
+     });
+
+     // Request reviews
+     await github.pulls.requestReviewers({
+       owner: 'username',
+       repo: 'repository',
+       pull_number: prNumber,
+       reviewers: ['reviewer1', 'reviewer2']
+     });
+     ```
+
+  ## Best Practices
+  1. **Rate Limiting:**
+     - Monitor API rate limits
+     - Implement intelligent request batching
+     - Use conditional requests when possible
+     - Cache responses appropriately
+
+  2. **Security:**
+     - Use minimal required permissions
+     - Rotate access tokens regularly
+     - Validate all input parameters
+     - Log security-relevant operations
+
+  3. **Performance:**
+     - Use GraphQL API for complex queries
+     - Implement pagination for large datasets
+     - Cache frequently accessed data
+     - Minimize API calls through batching
+
+  ## Integration Examples
+  1. **Automated Workflows:**
+     - Auto-assign issues based on labels
+     - Create PRs from feature branches
+     - Update project boards automatically
+     - Generate release notes from commits
+
+  2. **Quality Gates:**
+     - Check PR status before merging
+     - Validate branch protection rules
+     - Ensure required reviews are completed
+     - Verify CI/CD checks pass
+
+  ## Error Recovery
+  - Implement retry mechanisms for failed requests
+  - Handle network timeouts gracefully
+  - Provide fallback options for critical operations
+  - Log detailed error information for debugging
+
+  ## Success Criteria
+  - ✅ API operations complete successfully
+  - ✅ Rate limits respected and managed
+  - ✅ Proper error handling implemented
+  - ✅ Security best practices followed
+  - ✅ Operations logged for audit trail

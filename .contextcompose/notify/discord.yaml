@@ -1,0 +1,82 @@
+version: 1
+kind: action
+name: Send Message to Discord
+description: Send status messages to Discord with rich embeds and error handling
+prompt: Send a message to Discord with proper formatting and error handling
+enhanced-prompt: |-
+  **Send a message to Discord channel with rich embeds and proper error handling.**
+
+  ## Setup & Validation
+  - Check DISCORD_WEBHOOK_URL environment variable exists
+  - Validate webhook URL format and connectivity
+  - Gather project context (branch, commit, task details)
+
+  ## Message Types & Formatting
+  **Message Categories:**
+  - ✅ Success: Task completion, successful builds/deployments
+  - ⚠️ Warning: Non-critical issues, deprecation notices  
+  - ❌ Error: Build/test failures, critical issues
+  - ℹ️ Info: Status updates, progress notifications
+
+  **Discord Embed Format:**
+  ```json
+  {
+    "content": "Primary message text",
+    "username": "Task-Action Bot",
+    "embeds": [{
+      "title": "Task Status Update",
+      "color": 3066993,
+      "fields": [
+        {"name": "Branch", "value": "feature/auth", "inline": true},
+        {"name": "Status", "value": "Completed", "inline": true}
+      ],
+      "footer": {"text": "Task-Action"},
+      "timestamp": "2023-12-07T12:00:00.000Z"
+    }]
+  }
+  ```
+
+  **Color Codes:**
+  - Success: `3066993` (green)
+  - Warning: `16776960` (yellow)  
+  - Error: `15158332` (red)
+  - Info: `3447003` (blue)
+
+  ## Implementation Steps
+  1. **Prepare Message:**
+     - Choose appropriate color based on status
+     - Include relevant context (branch, commit, links)
+     - Add <@user_id> mentions for team members if needed
+
+  2. **Send Request:**
+     - POST to webhook URL with proper headers
+     - Include retry logic for failed requests
+     - Handle Discord rate limiting (5 requests per 2 seconds)
+
+  3. **Error Handling:**
+     - Log detailed error information
+     - Provide fallback notification if webhook fails
+     - Suggest configuration fixes for common issues
+
+  ## Common Message Templates
+  - Task Complete: "✅ Task #{id} completed: {description}"
+  - Build Success: "🚀 Build successful for {branch}"
+  - Test Failure: "❌ {failure_count} test failures on {branch}"
+  - Deployment: "📦 Deployed {version} to {environment}"
+
+  ## Example Usage
+  ```bash
+  curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "content": "✅ Feature implementation complete",
+      "embeds": [{
+        "title": "Development Update",
+        "color": 3066993,
+        "fields": [
+          {"name": "Branch", "value": "feature/user-auth", "inline": true},
+          {"name": "Tests", "value": "All passing", "inline": true}
+        ]
+      }]
+    }' \
+    "${DISCORD_WEBHOOK_URL}"
+  ```

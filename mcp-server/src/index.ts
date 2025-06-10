@@ -15,9 +15,9 @@ interface PackageJson {
 }
 
 /**
- * Main MCP server class that integrates with Task Action
+ * Main MCP server class that integrates with Context Compose
  */
-class TaskActionServer {
+class ContextComposeServer {
   private server: FastMCP;
   private initialized: boolean;
 
@@ -30,7 +30,7 @@ class TaskActionServer {
 
     // Create FastMCP server with proper options
     this.server = new FastMCP({
-      name: 'Task Action Server',
+      name: 'Context Compose Server',
       version: packageJson.version as `${number}.${number}.${number}`,
     });
     this.initialized = false;
@@ -44,10 +44,10 @@ class TaskActionServer {
   /**
    * Initialize the MCP server with necessary tools and routes
    */
-  async init(): Promise<TaskActionServer | undefined> {
+  async init(): Promise<ContextComposeServer | undefined> {
     if (this.initialized) return;
 
-    // Register all Task Action tools
+    // Register all Context Compose tools
     registerMCPTools(this.server);
 
     this.initialized = true;
@@ -57,7 +57,7 @@ class TaskActionServer {
   /**
    * Start the MCP server
    */
-  async start(): Promise<TaskActionServer> {
+  async start(): Promise<ContextComposeServer> {
     if (!this.initialized) {
       await this.init();
     }
@@ -80,4 +80,4 @@ class TaskActionServer {
   }
 }
 
-export default TaskActionServer;
+export default ContextComposeServer;

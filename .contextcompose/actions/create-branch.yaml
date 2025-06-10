@@ -1,0 +1,171 @@
+version: 1
+kind: action
+name: Create Branch
+description: Create a new Git branch with proper naming conventions and best practices
+prompt: Create new Git branch with auto-generated name from updated main branch. Handle uncommitted changes and verify creation.
+enhanced-prompt: |-
+  # 🚀 Smart Git Branch Creation with Auto-Generated Names
+
+  **I'll help you create a properly named branch. Just follow these steps:**
+
+  ## 🔍 Step 1: Pre-flight Check
+  ```bash
+  echo "=== Current Git Status ==="
+  git status --porcelain
+  echo ""
+  echo "=== Current Branch ==="
+  git branch --show-current
+  echo ""
+  echo "=== Recent Commits ==="
+  git log --oneline -3
+  ```
+
+  ## 🧹 Step 2: Clean Up (if needed)
+  **Only run if Step 1 shows uncommitted changes:**
+  ```bash
+  git add .
+  git stash push -m "WIP: $(date '+%Y-%m-%d %H:%M') - before branch creation"
+  echo "✅ Changes stashed"
+  ```
+
+  ## 🔄 Step 3: Update Base Branch
+  ```bash
+  git checkout main
+  git pull origin main
+  echo "✅ Base branch updated"
+  ```
+
+  ## 🤖 Step 4: Let Me Generate a Branch Name
+  **Based on your current work context, I suggest creating a branch. Tell me what you're working on, and I'll generate the perfect branch name following these patterns:**
+
+  - **Feature**: `feature/MMDD-descriptive-name`
+  - **Bug Fix**: `bugfix/MMDD-issue-description`
+  - **Refactor**: `refactor/MMDD-component-name`
+  - **Documentation**: `docs/MMDD-topic`
+  - **Testing**: `test/MMDD-test-type`
+
+  **Example auto-generated names:**
+  ```bash
+  # For a user authentication feature
+  BRANCH="feature/$(date +%m%d)-user-authentication"
+
+  # For fixing a login bug  
+  BRANCH="bugfix/$(date +%m%d)-login-validation-error"
+
+  # For database optimization
+  BRANCH="refactor/$(date +%m%d)-database-queries"
+  ```
+
+  ## 🌟 Step 5: Create Branch with Smart Naming
+  **I'll create a branch name based on your project context. Run this:**
+  ```bash
+  # Auto-generate branch name with timestamp
+  TODAY=$(date +%m%d)
+
+  # Let me suggest a name based on your current directory and recent commits
+  PROJECT_CONTEXT=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
+  BRANCH_NAME="feature/${TODAY}-${PROJECT_CONTEXT}-update"
+
+  echo "🤖 Suggested branch name: $BRANCH_NAME"
+  echo "Creating branch..."
+
+  git checkout -b "$BRANCH_NAME"
+  echo "✅ Created branch: $BRANCH_NAME"
+  ```
+
+  ## 🎯 Step 6: Alternative Smart Naming
+  **Or let me create a more specific branch based on recent activity:**
+  ```bash
+  # Analyze recent commit messages for context
+  RECENT_FILES=$(git diff --name-only HEAD~1 2>/dev/null | head -3 | xargs basename | tr '\n' '-' | sed 's/-$//')
+  TODAY=$(date +%m%d)
+
+  if [ ! -z "$RECENT_FILES" ]; then
+    BRANCH_NAME="feature/${TODAY}-update-${RECENT_FILES}"
+  else
+    # Fallback to generic but descriptive name
+    BRANCH_NAME="feature/${TODAY}-$(whoami)-development"
+  fi
+
+  echo "🤖 Smart branch name: $BRANCH_NAME"
+  git checkout -b "$BRANCH_NAME"
+  echo "✅ Branch created successfully!"
+  ```
+
+  ## 🔧 Step 7: Ultimate Smart Branch Creator
+  **Most intelligent option - I'll analyze your project and create the perfect name:**
+  ```bash
+  #!/bin/bash
+
+  # Get current date for uniqueness
+  DATE_STAMP=$(date +%m%d)
+
+  # Analyze project structure
+  if [ -f "package.json" ]; then
+    PROJECT_TYPE="frontend"
+  elif [ -f "pom.xml" ]; then
+    PROJECT_TYPE="java"
+  elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
+    PROJECT_TYPE="python"
+  else
+    PROJECT_TYPE="general"
+  fi
+
+  # Generate intelligent branch name
+  BASE_NAME=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]//g')
+  BRANCH_NAME="feature/${DATE_STAMP}-${BASE_NAME}-enhancement"
+
+  echo "🧠 Intelligent branch analysis complete!"
+  echo "📁 Project type: $PROJECT_TYPE"
+  echo "🌿 Generated branch: $BRANCH_NAME"
+  echo ""
+  echo "Creating your branch..."
+
+  git checkout -b "$BRANCH_NAME"
+
+  if [ $? -eq 0 ]; then
+    echo "✅ SUCCESS: Branch '$BRANCH_NAME' created!"
+    echo "🎯 You're ready to start coding!"
+  else
+    echo "❌ Error creating branch. Check git status."
+  fi
+  ```
+
+  ## ✅ Step 8: Verify & Setup
+  ```bash
+  echo "=== Branch Creation Summary ==="
+  echo "Current branch: $(git branch --show-current)"
+  echo "Branch list:"
+  git branch | grep "^\*"
+  echo ""
+  echo "Setting up remote tracking..."
+  git push -u origin "$(git branch --show-current)"
+  echo ""
+  echo "🎉 All set! Your intelligently named branch is ready!"
+  ```
+
+  ## 🚀 Ready to Code!
+  ```bash
+  # Your first commit
+  echo "# $(git branch --show-current)" > BRANCH_NOTES.md
+  echo "Created: $(date)" >> BRANCH_NOTES.md
+  echo "Purpose: [Add your development goal here]" >> BRANCH_NOTES.md
+
+  git add BRANCH_NOTES.md
+  git commit -m "feat: initialize $(git branch --show-current) branch"
+  git push
+
+  echo "✨ Branch initialized with documentation!"
+  ```
+
+  ---
+
+  ## 🤖 How My Smart Naming Works:
+  | Context | Pattern | Example |
+  |---------|---------|---------|
+  | Date-based | `feature/MMDD-description` | `feature/1205-user-auth` |
+  | Project-aware | `feature/MMDD-projectname-type` | `feature/1205-ecommerce-checkout` |
+  | File-based | `feature/MMDD-modified-files` | `feature/1205-update-api-routes` |
+  | User-based | `feature/MMDD-username-task` | `feature/1205-john-database-migration` |
+
+  **🎯 Just run the commands and I'll handle the naming for you!**

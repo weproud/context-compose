@@ -1,0 +1,595 @@
+version: 1
+kind: rule
+name: Security Guidelines Rule
+description: Comprehensive security guidelines for secure coding practices, authentication, authorization, and vulnerability prevention
+prompt: Implement secure coding practices with proper input validation, authentication/authorization, secrets management, secure communication, and regular security audits to prevent vulnerabilities and protect sensitive data.
+enhanced-prompt: |-
+  Follow these comprehensive security guidelines for task-action development:
+
+  ## Secure Coding Principles
+  1. **Defense in Depth**:
+     - Implement multiple layers of security controls
+     - Never rely on a single security mechanism
+     - Validate data at every boundary
+     - Apply principle of least privilege throughout
+
+  2. **Fail Securely**:
+     - Default to secure configurations
+     - Fail closed rather than open
+     - Don't expose sensitive information in error messages
+     - Implement secure fallback mechanisms
+
+  3. **Security by Design**:
+     - Consider security from the beginning of development
+     - Integrate security into the development lifecycle
+     - Conduct threat modeling for new features
+     - Regular security reviews and assessments
+
+  ## Input Validation & Sanitization
+  1. **Input Validation Rules**:
+     ```typescript
+     import Joi from 'joi';
+     import DOMPurify from 'isomorphic-dompurify';
+
+     // Strict validation schemas
+     const userInputSchema = Joi.object({
+       taskName: Joi.string()
+         .min(1)
+         .max(100)
+         .pattern(/^[a-zA-Z0-9\s\-_]+$/)
+         .required(),
+       description: Joi.string()
+         .max(1000)
+         .optional(),
+       parameters: Joi.object()
+         .pattern(Joi.string(), Joi.alternatives().try(
+           Joi.string().max(500),
+           Joi.number(),
+           Joi.boolean()
+         ))
+     });
+
+     function validateAndSanitizeInput(input: unknown): SafeInput {
+       // Validate structure
+       const { error, value } = userInputSchema.validate(input);
+       if (error) {
+         throw new ValidationError('Invalid input format');
+       }
+
+       // Sanitize string values
+       const sanitized = {
+         ...value,
+         taskName: DOMPurify.sanitize(value.taskName),
+         description: value.description ? DOMPurify.sanitize(value.description) : undefined
+       };
+
+       return sanitized;
+     }
+     ```
+
+  2. **Path Traversal Prevention**:
+     ```typescript
+     import path from 'path';
+
+     function validateFilePath(filePath: string, allowedDirectory: string): string {
+       // Normalize and resolve the path
+       const normalizedPath = path.normalize(filePath);
+       const resolvedPath = path.resolve(allowedDirectory, normalizedPath);
+       const allowedPath = path.resolve(allowedDirectory);
+
+       // Ensure the resolved path is within the allowed directory
+       if (!resolvedPath.startsWith(allowedPath + path.sep)) {
+         throw new SecurityError('Path traversal attempt detected');
+       }
+
+       return resolvedPath;
+     }
+     ```
+
+  3. **Command Injection Prevention**:
+     ```typescript
+     import { spawn } from 'child_process';
+
+     function executeCommand(command: string, args: string[]): Promise<string> {
+       // Whitelist allowed commands
+       const allowedCommands = ['git', 'npm', 'node'];
+       if (!allowedCommands.includes(command)) {
+         throw new SecurityError('Command not allowed');
+       }
+
+       // Validate arguments
+       const sanitizedArgs = args.map(arg => {
+         // Remove dangerous characters
+         return arg.replace(/[;&|`$(){}[\]]/g, '');
+       });
+
+       return new Promise((resolve, reject) => {
+         const process = spawn(command, sanitizedArgs, {
+           stdio: 'pipe',
+           shell: false // Never use shell: true
+         });
+
+         let output = '';
+         process.stdout.on('data', (data) => {
+           output += data.toString();
+         });
+
+         process.on('close', (code) => {
+           if (code === 0) {
+             resolve(output);
+           } else {
+             reject(new Error(`Command failed with code ${code}`));
+           }
+         });
+       });
+     }
+     ```
+
+  ## Authentication & Authorization
+  1. **JWT Token Management**:
+     ```typescript
+     import jwt from 'jsonwebtoken';
+     import crypto from 'crypto';
+
+     interface TokenPayload {
+       userId: string;
+       permissions: string[];
+       iat: number;
+       exp: number;
+     }
+
+     class AuthService {
+       private readonly secretKey: string;
+       private readonly tokenExpiry = '1h';
+
+       constructor() {
+         this.secretKey = process.env.JWT_SECRET || this.generateSecretKey();
+       }
+
+       generateToken(userId: string, permissions: string[]): string {
+         const payload: Omit<TokenPayload, 'iat' | 'exp'> = {
+           userId,
+           permissions
+         };
+
+         return jwt.sign(payload, this.secretKey, {
+           expiresIn: this.tokenExpiry,
+           issuer: 'task-action',
+           audience: 'task-action-client'
+         });
+       }
+
+       verifyToken(token: string): TokenPayload {
+         try {
+           return jwt.verify(token, this.secretKey) as TokenPayload;
+         } catch (error) {
+           throw new AuthenticationError('Invalid or expired token');
+         }
+       }
+
+       private generateSecretKey(): string {
+         return crypto.randomBytes(64).toString('hex');
+       }
+     }
+     ```
+
+  2. **Role-Based Access Control**:
+     ```typescript
+     enum Permission {
+       READ_TASKS = 'read:tasks',
+       WRITE_TASKS = 'write:tasks',
+       EXECUTE_ACTIONS = 'execute:actions',
+       ADMIN_ACCESS = 'admin:access'
+     }
+
+     class AuthorizationService {
+       checkPermission(userPermissions: string[], requiredPermission: Permission): boolean {
+         return userPermissions.includes(requiredPermission) || 
+                userPermissions.includes(Permission.ADMIN_ACCESS);
+       }
+
+       requirePermission(requiredPermission: Permission) {
+         return (req: Request, res: Response, next: NextFunction) => {
+           const user = req.user; // Set by authentication middleware
+           
+           if (!user || !this.checkPermission(user.permissions, requiredPermission)) {
+             throw new AuthorizationError('Insufficient permissions');
+           }
+           
+           next();
+         };
+       }
+     }
+     ```
+
+  ## Secrets Management
+  1. **Environment Variables**:
+     ```typescript
+     import dotenv from 'dotenv';
+
+     // Load environment variables
+     dotenv.config();
+
+     class ConfigService {
+       private static instance: ConfigService;
+       private config: Map<string, string> = new Map();
+
+       private constructor() {
+         this.loadConfig();
+       }
+
+       static getInstance(): ConfigService {
+         if (!ConfigService.instance) {
+           ConfigService.instance = new ConfigService();
+         }
+         return ConfigService.instance;
+       }
+
+       private loadConfig(): void {
+         // Required secrets
+         const requiredSecrets = [
+           'JWT_SECRET',
+           'DATABASE_URL',
+           'SLACK_BOT_TOKEN',
+           'DISCORD_BOT_TOKEN'
+         ];
+
+         for (const secret of requiredSecrets) {
+           const value = process.env[secret];
+           if (!value) {
+             throw new Error(`Required environment variable ${secret} is not set`);
+           }
+           this.config.set(secret, value);
+         }
+       }
+
+       getSecret(key: string): string {
+         const value = this.config.get(key);
+         if (!value) {
+           throw new Error(`Secret ${key} not found`);
+         }
+         return value;
+       }
+     }
+     ```
+
+  2. **Encryption for Sensitive Data**:
+     ```typescript
+     import crypto from 'crypto';
+
+     class EncryptionService {
+       private readonly algorithm = 'aes-256-gcm';
+       private readonly keyLength = 32;
+
+       encrypt(text: string, key: string): { encrypted: string; iv: string; tag: string } {
+         const iv = crypto.randomBytes(16);
+         const cipher = crypto.createCipher(this.algorithm, key);
+         cipher.setAAD(Buffer.from('task-action', 'utf8'));
+
+         let encrypted = cipher.update(text, 'utf8', 'hex');
+         encrypted += cipher.final('hex');
+
+         const tag = cipher.getAuthTag();
+
+         return {
+           encrypted,
+           iv: iv.toString('hex'),
+           tag: tag.toString('hex')
+         };
+       }
+
+       decrypt(encryptedData: { encrypted: string; iv: string; tag: string }, key: string): string {
+         const decipher = crypto.createDecipher(this.algorithm, key);
+         decipher.setAAD(Buffer.from('task-action', 'utf8'));
+         decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
+
+         let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+         decrypted += decipher.final('utf8');
+
+         return decrypted;
+       }
+     }
+     ```
+
+  ## Secure Communication
+  1. **HTTPS Configuration**:
+     ```typescript
+     import express from 'express';
+     import helmet from 'helmet';
+     import cors from 'cors';
+
+     const app = express();
+
+     // Security middleware
+     app.use(helmet({
+       contentSecurityPolicy: {
+         directives: {
+           defaultSrc: ["'self'"],
+           scriptSrc: ["'self'"],
+           styleSrc: ["'self'", "'unsafe-inline'"],
+           imgSrc: ["'self'", "data:", "https:"],
+         },
+       },
+       hsts: {
+         maxAge: 31536000,
+         includeSubDomains: true,
+         preload: true
+       }
+     }));
+
+     // CORS configuration
+     app.use(cors({
+       origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+       credentials: true,
+       methods: ['GET', 'POST', 'PUT', 'DELETE'],
+       allowedHeaders: ['Content-Type', 'Authorization']
+     }));
+
+     // Rate limiting
+     import rateLimit from 'express-rate-limit';
+
+     const limiter = rateLimit({
+       windowMs: 15 * 60 * 1000, // 15 minutes
+       max: 100, // limit each IP to 100 requests per windowMs
+       message: 'Too many requests from this IP'
+     });
+
+     app.use('/api', limiter);
+     ```
+
+  2. **API Security Headers**:
+     ```typescript
+     app.use((req, res, next) => {
+       // Security headers
+       res.setHeader('X-Content-Type-Options', 'nosniff');
+       res.setHeader('X-Frame-Options', 'DENY');
+       res.setHeader('X-XSS-Protection', '1; mode=block');
+       res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+       res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+       
+       next();
+     });
+     ```
+
+  ## Vulnerability Prevention
+  1. **SQL Injection Prevention**:
+     ```typescript
+     import { Pool } from 'pg';
+
+     class DatabaseService {
+       private pool: Pool;
+
+       constructor() {
+         this.pool = new Pool({
+           connectionString: process.env.DATABASE_URL,
+           ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+         });
+       }
+
+       // Always use parameterized queries
+       async getTasksByUser(userId: string): Promise<Task[]> {
+         const query = 'SELECT * FROM tasks WHERE user_id = $1 AND deleted_at IS NULL';
+         const result = await this.pool.query(query, [userId]);
+         return result.rows;
+       }
+
+       async createTask(task: CreateTaskRequest): Promise<Task> {
+         const query = `
+           INSERT INTO tasks (name, description, user_id, created_at)
+           VALUES ($1, $2, $3, NOW())
+           RETURNING *
+         `;
+         const result = await this.pool.query(query, [task.name, task.description, task.userId]);
+         return result.rows[0];
+       }
+     }
+     ```
+
+  2. **XSS Prevention**:
+     ```typescript
+     import DOMPurify from 'isomorphic-dompurify';
+
+     function sanitizeHtml(html: string): string {
+       return DOMPurify.sanitize(html, {
+         ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+         ALLOWED_ATTR: []
+       });
+     }
+
+     function escapeHtml(text: string): string {
+       const map: { [key: string]: string } = {
+         '&': '&amp;',
+         '<': '&lt;',
+         '>': '&gt;',
+         '"': '&quot;',
+         "'": '&#39;'
+       };
+       
+       return text.replace(/[&<>"']/g, (m) => map[m]);
+     }
+     ```
+
+  ## Logging & Monitoring
+  1. **Security Event Logging**:
+     ```typescript
+     class SecurityLogger {
+       static logAuthenticationAttempt(userId: string, success: boolean, ip: string): void {
+         const event = {
+           type: 'authentication_attempt',
+           userId,
+           success,
+           ip,
+           timestamp: new Date().toISOString(),
+           userAgent: req.get('User-Agent')
+         };
+
+         if (!success) {
+           // Log failed attempts with higher priority
+           logger.warn('Authentication failed', event);
+           // Consider implementing account lockout after multiple failures
+         } else {
+           logger.info('Authentication successful', event);
+         }
+       }
+
+       static logAuthorizationFailure(userId: string, resource: string, action: string): void {
+         logger.warn('Authorization failed', {
+           type: 'authorization_failure',
+           userId,
+           resource,
+           action,
+           timestamp: new Date().toISOString()
+         });
+       }
+
+       static logSuspiciousActivity(description: string, context: Record<string, any>): void {
+         logger.error('Suspicious activity detected', {
+           type: 'suspicious_activity',
+           description,
+           ...context,
+           timestamp: new Date().toISOString()
+         });
+       }
+     }
+     ```
+
+  2. **Security Monitoring**:
+     ```typescript
+     class SecurityMonitor {
+       private failedAttempts = new Map<string, number>();
+       private readonly maxFailedAttempts = 5;
+       private readonly lockoutDuration = 15 * 60 * 1000; // 15 minutes
+
+       checkRateLimit(ip: string): boolean {
+         const attempts = this.failedAttempts.get(ip) || 0;
+         return attempts < this.maxFailedAttempts;
+       }
+
+       recordFailedAttempt(ip: string): void {
+         const attempts = this.failedAttempts.get(ip) || 0;
+         this.failedAttempts.set(ip, attempts + 1);
+
+         if (attempts + 1 >= this.maxFailedAttempts) {
+           SecurityLogger.logSuspiciousActivity('Multiple failed authentication attempts', { ip });
+           
+           // Auto-unlock after lockout duration
+           setTimeout(() => {
+             this.failedAttempts.delete(ip);
+           }, this.lockoutDuration);
+         }
+       }
+
+       resetFailedAttempts(ip: string): void {
+         this.failedAttempts.delete(ip);
+       }
+     }
+     ```
+
+  ## Dependency Security
+  1. **Dependency Scanning**:
+     ```json
+     {
+       "scripts": {
+         "audit": "npm audit",
+         "audit:fix": "npm audit fix",
+         "security:check": "npm audit --audit-level moderate"
+       }
+     }
+     ```
+
+  2. **Secure Dependency Management**:
+     ```typescript
+     // package.json - Pin exact versions for security-critical dependencies
+     {
+       "dependencies": {
+         "express": "4.18.2",
+         "jsonwebtoken": "9.0.0",
+         "bcrypt": "5.1.0"
+       },
+       "devDependencies": {
+         "eslint-plugin-security": "^1.7.1",
+         "@typescript-eslint/eslint-plugin": "^5.59.0"
+       }
+     }
+     ```
+
+  ## Task-Action Specific Security
+  1. **Action Execution Security**:
+     ```typescript
+     class SecureActionExecutor {
+       async executeAction(action: Action, context: ExecutionContext): Promise<ActionResult> {
+         // Validate action permissions
+         this.validateActionPermissions(action, context.user);
+         
+         // Sanitize action parameters
+         const sanitizedAction = this.sanitizeActionParameters(action);
+         
+         // Execute in sandboxed environment
+         return await this.executeSandboxed(sanitizedAction, context);
+       }
+
+       private validateActionPermissions(action: Action, user: User): void {
+         const requiredPermission = this.getRequiredPermission(action.type);
+         if (!user.permissions.includes(requiredPermission)) {
+           throw new AuthorizationError(`Insufficient permissions for action ${action.type}`);
+         }
+       }
+
+       private sanitizeActionParameters(action: Action): Action {
+         // Remove potentially dangerous parameters
+         const sanitized = { ...action };
+         
+         if (sanitized.parameters) {
+           // Remove shell commands, file paths outside allowed directories, etc.
+           sanitized.parameters = this.sanitizeParameters(sanitized.parameters);
+         }
+         
+         return sanitized;
+       }
+     }
+     ```
+
+  ## Security Testing
+  1. **Security Test Cases**:
+     ```typescript
+     describe('Security Tests', () => {
+       it('should prevent SQL injection', async () => {
+         const maliciousInput = "'; DROP TABLE users; --";
+         
+         await expect(
+           userService.getUserByName(maliciousInput)
+         ).not.toThrow();
+         
+         // Verify table still exists
+         const users = await userService.getAllUsers();
+         expect(users).toBeDefined();
+       });
+
+       it('should prevent XSS attacks', () => {
+         const maliciousScript = '<script>alert("XSS")</script>';
+         const sanitized = sanitizeHtml(maliciousScript);
+         
+         expect(sanitized).not.toContain('<script>');
+         expect(sanitized).not.toContain('alert');
+       });
+
+       it('should enforce rate limiting', async () => {
+         const requests = Array(101).fill(null).map(() => 
+           request(app).get('/api/tasks')
+         );
+         
+         const responses = await Promise.all(requests);
+         const rateLimitedResponses = responses.filter(r => r.status === 429);
+         
+         expect(rateLimitedResponses.length).toBeGreaterThan(0);
+       });
+     });
+     ```
+
+  ## Continuous Security
+  - Implement automated security scanning in CI/CD
+  - Regular penetration testing and vulnerability assessments
+  - Keep dependencies updated and monitor for vulnerabilities
+  - Security training for development team
+  - Incident response plan for security breaches
+  - Regular security code reviews and audits

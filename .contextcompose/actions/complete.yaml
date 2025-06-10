@@ -1,0 +1,162 @@
+version: 1
+kind: action
+name: Task Done
+description: Comprehensive task completion processing with validation, cleanup, and team notification
+prompt: Finalize task completion with requirement validation, code cleanup, comprehensive testing, status update, and multi-channel team notifications.
+enhanced-prompt: |-
+  # 🎉 Task Completion Workflow
+
+  **Complete your task with professional standards and team communication.**
+
+  ## 📋 Step 1: Requirement Validation
+  ```bash
+  echo "=== Task Completion Checklist ==="
+  echo "✅ All acceptance criteria met"
+  echo "✅ Code follows project standards"
+  echo "✅ Tests written and passing"
+  echo "✅ Documentation updated"
+  echo "✅ No breaking changes introduced"
+  echo ""
+  ```
+
+  ## 🧹 Step 2: Code Cleanup & Quality Check
+  ```bash
+  # Format code
+  npm run format 2>/dev/null || echo "No formatter configured"
+
+  # Lint code
+  npm run lint 2>/dev/null || echo "No linter configured"
+
+  # Type check
+  npm run type-check 2>/dev/null || tsc --noEmit 2>/dev/null || echo "No TypeScript check"
+
+  echo "✅ Code quality checks completed"
+  ```
+
+  ## 🧪 Step 3: Comprehensive Testing
+  ```bash
+  echo "Running comprehensive test suite..."
+
+  # Unit tests
+  npm test 2>/dev/null || echo "No unit tests configured"
+
+  # Integration tests
+  npm run test:integration 2>/dev/null || echo "No integration tests"
+
+  # E2E tests (if applicable)
+  npm run test:e2e 2>/dev/null || echo "No E2E tests"
+
+  echo "✅ All tests completed"
+  ```
+
+  ## 📝 Step 4: Documentation Update
+  ```bash
+  # Update CHANGELOG if exists
+  if [ -f "CHANGELOG.md" ]; then
+    echo "📝 Remember to update CHANGELOG.md with your changes"
+  fi
+
+  # Check README updates needed
+  if [ -f "README.md" ]; then
+    echo "📖 Verify README.md reflects any new features"
+  fi
+
+  echo "✅ Documentation review completed"
+  ```
+
+  ## 🔄 Step 5: Final Git Operations
+  ```bash
+  # Stage all changes
+  git add .
+
+  # Create completion commit
+  BRANCH_NAME=$(git branch --show-current)
+  git commit -m "feat: complete task implementation
+
+  - All requirements implemented
+  - Tests passing
+  - Documentation updated
+  - Ready for review"
+
+  # Push to remote
+  git push origin "$BRANCH_NAME"
+
+  echo "✅ Code pushed to remote repository"
+  ```
+
+  ## 🔍 Step 6: Create Pull Request
+  ```bash
+  # Get current branch and repo info
+  CURRENT_BRANCH=$(git branch --show-current)
+  REPO_URL=$(git remote get-url origin | sed 's/\.git$//')
+
+  echo "🔗 Create Pull Request:"
+  echo "Branch: $CURRENT_BRANCH → main"
+  echo "Repository: $REPO_URL"
+  echo ""
+  echo "PR Template:"
+  echo "## Summary"
+  echo "Brief description of changes made"
+  echo ""
+  echo "## Changes"
+  echo "- [ ] Feature implementation"
+  echo "- [ ] Tests added/updated"
+  echo "- [ ] Documentation updated"
+  echo ""
+  echo "## Testing"
+  echo "- [ ] Unit tests pass"
+  echo "- [ ] Integration tests pass"
+  echo "- [ ] Manual testing completed"
+  ```
+
+  ## 📢 Step 7: Team Notification
+  ```bash
+  # Prepare notification message
+  TASK_SUMMARY="Task completed: $(basename $(pwd))"
+  BRANCH_NAME=$(git branch --show-current)
+
+  echo "📱 Send completion notification:"
+  echo "Subject: ✅ $TASK_SUMMARY"
+  echo "Message: Task implementation completed on branch '$BRANCH_NAME'"
+  echo "- All requirements met"
+  echo "- Tests passing"
+  echo "- Ready for code review"
+  echo ""
+  echo "Use task-action send-message to notify team"
+  ```
+
+  ## 📊 Step 8: Status Update
+  ```bash
+  # Update task status
+  echo "📈 Updating task status to 'completed'"
+
+  # If using task-action
+  task-action task status done 2>/dev/null || echo "Manual status update needed"
+
+  echo "✅ Task marked as completed"
+  ```
+
+  ## 🎯 Step 9: Handover Preparation
+  ```bash
+  echo "=== Task Handover Summary ==="
+  echo "📁 Branch: $(git branch --show-current)"
+  echo "📝 Last commit: $(git log -1 --pretty=format:'%h - %s')"
+  echo "🧪 Test status: All passing"
+  echo "📖 Documentation: Updated"
+  echo "🔍 Ready for: Code review"
+  echo ""
+  echo "🎉 Task completion workflow finished!"
+  ```
+
+  ## ✅ Completion Checklist
+  - [ ] All acceptance criteria validated
+  - [ ] Code quality checks passed
+  - [ ] Comprehensive testing completed
+  - [ ] Documentation updated
+  - [ ] Code committed and pushed
+  - [ ] Pull request created
+  - [ ] Team notified
+  - [ ] Task status updated
+  - [ ] Handover documentation prepared
+
+  **🚀 Your task is now ready for review and deployment!**

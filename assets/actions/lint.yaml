@@ -1,0 +1,97 @@
+version: 1
+kind: action
+name: Lint
+description: Comprehensive code linting and formatting with auto-fix capabilities
+prompt: Run comprehensive linting and formatting checks with auto-fix
+enhanced-prompt: |-
+  **Run comprehensive code linting and formatting with intelligent auto-fix capabilities.**
+
+  ## Linting Objectives
+  1. **Code Quality:**
+     - Enforce consistent coding standards
+     - Identify potential bugs and code smells
+     - Ensure TypeScript best practices
+     - Validate import/export patterns
+
+  2. **Style Consistency:**
+     - Apply consistent formatting rules
+     - Enforce naming conventions
+     - Standardize indentation and spacing
+     - Organize imports and exports
+
+  ## Linting Tools & Configuration
+  1. **ESLint Configuration:**
+     - Use strict TypeScript rules
+     - Apply React/Vue specific rules if applicable
+     - Enable accessibility linting (eslint-plugin-jsx-a11y)
+     - Configure import/export rules
+
+  2. **Prettier Integration:**
+     - Consistent code formatting
+     - Automatic semicolon and quote handling
+     - Line length and wrapping rules
+     - Integration with ESLint for conflict resolution
+
+  3. **Additional Tools:**
+     - TypeScript compiler checks
+     - Stylelint for CSS/SCSS
+     - Markdownlint for documentation
+     - Package.json validation
+
+  ## Linting Process
+  1. **Pre-lint Validation:**
+     - Check for configuration files
+     - Verify tool versions and compatibility
+     - Identify files to be linted
+     - Backup critical files if auto-fix enabled
+
+  2. **Linting Execution:**
+     - Run ESLint with TypeScript parser
+     - Execute Prettier formatting
+     - Check style files with Stylelint
+     - Validate documentation with Markdownlint
+
+  3. **Auto-fix Strategy:**
+     - Apply safe auto-fixes first
+     - Report issues requiring manual intervention
+     - Preserve code functionality during fixes
+     - Generate diff reports for review
+
+  ## Rule Categories
+  1. **Error Prevention:**
+     - Detect potential runtime errors
+     - Identify unreachable code
+     - Check for undefined variables
+     - Validate async/await usage
+
+  2. **Best Practices:**
+     - Enforce consistent function declarations
+     - Validate error handling patterns
+     - Check for performance anti-patterns
+     - Ensure proper TypeScript usage
+
+  3. **Style Guidelines:**
+     - Consistent naming conventions
+     - Proper indentation and spacing
+     - Import organization and grouping
+     - Comment formatting and placement
+
+  ## Reporting & Output
+  1. **Detailed Reports:**
+     - File-by-file issue breakdown
+     - Rule violation summaries
+     - Auto-fix application reports
+     - Performance and timing metrics
+
+  2. **Integration Support:**
+     - IDE-compatible output formats
+     - CI/CD pipeline integration
+     - Git hook compatibility
+     - Code review tool integration
+
+  ## Success Criteria
+  - ✅ All linting rules pass without errors
+  - ✅ Code formatting is consistent throughout
+  - ✅ Auto-fixes applied successfully where possible
+  - ✅ No critical code quality issues detected
+  - ✅ Documentation and comments are properly formatted

@@ -1,0 +1,431 @@
+version: 1
+kind: action
+name: Security Audit
+description: Comprehensive security audit with vulnerability scanning, dependency checks, and security best practices validation
+prompt: Perform comprehensive security audit including dependency vulnerability scanning, code security analysis, configuration review, and generate security report with remediation recommendations.
+enhanced-prompt: |-
+  # 🔒 Comprehensive Security Audit Workflow
+
+  **Conduct thorough security analysis to identify and remediate vulnerabilities.**
+
+  ## 🔍 Step 1: Security Audit Initialization
+  ```bash
+  echo "=== Security Audit Initialization ==="
+  
+  PROJECT_NAME=$(basename $(pwd))
+  AUDIT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+  AUDIT_ID="audit-$(date +%Y%m%d-%H%M%S)"
+  
+  echo "🔒 Project: $PROJECT_NAME"
+  echo "📅 Audit Date: $AUDIT_DATE"
+  echo "🆔 Audit ID: $AUDIT_ID"
+  echo ""
+  
+  # Create audit directory
+  mkdir -p security-audit/$AUDIT_ID
+  AUDIT_DIR="security-audit/$AUDIT_ID"
+  
+  echo "📁 Audit directory: $AUDIT_DIR"
+  echo "✅ Security audit initialized"
+  echo ""
+  ```
+
+  ## 📦 Step 2: Dependency Vulnerability Scan
+  ```bash
+  echo "=== Dependency Vulnerability Scan ==="
+  
+  echo "🔍 Scanning dependencies for known vulnerabilities..."
+  
+  # Node.js dependency audit
+  if [ -f "package.json" ]; then
+    echo "📦 Running npm audit..."
+    npm audit --json > "$AUDIT_DIR/npm-audit.json" 2>/dev/null || true
+    npm audit > "$AUDIT_DIR/npm-audit.txt" 2>/dev/null || true
+    
+    # Count vulnerabilities
+    HIGH_VULNS=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.high // 0' 2>/dev/null || echo "0")
+    CRITICAL_VULNS=$(npm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.critical // 0' 2>/dev/null || echo "0")
+    
+    echo "🚨 Critical vulnerabilities: $CRITICAL_VULNS"
+    echo "⚠️  High vulnerabilities: $HIGH_VULNS"
+    
+    # Check for outdated packages
+    echo "📊 Checking for outdated packages..."
+    npm outdated > "$AUDIT_DIR/outdated-packages.txt" 2>/dev/null || true
+  fi
+  
+  # Python dependency audit
+  if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
+    echo "🐍 Running Python security audit..."
+    
+    # Safety check (if available)
+    if command -v safety >/dev/null 2>&1; then
+      safety check > "$AUDIT_DIR/python-safety.txt" 2>/dev/null || true
+    else
+      echo "⚠️  Safety not installed - run: pip install safety"
+    fi
+    
+    # Bandit security linter (if available)
+    if command -v bandit >/dev/null 2>&1; then
+      bandit -r . -f json -o "$AUDIT_DIR/bandit-report.json" 2>/dev/null || true
+    else
+      echo "⚠️  Bandit not installed - run: pip install bandit"
+    fi
+  fi
+  
+  echo "✅ Dependency vulnerability scan completed"
+  echo ""
+  ```
+
+  ## 🔍 Step 3: Code Security Analysis
+  ```bash
+  echo "=== Code Security Analysis ==="
+  
+  echo "🔍 Analyzing code for security issues..."
+  
+  # Check for common security anti-patterns
+  echo "🚨 Scanning for security anti-patterns..."
+  
+  # Hardcoded secrets
+  echo "🔑 Checking for hardcoded secrets..."
+  grep -r -i "password\|secret\|key\|token" --include="*.js" --include="*.ts" --include="*.py" . > "$AUDIT_DIR/potential-secrets.txt" 2>/dev/null || true
+  
+  # SQL injection patterns
+  echo "💉 Checking for SQL injection vulnerabilities..."
+  grep -r "SELECT.*+\|INSERT.*+\|UPDATE.*+\|DELETE.*+" --include="*.js" --include="*.ts" --include="*.py" . > "$AUDIT_DIR/sql-injection-patterns.txt" 2>/dev/null || true
+  
+  # XSS vulnerabilities
+  echo "🌐 Checking for XSS vulnerabilities..."
+  grep -r "innerHTML\|document.write\|eval(" --include="*.js" --include="*.ts" . > "$AUDIT_DIR/xss-patterns.txt" 2>/dev/null || true
+  
+  # Insecure HTTP usage
+  echo "🔓 Checking for insecure HTTP usage..."
+  grep -r "http://" --include="*.js" --include="*.ts" --include="*.py" --include="*.json" . > "$AUDIT_DIR/insecure-http.txt" 2>/dev/null || true
+  
+  # Debug/console statements in production code
+  echo "🐛 Checking for debug statements..."
+  grep -r "console.log\|print(\|debugger\|TODO\|FIXME" --include="*.js" --include="*.ts" --include="*.py" . > "$AUDIT_DIR/debug-statements.txt" 2>/dev/null || true
+  
+  echo "✅ Code security analysis completed"
+  echo ""
+  ```
+
+  ## ⚙️ Step 4: Configuration Security Review
+  ```bash
+  echo "=== Configuration Security Review ==="
+  
+  echo "⚙️  Reviewing configuration files..."
+  
+  # Environment files security
+  echo "🌍 Checking environment configuration..."
+  if [ -f ".env" ]; then
+    echo "⚠️  .env file found - ensure it's in .gitignore"
+    grep -q "\.env" .gitignore && echo "✅ .env is in .gitignore" || echo "❌ .env NOT in .gitignore"
+  fi
+  
+  # Check for exposed configuration
+  echo "📄 Checking for exposed configuration files..."
+  find . -name "*.config.js" -o -name "*.config.json" -o -name ".env*" | grep -v node_modules > "$AUDIT_DIR/config-files.txt"
+  
+  # Docker security (if applicable)
+  if [ -f "Dockerfile" ]; then
+    echo "🐳 Reviewing Docker configuration..."
+    
+    # Check for running as root
+    grep -q "USER" Dockerfile && echo "✅ Non-root user specified" || echo "⚠️  Running as root user"
+    
+    # Check for COPY vs ADD
+    grep -q "ADD" Dockerfile && echo "⚠️  ADD instruction found - prefer COPY" || echo "✅ Using COPY instruction"
+    
+    # Check for latest tag
+    grep -q ":latest" Dockerfile && echo "⚠️  Using :latest tag - specify version" || echo "✅ Specific version tags used"
+  fi
+  
+  # Package.json security
+  if [ -f "package.json" ]; then
+    echo "📦 Reviewing package.json security..."
+    
+    # Check for scripts with sudo
+    grep -q "sudo" package.json && echo "⚠️  Sudo found in scripts" || echo "✅ No sudo in scripts"
+    
+    # Check for postinstall scripts
+    grep -q "postinstall" package.json && echo "⚠️  Postinstall script found - review carefully" || echo "✅ No postinstall scripts"
+  fi
+  
+  echo "✅ Configuration security review completed"
+  echo ""
+  ```
+
+  ## 🌐 Step 5: Web Security Headers Check
+  ```bash
+  echo "=== Web Security Headers Check ==="
+  
+  echo "🌐 Checking web security headers configuration..."
+  
+  # Check for security middleware configuration
+  if [ -f "package.json" ]; then
+    echo "🛡️  Checking for security middleware..."
+    
+    # Helmet.js for Express
+    grep -q "helmet" package.json && echo "✅ Helmet.js found" || echo "⚠️  Consider adding Helmet.js for security headers"
+    
+    # CORS configuration
+    grep -q "cors" package.json && echo "✅ CORS package found" || echo "⚠️  Consider configuring CORS"
+    
+    # Rate limiting
+    grep -q "rate-limit\|express-rate-limit" package.json && echo "✅ Rate limiting found" || echo "⚠️  Consider adding rate limiting"
+  fi
+  
+  # Create security headers checklist
+  cat << EOF > "$AUDIT_DIR/security-headers-checklist.md"
+  # Security Headers Checklist
+  
+  ## Required Security Headers
+  - [ ] Content-Security-Policy (CSP)
+  - [ ] X-Frame-Options
+  - [ ] X-Content-Type-Options
+  - [ ] Referrer-Policy
+  - [ ] Permissions-Policy
+  - [ ] Strict-Transport-Security (HTTPS only)
+  
+  ## Recommended Headers
+  - [ ] X-XSS-Protection
+  - [ ] Cross-Origin-Embedder-Policy
+  - [ ] Cross-Origin-Opener-Policy
+  - [ ] Cross-Origin-Resource-Policy
+  
+  ## Implementation Example (Express.js)
+  \`\`\`javascript
+  const helmet = require('helmet');
+  
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    }
+  }));
+  \`\`\`
+  EOF
+  
+  echo "✅ Web security headers check completed"
+  echo ""
+  ```
+
+  ## 🔐 Step 6: Authentication & Authorization Review
+  ```bash
+  echo "=== Authentication & Authorization Review ==="
+  
+  echo "🔐 Reviewing authentication implementation..."
+  
+  # Check for authentication libraries
+  if [ -f "package.json" ]; then
+    echo "🔍 Checking authentication libraries..."
+    
+    # JWT libraries
+    grep -q "jsonwebtoken\|jwt" package.json && echo "✅ JWT library found" || echo "ℹ️  No JWT library detected"
+    
+    # Passport.js
+    grep -q "passport" package.json && echo "✅ Passport.js found" || echo "ℹ️  No Passport.js detected"
+    
+    # bcrypt for password hashing
+    grep -q "bcrypt" package.json && echo "✅ bcrypt found" || echo "⚠️  Consider using bcrypt for password hashing"
+  fi
+  
+  # Check for common auth vulnerabilities
+  echo "🔍 Checking for authentication vulnerabilities..."
+  
+  # Weak password validation
+  grep -r "password.*length.*[1-5]" --include="*.js" --include="*.ts" . > "$AUDIT_DIR/weak-password-validation.txt" 2>/dev/null || true
+  
+  # Session management
+  grep -r "session\|cookie" --include="*.js" --include="*.ts" . > "$AUDIT_DIR/session-usage.txt" 2>/dev/null || true
+  
+  # Create auth security checklist
+  cat << EOF > "$AUDIT_DIR/auth-security-checklist.md"
+  # Authentication & Authorization Security Checklist
+  
+  ## Password Security
+  - [ ] Strong password requirements (min 8 chars, complexity)
+  - [ ] Password hashing with bcrypt/scrypt/argon2
+  - [ ] No password storage in plain text
+  - [ ] Password reset functionality secure
+  
+  ## Session Management
+  - [ ] Secure session configuration
+  - [ ] Session timeout implemented
+  - [ ] Session invalidation on logout
+  - [ ] CSRF protection enabled
+  
+  ## JWT Security (if applicable)
+  - [ ] Strong secret key
+  - [ ] Appropriate expiration times
+  - [ ] Refresh token rotation
+  - [ ] Secure storage (httpOnly cookies)
+  
+  ## Authorization
+  - [ ] Role-based access control (RBAC)
+  - [ ] Principle of least privilege
+  - [ ] Input validation and sanitization
+  - [ ] API endpoint protection
+  EOF
+  
+  echo "✅ Authentication & authorization review completed"
+  echo ""
+  ```
+
+  ## 📊 Step 7: Generate Security Report
+  ```bash
+  echo "=== Security Report Generation ==="
+  
+  echo "📊 Generating comprehensive security report..."
+  
+  # Count issues
+  SECRET_COUNT=$(wc -l < "$AUDIT_DIR/potential-secrets.txt" 2>/dev/null || echo "0")
+  SQL_COUNT=$(wc -l < "$AUDIT_DIR/sql-injection-patterns.txt" 2>/dev/null || echo "0")
+  XSS_COUNT=$(wc -l < "$AUDIT_DIR/xss-patterns.txt" 2>/dev/null || echo "0")
+  HTTP_COUNT=$(wc -l < "$AUDIT_DIR/insecure-http.txt" 2>/dev/null || echo "0")
+  
+  # Generate main security report
+  cat << EOF > "$AUDIT_DIR/security-report.md"
+  # Security Audit Report
+  
+  **Project:** $PROJECT_NAME  
+  **Audit Date:** $AUDIT_DATE  
+  **Audit ID:** $AUDIT_ID
+  
+  ## Executive Summary
+  
+  This report contains the results of a comprehensive security audit performed on $PROJECT_NAME.
+  
+  ## Vulnerability Summary
+  
+  | Category | Count | Severity |
+  |----------|-------|----------|
+  | Critical Dependencies | $CRITICAL_VULNS | 🚨 Critical |
+  | High Dependencies | $HIGH_VULNS | ⚠️ High |
+  | Potential Secrets | $SECRET_COUNT | ⚠️ High |
+  | SQL Injection Patterns | $SQL_COUNT | 🚨 Critical |
+  | XSS Patterns | $XSS_COUNT | ⚠️ High |
+  | Insecure HTTP | $HTTP_COUNT | ⚠️ Medium |
+  
+  ## Detailed Findings
+  
+  ### 1. Dependency Vulnerabilities
+  - Critical: $CRITICAL_VULNS vulnerabilities found
+  - High: $HIGH_VULNS vulnerabilities found
+  - See: npm-audit.json for details
+  
+  ### 2. Code Security Issues
+  - Potential secrets: $SECRET_COUNT instances
+  - SQL injection patterns: $SQL_COUNT instances
+  - XSS vulnerabilities: $XSS_COUNT instances
+  - Insecure HTTP usage: $HTTP_COUNT instances
+  
+  ### 3. Configuration Security
+  - Environment file protection: $([ -f ".env" ] && grep -q "\.env" .gitignore && echo "✅ Protected" || echo "❌ Needs attention")
+  - Docker security: $([ -f "Dockerfile" ] && echo "Reviewed" || echo "N/A")
+  
+  ## Recommendations
+  
+  ### Immediate Actions (Critical)
+  1. Update dependencies with critical vulnerabilities
+  2. Remove or secure hardcoded secrets
+  3. Fix SQL injection vulnerabilities
+  4. Implement input validation and sanitization
+  
+  ### Short-term Actions (High Priority)
+  1. Add security headers middleware
+  2. Implement rate limiting
+  3. Review authentication implementation
+  4. Add CSRF protection
+  
+  ### Long-term Actions (Medium Priority)
+  1. Implement security monitoring
+  2. Regular security audits
+  3. Security training for development team
+  4. Penetration testing
+  
+  ## Next Steps
+  
+  1. Address critical vulnerabilities immediately
+  2. Create remediation plan for high-priority issues
+  3. Implement security best practices
+  4. Schedule regular security audits
+  
+  ---
+  *Generated by task-action security audit*
+  EOF
+  
+  echo "📄 Security report generated: $AUDIT_DIR/security-report.md"
+  echo ""
+  ```
+
+  ## 🚨 Step 8: Critical Issues Alert
+  ```bash
+  echo "=== Critical Issues Alert ==="
+  
+  TOTAL_CRITICAL=$((CRITICAL_VULNS + SQL_COUNT))
+  
+  if [ $TOTAL_CRITICAL -gt 0 ]; then
+    echo "🚨 CRITICAL SECURITY ISSUES FOUND!"
+    echo "   Critical dependency vulnerabilities: $CRITICAL_VULNS"
+    echo "   SQL injection patterns: $SQL_COUNT"
+    echo ""
+    echo "⚠️  IMMEDIATE ACTION REQUIRED:"
+    echo "   1. Review security report: $AUDIT_DIR/security-report.md"
+    echo "   2. Address critical vulnerabilities"
+    echo "   3. Do not deploy until issues are resolved"
+    echo ""
+    
+    # Send critical alert notification
+    echo "📱 Sending critical security alert..."
+    task-action send-message --type security-critical --audit-id "$AUDIT_ID"
+  else
+    echo "✅ No critical security issues found"
+  fi
+  
+  echo ""
+  ```
+
+  ## 📋 Step 9: Remediation Guidance
+  ```bash
+  echo "=== Remediation Guidance ==="
+  
+  echo "🛠️  Security remediation guidance:"
+  echo ""
+  echo "📦 Dependency Updates:"
+  echo "   npm audit fix                    # Auto-fix vulnerabilities"
+  echo "   npm audit fix --force           # Force updates (may break)"
+  echo "   npm update                      # Update to latest versions"
+  echo ""
+  echo "🔒 Security Hardening:"
+  echo "   npm install helmet              # Security headers"
+  echo "   npm install express-rate-limit  # Rate limiting"
+  echo "   npm install cors                # CORS configuration"
+  echo "   npm install bcrypt              # Password hashing"
+  echo ""
+  echo "🧪 Security Testing:"
+  echo "   npm install --save-dev jest-security  # Security testing"
+  echo "   npm install -g snyk                   # Vulnerability scanning"
+  echo ""
+  echo "📚 Resources:"
+  echo "   - OWASP Top 10: https://owasp.org/www-project-top-ten/"
+  echo "   - Node.js Security: https://nodejs.org/en/security/"
+  echo "   - Security Headers: https://securityheaders.com/"
+  echo ""
+  echo "🎯 Next audit: Schedule in 30 days"
+  echo ""
+  echo "🔒 Security audit completed!"
+  echo "📄 Full report: $AUDIT_DIR/security-report.md"
+  ```
+
+  **🔒 Comprehensive security audit completed with detailed findings and remediation guidance!**

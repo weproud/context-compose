@@ -1,0 +1,378 @@
+version: 1
+kind: rule
+name: SOLID Principles Rule
+description: Comprehensive SOLID principles guidelines for object-oriented design and architecture
+prompt: Apply SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion) to create maintainable, extensible, and robust object-oriented code architecture.
+enhanced-prompt: |-
+  Follow these comprehensive SOLID principles when designing task-action architecture:
+
+  ## S - Single Responsibility Principle (SRP)
+  1. **Definition**:
+     - A class should have only one reason to change
+     - Each class should have only one job or responsibility
+     - Separate concerns into distinct classes and modules
+     - Avoid god objects that do too many things
+
+  2. **Implementation Guidelines**:
+     - Identify the primary responsibility of each class
+     - Extract secondary responsibilities into separate classes
+     - Use composition over inheritance for multiple behaviors
+     - Keep classes focused and cohesive
+
+  3. **Examples**:
+     ```typescript
+     // Bad: Multiple responsibilities
+     class UserManager {
+       validateUser(user: User): boolean { /* validation logic */ }
+       saveUser(user: User): void { /* database logic */ }
+       sendEmail(user: User): void { /* email logic */ }
+     }
+
+     // Good: Single responsibilities
+     class UserValidator {
+       validate(user: User): boolean { /* validation logic */ }
+     }
+     class UserRepository {
+       save(user: User): void { /* database logic */ }
+     }
+     class EmailService {
+       sendWelcomeEmail(user: User): void { /* email logic */ }
+     }
+     ```
+
+  4. **Benefits**:
+     - Easier to understand and maintain
+     - Reduced coupling between components
+     - Better testability and reusability
+     - Clearer code organization
+
+  ## O - Open/Closed Principle (OCP)
+  1. **Definition**:
+     - Software entities should be open for extension but closed for modification
+     - Add new functionality without changing existing code
+     - Use abstractions and polymorphism for extensibility
+     - Protect stable code from changes
+
+  2. **Implementation Strategies**:
+     - Use interfaces and abstract classes for contracts
+     - Implement strategy pattern for varying behaviors
+     - Apply decorator pattern for adding features
+     - Use dependency injection for flexibility
+
+  3. **Examples**:
+     ```typescript
+     // Bad: Modifying existing code for new features
+     class PaymentProcessor {
+       processPayment(type: string, amount: number) {
+         if (type === 'credit') {
+           // credit card logic
+         } else if (type === 'paypal') {
+           // PayPal logic
+         }
+         // Adding new payment method requires modifying this class
+       }
+     }
+
+     // Good: Open for extension, closed for modification
+     interface PaymentMethod {
+       process(amount: number): Promise<PaymentResult>;
+     }
+
+     class CreditCardPayment implements PaymentMethod {
+       process(amount: number): Promise<PaymentResult> {
+         // credit card logic
+       }
+     }
+
+     class PayPalPayment implements PaymentMethod {
+       process(amount: number): Promise<PaymentResult> {
+         // PayPal logic
+       }
+     }
+
+     class PaymentProcessor {
+       constructor(private paymentMethod: PaymentMethod) {}
+
+       processPayment(amount: number): Promise<PaymentResult> {
+         return this.paymentMethod.process(amount);
+       }
+     }
+     ```
+
+  4. **Benefits**:
+     - Reduced risk of breaking existing functionality
+     - Easier to add new features
+     - Better code stability and reliability
+     - Improved maintainability
+
+  ## L - Liskov Substitution Principle (LSP)
+  1. **Definition**:
+     - Objects of a superclass should be replaceable with objects of subclasses
+     - Subtypes must be substitutable for their base types
+     - Derived classes must not strengthen preconditions or weaken postconditions
+     - Maintain behavioral compatibility
+
+  2. **Implementation Rules**:
+     - Subclasses should not throw new exceptions not thrown by base class
+     - Subclasses should not have stricter validation rules
+     - Return types should be covariant (same or more specific)
+     - Parameter types should be contravariant (same or more general)
+
+  3. **Examples**:
+     ```typescript
+     // Bad: Violates LSP
+     class Bird {
+       fly(): void {
+         console.log('Flying...');
+       }
+     }
+
+     class Penguin extends Bird {
+       fly(): void {
+         throw new Error('Penguins cannot fly!'); // Violates LSP
+       }
+     }
+
+     // Good: Follows LSP
+     abstract class Bird {
+       abstract move(): void;
+     }
+
+     class FlyingBird extends Bird {
+       move(): void {
+         this.fly();
+       }
+
+       private fly(): void {
+         console.log('Flying...');
+       }
+     }
+
+     class SwimmingBird extends Bird {
+       move(): void {
+         this.swim();
+       }
+
+       private swim(): void {
+         console.log('Swimming...');
+       }
+     }
+     ```
+
+  4. **Benefits**:
+     - Ensures polymorphism works correctly
+     - Maintains code reliability and predictability
+     - Enables safe substitution of implementations
+     - Improves code reusability
+
+  ## I - Interface Segregation Principle (ISP)
+  1. **Definition**:
+     - Clients should not be forced to depend on interfaces they don't use
+     - Create specific, focused interfaces rather than large, general ones
+     - Split large interfaces into smaller, cohesive ones
+     - Avoid fat interfaces with unrelated methods
+
+  2. **Implementation Guidelines**:
+     - Design role-based interfaces
+     - Keep interfaces small and focused
+     - Use composition of multiple interfaces when needed
+     - Avoid forcing clients to implement unused methods
+
+  3. **Examples**:
+     ```typescript
+     // Bad: Fat interface
+     interface Worker {
+       work(): void;
+       eat(): void;
+       sleep(): void;
+       code(): void;
+       design(): void;
+     }
+
+     class Developer implements Worker {
+       work(): void { this.code(); }
+       eat(): void { /* implementation */ }
+       sleep(): void { /* implementation */ }
+       code(): void { /* implementation */ }
+       design(): void { throw new Error('Not applicable'); } // Forced to implement
+     }
+
+     // Good: Segregated interfaces
+     interface Workable {
+       work(): void;
+     }
+
+     interface Eatable {
+       eat(): void;
+     }
+
+     interface Sleepable {
+       sleep(): void;
+     }
+
+     interface Codeable {
+       code(): void;
+     }
+
+     interface Designable {
+       design(): void;
+     }
+
+     class Developer implements Workable, Eatable, Sleepable, Codeable {
+       work(): void { this.code(); }
+       eat(): void { /* implementation */ }
+       sleep(): void { /* implementation */ }
+       code(): void { /* implementation */ }
+     }
+
+     class Designer implements Workable, Eatable, Sleepable, Designable {
+       work(): void { this.design(); }
+       eat(): void { /* implementation */ }
+       sleep(): void { /* implementation */ }
+       design(): void { /* implementation */ }
+     }
+     ```
+
+  4. **Benefits**:
+     - Reduces coupling between classes
+     - Improves code flexibility and maintainability
+     - Makes testing easier with focused interfaces
+     - Prevents unnecessary dependencies
+
+  ## D - Dependency Inversion Principle (DIP)
+  1. **Definition**:
+     - High-level modules should not depend on low-level modules
+     - Both should depend on abstractions (interfaces)
+     - Abstractions should not depend on details
+     - Details should depend on abstractions
+
+  2. **Implementation Strategies**:
+     - Use dependency injection containers
+     - Define interfaces for external dependencies
+     - Inject dependencies through constructors or setters
+     - Use factory patterns for object creation
+
+  3. **Examples**:
+     ```typescript
+     // Bad: High-level module depends on low-level module
+     class EmailService {
+       sendEmail(message: string): void {
+         // email sending logic
+       }
+     }
+
+     class NotificationService {
+       private emailService = new EmailService(); // Direct dependency
+
+       notify(message: string): void {
+         this.emailService.sendEmail(message);
+       }
+     }
+
+     // Good: Both depend on abstraction
+     interface MessageSender {
+       send(message: string): Promise<void>;
+     }
+
+     class EmailService implements MessageSender {
+       async send(message: string): Promise<void> {
+         // email sending logic
+       }
+     }
+
+     class SMSService implements MessageSender {
+       async send(message: string): Promise<void> {
+         // SMS sending logic
+       }
+     }
+
+     class NotificationService {
+       constructor(private messageSender: MessageSender) {} // Dependency injection
+
+       async notify(message: string): Promise<void> {
+         await this.messageSender.send(message);
+       }
+     }
+     ```
+
+  4. **Benefits**:
+     - Reduces coupling between modules
+     - Improves testability through mocking
+     - Enables flexible configuration and deployment
+     - Makes code more maintainable and extensible
+
+  ## SOLID Principles Integration
+  1. **Synergistic Effects**:
+     - SRP makes classes easier to understand and test
+     - OCP enables adding features without breaking existing code
+     - LSP ensures polymorphism works reliably
+     - ISP reduces unnecessary dependencies
+     - DIP enables flexible, testable architectures
+
+  2. **Common Patterns**:
+     - Repository pattern (SRP, DIP)
+     - Strategy pattern (OCP, LSP)
+     - Factory pattern (OCP, DIP)
+     - Observer pattern (OCP, ISP)
+
+  3. **Architecture Benefits**:
+     - Modular, maintainable codebase
+     - Easy to test and mock dependencies
+     - Flexible and extensible design
+     - Reduced coupling and increased cohesion
+
+  ## Practical Application Guidelines
+  1. **Design Process**:
+     - Start with identifying responsibilities (SRP)
+     - Define abstractions and interfaces (DIP, ISP)
+     - Plan for extension points (OCP)
+     - Ensure substitutability (LSP)
+
+  2. **Code Review Checklist**:
+     - Does each class have a single, clear responsibility?
+     - Can new features be added without modifying existing code?
+     - Are subclasses truly substitutable for their base classes?
+     - Are interfaces focused and cohesive?
+     - Do high-level modules depend on abstractions?
+
+  3. **Refactoring Indicators**:
+     - Large classes with multiple responsibilities (violates SRP)
+     - Frequent modifications to existing classes (violates OCP)
+     - Subclasses that break parent class contracts (violates LSP)
+     - Clients forced to depend on unused interface methods (violates ISP)
+     - Direct dependencies on concrete implementations (violates DIP)
+
+  ## Common Anti-Patterns to Avoid
+  1. **God Objects**: Classes that do too much (violates SRP)
+  2. **Shotgun Surgery**: Changes requiring modifications in many places (violates OCP)
+  3. **Refused Inheritance**: Subclasses that don't support parent operations (violates LSP)
+  4. **Fat Interfaces**: Large interfaces with unrelated methods (violates ISP)
+  5. **Tight Coupling**: Direct dependencies on concrete classes (violates DIP)
+
+  ## Task-Action Specific Applications
+  1. **Action Handlers** (SRP):
+     - Each action handler should handle only one type of action
+     - Separate validation, execution, and notification concerns
+     - Extract common functionality into shared services
+
+  2. **Plugin Architecture** (OCP):
+     - Design extensible plugin system for new action types
+     - Use interfaces for action definitions and handlers
+     - Enable adding new actions without modifying core code
+
+  3. **Service Abstractions** (DIP):
+     - Define interfaces for external services (Slack, Discord, Git)
+     - Inject service implementations through dependency injection
+     - Enable easy testing with mock implementations
+
+  4. **Configuration Management** (ISP):
+     - Create focused interfaces for different configuration aspects
+     - Separate action config, notification config, and system config
+     - Avoid forcing components to depend on unused configuration
+
+  ## Continuous Improvement
+  - Regularly review code for SOLID principle adherence
+  - Refactor code that violates these principles
+  - Use static analysis tools to detect violations
+  - Educate team members on SOLID principles
+  - Apply principles gradually and pragmatically

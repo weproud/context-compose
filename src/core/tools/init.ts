@@ -54,13 +54,13 @@ export class InitTool {
    */
   private static async findAssetsDirectory(): Promise<string | null> {
     // Consider when MCP server is called from other projects
-    // Find the assets directory of the task-action package
+    // Find the assets directory of the context-compose package
 
-    // 1. Start from current file location and find task-action project's assets directory
+    // 1. Start from current file location and find context-compose project's assets directory
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
 
-    // Go up to task-action project root while looking for assets directory
+    // Go up to context-compose project root while looking for assets directory
     let currentDir = __dirname;
     for (let i = 0; i < 10; i++) {
       // Go up maximum 10 levels
@@ -73,13 +73,13 @@ export class InitTool {
       currentDir = parentDir;
     }
 
-    // 2. Find task-action package's assets directory in node_modules
-    // (when task-action is installed as npm package in other projects)
+    // 2. Find context-compose package's assets directory in node_modules
+    // (when context-compose is installed as npm package in other projects)
     try {
       const nodeModulesPath = join(
         process.cwd(),
         'node_modules',
-        'task-action',
+        'context-compose',
         'assets'
       );
       if (await this.fileExists(nodeModulesPath)) {
@@ -91,10 +91,10 @@ export class InitTool {
 
     // 3. Try to find in global node_modules
     try {
-      // Use require.resolve to find task-action package location
-      const taskActionPath = require.resolve('task-action/package.json');
-      const taskActionRoot = dirname(taskActionPath);
-      const globalAssetsPath = join(taskActionRoot, 'assets');
+      // Use require.resolve to find context-compose package location
+      const contextComposePath = require.resolve('context-compose/package.json');
+      const contextComposeRoot = dirname(contextComposePath);
+      const globalAssetsPath = join(contextComposeRoot, 'assets');
       if (await this.fileExists(globalAssetsPath)) {
         return globalAssetsPath;
       }
@@ -176,23 +176,23 @@ export class InitTool {
         }
       }
 
-      const configDir = join(baseDir, '.taskaction');
+      const configDir = join(baseDir, '.contextcompose');
       console.log(`[DEBUG] configDir: "${configDir}"`);
 
       // Find assets directory
       const assetsDir = await this.findAssetsDirectory();
       if (!assetsDir) {
         throw new Error(
-          'Cannot find task-action assets directory. ' +
-            'Please verify that task-action is properly installed. ' +
+          'Cannot find context-compose assets directory. ' +
+            'Please verify that context-compose is properly installed. ' +
             'Checked the following locations:\n' +
             '1. Current project assets directory\n' +
-            '2. node_modules/task-action/assets\n' +
-            '3. Globally installed task-action package assets directory'
+            '2. node_modules/context-compose/assets\n' +
+            '3. Globally installed context-compose package assets directory'
         );
       }
 
-      // .taskaction 디렉토리가 이미 존재하는지 확인
+      // .contextcompose 디렉토리가 이미 존재하는지 확인
       const dirExists = await this.fileExists(configDir);
       if (dirExists) {
         // 기존 디렉토리를 백업
@@ -200,7 +200,7 @@ export class InitTool {
         skippedFiles.push(configDir);
       }
 
-      // assets 디렉토리를 .taskaction으로 복사
+      // assets 디렉토리를 .contextcompose로 복사
       const copiedFiles = await this.copyDirectory(assetsDir, configDir);
       createdFiles.push(...copiedFiles);
 
@@ -221,7 +221,7 @@ export class InitTool {
         error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        message: `Task Action project initialization failed: ${errorMessage}`,
+        message: `Context Compose project initialization failed: ${errorMessage}`,
         createdFiles,
         skippedFiles,
       };
@@ -240,9 +240,9 @@ export class InitTool {
 
     if (createdFiles.length > 0) {
       messages.push(
-        `✅ Task Action project has been successfully initialized!`
+        `✅ Context Compose project has been successfully initialized!`
       );
-      // messages.push(`assets directory has been copied to .taskaction.`);
+      // messages.push(`assets directory has been copied to .contextcompose.`);
       // messages.push(`Created files/directories: ${createdFiles.length}`);
       // // Limit display to avoid showing too many files
       // const displayFiles = createdFiles.slice(0, 10);

@@ -15,9 +15,9 @@ function createCLI(): Command {
   const program = new Command();
 
   program
-    .name('task-action')
+    .name('context-compose')
     .description(
-      'CLI for Task Action Model Context Protocol (MCP) server tools'
+      'CLI for Context Compose Model Context Protocol (MCP) server tools'
     )
     .version('1.0.0');
 
@@ -64,7 +64,7 @@ function createCLI(): Command {
           '\nFor more detailed information, use the --help option for each command.'
         );
         console.log(
-          'Example: task-action init --help, task-action task --help, task-action get-context --help'
+          'Example: context-compose init --help, context-compose task --help, context-compose get-context --help'
         );
       }
     });
@@ -75,13 +75,13 @@ function createCLI(): Command {
   program.on('--help', () => {
     console.log('');
     console.log('Usage examples:');
-    console.log('  $ task-action init');
-    console.log('  $ task-action get-context context-default');
-    console.log('  $ task-action task validate context-default');
-    console.log('  $ task-action examples');
+    console.log('  $ context-compose init');
+    console.log('  $ context-compose get-context context-default');
+    console.log('  $ context-compose task validate context-default');
+    console.log('  $ context-compose examples');
     console.log('');
     console.log('To see more examples:');
-    console.log('  $ task-action examples');
+    console.log('  $ context-compose examples');
   });
 
   return program;

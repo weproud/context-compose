@@ -77,10 +77,10 @@ export class GetContextTool {
   static readContextFile(projectRoot: string, contextId: string): ContextYaml {
     const formattedId = this.formatContextId(contextId);
 
-    // All contexts use .taskaction directory
+    // All contexts use .contextcompose directory
     const contextFilePath = join(
       projectRoot,
-      '.taskaction',
+      '.contextcompose',
       `${formattedId}-context.yaml`
     );
 
@@ -94,7 +94,7 @@ export class GetContextTool {
     projectRoot: string,
     workflowPath: string
   ): ComponentYaml {
-    const fullPath = join(projectRoot, '.taskaction', workflowPath);
+    const fullPath = join(projectRoot, '.contextcompose', workflowPath);
     return this.readYamlFile(fullPath);
   }
 
@@ -106,7 +106,7 @@ export class GetContextTool {
     rulesPaths: string[]
   ): ComponentYaml[] {
     return rulesPaths.map(rulePath => {
-      const fullPath = join(projectRoot, '.taskaction', rulePath);
+      const fullPath = join(projectRoot, '.contextcompose', rulePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -119,7 +119,7 @@ export class GetContextTool {
     mcpsPaths: string[]
   ): ComponentYaml[] {
     return mcpsPaths.map(mcpPath => {
-      const fullPath = join(projectRoot, '.taskaction', mcpPath);
+      const fullPath = join(projectRoot, '.contextcompose', mcpPath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -132,7 +132,7 @@ export class GetContextTool {
     filePaths: string[]
   ): ComponentYaml[] {
     return filePaths.map(filePath => {
-      const fullPath = join(projectRoot, '.taskaction', filePath);
+      const fullPath = join(projectRoot, '.contextcompose', filePath);
       return this.readYamlFile(fullPath);
     });
   }
@@ -144,7 +144,7 @@ export class GetContextTool {
     projectRoot: string,
     filePath: string
   ): ComponentYaml {
-    const fullPath = join(projectRoot, '.taskaction', filePath);
+    const fullPath = join(projectRoot, '.contextcompose', filePath);
     return this.readYamlFile(fullPath);
   }
 
@@ -157,8 +157,8 @@ export class GetContextTool {
   ): Record<string, ComponentYaml[]> {
     const processedSections: Record<string, ComponentYaml[]> = {};
 
-    // All contexts use .taskaction directory
-    const configPath = '.taskaction';
+    // All contexts use .contextcompose directory
+    const configPath = '.contextcompose';
 
     for (const [sectionName, sectionValue] of Object.entries(context)) {
       if (!sectionValue) continue;

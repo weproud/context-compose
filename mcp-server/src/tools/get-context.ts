@@ -11,7 +11,7 @@ export function registerGetContextTool(server: FastMCP): void {
   server.addTool({
     name: 'get-context',
     description:
-      'Get context for a task. Reads <context-id>-context.yaml file from the .taskaction directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections) to provide context for AI development. The projectRoot parameter must specify the project root directory. The enhancedPrompt option allows you to choose whether to use detailed guidelines.',
+      'Get context for a task. Reads <context-id>-context.yaml file from the .contextcompose directory. Combines prompts from all files in the jobs section (workflow, rules, mcps, notify, issue, and other custom sections) to provide context for AI development. The projectRoot parameter must specify the project root directory. The enhancedPrompt option allows you to choose whether to use detailed guidelines.',
     parameters: GetContextToolSchema,
     execute: async (args: unknown) => {
       try {

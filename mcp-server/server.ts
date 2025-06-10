@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import TaskActionServer from './src/index.js';
+import ContextComposeServer from './src/index.js';
 import logger from './src/logger.js';
 
 /**
  * Start the MCP server
  */
 async function startServer(): Promise<void> {
-  const server = new TaskActionServer();
+  const server = new ContextComposeServer();
 
   // Handle graceful shutdown
   process.on('SIGINT', async () => {

@@ -1,0 +1,140 @@
+version: 1
+kind: mcp
+name: web-search
+description: Web search capabilities for research and information gathering
+prompt: Use web search for comprehensive research and information gathering
+enhanced-prompt: |-
+  **Use web search capabilities for comprehensive research and accurate information gathering.**
+
+  ## Search Objectives
+  1. **Information Research:**
+     - Find current documentation and tutorials
+     - Research best practices and patterns
+     - Discover solutions to technical problems
+     - Gather competitive intelligence
+
+  2. **Technical Research:**
+     - Find library documentation and examples
+     - Research API specifications and usage
+     - Discover troubleshooting solutions
+     - Identify security vulnerabilities and fixes
+
+  ## Search Strategies
+  1. **Query Optimization:**
+     - Use specific technical terms and keywords
+     - Include version numbers and technology stack
+     - Add context like "tutorial", "documentation", "example"
+     - Use site-specific searches (site:github.com, site:stackoverflow.com)
+
+  2. **Source Prioritization:**
+     - Official documentation sites (highest priority)
+     - GitHub repositories and README files
+     - Stack Overflow and technical forums
+     - Technical blogs and tutorials
+     - Academic papers and research
+
+  ## Search Process
+  1. **Query Formulation:**
+     - Identify key search terms and concepts
+     - Consider synonyms and alternative terminology
+     - Include relevant context and constraints
+     - Plan multiple search iterations
+
+  2. **Result Analysis:**
+     - Evaluate source credibility and recency
+     - Cross-reference information across sources
+     - Identify conflicting information
+     - Extract actionable insights
+
+  3. **Information Synthesis:**
+     - Combine information from multiple sources
+     - Verify accuracy through cross-referencing
+     - Identify gaps requiring additional research
+     - Organize findings logically
+
+  ## Search Categories
+  1. **Documentation Search:**
+     - Official API documentation
+     - Framework and library guides
+     - Configuration and setup instructions
+     - Migration and upgrade guides
+
+  2. **Problem-Solving Search:**
+     - Error message troubleshooting
+     - Performance optimization techniques
+     - Security best practices
+     - Debugging and testing strategies
+
+  3. **Learning & Tutorial Search:**
+     - Step-by-step tutorials
+     - Code examples and patterns
+     - Video tutorials and courses
+     - Interactive learning resources
+
+  ## Quality Assessment
+  1. **Source Evaluation:**
+     - Check publication date and currency
+     - Verify author credentials and expertise
+     - Assess community engagement and feedback
+     - Validate through multiple sources
+
+  2. **Content Validation:**
+     - Test code examples and solutions
+     - Verify compatibility with current versions
+     - Check for security implications
+     - Validate against official documentation
+
+  ## Search Examples
+  1. **Technical Documentation:**
+     ```
+     "React hooks useEffect cleanup" site:reactjs.org
+     "TypeScript generic constraints" official documentation
+     "Node.js stream API" latest version examples
+     ```
+
+  2. **Problem Solving:**
+     ```
+     "Cannot resolve module" TypeScript error solution
+     "Memory leak" Node.js debugging techniques
+     "CORS error" Express.js configuration fix
+     ```
+
+  3. **Best Practices:**
+     ```
+     "React performance optimization" 2024 best practices
+     "TypeScript project structure" enterprise patterns
+     "API design" RESTful guidelines standards
+     ```
+
+  ## Information Organization
+  1. **Research Documentation:**
+     - Summarize key findings and insights
+     - Include source links and references
+     - Note version compatibility and requirements
+     - Highlight important caveats and limitations
+
+  2. **Actionable Outputs:**
+     - Extract specific implementation steps
+     - Identify required dependencies and tools
+     - Note configuration requirements
+     - Provide code examples and templates
+
+  ## Search Limitations
+  1. **Information Currency:**
+     - Web content may be outdated
+     - Technology evolves rapidly
+     - Always verify with official sources
+     - Check publication dates
+
+  2. **Accuracy Concerns:**
+     - Information may be incomplete or incorrect
+     - Context may not match specific use case
+     - Always test solutions before implementation
+     - Cross-reference critical information
+
+  ## Success Criteria
+  - ✅ Relevant and current information found
+  - ✅ Sources are credible and authoritative
+  - ✅ Information is actionable and specific
+  - ✅ Multiple sources confirm findings
+  - ✅ Potential issues and limitations identified

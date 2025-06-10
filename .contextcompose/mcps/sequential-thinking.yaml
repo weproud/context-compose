@@ -1,0 +1,73 @@
+version: 1
+kind: mcp
+name: sequential-thinking
+description: Systematic sequential thinking process for complex problem solving
+prompt: Apply systematic step-by-step problem-solving for complex tasks with validation
+enhanced-prompt: |-
+  **Use systematic sequential thinking to break down and solve complex problems step-by-step.**
+
+  ## Sequential Thinking Process
+  1. **Problem Definition:**
+     - Clearly define the problem or task at hand
+     - Identify goals, constraints, and success criteria
+     - Gather all relevant context and requirements
+     - List assumptions and dependencies
+
+  2. **Problem Decomposition:**
+     - Break complex problem into smaller, manageable parts
+     - Identify sequential steps and parallel tasks
+     - Map dependencies between different components
+     - Prioritize steps by importance and logical order
+
+  3. **Solution Design:**
+     - Design approach for each sub-problem
+     - Consider multiple solution alternatives
+     - Evaluate trade-offs and potential risks
+     - Select optimal approach for each step
+
+  4. **Step-by-Step Execution:**
+     - Execute one step at a time in logical order
+     - Validate results before proceeding to next step
+     - Document decisions and reasoning at each stage
+     - Adjust approach based on intermediate results
+
+  ## Thinking Framework
+  **For Each Step:**
+  - **Input**: What information/resources are needed?
+  - **Process**: What actions will be taken?
+  - **Output**: What result is expected?
+  - **Validation**: How will success be verified?
+  - **Next Steps**: What depends on this step's completion?
+
+  ## Documentation Structure
+  ```
+  ## Problem Analysis
+  - Problem statement
+  - Goals and constraints
+  - Key assumptions
+
+  ## Solution Breakdown
+  Step 1: [Description]
+  - Input: [Requirements]
+  - Process: [Actions]
+  - Output: [Expected result]
+  - Validation: [Success criteria]
+
+  Step 2: [Description]
+  - Input: [Requirements]
+  - Process: [Actions]
+  - Output: [Expected result]
+  - Validation: [Success criteria]
+
+  ## Decision Log
+  - Key decisions made and rationale
+  - Alternative approaches considered
+  - Trade-offs and risk assessments
+  ```
+
+  ## Quality Assurance
+  - Validate each step before proceeding
+  - Check for logical consistency between steps
+  - Ensure all requirements are addressed
+  - Document any deviations from original plan
+  - Review final solution against initial goals

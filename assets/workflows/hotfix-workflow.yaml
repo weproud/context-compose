@@ -1,0 +1,199 @@
+version: 1
+kind: workflow
+name: Hotfix Workflow
+description: Emergency hotfix workflow for critical production issues
+jobs:
+  steps:
+    - name: Create Hotfix Branch
+      uses: actions/create-branch.yaml
+
+    - name: Development
+      uses: actions/development.yaml
+
+    - name: Test
+      uses: actions/test.yaml
+
+    - name: Security Audit
+      uses: actions/security-audit.yaml
+
+    - name: Git Commit
+      uses: actions/git-commit.yaml
+
+    - name: Git Push
+      uses: actions/git-push.yaml
+
+    - name: Create Pull Request
+      uses: actions/create-pull-request.yaml
+
+    - name: Deploy
+      uses: actions/deploy.yaml
+
+    - name: Send Message
+      uses: actions/send-message.yaml
+
+prompt: |
+  Execute emergency hotfix workflow for critical production issues with expedited process and immediate deployment.
+enhanced-prompt: |-
+  Execute emergency hotfix workflow for critical production issues with expedited process and immediate deployment:
+
+  ## Hotfix Workflow Strategy
+  1. **Emergency Response:**
+     - Prioritize speed while maintaining essential quality gates
+     - Skip non-critical steps to reduce time to resolution
+     - Implement parallel processing where possible
+     - Maintain audit trail for post-incident analysis
+
+  2. **Risk Management:**
+     - Focus on minimal, targeted changes
+     - Ensure changes don't introduce new issues
+     - Implement immediate rollback capability
+     - Monitor system health throughout process
+
+  ## Hotfix Execution Process
+  1. **Incident Assessment Phase:**
+     - Confirm severity and impact of the issue
+     - Identify root cause and required fix
+     - Estimate fix complexity and deployment time
+     - Notify stakeholders of hotfix initiation
+
+  2. **Branch Creation Phase:**
+     ```bash
+     # Create hotfix branch from production/main
+     git checkout main
+     git pull origin main
+     git checkout -b hotfix/critical-security-fix-$(date +%Y%m%d-%H%M)
+     ```
+     - Use descriptive branch naming with timestamp
+     - Base branch on current production state
+     - Ensure clean working directory
+
+  3. **Development Phase (Expedited):**
+     - **Focus on Minimal Changes:**
+       - Implement only the essential fix
+       - Avoid refactoring or feature additions
+       - Use proven, low-risk solutions
+       - Document changes thoroughly
+
+     - **Quality Assurance:**
+       - Write targeted tests for the fix
+       - Verify fix resolves the issue
+       - Ensure no regression in critical paths
+       - Review code for security implications
+
+  4. **Testing Phase (Critical Path Only):**
+     - **Essential Tests:**
+       - Unit tests for changed code
+       - Integration tests for affected systems
+       - Security tests if security-related
+       - Smoke tests for critical functionality
+
+     - **Skip Non-Critical Tests:**
+       - Full regression test suite (run post-deployment)
+       - Performance tests (monitor post-deployment)
+       - UI/UX tests (unless UI-related fix)
+
+  5. **Security Validation:**
+     - **Mandatory Security Checks:**
+       - Vulnerability scanning for security fixes
+       - Dependency security audit
+       - Code security review
+       - Authentication/authorization validation
+
+  6. **Deployment Phase (Expedited):**
+     - **Pre-deployment:**
+       - Backup current production state
+       - Prepare rollback procedures
+       - Notify operations team
+       - Set up enhanced monitoring
+
+     - **Deployment Strategy:**
+       - Use blue-green or canary deployment if available
+       - Deploy to staging first for final validation
+       - Monitor key metrics during deployment
+       - Validate fix effectiveness immediately
+
+  7. **Communication & Documentation:**
+     - **Immediate Notifications:**
+       - Stakeholder updates on progress
+       - Customer communication if user-facing
+       - Team notifications via configured channels
+       - Status page updates if applicable
+
+     - **Documentation:**
+       - Incident timeline and resolution steps
+       - Root cause analysis (post-incident)
+       - Lessons learned and process improvements
+       - Update runbooks and procedures
+
+  ## Hotfix Quality Gates
+  1. **Mandatory Gates (Cannot Skip):**
+     - Security validation for security-related fixes
+     - Critical functionality testing
+     - Deployment safety checks
+     - Rollback procedure validation
+
+  2. **Expedited Gates (Reduced Scope):**
+     - Code review (focus on fix only)
+     - Testing (critical path only)
+     - Documentation (essential only)
+     - Approval process (streamlined)
+
+  ## Monitoring & Validation
+  1. **Real-time Monitoring:**
+     ```yaml
+     monitoring:
+       metrics:
+         - error_rate
+         - response_time
+         - system_health
+         - user_impact
+       alerts:
+         - critical_errors
+         - performance_degradation
+         - security_incidents
+       dashboards:
+         - production_health
+         - incident_tracking
+     ```
+
+  2. **Success Validation:**
+     - Verify issue resolution
+     - Confirm no new issues introduced
+     - Validate system performance
+     - Check user experience metrics
+
+  ## Post-Hotfix Actions
+  1. **Immediate Actions:**
+     - Merge hotfix to main/production branch
+     - Tag release with hotfix version
+     - Update development branches with fix
+     - Schedule full regression testing
+
+  2. **Follow-up Actions:**
+     - Conduct post-incident review
+     - Update monitoring and alerting
+     - Improve prevention measures
+     - Document lessons learned
+
+  ## Emergency Escalation
+  1. **Escalation Triggers:**
+     - Hotfix fails to resolve issue
+     - New critical issues introduced
+     - Deployment failures or rollbacks
+     - Extended downtime beyond SLA
+
+  2. **Escalation Process:**
+     - Immediate team lead notification
+     - Activate incident response team
+     - Consider external vendor support
+     - Implement emergency procedures
+
+  ## Success Criteria
+  - ✅ Critical issue resolved quickly and safely
+  - ✅ No new issues introduced by hotfix
+  - ✅ System stability maintained or improved
+  - ✅ Stakeholders informed throughout process
+  - ✅ Proper documentation and audit trail maintained
+  - ✅ Rollback capability preserved and tested
+
+  Execute each step with urgency while maintaining essential quality and safety measures.

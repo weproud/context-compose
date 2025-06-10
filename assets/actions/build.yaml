@@ -1,0 +1,71 @@
+version: 1
+kind: action
+name: Build
+description: Build project with optimization, validation, and artifact generation
+prompt: Build the project with proper optimization and validation
+enhanced-prompt: |-
+  **Build the project with comprehensive optimization and validation.**
+
+  ## Build Objectives
+  1. **Compilation & Bundling:**
+     - Compile TypeScript/JavaScript with proper type checking
+     - Bundle assets with optimization (minification, tree-shaking)
+     - Generate source maps for debugging
+     - Optimize images and static assets
+
+  2. **Quality Validation:**
+     - Run linting and formatting checks
+     - Validate TypeScript types and interfaces
+     - Check for unused imports and dead code
+     - Ensure build reproducibility
+
+  ## Build Process
+  1. **Pre-build Validation:**
+     - Clean previous build artifacts
+     - Verify all dependencies are installed
+     - Check for TypeScript compilation errors
+     - Validate configuration files
+
+  2. **Compilation Phase:**
+     - Compile TypeScript with strict type checking
+     - Process CSS/SCSS with autoprefixer
+     - Optimize and compress images
+     - Generate optimized bundles
+
+  3. **Post-build Validation:**
+     - Verify all expected artifacts are generated
+     - Check bundle sizes against thresholds
+     - Validate critical paths and entry points
+     - Generate build reports and metrics
+
+  ## Build Configurations
+  - **Development**: Fast builds with source maps and hot reload
+  - **Production**: Optimized builds with minification and compression
+  - **Testing**: Builds optimized for test execution
+  - **Staging**: Production-like builds with additional debugging info
+
+  ## Optimization Strategies
+  1. **Bundle Optimization:**
+     - Code splitting for better caching
+     - Tree shaking to remove unused code
+     - Minification and compression
+     - Asset optimization and lazy loading
+
+  2. **Performance Monitoring:**
+     - Bundle size analysis and reporting
+     - Build time optimization
+     - Memory usage monitoring
+     - Cache efficiency tracking
+
+  ## Error Handling
+  - Provide clear error messages for build failures
+  - Suggest fixes for common compilation errors
+  - Generate detailed build logs for debugging
+  - Implement retry mechanisms for transient failures
+
+  ## Success Criteria
+  - ✅ All TypeScript compilation passes without errors
+  - ✅ Bundle sizes are within acceptable limits
+  - ✅ All assets are properly optimized
+  - ✅ Build artifacts are generated successfully
+  - ✅ Build process completes within time limits
