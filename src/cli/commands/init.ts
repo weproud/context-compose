@@ -32,11 +32,3 @@ export function createInitCommand(): Command {
 
   return initCommand;
 }
-
-/**
- * Display Init command usage examples
- */
-export function showInitExamples(): void {
-  console.log('Init command usage examples:');
-  console.log('  task-action init');
-}

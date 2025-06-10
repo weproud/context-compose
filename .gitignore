@@ -91,5 +91,5 @@ pids/
 tmp/
 temp/
 
-.taskaction/
-.taskaction*
+.contextcompose/
+.contextcompose*

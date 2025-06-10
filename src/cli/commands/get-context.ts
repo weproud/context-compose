@@ -84,14 +84,3 @@ export function createGetContextCommand(): Command {
 
   return getContextCommand;
 }
-
-/**
- * Get Context 명령어 사용 예시 출력
- */
-export function showGetContextExamples(): void {
-  console.log('\n📖 Get Context 사용 예시:');
-  console.log('  task-action get-context context-default');
-  console.log('  task-action get-context feature-context');
-  console.log('  task-action get-context context-default --enhanced-prompt');
-  console.log('  task-action get-context complex-context -e');
-}

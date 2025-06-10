@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createInitCommand, showInitExamples } from './commands/init.js';
-import {
-  createGetContextCommand,
-  showGetContextExamples,
-} from './commands/get-context.js';
+import { createInitCommand } from './commands/init.js';
+import { createGetContextCommand } from './commands/get-context.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
@@ -30,58 +27,13 @@ function createCLI(): Command {
   // Add environment variable command
   // program.addCommand(createEnvCommand());
 
-  // Add Examples command
-  const examplesCommand = new Command('examples');
-  examplesCommand
-    .description('Show usage examples')
-    .option(
-      '-c, --command <command>',
-      'Show examples for specific command only (init, task, get-context)'
-    )
-    .action((options: { command?: string }) => {
-      if (options.command) {
-        switch (options.command) {
-          case 'init':
-            showInitExamples();
-            break;
-          case 'get-context':
-            showGetContextExamples();
-            break;
-          // case 'env':
-          //   showEnvExamples();
-          //   break;
-          default:
-            console.error(`❌ Unknown command: ${options.command}`);
-            console.log('Available commands: init, task, get-context');
-            process.exit(1);
-        }
-      } else {
-        console.log('🛠️  MCP CLI Tool Usage Examples\n');
-        showInitExamples();
-        console.log('');
-        showGetContextExamples();
-        console.log(
-          '\nFor more detailed information, use the --help option for each command.'
-        );
-        console.log(
-          'Example: context-compose init --help, context-compose task --help, context-compose get-context --help'
-        );
-      }
-    });
-
-  program.addCommand(examplesCommand);
-
   // Improve help
   program.on('--help', () => {
     console.log('');
     console.log('Usage examples:');
     console.log('  $ context-compose init');
-    console.log('  $ context-compose get-context context-default');
-    console.log('  $ context-compose task validate context-default');
-    console.log('  $ context-compose examples');
-    console.log('');
-    console.log('To see more examples:');
-    console.log('  $ context-compose examples');
+    console.log('  $ context-compose get-context default');
+    console.log('  $ context-compose get-context feature --enhanced-prompt');
   });
 
   return program;

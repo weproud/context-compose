@@ -35,18 +35,13 @@ context-compose init
 context-compose get-context default
 ```
 
-### MCP Server Setup (Claude Desktop)
-
-Add the following configuration to `claude_desktop_config.json`:
+### MCP Server Setup
 
 ```json
 {
   "mcpServers": {
-    "context-compose": {
-      "command": "context-compose-server",
-      "args": [],
-      "cwd": "/path/to/your/project"
-    }
+    "command": "npx",
+    "args": ["-y", "@noanswer/context-compose"]
   }
 }
 ```
@@ -54,6 +49,7 @@ Add the following configuration to `claude_desktop_config.json`:
 ## 📖 Core Concepts
 
 ### Context
+
 YAML files that define project-specific development guidelines, rules, and workflows.
 
 ```yaml
@@ -98,9 +94,6 @@ context-compose init
 # Get context
 context-compose get-context <context-id>
 
-# View usage examples
-context-compose examples
-
 # Help
 context-compose --help
 ```
@@ -133,6 +126,7 @@ Context Compose integrates directly with AI models through the Model Context Pro
 ### Claude Desktop Setup
 
 1. Claude Desktop configuration file location:
+
    - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
    - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -175,6 +169,7 @@ context-compose get-context feature --enhanced-prompt
 ```
 
 AI automatically applies:
+
 - Development philosophy of Dan Abramov and Kent C. Dodds
 - Clean code and testing principles
 - Feature development workflow
