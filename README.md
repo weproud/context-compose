@@ -19,10 +19,10 @@ Context Compose is a tool that helps AI development assistants systematically ma
 
 ```bash
 # Install with npm
-npm install -g @lagom/context-compose
+npm install -g @noanswer/context-compose
 
 # Or install with pnpm
-pnpm add -g @lagom/context-compose
+pnpm add -g @noanswer/context-compose
 ```
 
 ### Project Initialization
@@ -239,7 +239,7 @@ This project is distributed under the ISC License. See the [LICENSE](LICENSE) fi
 
 - [GitHub Repository](https://github.com/weproud/context-compose)
 - [Issue Tracker](https://github.com/weproud/context-compose/issues)
-- [NPM Package](https://www.npmjs.com/package/@lagom/context-compose)
+- [NPM Package](https://www.npmjs.com/package/@noanswer/context-compose)
 
 ---
 
