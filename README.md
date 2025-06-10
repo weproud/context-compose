@@ -39,7 +39,7 @@ context-compose get-context default
 
 ```json
 {
-  "mcpServers": {
+  "context-compose": {
     "command": "npx",
     "args": ["-y", "@noanswer/context-compose"]
   }
