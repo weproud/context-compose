@@ -28,58 +28,58 @@ context:
     - notify/slack.yaml
     - notify/email.yaml
 prompt: |
-  # 기능 개발 전용 컨텍스트
+  # Feature Development Context
 
-  ## 기능 개발 철학
-  새로운 기능을 개발할 때는 **사용자 중심적 사고**와 **점진적 개발**을 통해 고품질의 기능을 구현합니다.
+  ## Feature Development Philosophy
+  When developing new features, implement high-quality functionality through **user-centric thinking** and **incremental development**.
 
-  ## 기능 개발 프로세스
-  1. **요구사항 분석 및 설계**
-     - 기능 명세서 작성 및 검토
-     - 사용자 스토리 및 수용 기준 정의
-     - 기술적 설계 및 아키텍처 계획
-     - API 설계 및 데이터 모델링
+  ## Feature Development Process
+  1. **Requirements Analysis & Design**
+     - Write and review feature specifications
+     - Define user stories and acceptance criteria
+     - Plan technical design and architecture
+     - Design APIs and data modeling
 
-  2. **점진적 개발 (MVP → 완성)**
-     - 최소 기능 제품(MVP)부터 시작
-     - 각 단계별 작동하는 버전 유지
-     - 조기 피드백 수집 및 반영
-     - 기능 확장 및 개선
+  2. **Incremental Development (MVP → Complete)**
+     - Start with Minimum Viable Product (MVP)
+     - Maintain working versions at each stage
+     - Collect and incorporate early feedback
+     - Expand and improve features
 
-  3. **품질 보증**
-     - 테스트 주도 개발(TDD) 적용
-     - 단위/통합/E2E 테스트 작성
-     - 코드 리뷰 및 페어 프로그래밍
-     - 성능 및 접근성 검증
+  3. **Quality Assurance**
+     - Apply Test-Driven Development (TDD)
+     - Write unit/integration/E2E tests
+     - Conduct code reviews and pair programming
+     - Verify performance and accessibility
 
-  ## 개발 시 중점사항
-  - **사용자 경험**: 직관적이고 사용하기 쉬운 인터페이스
-  - **성능**: 빠른 응답 시간과 효율적인 리소스 사용
-  - **접근성**: 모든 사용자가 접근 가능한 기능
-  - **확장성**: 미래 요구사항에 대응 가능한 구조
-  - **보안**: 안전하고 신뢰할 수 있는 기능
-  - **유지보수성**: 읽기 쉽고 수정하기 쉬운 코드
+  ## Development Focus Areas
+  - **User Experience**: Intuitive and easy-to-use interfaces
+  - **Performance**: Fast response times and efficient resource usage
+  - **Accessibility**: Features accessible to all users
+  - **Scalability**: Structure capable of handling future requirements
+  - **Security**: Safe and reliable functionality
+  - **Maintainability**: Readable and easily modifiable code
 
-  ## 기술적 고려사항
-  - **API 설계**: RESTful 원칙 준수, 일관된 응답 형식
-  - **데이터베이스**: 효율적인 스키마 설계, 인덱스 최적화
-  - **프론트엔드**: 컴포넌트 재사용성, 상태 관리 최적화
-  - **에러 처리**: 포괄적인 에러 처리 및 사용자 친화적 메시지
-  - **로깅**: 디버깅과 모니터링을 위한 적절한 로깅
+  ## Technical Considerations
+  - **API Design**: Follow RESTful principles, consistent response formats
+  - **Database**: Efficient schema design, index optimization
+  - **Frontend**: Component reusability, state management optimization
+  - **Error Handling**: Comprehensive error handling and user-friendly messages
+  - **Logging**: Appropriate logging for debugging and monitoring
 
-  ## 문서화 요구사항
-  - **기능 명세서**: 상세한 기능 설명 및 사용법
-  - **API 문서**: OpenAPI/Swagger 명세서
-  - **사용자 가이드**: 최종 사용자를 위한 가이드
-  - **개발자 문서**: 코드 구조 및 확장 방법
+  ## Documentation Requirements
+  - **Feature Specifications**: Detailed feature descriptions and usage
+  - **API Documentation**: OpenAPI/Swagger specifications
+  - **User Guide**: Guide for end users
+  - **Developer Documentation**: Code structure and extension methods
 
-  ## 성공 기준
-  - ✅ 모든 수용 기준 충족
-  - ✅ 포괄적인 테스트 커버리지 (90% 이상)
-  - ✅ 성능 목표 달성 (응답시간 < 200ms)
-  - ✅ 접근성 표준 준수 (WCAG 2.1 AA)
-  - ✅ 보안 검증 완료
-  - ✅ 코드 리뷰 승인
-  - ✅ 문서화 완료
+  ## Success Criteria
+  - ✅ All acceptance criteria met
+  - ✅ Comprehensive test coverage (90%+)
+  - ✅ Performance targets achieved (response time < 200ms)
+  - ✅ Accessibility standards compliance (WCAG 2.1 AA)
+  - ✅ Security verification completed
+  - ✅ Code review approved
+  - ✅ Documentation completed
 
-  **새로운 기능 개발을 시작하겠습니다. 어떤 기능을 개발하시겠습니까?**
+  **Ready to start new feature development. What feature would you like to develop?**

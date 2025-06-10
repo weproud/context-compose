@@ -22,59 +22,59 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # 리팩토링 전용 컨텍스트
+  # Refactoring Context
 
-  ## 리팩토링 철학
-  리팩토링은 **기능 변경 없이 코드 구조를 개선**하여 가독성, 유지보수성, 확장성을 향상시키는 작업입니다. **안전성**을 최우선으로 하며 **점진적 개선**을 통해 진행합니다.
+  ## Refactoring Philosophy
+  Refactoring is the work of **improving code structure without changing functionality** to enhance readability, maintainability, and extensibility. Prioritize **safety** and proceed through **incremental improvement**.
 
-  ## 리팩토링 원칙
-  1. **기능 보존**: 외부 동작은 변경하지 않음
-  2. **점진적 개선**: 작은 단위로 나누어 안전하게 진행
-  3. **테스트 우선**: 충분한 테스트 커버리지 확보 후 시작
-  4. **측정 가능**: 개선 효과를 정량적으로 측정
-  5. **문서화**: 변경 사항과 이유를 명확히 기록
+  ## Refactoring Principles
+  1. **Preserve Functionality**: Do not change external behavior
+  2. **Incremental Improvement**: Proceed safely in small units
+  3. **Test First**: Start after securing sufficient test coverage
+  4. **Measurable**: Quantitatively measure improvement effects
+  5. **Documentation**: Clearly record changes and reasons
 
-  ## 리팩토링 프로세스
-  1. **현재 상태 분석**
-     - 코드 품질 메트릭 측정
-     - 기술 부채 식별 및 우선순위 설정
-     - 테스트 커버리지 확인
-     - 성능 벤치마크 수립
+  ## Refactoring Process
+  1. **Current State Analysis**
+     - Measure code quality metrics
+     - Identify technical debt and set priorities
+     - Check test coverage
+     - Establish performance benchmarks
 
-  2. **리팩토링 계획 수립**
-     - 목표 설정 및 성공 기준 정의
-     - 리팩토링 범위 및 순서 결정
-     - 리스크 평가 및 완화 방안
-     - 롤백 계획 수립
+  2. **Refactoring Plan Development**
+     - Set goals and define success criteria
+     - Determine refactoring scope and order
+     - Risk assessment and mitigation measures
+     - Establish rollback plans
 
-  3. **안전망 구축**
-     - 포괄적인 테스트 스위트 작성
-     - 자동화된 회귀 테스트 설정
-     - 성능 모니터링 도구 설정
-     - 백업 및 버전 관리 확인
+  3. **Safety Net Construction**
+     - Write comprehensive test suites
+     - Set up automated regression testing
+     - Configure performance monitoring tools
+     - Verify backup and version control
 
-  4. **점진적 리팩토링 실행**
-     - 작은 단위로 나누어 진행
-     - 각 단계마다 테스트 실행
-     - 지속적인 통합 및 검증
-     - 문제 발생 시 즉시 롤백
+  4. **Incremental Refactoring Execution**
+     - Proceed in small units
+     - Run tests at each step
+     - Continuous integration and verification
+     - Immediate rollback when problems occur
 
-  ## 리팩토링 패턴
-  1. **메서드 추출 (Extract Method)**
+  ## Refactoring Patterns
+  1. **Extract Method**
      ```typescript
      // Before
      function processOrder(order: Order) {
-       // 복잡한 로직...
+       // Complex logic...
        const total = order.items.reduce((sum, item) => {
          return sum + (item.price * item.quantity * (1 - item.discount));
        }, 0);
-       // 더 많은 로직...
+       // More logic...
      }
 
      // After
      function processOrder(order: Order) {
        const total = calculateOrderTotal(order);
-       // 다른 로직들...
+       // Other logic...
      }
 
      function calculateOrderTotal(order: Order): number {
@@ -84,82 +84,82 @@ prompt: |
      }
      ```
 
-  2. **클래스 추출 (Extract Class)**
-     - 하나의 클래스가 너무 많은 책임을 가질 때
-     - 관련된 데이터와 메서드를 새로운 클래스로 분리
-     - 단일 책임 원칙 준수
+  2. **Extract Class**
+     - When a single class has too many responsibilities
+     - Separate related data and methods into a new class
+     - Follow Single Responsibility Principle
 
-  3. **조건문 단순화**
+  3. **Simplify Conditionals**
      ```typescript
      // Before
      if (user.type === 'premium' && user.subscriptionActive && user.paymentValid) {
-       // 프리미엄 로직
+       // Premium logic
      }
 
      // After
      if (user.isPremiumActive()) {
-       // 프리미엄 로직
+       // Premium logic
      }
      ```
 
-  ## 코드 품질 개선 영역
-  1. **가독성 향상**
-     - 의미 있는 변수명 및 함수명 사용
-     - 복잡한 조건문 단순화
-     - 중복 코드 제거
-     - 적절한 주석 및 문서화
+  ## Code Quality Improvement Areas
+  1. **Readability Enhancement**
+     - Use meaningful variable and function names
+     - Simplify complex conditionals
+     - Remove duplicate code
+     - Appropriate comments and documentation
 
-  2. **구조 개선**
-     - 함수 및 클래스 크기 최적화
-     - 의존성 관리 개선
-     - 레이어 분리 및 관심사 분리
-     - 디자인 패턴 적용
+  2. **Structure Improvement**
+     - Optimize function and class sizes
+     - Improve dependency management
+     - Layer separation and separation of concerns
+     - Apply design patterns
 
-  3. **성능 최적화**
-     - 알고리즘 효율성 개선
-     - 메모리 사용량 최적화
-     - 불필요한 연산 제거
-     - 캐싱 전략 적용
+  3. **Performance Optimization**
+     - Improve algorithm efficiency
+     - Optimize memory usage
+     - Remove unnecessary operations
+     - Apply caching strategies
 
-  ## 리팩토링 도구 활용
-  1. **정적 분석 도구**
-     - ESLint, SonarQube로 코드 품질 측정
-     - 복잡도 메트릭 (Cyclomatic Complexity)
-     - 중복 코드 탐지
-     - 의존성 분석
+  ## Refactoring Tool Utilization
+  1. **Static Analysis Tools**
+     - Measure code quality with ESLint, SonarQube
+     - Complexity metrics (Cyclomatic Complexity)
+     - Duplicate code detection
+     - Dependency analysis
 
-  2. **자동화 도구**
-     - IDE 리팩토링 기능 활용
-     - 자동화된 코드 변환 도구
-     - 테스트 자동화 및 CI/CD 통합
-     - 성능 모니터링 도구
+  2. **Automation Tools**
+     - Utilize IDE refactoring features
+     - Automated code transformation tools
+     - Test automation and CI/CD integration
+     - Performance monitoring tools
 
-  ## 리팩토링 시 주의사항
-  - **과도한 리팩토링 금지**: 필요 이상으로 복잡하게 만들지 않음
-  - **기능 변경 금지**: 리팩토링 중 새로운 기능 추가하지 않음
-  - **테스트 우선**: 테스트 없이 리팩토링 진행하지 않음
-  - **점진적 진행**: 한 번에 너무 많은 변경 피함
-  - **팀 소통**: 리팩토링 계획과 진행 상황 공유
+  ## Refactoring Precautions
+  - **Avoid Over-refactoring**: Don't make it more complex than necessary
+  - **No Feature Changes**: Don't add new features during refactoring
+  - **Test First**: Don't proceed with refactoring without tests
+  - **Incremental Progress**: Avoid too many changes at once
+  - **Team Communication**: Share refactoring plans and progress
 
-  ## 성과 측정
-  1. **정량적 지표**
-     - 코드 복잡도 감소
-     - 테스트 커버리지 향상
-     - 빌드 시간 단축
-     - 성능 개선 수치
+  ## Performance Measurement
+  1. **Quantitative Metrics**
+     - Code complexity reduction
+     - Test coverage improvement
+     - Build time reduction
+     - Performance improvement metrics
 
-  2. **정성적 지표**
-     - 코드 가독성 향상
-     - 개발 생산성 증가
-     - 버그 발생률 감소
-     - 팀 만족도 향상
+  2. **Qualitative Metrics**
+     - Code readability improvement
+     - Development productivity increase
+     - Bug occurrence rate reduction
+     - Team satisfaction improvement
 
-  ## 성공 기준
-  - ✅ 모든 기존 테스트 통과
-  - ✅ 코드 품질 메트릭 개선
-  - ✅ 성능 저하 없음 또는 개선
-  - ✅ 가독성 및 유지보수성 향상
-  - ✅ 기술 부채 감소
-  - ✅ 팀 리뷰 및 승인 완료
+  ## Success Criteria
+  - ✅ All existing tests pass
+  - ✅ Code quality metrics improved
+  - ✅ No performance degradation or improved performance
+  - ✅ Readability and maintainability improved
+  - ✅ Technical debt reduced
+  - ✅ Team review and approval completed
 
-  **리팩토링을 시작하겠습니다. 어떤 코드를 리팩토링하시겠습니까?**
+  **Ready to start refactoring. What code would you like to refactor?**

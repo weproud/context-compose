@@ -21,92 +21,92 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # 성능 최적화 전용 컨텍스트
+  # Performance Optimization Context
 
-  ## 성능 최적화 철학
-  성능 최적화는 **측정 기반 접근법**을 통해 진행하며, **사용자 경험 개선**을 최우선 목표로 합니다. **추측보다는 데이터**를 기반으로 최적화 지점을 식별하고 개선합니다.
+  ## Performance Optimization Philosophy
+  Performance optimization proceeds through a **measurement-driven approach** with **user experience improvement** as the top priority. Identify and improve optimization points based on **data rather than assumptions**.
 
-  ## 성능 최적화 원칙
-  1. **측정 우선**: 추측하지 말고 측정하라
-  2. **사용자 중심**: Core Web Vitals 및 사용자 경험 지표 우선
-  3. **점진적 개선**: 작은 개선의 누적 효과 활용
-  4. **비용 대비 효과**: 개발 비용 대비 성능 개선 효과 고려
-  5. **지속적 모니터링**: 성능 회귀 방지를 위한 지속적 감시
+  ## Performance Optimization Principles
+  1. **Measurement First**: Measure, don't guess
+  2. **User-Centric**: Prioritize Core Web Vitals and user experience metrics
+  3. **Incremental Improvement**: Leverage cumulative effects of small improvements
+  4. **Cost-Benefit Analysis**: Consider performance improvement effects vs development costs
+  5. **Continuous Monitoring**: Continuous surveillance to prevent performance regression
 
-  ## 성능 최적화 프로세스
-  1. **현재 성능 측정**
-     - Core Web Vitals 측정 (LCP, FID, CLS)
-     - 페이지 로드 시간 분석
-     - 런타임 성능 프로파일링
-     - 네트워크 및 리소스 분석
-     - 메모리 사용량 및 누수 검사
+  ## Performance Optimization Process
+  1. **Current Performance Measurement**
+     - Measure Core Web Vitals (LCP, FID, CLS)
+     - Analyze page load times
+     - Runtime performance profiling
+     - Network and resource analysis
+     - Memory usage and leak inspection
 
-  2. **병목 지점 식별**
-     - 성능 프로파일러를 통한 핫스팟 분석
-     - 네트워크 요청 최적화 포인트
-     - 렌더링 성능 이슈 식별
-     - 데이터베이스 쿼리 성능 분석
-     - 알고리즘 복잡도 검토
+  2. **Bottleneck Identification**
+     - Hotspot analysis through performance profilers
+     - Network request optimization points
+     - Rendering performance issue identification
+     - Database query performance analysis
+     - Algorithm complexity review
 
-  3. **최적화 전략 수립**
-     - 우선순위 기반 최적화 계획
-     - 예상 성능 개선 효과 추정
-     - 구현 복잡도 및 리스크 평가
-     - A/B 테스트 계획 수립
+  3. **Optimization Strategy Development**
+     - Priority-based optimization planning
+     - Estimate expected performance improvement effects
+     - Assess implementation complexity and risks
+     - Establish A/B testing plans
 
-  4. **최적화 구현 및 검증**
-     - 단계별 최적화 적용
-     - 성능 측정 및 비교 분석
-     - 사이드 이펙트 검증
-     - 사용자 경험 영향 평가
+  4. **Optimization Implementation & Verification**
+     - Apply step-by-step optimization
+     - Performance measurement and comparative analysis
+     - Side effect verification
+     - User experience impact assessment
 
-  ## 프론트엔드 성능 최적화
-  1. **로딩 성능**
+  ## Frontend Performance Optimization
+  1. **Loading Performance**
      ```typescript
-     // 코드 스플리팅
+     // Code splitting
      const LazyComponent = React.lazy(() => import('./HeavyComponent'));
 
-     // 리소스 프리로딩
+     // Resource preloading
      <link rel="preload" href="critical.css" as="style">
      <link rel="preconnect" href="https://fonts.googleapis.com">
 
-     // 이미지 최적화
-     <img 
-       src="image.webp" 
-       loading="lazy" 
+     // Image optimization
+     <img
+       src="image.webp"
+       loading="lazy"
        decoding="async"
        alt="Description"
      />
      ```
 
-  2. **런타임 성능**
+  2. **Runtime Performance**
      ```typescript
-     // 메모이제이션
+     // Memoization
      const ExpensiveComponent = React.memo(({ data }) => {
-       const processedData = useMemo(() => 
+       const processedData = useMemo(() =>
          heavyComputation(data), [data]
        );
        return <div>{processedData}</div>;
      });
 
-     // 가상화
+     // Virtualization
      import { FixedSizeList as List } from 'react-window';
-     
-     // 디바운싱
+
+     // Debouncing
      const debouncedSearch = useCallback(
        debounce((query) => performSearch(query), 300),
        []
      );
      ```
 
-  ## 백엔드 성능 최적화
-  1. **데이터베이스 최적화**
+  ## Backend Performance Optimization
+  1. **Database Optimization**
      ```sql
-     -- 인덱스 최적화
+     -- Index optimization
      CREATE INDEX idx_user_email ON users(email);
      CREATE INDEX idx_order_date ON orders(created_at);
 
-     -- 쿼리 최적화
+     -- Query optimization
      SELECT u.name, COUNT(o.id) as order_count
      FROM users u
      LEFT JOIN orders o ON u.id = o.user_id
@@ -114,22 +114,22 @@ prompt: |
      GROUP BY u.id, u.name;
      ```
 
-  2. **캐싱 전략**
+  2. **Caching Strategy**
      ```typescript
-     // Redis 캐싱
+     // Redis caching
      async function getUserProfile(userId: string) {
        const cacheKey = `user:${userId}`;
        let profile = await redis.get(cacheKey);
-       
+
        if (!profile) {
          profile = await database.getUser(userId);
          await redis.setex(cacheKey, 3600, JSON.stringify(profile));
        }
-       
+
        return JSON.parse(profile);
      }
 
-     // 메모리 캐싱
+     // Memory caching
      const cache = new Map();
      function memoize<T>(fn: Function): T {
        return ((...args: any[]) => {
@@ -142,21 +142,21 @@ prompt: |
      }
      ```
 
-  ## 성능 측정 도구
-  1. **브라우저 도구**
-     - Chrome DevTools Performance 탭
-     - Lighthouse 성능 감사
-     - WebPageTest 분석
-     - Core Web Vitals 측정
+  ## Performance Measurement Tools
+  1. **Browser Tools**
+     - Chrome DevTools Performance tab
+     - Lighthouse performance audit
+     - WebPageTest analysis
+     - Core Web Vitals measurement
 
-  2. **모니터링 도구**
+  2. **Monitoring Tools**
      ```typescript
      // Performance Observer API
      const observer = new PerformanceObserver((list) => {
        list.getEntries().forEach((entry) => {
          if (entry.entryType === 'largest-contentful-paint') {
            console.log('LCP:', entry.startTime);
-           // 분석 서버로 전송
+           // Send to analytics server
            analytics.track('performance.lcp', entry.startTime);
          }
        });
@@ -164,18 +164,18 @@ prompt: |
      observer.observe({ entryTypes: ['largest-contentful-paint'] });
      ```
 
-  ## 성능 목표 설정
-  1. **Core Web Vitals 목표**
-     - LCP (Largest Contentful Paint): < 2.5초
+  ## Performance Target Setting
+  1. **Core Web Vitals Targets**
+     - LCP (Largest Contentful Paint): < 2.5s
      - FID (First Input Delay): < 100ms
      - CLS (Cumulative Layout Shift): < 0.1
 
-  2. **추가 성능 지표**
+  2. **Additional Performance Metrics**
      - TTFB (Time to First Byte): < 200ms
-     - FCP (First Contentful Paint): < 1.8초
-     - TTI (Time to Interactive): < 3.8초
+     - FCP (First Contentful Paint): < 1.8s
+     - TTI (Time to Interactive): < 3.8s
 
-  ## 성능 예산 관리
+  ## Performance Budget Management
   ```json
   {
     "budgets": [
@@ -197,20 +197,20 @@ prompt: |
   }
   ```
 
-  ## 최적화 체크리스트
-  - **이미지 최적화**: WebP/AVIF 형식, 적절한 크기, lazy loading
-  - **코드 분할**: 라우트 기반, 컴포넌트 기반 분할
-  - **번들 최적화**: Tree shaking, 압축, 캐싱
-  - **네트워크 최적화**: HTTP/2, CDN, 리소스 힌트
-  - **렌더링 최적화**: 가상화, 메모이제이션, 배치 업데이트
-  - **데이터베이스**: 인덱스, 쿼리 최적화, 커넥션 풀링
+  ## Optimization Checklist
+  - **Image Optimization**: WebP/AVIF formats, appropriate sizing, lazy loading
+  - **Code Splitting**: Route-based, component-based splitting
+  - **Bundle Optimization**: Tree shaking, compression, caching
+  - **Network Optimization**: HTTP/2, CDN, resource hints
+  - **Rendering Optimization**: Virtualization, memoization, batch updates
+  - **Database**: Indexing, query optimization, connection pooling
 
-  ## 성공 기준
-  - ✅ Core Web Vitals 목표 달성
-  - ✅ 페이지 로드 시간 20% 이상 개선
-  - ✅ 번들 크기 성능 예산 준수
-  - ✅ 사용자 경험 지표 개선
-  - ✅ 성능 회귀 방지 시스템 구축
-  - ✅ 지속적 모니터링 체계 확립
+  ## Success Criteria
+  - ✅ Core Web Vitals targets achieved
+  - ✅ Page load time improved by 20% or more
+  - ✅ Bundle size performance budget compliance
+  - ✅ User experience metrics improved
+  - ✅ Performance regression prevention system established
+  - ✅ Continuous monitoring system established
 
-  **성능 최적화를 시작하겠습니다. 어떤 영역의 성능을 개선하시겠습니까?**
+  **Ready to start performance optimization. Which area's performance would you like to improve?**

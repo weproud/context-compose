@@ -22,43 +22,43 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # 테스트 개발 전용 컨텍스트
+  # Testing Development Context
 
-  ## 테스트 철학
-  테스트는 **코드 품질의 안전망**이며 **리팩토링의 자신감**을 제공합니다. **테스트 주도 개발(TDD)**을 통해 더 나은 설계를 유도하고, **테스트 피라미드**를 따라 효율적인 테스트 전략을 구축합니다.
+  ## Testing Philosophy
+  Testing is the **safety net for code quality** and provides **confidence for refactoring**. Induce better design through **Test-Driven Development (TDD)** and build efficient testing strategies following the **test pyramid**.
 
-  ## 테스트 전략
-  1. **테스트 피라미드**
-     - **Unit Tests (70%)**: 빠르고 격리된 단위 테스트
-     - **Integration Tests (20%)**: 컴포넌트 간 상호작용 테스트
-     - **E2E Tests (10%)**: 전체 사용자 시나리오 테스트
+  ## Testing Strategy
+  1. **Test Pyramid**
+     - **Unit Tests (70%)**: Fast and isolated unit tests
+     - **Integration Tests (20%)**: Component interaction tests
+     - **E2E Tests (10%)**: Complete user scenario tests
 
-  2. **테스트 원칙**
+  2. **Testing Principles**
      - **FIRST**: Fast, Independent, Repeatable, Self-validating, Timely
-     - **AAA**: Arrange, Act, Assert 패턴
-     - **Given-When-Then**: BDD 스타일 테스트 작성
+     - **AAA**: Arrange, Act, Assert pattern
+     - **Given-When-Then**: BDD style test writing
 
-  ## 테스트 개발 프로세스
-  1. **테스트 계획 수립**
-     - 테스트 범위 및 우선순위 결정
-     - 테스트 케이스 설계 및 시나리오 정의
-     - 테스트 데이터 및 환경 준비
-     - 자동화 전략 수립
+  ## Test Development Process
+  1. **Test Planning**
+     - Determine test scope and priorities
+     - Design test cases and define scenarios
+     - Prepare test data and environment
+     - Establish automation strategy
 
-  2. **TDD 사이클 적용**
-     - **Red**: 실패하는 테스트 작성
-     - **Green**: 테스트를 통과하는 최소 코드 작성
-     - **Refactor**: 코드 개선 및 중복 제거
+  2. **TDD Cycle Application**
+     - **Red**: Write failing test
+     - **Green**: Write minimal code to pass test
+     - **Refactor**: Improve code and remove duplication
 
-  3. **테스트 구현 및 실행**
-     - 다양한 레벨의 테스트 작성
-     - 테스트 자동화 및 CI/CD 통합
-     - 테스트 커버리지 측정 및 개선
-     - 테스트 유지보수 및 리팩토링
+  3. **Test Implementation & Execution**
+     - Write tests at various levels
+     - Test automation and CI/CD integration
+     - Measure and improve test coverage
+     - Test maintenance and refactoring
 
-  ## 단위 테스트 (Unit Tests)
+  ## Unit Tests
   ```typescript
-  // Jest를 사용한 단위 테스트
+  // Unit testing with Jest
   describe('UserService', () => {
     let userService: UserService;
     let userRepository: jest.Mocked<UserRepository>;
@@ -69,7 +69,7 @@ prompt: |
         save: jest.fn(),
         delete: jest.fn(),
       } as any;
-      
+
       userService = new UserService(userRepository);
     });
 
@@ -119,16 +119,16 @@ prompt: |
   });
   ```
 
-  ## 통합 테스트 (Integration Tests)
+  ## Integration Tests
   ```typescript
-  // API 통합 테스트
+  // API integration testing
   describe('User API Integration', () => {
     let app: INestApplication;
     let database: TestDatabase;
 
     beforeAll(async () => {
       database = await TestDatabase.create();
-      
+
       const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
       })
@@ -169,7 +169,7 @@ prompt: |
         });
         expect(response.body.data.password).toBeUndefined();
 
-        // 데이터베이스 검증
+        // Database verification
         const savedUser = await database.findUserByEmail(userData.email);
         expect(savedUser).toBeDefined();
       });
@@ -193,38 +193,38 @@ prompt: |
   });
   ```
 
-  ## E2E 테스트 (End-to-End Tests)
+  ## E2E Tests (End-to-End Tests)
   ```typescript
-  // Playwright를 사용한 E2E 테스트
+  // E2E testing with Playwright
   import { test, expect } from '@playwright/test';
 
   test.describe('User Registration Flow', () => {
     test('should complete user registration successfully', async ({ page }) => {
-      // Given: 사용자가 회원가입 페이지에 접근
+      // Given: User accesses registration page
       await page.goto('/register');
 
-      // When: 회원가입 폼을 작성하고 제출
+      // When: Fill out and submit registration form
       await page.fill('[data-testid="name-input"]', 'John Doe');
       await page.fill('[data-testid="email-input"]', 'john@example.com');
       await page.fill('[data-testid="password-input"]', 'SecurePassword123!');
       await page.fill('[data-testid="confirm-password-input"]', 'SecurePassword123!');
-      
+
       await page.click('[data-testid="register-button"]');
 
-      // Then: 성공 메시지가 표시되고 로그인 페이지로 이동
+      // Then: Success message displayed and redirected to login page
       await expect(page.locator('[data-testid="success-message"]'))
         .toContainText('Registration successful');
-      
+
       await expect(page).toHaveURL('/login');
     });
 
     test('should show validation errors for invalid input', async ({ page }) => {
       await page.goto('/register');
 
-      // 빈 폼 제출
+      // Submit empty form
       await page.click('[data-testid="register-button"]');
 
-      // 검증 에러 메시지 확인
+      // Verify validation error messages
       await expect(page.locator('[data-testid="name-error"]'))
         .toContainText('Name is required');
       await expect(page.locator('[data-testid="email-error"]'))
@@ -234,7 +234,7 @@ prompt: |
 
   test.describe('User Dashboard', () => {
     test.beforeEach(async ({ page }) => {
-      // 로그인 상태 설정
+      // Set up logged-in state
       await page.goto('/login');
       await page.fill('[data-testid="email-input"]', 'test@example.com');
       await page.fill('[data-testid="password-input"]', 'password123');
@@ -251,7 +251,7 @@ prompt: |
 
     test('should allow profile editing', async ({ page }) => {
       await page.click('[data-testid="edit-profile-button"]');
-      
+
       await page.fill('[data-testid="name-input"]', 'Updated Name');
       await page.click('[data-testid="save-button"]');
 
@@ -263,9 +263,9 @@ prompt: |
   });
   ```
 
-  ## 테스트 유틸리티 및 헬퍼
+  ## Test Utilities & Helpers
   ```typescript
-  // 테스트 데이터 팩토리
+  // Test data factory
   export class UserFactory {
     static create(overrides: Partial<User> = {}): User {
       return {
@@ -283,7 +283,7 @@ prompt: |
     }
   }
 
-  // 테스트 데이터베이스 헬퍼
+  // Test database helper
   export class TestDatabase {
     static async create(): Promise<TestDatabase> {
       const connection = await createConnection({
@@ -292,7 +292,7 @@ prompt: |
         entities: [User, Order],
         synchronize: true
       });
-      
+
       return new TestDatabase(connection);
     }
 
@@ -310,12 +310,12 @@ prompt: |
     }
   }
 
-  // 커스텀 매처
+  // Custom matchers
   expect.extend({
     toBeValidEmail(received: string) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const pass = emailRegex.test(received);
-      
+
       return {
         message: () => `expected ${received} ${pass ? 'not ' : ''}to be a valid email`,
         pass
@@ -324,7 +324,7 @@ prompt: |
   });
   ```
 
-  ## 테스트 커버리지 및 품질
+  ## Test Coverage & Quality
   ```json
   // jest.config.js
   {
@@ -348,9 +348,9 @@ prompt: |
   }
   ```
 
-  ## 테스트 자동화 및 CI/CD
+  ## Test Automation & CI/CD
   ```yaml
-  # GitHub Actions 워크플로우
+  # GitHub Actions workflow
   name: Test Suite
   on: [push, pull_request]
 
@@ -363,37 +363,37 @@ prompt: |
           with:
             node-version: '18'
             cache: 'npm'
-        
+
         - run: npm ci
         - run: npm run test:unit
         - run: npm run test:integration
         - run: npm run test:e2e
-        
+
         - name: Upload coverage reports
           uses: codecov/codecov-action@v3
           with:
             file: ./coverage/lcov.info
   ```
 
-  ## 테스트 베스트 프랙티스
-  1. **테스트 작성 가이드라인**
-     - 테스트 이름은 명확하고 설명적으로
-     - 하나의 테스트는 하나의 동작만 검증
-     - 테스트 간 의존성 제거
-     - 테스트 데이터는 각 테스트마다 독립적으로
+  ## Testing Best Practices
+  1. **Test Writing Guidelines**
+     - Test names should be clear and descriptive
+     - One test should verify one behavior
+     - Remove dependencies between tests
+     - Test data should be independent for each test
 
-  2. **모킹 전략**
-     - 외부 의존성은 모킹
-     - 데이터베이스는 인메모리 또는 테스트 전용 DB 사용
-     - HTTP 요청은 모킹 또는 테스트 서버 사용
-     - 시간 관련 로직은 모킹으로 제어
+  2. **Mocking Strategy**
+     - Mock external dependencies
+     - Use in-memory or test-dedicated DB for database
+     - Mock HTTP requests or use test servers
+     - Control time-related logic with mocking
 
-  ## 성공 기준
-  - ✅ 테스트 커버리지 90% 이상 달성
-  - ✅ 모든 테스트가 안정적으로 통과
-  - ✅ 테스트 실행 시간 최적화 (단위: <5분, 전체: <15분)
-  - ✅ CI/CD 파이프라인 통합 완료
-  - ✅ 테스트 문서화 및 가이드라인 작성
-  - ✅ 팀 테스트 문화 정착
+  ## Success Criteria
+  - ✅ Test coverage 90%+ achieved
+  - ✅ All tests pass reliably
+  - ✅ Test execution time optimized (unit: <5min, total: <15min)
+  - ✅ CI/CD pipeline integration completed
+  - ✅ Test documentation and guidelines written
+  - ✅ Team testing culture established
 
-  **테스트 개발을 시작하겠습니다. 어떤 테스트를 작성하시겠습니까?**
+  **Ready to start test development. What tests would you like to write?**

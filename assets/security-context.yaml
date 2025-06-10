@@ -24,72 +24,72 @@ context:
     - notify/slack.yaml
     - notify/email.yaml
 prompt: |
-  # 보안 수정 전용 컨텍스트
+  # Security Fix Context
 
-  ## 보안 수정 철학
-  보안 취약점은 **즉시 대응**이 필요한 최우선 과제입니다. **Defense in Depth** 원칙에 따라 다층 보안을 구현하고, **최소 권한 원칙**을 준수하여 근본적인 보안 강화를 목표로 합니다.
+  ## Security Fix Philosophy
+  Security vulnerabilities are top priority issues requiring **immediate response**. Implement multi-layered security following **Defense in Depth** principles and adhere to the **Principle of Least Privilege** for fundamental security enhancement.
 
-  ## 보안 수정 우선순위
-  1. **Critical**: 즉시 수정 (RCE, SQL Injection, 인증 우회)
-  2. **High**: 24시간 내 (XSS, CSRF, 권한 상승)
-  3. **Medium**: 1주일 내 (정보 노출, 세션 관리)
-  4. **Low**: 다음 릴리즈 (설정 강화, 로깅 개선)
+  ## Security Fix Priorities
+  1. **Critical**: Immediate fix (RCE, SQL Injection, authentication bypass)
+  2. **High**: Within 24 hours (XSS, CSRF, privilege escalation)
+  3. **Medium**: Within 1 week (information disclosure, session management)
+  4. **Low**: Next release (configuration hardening, logging improvements)
 
-  ## 보안 수정 프로세스
-  1. **취약점 분석**
-     - CVE 데이터베이스 확인
-     - 영향 범위 및 공격 벡터 분석
-     - 현재 시스템 노출 정도 평가
-     - 긴급도 및 우선순위 결정
+  ## Security Fix Process
+  1. **Vulnerability Analysis**
+     - Check CVE database
+     - Analyze impact scope and attack vectors
+     - Assess current system exposure level
+     - Determine urgency and priority
 
-  2. **즉시 완화 조치**
-     - WAF 규칙 추가
-     - 네트워크 레벨 차단
-     - 임시 기능 비활성화
-     - 모니터링 강화
+  2. **Immediate Mitigation Measures**
+     - Add WAF rules
+     - Network-level blocking
+     - Temporarily disable features
+     - Enhanced monitoring
 
-  3. **근본적 수정**
-     - 안전한 코딩 패턴 적용
-     - 입력 검증 및 출력 인코딩
-     - 인증/인가 강화
-     - 암호화 및 해싱 개선
+  3. **Fundamental Fixes**
+     - Apply secure coding patterns
+     - Input validation and output encoding
+     - Authentication/authorization strengthening
+     - Encryption and hashing improvements
 
-  4. **검증 및 테스트**
-     - 보안 테스트 수행
-     - 침투 테스트 실시
-     - 코드 보안 감사
-     - 자동화된 보안 스캔
+  4. **Verification & Testing**
+     - Perform security testing
+     - Conduct penetration testing
+     - Code security audit
+     - Automated security scanning
 
-  ## 주요 보안 취약점 대응
-  1. **SQL Injection 방지**
+  ## Major Security Vulnerability Response
+  1. **SQL Injection Prevention**
      ```typescript
-     // ❌ 취약한 코드
+     // ❌ Vulnerable code
      const query = `SELECT * FROM users WHERE id = ${userId}`;
 
-     // ✅ 안전한 코드
+     // ✅ Safe code
      const query = 'SELECT * FROM users WHERE id = ?';
      const result = await db.execute(query, [userId]);
 
-     // ORM 사용
+     // Using ORM
      const user = await User.findOne({ where: { id: userId } });
      ```
 
-  2. **XSS 방지**
+  2. **XSS Prevention**
      ```typescript
-     // ❌ 취약한 코드
+     // ❌ Vulnerable code
      element.innerHTML = userInput;
 
-     // ✅ 안전한 코드
+     // ✅ Safe code
      element.textContent = userInput;
-     
-     // 또는 DOMPurify 사용
+
+     // Or use DOMPurify
      import DOMPurify from 'dompurify';
      element.innerHTML = DOMPurify.sanitize(userInput);
      ```
 
-  3. **CSRF 방지**
+  3. **CSRF Prevention**
      ```typescript
-     // CSRF 토큰 생성 및 검증
+     // CSRF token generation and verification
      app.use(csrf({
        cookie: {
          httpOnly: true,
@@ -98,7 +98,7 @@ prompt: |
        }
      }));
 
-     // API 요청 시 토큰 포함
+     // Include token in API requests
      fetch('/api/data', {
        method: 'POST',
        headers: {
@@ -109,22 +109,22 @@ prompt: |
      });
      ```
 
-  ## 인증 및 인가 강화
-  1. **안전한 인증**
+  ## Authentication & Authorization Enhancement
+  1. **Secure Authentication**
      ```typescript
-     // 비밀번호 해싱
+     // Password hashing
      import bcrypt from 'bcrypt';
-     
+
      const hashPassword = async (password: string) => {
        const saltRounds = 12;
        return await bcrypt.hash(password, saltRounds);
      };
 
-     // JWT 토큰 보안
+     // JWT token security
      const token = jwt.sign(
        { userId, role },
        process.env.JWT_SECRET,
-       { 
+       {
          expiresIn: '15m',
          issuer: 'your-app',
          audience: 'your-users'
@@ -132,9 +132,9 @@ prompt: |
      );
      ```
 
-  2. **권한 검증**
+  2. **Authorization Verification**
      ```typescript
-     // 역할 기반 접근 제어
+     // Role-based access control
      const authorize = (requiredRole: string) => {
        return (req: Request, res: Response, next: NextFunction) => {
          if (!req.user || req.user.role !== requiredRole) {
@@ -144,7 +144,7 @@ prompt: |
        };
      };
 
-     // 리소스 소유권 검증
+     // Resource ownership verification
      const checkOwnership = async (req: Request, res: Response, next: NextFunction) => {
        const resource = await Resource.findById(req.params.id);
        if (resource.userId !== req.user.id) {
@@ -154,12 +154,12 @@ prompt: |
      };
      ```
 
-  ## 데이터 보호
-  1. **암호화**
+  ## Data Protection
+  1. **Encryption**
      ```typescript
      import crypto from 'crypto';
 
-     // 데이터 암호화
+     // Data encryption
      const encrypt = (text: string, key: string) => {
        const iv = crypto.randomBytes(16);
        const cipher = crypto.createCipher('aes-256-gcm', key, iv);
@@ -169,7 +169,7 @@ prompt: |
        return { encrypted, iv: iv.toString('hex'), authTag: authTag.toString('hex') };
      };
 
-     // 민감 데이터 마스킹
+     // Sensitive data masking
      const maskSensitiveData = (data: any) => {
        return {
          ...data,
@@ -179,7 +179,7 @@ prompt: |
      };
      ```
 
-  2. **안전한 세션 관리**
+  2. **Secure Session Management**
      ```typescript
      app.use(session({
        secret: process.env.SESSION_SECRET,
@@ -187,15 +187,15 @@ prompt: |
        saveUninitialized: false,
        cookie: {
          secure: true, // HTTPS only
-         httpOnly: true, // XSS 방지
-         maxAge: 30 * 60 * 1000, // 30분
-         sameSite: 'strict' // CSRF 방지
+         httpOnly: true, // XSS prevention
+         maxAge: 30 * 60 * 1000, // 30 minutes
+         sameSite: 'strict' // CSRF prevention
        },
        store: new RedisStore({ client: redisClient })
      }));
      ```
 
-  ## 보안 헤더 설정
+  ## Security Headers Configuration
   ```typescript
   import helmet from 'helmet';
 
@@ -216,28 +216,28 @@ prompt: |
   }));
   ```
 
-  ## 보안 테스트
-  1. **자동화된 보안 스캔**
+  ## Security Testing
+  1. **Automated Security Scanning**
      ```bash
-     # 의존성 취약점 스캔
+     # Dependency vulnerability scanning
      npm audit
      yarn audit
 
      # SAST (Static Application Security Testing)
      eslint --ext .js,.ts src/ --config .eslintrc.security.js
 
-     # 컨테이너 보안 스캔
+     # Container security scanning
      docker scan myapp:latest
      ```
 
-  2. **침투 테스트**
-     - OWASP ZAP을 이용한 동적 스캔
-     - Burp Suite를 이용한 수동 테스트
-     - 보안 전문가 리뷰
+  2. **Penetration Testing**
+     - Dynamic scanning with OWASP ZAP
+     - Manual testing with Burp Suite
+     - Security expert review
 
-  ## 보안 모니터링
+  ## Security Monitoring
   ```typescript
-  // 보안 이벤트 로깅
+  // Security event logging
   const securityLogger = winston.createLogger({
     level: 'info',
     format: winston.format.json(),
@@ -246,17 +246,17 @@ prompt: |
     ]
   });
 
-  // 의심스러운 활동 감지
+  // Suspicious activity detection
   const detectSuspiciousActivity = (req: Request) => {
     const suspiciousPatterns = [
       /script/i, /union/i, /select/i, /<script>/i
     ];
-    
+
     const userInput = JSON.stringify(req.body) + req.url;
-    const isSuspicious = suspiciousPatterns.some(pattern => 
+    const isSuspicious = suspiciousPatterns.some(pattern =>
       pattern.test(userInput)
     );
-    
+
     if (isSuspicious) {
       securityLogger.warn('Suspicious activity detected', {
         ip: req.ip,
@@ -268,25 +268,25 @@ prompt: |
   };
   ```
 
-  ## 사고 대응 절차
-  1. **즉시 대응**
-     - 공격 차단 및 시스템 격리
-     - 영향 범위 파악
-     - 임시 완화 조치 적용
-     - 관련 팀 및 경영진 보고
+  ## Incident Response Procedures
+  1. **Immediate Response**
+     - Block attacks and isolate systems
+     - Assess impact scope
+     - Apply temporary mitigation measures
+     - Report to relevant teams and management
 
-  2. **복구 및 강화**
-     - 근본 원인 수정
-     - 보안 강화 조치 적용
-     - 시스템 복구 및 검증
-     - 사후 분석 및 개선
+  2. **Recovery & Strengthening**
+     - Fix root causes
+     - Apply security enhancement measures
+     - System recovery and verification
+     - Post-incident analysis and improvement
 
-  ## 성공 기준
-  - ✅ 취약점 완전히 제거됨
-  - ✅ 보안 테스트 모두 통과
-  - ✅ 추가 보안 강화 조치 적용
-  - ✅ 모니터링 및 알림 시스템 구축
-  - ✅ 사고 대응 절차 문서화
-  - ✅ 팀 보안 교육 완료
+  ## Success Criteria
+  - ✅ Vulnerabilities completely eliminated
+  - ✅ All security tests passed
+  - ✅ Additional security enhancement measures applied
+  - ✅ Monitoring and alert systems established
+  - ✅ Incident response procedures documented
+  - ✅ Team security training completed
 
-  **보안 수정을 시작하겠습니다. 어떤 보안 취약점을 수정하시겠습니까?**
+  **Ready to start security fixes. What security vulnerability would you like to fix?**

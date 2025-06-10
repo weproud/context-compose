@@ -21,63 +21,63 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # 문서화 전용 컨텍스트
+  # Documentation Context
 
-  ## 문서화 철학
-  문서화는 **지식 공유**와 **개발자 경험 향상**의 핵심입니다. **사용자 중심적 접근**으로 실용적이고 접근 가능한 문서를 작성하며, **코드와 함께 진화**하는 살아있는 문서를 만듭니다.
+  ## Documentation Philosophy
+  Documentation is the core of **knowledge sharing** and **developer experience improvement**. Create practical and accessible documents with a **user-centric approach**, making **living documents that evolve with code**.
 
-  ## 문서화 원칙
-  1. **사용자 중심**: 독자의 관점에서 필요한 정보 제공
-  2. **실용성**: 실제 사용 가능한 예제와 가이드
-  3. **일관성**: 통일된 형식과 스타일 유지
-  4. **최신성**: 코드 변경과 함께 문서 업데이트
-  5. **접근성**: 다양한 수준의 사용자 고려
+  ## Documentation Principles
+  1. **User-Centric**: Provide necessary information from the reader's perspective
+  2. **Practicality**: Include practical examples and guides that can be actually used
+  3. **Consistency**: Maintain unified format and style
+  4. **Currency**: Update documentation along with code changes
+  5. **Accessibility**: Consider users of various skill levels
 
-  ## 문서화 프로세스
-  1. **문서 계획 수립**
-     - 대상 독자 분석 및 요구사항 파악
-     - 문서 구조 및 정보 아키텍처 설계
-     - 문서 유형별 템플릿 및 가이드라인 정의
-     - 문서 관리 및 업데이트 프로세스 수립
+  ## Documentation Process
+  1. **Documentation Planning**
+     - Analyze target audience and identify requirements
+     - Design document structure and information architecture
+     - Define templates and guidelines for each document type
+     - Establish document management and update processes
 
-  2. **콘텐츠 작성**
-     - 명확하고 간결한 설명 작성
-     - 실용적인 예제 및 코드 샘플 포함
-     - 단계별 가이드 및 튜토리얼 제공
-     - 시각적 요소 (다이어그램, 스크린샷) 활용
+  2. **Content Creation**
+     - Write clear and concise explanations
+     - Include practical examples and code samples
+     - Provide step-by-step guides and tutorials
+     - Utilize visual elements (diagrams, screenshots)
 
-  3. **검토 및 개선**
-     - 기술적 정확성 검증
-     - 사용자 피드백 수집 및 반영
-     - 문서 품질 및 가독성 개선
-     - 지속적인 업데이트 및 유지보수
+  3. **Review & Improvement**
+     - Verify technical accuracy
+     - Collect and incorporate user feedback
+     - Improve document quality and readability
+     - Continuous updates and maintenance
 
-  ## 문서 유형별 가이드
-  1. **README 문서**
+  ## Document Type Guidelines
+  1. **README Documentation**
      ```markdown
-     # 프로젝트명
+     # Project Name
 
-     간단하고 명확한 프로젝트 설명
+     Simple and clear project description
 
-     ## 🚀 빠른 시작
+     ## 🚀 Quick Start
 
      ```bash
-     # 설치
+     # Installation
      npm install project-name
 
-     # 실행
+     # Run
      npm start
      ```
 
-     ## ✨ 주요 기능
+     ## ✨ Key Features
 
-     - ✅ 기능 1: 간단한 설명
-     - ✅ 기능 2: 간단한 설명
-     - 🚧 기능 3: 개발 중
+     - ✅ Feature 1: Brief description
+     - ✅ Feature 2: Brief description
+     - 🚧 Feature 3: In development
 
-     ## 📖 사용법
+     ## 📖 Usage
 
-     ### 기본 사용법
+     ### Basic Usage
      ```typescript
      import { ProjectClass } from 'project-name';
 
@@ -89,13 +89,13 @@ prompt: |
      console.log(result);
      ```
 
-     ## 📚 문서
+     ## 📚 Documentation
 
-     - [API 문서](./docs/api.md)
-     - [설치 가이드](./docs/installation.md)
-     - [예제 모음](./examples/)
+     - [API Documentation](./docs/api.md)
+     - [Installation Guide](./docs/installation.md)
+     - [Examples](./examples/)
 
-     ## 🤝 기여하기
+     ## 🤝 Contributing
 
      1. Fork the repository
      2. Create your feature branch
@@ -103,37 +103,37 @@ prompt: |
      4. Push to the branch
      5. Open a Pull Request
 
-     ## 📄 라이선스
+     ## 📄 License
 
-     MIT License - [LICENSE](LICENSE) 파일 참조
+     MIT License - See [LICENSE](LICENSE) file
      ```
 
-  2. **API 문서**
+  2. **API Documentation**
      ```markdown
-     # API 문서
+     # API Documentation
 
-     ## 인증
+     ## Authentication
 
-     모든 API 요청에는 Bearer 토큰이 필요합니다.
+     All API requests require a Bearer token.
 
      ```bash
      curl -H "Authorization: Bearer YOUR_TOKEN" \
           https://api.example.com/v1/users
      ```
 
-     ## 엔드포인트
+     ## Endpoints
 
-     ### 사용자 관리
+     ### User Management
 
      #### GET /api/v1/users
 
-     사용자 목록을 조회합니다.
+     Retrieve user list.
 
-     **매개변수:**
-     - `page` (선택): 페이지 번호 (기본값: 1)
-     - `limit` (선택): 페이지당 항목 수 (기본값: 10)
+     **Parameters:**
+     - `page` (optional): Page number (default: 1)
+     - `limit` (optional): Items per page (default: 10)
 
-     **응답:**
+     **Response:**
      ```json
      {
        "success": true,
@@ -152,106 +152,106 @@ prompt: |
      }
      ```
 
-     **예제:**
+     **Example:**
      ```bash
      curl "https://api.example.com/v1/users?page=1&limit=5" \
           -H "Authorization: Bearer YOUR_TOKEN"
      ```
      ```
 
-  3. **설치 및 설정 가이드**
+  3. **Installation & Setup Guide**
      ```markdown
-     # 설치 가이드
+     # Installation Guide
 
-     ## 시스템 요구사항
+     ## System Requirements
 
-     - Node.js 18.0 이상
-     - npm 8.0 이상 또는 yarn 1.22 이상
-     - PostgreSQL 14 이상 (선택사항)
+     - Node.js 18.0 or higher
+     - npm 8.0 or higher, or yarn 1.22 or higher
+     - PostgreSQL 14 or higher (optional)
 
-     ## 단계별 설치
+     ## Step-by-Step Installation
 
-     ### 1. 저장소 클론
+     ### 1. Clone Repository
 
      ```bash
      git clone https://github.com/username/project.git
      cd project
      ```
 
-     ### 2. 의존성 설치
+     ### 2. Install Dependencies
 
      ```bash
-     # npm 사용
+     # Using npm
      npm install
 
-     # 또는 yarn 사용
+     # Or using yarn
      yarn install
      ```
 
-     ### 3. 환경 변수 설정
+     ### 3. Environment Variables Setup
 
      ```bash
      cp .env.example .env
      ```
 
-     `.env` 파일을 편집하여 필요한 설정을 입력하세요:
+     Edit the `.env` file and enter the required settings:
 
      ```env
-     # 데이터베이스 설정
+     # Database configuration
      DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 
-     # JWT 설정
+     # JWT configuration
      JWT_SECRET=your-secret-key
      JWT_EXPIRES_IN=24h
 
-     # 외부 서비스
+     # External services
      REDIS_URL=redis://localhost:6379
      ```
 
-     ### 4. 데이터베이스 설정
+     ### 4. Database Setup
 
      ```bash
-     # 마이그레이션 실행
+     # Run migrations
      npm run db:migrate
 
-     # 시드 데이터 생성 (선택사항)
+     # Generate seed data (optional)
      npm run db:seed
      ```
 
-     ### 5. 애플리케이션 실행
+     ### 5. Run Application
 
      ```bash
-     # 개발 모드
+     # Development mode
      npm run dev
 
-     # 프로덕션 모드
+     # Production mode
      npm run build
      npm start
      ```
 
-     ## 문제 해결
+     ## Troubleshooting
 
-     ### 일반적인 문제
+     ### Common Issues
 
-     **Q: 포트 3000이 이미 사용 중입니다**
-     A: `.env` 파일에서 `PORT=3001`로 변경하거나 다른 포트를 사용하세요.
+     **Q: Port 3000 is already in use**
+     A: Change to `PORT=3001` in the `.env` file or use a different port.
 
-     **Q: 데이터베이스 연결 오류**
-     A: PostgreSQL이 실행 중인지 확인하고 `.env` 파일의 DATABASE_URL을 검증하세요.
+     **Q: Database connection error**
+     A: Verify PostgreSQL is running and validate the DATABASE_URL in the `.env` file.
      ```
 
-  ## 코드 문서화
-  1. **JSDoc 주석**
+  ## Code Documentation
+  1. **JSDoc Comments**
      ```typescript
      /**
-      * 사용자 프로필을 업데이트합니다.
-      * 
-      * @param userId - 업데이트할 사용자의 고유 식별자
-      * @param updateData - 업데이트할 사용자 데이터
-      * @param options - 업데이트 옵션
-      * @param options.validateEmail - 이메일 유효성 검사 여부 (기본값: true)
-      * @returns 업데이트된 사용자 정보를 포함하는 Promise
-      * 
+      * Updates user profile.
+      *
+      * @param userId - Unique identifier of the user to update
+      * @param updateData - User data to update
+      * @param options - Update options
+      * @param options.validateEmail - Whether to validate email (default: true)
+      * @returns Promise containing updated user information
+      *
       * @example
       * ```typescript
       * const updatedUser = await updateUserProfile('123', {
@@ -260,10 +260,10 @@ prompt: |
       * });
       * console.log(updatedUser.name); // 'John Doe'
       * ```
-      * 
-      * @throws {UserNotFoundError} 사용자를 찾을 수 없는 경우
-      * @throws {ValidationError} 입력 데이터가 유효하지 않은 경우
-      * 
+      *
+      * @throws {UserNotFoundError} When user cannot be found
+      * @throws {ValidationError} When input data is invalid
+      *
       * @since 1.2.0
       */
      async function updateUserProfile(
@@ -271,28 +271,28 @@ prompt: |
        updateData: Partial<UserProfile>,
        options: { validateEmail?: boolean } = {}
      ): Promise<UserProfile> {
-       // 구현...
+       // Implementation...
      }
      ```
 
-  2. **인라인 주석**
+  2. **Inline Comments**
      ```typescript
      export class UserService {
        async createUser(userData: CreateUserDto): Promise<User> {
-         // 이메일 중복 검사 - 동일한 이메일로 가입된 사용자가 있는지 확인
+         // Email duplicate check - verify if user with same email exists
          const existingUser = await this.userRepository.findByEmail(userData.email);
          if (existingUser) {
            throw new ConflictException('Email already exists');
          }
 
-         // 비밀번호 해싱 - bcrypt를 사용하여 안전하게 저장
+         // Password hashing - securely store using bcrypt
          const hashedPassword = await bcrypt.hash(userData.password, 12);
 
-         // 사용자 생성 및 저장
+         // User creation and save
          const user = this.userRepository.create({
            ...userData,
            password: hashedPassword,
-           // 기본값 설정 - 새 사용자는 비활성 상태로 시작
+           // Default settings - new users start in inactive state
            isActive: false,
            emailVerified: false
          });
@@ -302,13 +302,13 @@ prompt: |
      }
      ```
 
-  ## 아키텍처 문서화
+  ## Architecture Documentation
   ```markdown
-  # 시스템 아키텍처
+  # System Architecture
 
-  ## 개요
+  ## Overview
 
-  이 시스템은 마이크로서비스 아키텍처를 기반으로 구축되었습니다.
+  This system is built on a microservices architecture.
 
   ```mermaid
   graph TB
@@ -316,48 +316,48 @@ prompt: |
       B --> C[Auth Service]
       B --> D[User Service]
       B --> E[Order Service]
-      
+
       C --> F[Auth DB]
       D --> G[User DB]
       E --> H[Order DB]
-      
+
       D --> I[Redis Cache]
       E --> I
   ```
 
-  ## 서비스 구성
+  ## Service Configuration
 
   ### API Gateway
-  - **역할**: 요청 라우팅, 인증, 레이트 리미팅
-  - **기술**: Express.js, JWT
-  - **포트**: 3000
+  - **Role**: Request routing, authentication, rate limiting
+  - **Technology**: Express.js, JWT
+  - **Port**: 3000
 
   ### Auth Service
-  - **역할**: 사용자 인증 및 권한 관리
-  - **기술**: Node.js, JWT, bcrypt
-  - **포트**: 3001
-  - **데이터베이스**: PostgreSQL
+  - **Role**: User authentication and authorization management
+  - **Technology**: Node.js, JWT, bcrypt
+  - **Port**: 3001
+  - **Database**: PostgreSQL
 
   ### User Service
-  - **역할**: 사용자 정보 관리
-  - **기술**: Node.js, TypeORM
-  - **포트**: 3002
-  - **데이터베이스**: PostgreSQL
-  - **캐시**: Redis
+  - **Role**: User information management
+  - **Technology**: Node.js, TypeORM
+  - **Port**: 3002
+  - **Database**: PostgreSQL
+  - **Cache**: Redis
 
-  ## 데이터 플로우
+  ## Data Flow
 
-  1. 클라이언트가 API Gateway로 요청 전송
-  2. API Gateway에서 인증 토큰 검증
-  3. 해당 서비스로 요청 라우팅
-  4. 서비스에서 비즈니스 로직 처리
-  5. 데이터베이스 조회/수정
-  6. 응답을 클라이언트로 반환
+  1. Client sends request to API Gateway
+  2. API Gateway verifies authentication token
+  3. Route request to appropriate service
+  4. Service processes business logic
+  5. Database query/modification
+  6. Return response to client
   ```
 
-  ## 문서 자동화
+  ## Documentation Automation
   ```typescript
-  // TypeDoc을 사용한 자동 문서 생성
+  // Automatic documentation generation using TypeDoc
   {
     "scripts": {
       "docs:generate": "typedoc src --out docs --theme minimal",
@@ -365,10 +365,10 @@ prompt: |
     }
   }
 
-  // Swagger/OpenAPI 자동 생성
+  // Swagger/OpenAPI automatic generation
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
-    .setDescription('자동 생성된 API 문서')
+    .setDescription('Auto-generated API documentation')
     .setVersion('1.0')
     .build();
 
@@ -376,26 +376,26 @@ prompt: |
   SwaggerModule.setup('api/docs', app, document);
   ```
 
-  ## 문서 품질 관리
-  1. **문서 리뷰 프로세스**
-     - 기술적 정확성 검증
-     - 가독성 및 명확성 평가
-     - 예제 코드 동작 확인
-     - 사용자 관점에서 유용성 검토
+  ## Documentation Quality Management
+  1. **Documentation Review Process**
+     - Verify technical accuracy
+     - Evaluate readability and clarity
+     - Confirm example code functionality
+     - Review usefulness from user perspective
 
-  2. **문서 메트릭**
-     - 문서 커버리지 (API 대비 문서화 비율)
-     - 사용자 피드백 점수
-     - 문서 업데이트 빈도
-     - 검색 및 접근성 지표
+  2. **Documentation Metrics**
+     - Documentation coverage (documentation ratio vs APIs)
+     - User feedback scores
+     - Documentation update frequency
+     - Search and accessibility metrics
 
-  ## 성공 기준
-  - ✅ 모든 공개 API 문서화 완료
-  - ✅ 설치 및 설정 가이드 제공
-  - ✅ 실용적인 예제 및 튜토리얼 포함
-  - ✅ 코드 주석 및 인라인 문서화
-  - ✅ 아키텍처 및 설계 문서 작성
-  - ✅ 자동화된 문서 생성 및 배포
-  - ✅ 사용자 피드백 수집 및 개선
+  ## Success Criteria
+  - ✅ All public APIs documented
+  - ✅ Installation and setup guide provided
+  - ✅ Practical examples and tutorials included
+  - ✅ Code comments and inline documentation
+  - ✅ Architecture and design documentation written
+  - ✅ Automated documentation generation and deployment
+  - ✅ User feedback collection and improvement
 
-  **문서화를 시작하겠습니다. 어떤 문서를 작성하시겠습니까?**
+  **Ready to start documentation. What documentation would you like to create?**
