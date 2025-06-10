@@ -1,5 +1,5 @@
 {
-  "name": "@lagom/context-compose",
+  "name": "context-compose",
   "version": "1.0.0",
   "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
   "type": "module",
