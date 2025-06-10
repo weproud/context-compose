@@ -3,10 +3,10 @@
   "version": "1.0.5",
   "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
   "type": "module",
-  "main": "dist/mcp-server/src/index.js",
+  "main": "index.js",
   "bin": {
     "context-compose": "bin/context-compose-cli.js",
-    "context-compose-server": "mcp-server/server.js"
+    "context-compose-mcp": "bin/context-compose-server.js"
   },
   "scripts": {
     "build": "tsc",
@@ -14,10 +14,12 @@
     "inspect": "npx fastmcp inspect mcp-server/server.ts",
     "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
     "test": "vitest",
-    "lint": "eslint src/**/*.ts mcp-server/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts mcp-server/**/*.ts --fix",
-    "format": "prettier --write src/**/*.ts mcp-server/**/*.ts",
-    "format:check": "prettier --check src/**/*.ts mcp-server/**/*.ts",
+    "lint": "biome lint src mcp-server",
+    "lint:fix": "biome lint --write src mcp-server",
+    "format": "biome format --write src mcp-server",
+    "format:check": "biome format src mcp-server",
+    "check": "biome check src mcp-server",
+    "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
     "publish-public": "npm publish --access public"
   },
@@ -35,12 +37,22 @@
     "automation",
     "workflow"
   ],
-  "author": "weproud",
-  "license": "ISC",
+  "author": "noanswer",
+  "license": "MIT WITH Commons-Clause",
   "bugs": {
     "url": "https://github.com/weproud/context-compose/issues"
   },
   "homepage": "https://github.com/weproud/context-compose#readme",
+  "files": [
+    "scripts/**",
+    "assets/**",
+    ".cursor/**",
+    "README-task-master.md",
+    "index.js",
+    "bin/**",
+    "mcp-server/**",
+    "src/**"
+  ],
   "dependencies": {
     "commander": "^11.1.0",
     "dotenv": "^16.4.5",
@@ -52,20 +64,15 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
+    "@biomejs/biome": "^1.9.4",
     "@playwright/test": "^1.52.0",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.8",
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.15.29",
     "@types/yaml": "^1.9.6",
-    "@typescript-eslint/eslint-plugin": "^8.33.0",
-    "@typescript-eslint/parser": "^8.33.0",
-    "eslint": "^9.28.0",
-    "prettier": "^3.5.3",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0",
     "vitest": "^3.2.0"
   },
   "engines": {

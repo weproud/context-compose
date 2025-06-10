@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
  * 환경변수 로드 유틸리티
@@ -13,7 +13,7 @@ export class EnvLoader {
    * 프로젝트 루트의 .env 파일을 찾아서 로드합니다.
    */
   static load(): void {
-    if (this.loaded) return;
+    if (EnvLoader.loaded) return;
 
     try {
       // 프로젝트 루트에서 .env 파일 찾기
@@ -47,7 +47,7 @@ export class EnvLoader {
         );
       }
 
-      this.loaded = true;
+      EnvLoader.loaded = true;
     } catch (error) {
       console.warn('⚠️  환경변수 로드 중 오류 발생:', error);
     }
@@ -60,7 +60,7 @@ export class EnvLoader {
    * @returns 환경변수 값 또는 기본값
    */
   static get(key: string, defaultValue?: string): string | undefined {
-    this.load(); // 자동으로 로드
+    EnvLoader.load(); // 자동으로 로드
     return process.env[key] ?? defaultValue;
   }
 
@@ -72,7 +72,7 @@ export class EnvLoader {
    * @throws Error 환경변수가 설정되지 않은 경우
    */
   static getRequired(key: string): string {
-    this.load(); // 자동으로 로드
+    EnvLoader.load(); // 자동으로 로드
     const value = process.env[key];
     if (!value) {
       throw new Error(`필수 환경변수 ${key}가 설정되지 않았습니다.`);
@@ -84,15 +84,15 @@ export class EnvLoader {
    * 환경변수 설정 상태를 출력합니다.
    */
   static printStatus(): void {
-    this.load();
+    EnvLoader.load();
 
     console.log('🔧 환경변수 설정 상태:');
     console.log(`  NODE_ENV: ${process.env.NODE_ENV ?? '미설정'}`);
 
     if (process.env.OPENWEATHER_API_KEY) {
-      console.log(`  OpenWeather API: ✅ 설정됨`);
+      console.log('  OpenWeather API: ✅ 설정됨');
     } else {
-      console.log(`  OpenWeather API: ❌ 미설정`);
+      console.log('  OpenWeather API: ❌ 미설정');
     }
   }
 }

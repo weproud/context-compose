@@ -2,7 +2,7 @@
  * tools/index.ts
  * Export all Hello MCP tools for MCP server
  */
-import { FastMCP } from 'fastmcp';
+import type { FastMCP } from 'fastmcp';
 import logger from '../logger.js';
 
 import { registerGetContextTool } from './get-context.js';

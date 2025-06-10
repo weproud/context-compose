@@ -1,8 +1,15 @@
-import { access, mkdir, readdir, stat, rename, copyFile } from 'fs/promises';
-import { constants } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { InitToolSchema, type InitToolResponse } from '../../schemas/index.js';
+import { constants } from 'node:fs';
+import {
+  access,
+  copyFile,
+  mkdir,
+  readdir,
+  rename,
+  stat,
+} from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { type InitToolResponse, InitToolSchema } from '../../schemas/index.js';
 
 /**
  * Common Init business logic
@@ -42,7 +49,7 @@ export class InitTool {
   private static async backupExistingDirectory(
     configDir: string
   ): Promise<string> {
-    const timestamp = this.getCurrentTimestamp();
+    const timestamp = InitTool.getCurrentTimestamp();
     const backupPath = `${configDir}-${timestamp}`;
 
     await rename(configDir, backupPath);
@@ -65,7 +72,7 @@ export class InitTool {
     for (let i = 0; i < 10; i++) {
       // Go up maximum 10 levels
       const assetsPath = join(currentDir, 'assets');
-      if (await this.fileExists(assetsPath)) {
+      if (await InitTool.fileExists(assetsPath)) {
         return assetsPath;
       }
       const parentDir = dirname(currentDir);
@@ -82,23 +89,25 @@ export class InitTool {
         'context-compose',
         'assets'
       );
-      if (await this.fileExists(nodeModulesPath)) {
+      if (await InitTool.fileExists(nodeModulesPath)) {
         return nodeModulesPath;
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore if not found in node_modules
     }
 
     // 3. Try to find in global node_modules
     try {
       // Use require.resolve to find context-compose package location
-      const contextComposePath = require.resolve('context-compose/package.json');
+      const contextComposePath = require.resolve(
+        'context-compose/package.json'
+      );
       const contextComposeRoot = dirname(contextComposePath);
       const globalAssetsPath = join(contextComposeRoot, 'assets');
-      if (await this.fileExists(globalAssetsPath)) {
+      if (await InitTool.fileExists(globalAssetsPath)) {
         return globalAssetsPath;
       }
-    } catch (error) {
+    } catch (_error) {
       // Ignore if require.resolve fails
     }
 
@@ -130,7 +139,7 @@ export class InitTool {
 
         if (stats.isDirectory()) {
           // Recursively copy subdirectory
-          const subFiles = await this.copyDirectory(srcPath, destPath);
+          const subFiles = await InitTool.copyDirectory(srcPath, destPath);
           copiedFiles.push(...subFiles);
         } else {
           // Copy file
@@ -168,10 +177,7 @@ export class InitTool {
         // Handle case when process.cwd() is empty string or invalid
         if (!baseDir || baseDir === '/') {
           throw new Error(
-            'process.cwd() is invalid. ' +
-              'Make sure MCP server is running in correct working directory or ' +
-              'explicitly provide projectRoot parameter. ' +
-              `Current value: "${baseDir}"`
+            `process.cwd() is invalid. Make sure MCP server is running in correct working directory or explicitly provide projectRoot parameter. Current value: "${baseDir}"`
           );
         }
       }
@@ -180,7 +186,7 @@ export class InitTool {
       console.log(`[DEBUG] configDir: "${configDir}"`);
 
       // Find assets directory
-      const assetsDir = await this.findAssetsDirectory();
+      const assetsDir = await InitTool.findAssetsDirectory();
       if (!assetsDir) {
         throw new Error(
           'Cannot find context-compose assets directory. ' +
@@ -193,18 +199,18 @@ export class InitTool {
       }
 
       // .contextcompose 디렉토리가 이미 존재하는지 확인
-      const dirExists = await this.fileExists(configDir);
+      const dirExists = await InitTool.fileExists(configDir);
       if (dirExists) {
         // 기존 디렉토리를 백업
-        backupPath = await this.backupExistingDirectory(configDir);
+        backupPath = await InitTool.backupExistingDirectory(configDir);
         skippedFiles.push(configDir);
       }
 
       // assets 디렉토리를 .contextcompose로 복사
-      const copiedFiles = await this.copyDirectory(assetsDir, configDir);
+      const copiedFiles = await InitTool.copyDirectory(assetsDir, configDir);
       createdFiles.push(...copiedFiles);
 
-      const message = this.generateSuccessMessage(
+      const message = InitTool.generateSuccessMessage(
         createdFiles,
         skippedFiles,
         backupPath
@@ -240,7 +246,7 @@ export class InitTool {
 
     if (createdFiles.length > 0) {
       messages.push(
-        `✅ Context Compose project has been successfully initialized!`
+        '✅ Context Compose project has been successfully initialized!'
       );
       // messages.push(`assets directory has been copied to .contextcompose.`);
       // messages.push(`Created files/directories: ${createdFiles.length}`);
@@ -260,7 +266,7 @@ export class InitTool {
 
     if (skippedFiles.length > 0 && !backupPath) {
       messages.push(`⚠️  Already existing directories: ${skippedFiles.length}`);
-      skippedFiles.forEach(file => {
+      skippedFiles.forEach((file) => {
         messages.push(`  - ${file}`);
       });
     }
@@ -276,14 +282,14 @@ export class InitTool {
     const validatedArgs = InitToolSchema.parse(args);
 
     // Execute business logic
-    return this.execute(validatedArgs.projectRoot);
+    return InitTool.execute(validatedArgs.projectRoot);
   }
 
   /**
    * Helper function for CLI - direct parameter passing
    */
   static async executeFromParams(): Promise<InitToolResponse> {
-    return this.execute();
+    return InitTool.execute();
   }
 }
 

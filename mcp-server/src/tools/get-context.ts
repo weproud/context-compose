@@ -1,4 +1,4 @@
-import { FastMCP } from 'fastmcp';
+import type { FastMCP } from 'fastmcp';
 import { executeGetContextTool } from '../../../src/core/tools/get-context.js';
 import { GetContextToolSchema } from '../../../src/schemas/get-context.js';
 import logger from '../logger.js';

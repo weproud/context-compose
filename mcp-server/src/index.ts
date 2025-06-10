@@ -1,7 +1,7 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { FastMCP } from 'fastmcp';
-import { readFileSync } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { registerMCPTools } from './tools/index.js';
 
 // Constants
@@ -23,7 +23,8 @@ class ContextComposeServer {
 
   constructor() {
     // Get version from package.json using synchronous fs
-    const packagePath = path.join(__dirname, '../../package.json');
+    // When built, __dirname is dist/mcp-server/src, so we need to go up 3 levels to reach project root
+    const packagePath = path.join(__dirname, '../../../package.json');
     const packageJson: PackageJson = JSON.parse(
       readFileSync(packagePath, 'utf8')
     );

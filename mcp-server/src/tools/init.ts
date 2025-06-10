@@ -1,6 +1,6 @@
-import { FastMCP } from 'fastmcp';
-import { InitToolSchema } from '../../../src/schemas/init.js';
+import type { FastMCP } from 'fastmcp';
 import { executeInitTool } from '../../../src/core/tools/init.js';
+import { InitToolSchema } from '../../../src/schemas/init.js';
 import logger from '../logger.js';
 
 /**

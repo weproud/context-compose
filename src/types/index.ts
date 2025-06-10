@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
 // MCP Tool 관련 타입들
 export interface MCPTool {
@@ -36,7 +36,7 @@ export class MCPError extends Error {
   constructor(
     message: string,
     public _code: string,
-    public _statusCode: number = 500
+    public _statusCode = 500
   ) {
     super(message);
     this.name = 'MCPError';

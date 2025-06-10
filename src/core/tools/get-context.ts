@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type {
   GetContextToolInput,
@@ -75,7 +75,7 @@ export class GetContextTool {
    * Read context file
    */
   static readContextFile(projectRoot: string, contextId: string): ContextYaml {
-    const formattedId = this.formatContextId(contextId);
+    const formattedId = GetContextTool.formatContextId(contextId);
 
     // All contexts use .contextcompose directory
     const contextFilePath = join(
@@ -84,7 +84,7 @@ export class GetContextTool {
       `${formattedId}-context.yaml`
     );
 
-    return this.readYamlFile<ContextYaml>(contextFilePath);
+    return GetContextTool.readYamlFile<ContextYaml>(contextFilePath);
   }
 
   /**
@@ -95,7 +95,7 @@ export class GetContextTool {
     workflowPath: string
   ): ComponentYaml {
     const fullPath = join(projectRoot, '.contextcompose', workflowPath);
-    return this.readYamlFile(fullPath);
+    return GetContextTool.readYamlFile(fullPath);
   }
 
   /**
@@ -105,9 +105,9 @@ export class GetContextTool {
     projectRoot: string,
     rulesPaths: string[]
   ): ComponentYaml[] {
-    return rulesPaths.map(rulePath => {
+    return rulesPaths.map((rulePath) => {
       const fullPath = join(projectRoot, '.contextcompose', rulePath);
-      return this.readYamlFile(fullPath);
+      return GetContextTool.readYamlFile(fullPath);
     });
   }
 
@@ -118,9 +118,9 @@ export class GetContextTool {
     projectRoot: string,
     mcpsPaths: string[]
   ): ComponentYaml[] {
-    return mcpsPaths.map(mcpPath => {
+    return mcpsPaths.map((mcpPath) => {
       const fullPath = join(projectRoot, '.contextcompose', mcpPath);
-      return this.readYamlFile(fullPath);
+      return GetContextTool.readYamlFile(fullPath);
     });
   }
 
@@ -131,9 +131,9 @@ export class GetContextTool {
     projectRoot: string,
     filePaths: string[]
   ): ComponentYaml[] {
-    return filePaths.map(filePath => {
+    return filePaths.map((filePath) => {
       const fullPath = join(projectRoot, '.contextcompose', filePath);
-      return this.readYamlFile(fullPath);
+      return GetContextTool.readYamlFile(fullPath);
     });
   }
 
@@ -145,7 +145,7 @@ export class GetContextTool {
     filePath: string
   ): ComponentYaml {
     const fullPath = join(projectRoot, '.contextcompose', filePath);
-    return this.readYamlFile(fullPath);
+    return GetContextTool.readYamlFile(fullPath);
   }
 
   /**
@@ -167,13 +167,14 @@ export class GetContextTool {
         if (typeof sectionValue === 'string') {
           // Single file (e.g., workflow)
           const fullPath = join(projectRoot, configPath, sectionValue);
-          const component = this.readYamlFile<ComponentYaml>(fullPath);
+          const component =
+            GetContextTool.readYamlFile<ComponentYaml>(fullPath);
           processedSections[sectionName] = [component];
         } else if (Array.isArray(sectionValue)) {
           // File array (e.g., rules, mcps, notify, issue, etc.)
-          const components = sectionValue.map(filePath => {
+          const components = sectionValue.map((filePath) => {
             const fullPath = join(projectRoot, configPath, filePath);
-            return this.readYamlFile<ComponentYaml>(fullPath);
+            return GetContextTool.readYamlFile<ComponentYaml>(fullPath);
           });
           processedSections[sectionName] = components;
         }
@@ -194,7 +195,7 @@ export class GetContextTool {
   static combinePrompts(
     contextYaml: ContextYaml,
     processedSections: Record<string, ComponentYaml[]>,
-    useEnhancedPrompt: boolean = false
+    useEnhancedPrompt = false
   ): string {
     const sections: string[] = [];
 
@@ -212,7 +213,7 @@ export class GetContextTool {
       if (!components || components.length === 0) continue;
 
       // Generate section title
-      const sectionTitle = this.getSectionTitle(sectionName);
+      const sectionTitle = GetContextTool.getSectionTitle(sectionName);
       sections.push(`\n## ${sectionTitle}`);
 
       // Single component case (e.g., workflow)
@@ -249,7 +250,7 @@ export class GetContextTool {
         continue;
 
       // Generate section title
-      const sectionTitle = this.getSectionTitle(sectionName);
+      const sectionTitle = GetContextTool.getSectionTitle(sectionName);
       sections.push(`\n## ${sectionTitle}`);
 
       // Single component case
@@ -316,23 +317,26 @@ export class GetContextTool {
 
     try {
       // 1. Read context file
-      const contextYaml = this.readContextFile(projectRoot, contextId);
+      const contextYaml = GetContextTool.readContextFile(
+        projectRoot,
+        contextId
+      );
 
       // 2. Validate context structure
       if (!contextYaml || !contextYaml.context) {
         throw new Error(
-          `Invalid context structure: context property is missing or null`
+          'Invalid context structure: context property is missing or null'
         );
       }
 
       // 3. Process all Jobs sections dynamically
-      const processedSections = this.processJobsSection(
+      const processedSections = GetContextTool.processJobsSection(
         projectRoot,
         contextYaml.context
       );
 
       // 4. Combine all prompts
-      const combinedPrompt = this.combinePrompts(
+      const combinedPrompt = GetContextTool.combinePrompts(
         contextYaml,
         processedSections,
         enhancedPrompt
