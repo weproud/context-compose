@@ -3,7 +3,6 @@ kind: task
 name: 'testing'
 description: 'Context for comprehensive testing with TDD and quality assurance focus'
 
-id: testing-context
 context:
   workflow: workflows/workflow.yaml
   roles:

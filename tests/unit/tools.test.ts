@@ -57,7 +57,6 @@ kind: task
 name: 'feature'
 description: 'feature context'
 
-id: context-feature
 context:
   workflow: workflows/workflow.yaml
   rules:
@@ -190,7 +189,6 @@ kind: task
 name: 'feature'
 description: 'feature context'
 
-id: context-feature
 context:
   workflow: workflows/workflow.yaml
 prompt: |

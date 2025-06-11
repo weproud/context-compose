@@ -15,7 +15,6 @@ interface ContextYaml {
   kind: string;
   name: string;
   description: string;
-  id: string;
   context: {
     workflow?: string;
     rules?: string[];
@@ -107,7 +106,7 @@ function readRulesFiles(
   projectRoot: string,
   rulesPaths: string[]
 ): ComponentYaml[] {
-  return rulesPaths.map((rulePath) => {
+  return rulesPaths.map(rulePath => {
     const fullPath = join(projectRoot, '.contextcompose', rulePath);
     return readYamlFile(fullPath);
   });
@@ -120,7 +119,7 @@ function readMcpsFiles(
   projectRoot: string,
   mcpsPaths: string[]
 ): ComponentYaml[] {
-  return mcpsPaths.map((mcpPath) => {
+  return mcpsPaths.map(mcpPath => {
     const fullPath = join(projectRoot, '.contextcompose', mcpPath);
     return readYamlFile(fullPath);
   });
@@ -133,7 +132,7 @@ function readComponentFiles(
   projectRoot: string,
   filePaths: string[]
 ): ComponentYaml[] {
-  return filePaths.map((filePath) => {
+  return filePaths.map(filePath => {
     const fullPath = join(projectRoot, '.contextcompose', filePath);
     return readYamlFile(fullPath);
   });
@@ -173,7 +172,7 @@ function processJobsSection(
         processedSections[sectionName] = [component];
       } else if (Array.isArray(sectionValue)) {
         // File array (e.g., rules, mcps, notify, issue, etc.)
-        const components = sectionValue.map((filePath) => {
+        const components = sectionValue.map(filePath => {
           const fullPath = join(projectRoot, configPath, filePath);
           return readYamlFile<ComponentYaml>(fullPath);
         });
@@ -205,7 +204,6 @@ function combinePrompts(
   // Task basic information
   sections.push(`# Task: ${contextYaml.name}`);
   sections.push(`**Description:** ${contextYaml.description}`);
-  sections.push(`**ID:** ${contextYaml.id}`);
 
   // Define the desired order for sections
   const sectionOrder = ['workflow', 'rules', 'mcps', 'notify', 'context'];

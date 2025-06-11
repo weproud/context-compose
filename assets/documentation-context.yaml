@@ -3,7 +3,6 @@ kind: task
 name: 'documentation'
 description: 'Context for comprehensive documentation with user-centric approach'
 
-id: documentation-context
 context:
   workflow: workflows/workflow.yaml
   roles:

@@ -3,7 +3,6 @@ kind: task
 name: 'feature-development'
 description: 'Context for developing new features with comprehensive planning and testing'
 
-id: feature-context
 context:
   workflow: workflows/feature-workflow.yaml
   roles:

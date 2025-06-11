@@ -3,7 +3,6 @@ kind: task
 name: 'refactoring'
 description: 'Context for code refactoring with safety and quality improvement focus'
 
-id: refactor-context
 context:
   workflow: workflows/workflow.yaml
   roles:

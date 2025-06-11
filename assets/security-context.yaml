@@ -3,7 +3,6 @@ kind: task
 name: 'security-fix'
 description: 'Context for security vulnerability fixes with comprehensive security practices'
 
-id: security-context
 context:
   workflow: workflows/hotfix-workflow.yaml
   roles:

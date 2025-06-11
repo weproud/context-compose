@@ -3,7 +3,6 @@ kind: task
 name: 'bug-fix'
 description: 'Context for fixing bugs with systematic debugging and testing'
 
-id: fix-context
 context:
   workflow: workflows/workflow.yaml
   roles:

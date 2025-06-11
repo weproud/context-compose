@@ -3,7 +3,6 @@ kind: context
 name: <whatever you want>
 description: <whatever you want>
 
-id: custom
 context:
   workflow: workflows/workflow.yaml
   roles:

@@ -3,7 +3,6 @@ kind: task
 name: 'performance-optimization'
 description: 'Context for performance optimization with measurement-driven approach'
 
-id: performance-context
 context:
   workflow: workflows/workflow.yaml
   roles:

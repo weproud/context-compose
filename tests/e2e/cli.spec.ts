@@ -69,7 +69,6 @@ kind: task
 name: 'feature'
 description: 'feature context for testing'
 
-id: context-feature
 context:
   workflow: workflows/workflow.yaml
   rules:
@@ -162,7 +161,6 @@ kind: task
 name: 'feature'
 description: 'feature context for enhanced testing'
 
-id: context-feature
 context:
   workflow: workflows/workflow.yaml
 prompt: |
