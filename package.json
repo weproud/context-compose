@@ -22,14 +22,14 @@
     "check": "biome check src mcp-server",
     "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
-    "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
-    "publish-public": "npm run pre-publish && npm publish --access public",
     "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:run",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "npm run pre-publish && changeset publish",
     "changeset:status": "changeset status",
     "version": "changeset version && npm run build",
+    "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
+    "beta-release": "npm run pre-publish && npm run public --access public --tag beta",
     "release": "npm run pre-publish && changeset publish"
   },
   "repository": {
