@@ -1,56 +1,131 @@
 # Context Compose
 
-**Model Context Protocol (MCP) Server and CLI Tool for AI Development Workflows**
+**Model Context Protocol (MCP) Server for AI Development Workflows**
 
-Context Compose is a tool that helps AI development assistants systematically manage project-specific contexts, workflows, and rules. It provides both MCP server and CLI tools in a single package, making collaboration with AI more efficient and consistent.
+## 🎯 Why Context Compose?
+
+Modern AI development assistants like Claude, ChatGPT, and Cursor are incredibly powerful, but they often lack project-specific context and consistent development guidelines. Context Compose solves this by providing:
+
+- **Systematic Context Management**: No more copy-pasting the same instructions repeatedly
+- **Consistent Development Standards**: Apply proven patterns and expert knowledge across your team
+- **Workflow Automation**: Streamline repetitive development tasks with predefined workflows
+- **Expert Personas**: Leverage the wisdom of industry experts like Dan Abramov, Martin Fowler, and Kent C. Dodds
+- **Seamless AI Integration**: Direct integration with AI models through Model Context Protocol (MCP)
+
+Context Compose transforms ad-hoc AI interactions into systematic, repeatable, and efficient development workflows.
 
 ## ✨ Key Features
 
-- 🤖 **MCP Server**: Direct integration with AI models like Claude, ChatGPT
-- 🛠️ **CLI Tool**: Context management and workflow execution from terminal
-- 📋 **Context System**: Project-specific development guidelines and rules management
-- 🔄 **Workflow Engine**: Automated task flows for development, testing, deployment
-- 🎯 **Role-based Development**: Apply expert personas like Dan Abramov, Martin Fowler
+- 🤖 **MCP Server**: Direct integration with AI models like Claude, ChatGPT via Model Context Protocol
+- 📋 **Context System**: Project-specific development guidelines, rules, and best practices management
+- 🔄 **Workflow Engine**: Automated task flows for development, testing, deployment, and code review
+- 🎯 **Role-based Development**: Apply expert personas and specialized knowledge domains
 - 📢 **Notification System**: Work status notifications via Slack, email, and other channels
+- 🛠️ **Dual Interface**: Both MCP server and CLI tools for maximum flexibility
 
-## 🚀 Quick Start
+## 🚀 MCP Registration
 
-### Installation
+### Claude Desktop
 
-```bash
-# Install with npm
-npm install -g @noanswer/context-compose
-
-# Or install with pnpm
-pnpm add -g @noanswer/context-compose
-```
-
-### Project Initialization
-
-```bash
-# Initialize context-compose settings in current project
-context-compose init
-
-# Get context
-context-compose get-context default
-```
-
-### MCP Server Setup
+Add to your Claude Desktop configuration file (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
 ```json
 {
-  "context-compose": {
-    "command": "npx",
-    "args": ["-y", "@noanswer/context-compose@latest"]
+  "mcpServers": {
+    "context-compose": {
+      "command": "npx",
+      "args": ["-y", "@noanswer/context-compose@latest"],
+      "cwd": "/path/to/your/project"
+    }
   }
 }
 ```
 
-## 📖 Core Concepts
+### Other MCP-Compatible Clients
 
-### Context
+For any MCP-compatible client, use the following configuration:
 
-YAML files that define project-specific development guidelines, rules, and workflows.
+```json
+{
+  "context-compose": {
+    "command": "context-compose-mcp",
+    "args": [],
+    "cwd": "/path/to/your/project"
+  }
+}
+```
+
+## 🔧 Usage in Cursor and Windsurf
+
+### Cursor Integration
+
+1. **Install Context Compose**:
+
+   ```bash
+   npm install -g @noanswer/context-compose
+   ```
+
+2. **Initialize in your project**:
+
+   ```bash
+   context-compose init
+   ```
+
+3. **Use with Cursor Rules**: Add to your `.cursor/rules` directory:
+
+   ```markdown
+   # .cursor/rules/context-compose.md
+
+   Before starting any development task, use the MCP tool "get-context" to load appropriate project context:
+
+   - For new features: get-context feature
+   - For bug fixes: get-context fix
+   - For API development: get-context api
+   - For refactoring: get-context refactor
+   ```
+
+### Windsurf Integration
+
+1. **Setup MCP Server**: Configure Context Compose as an MCP server in Windsurf settings
+
+2. **Project Initialization**:
+
+   ```bash
+   context-compose init
+   ```
+
+3. **Context Loading**: Use the MCP tools directly in Windsurf:
+   - `get-context default` - Load basic development context
+   - `get-context feature --enhanced-prompt` - Load feature development context with detailed guidelines
+
+### 💡 Pro Tip: Enhanced AI Interaction
+
+For better AI responses, include "with context-compose" in your conversation when asking for development help:
+
+```
+"Help me build a React component with context-compose"
+"Review this API code with context-compose"
+"Debug this issue with context-compose"
+```
+
+This helps the AI understand that you want to leverage the loaded context and guidelines for more accurate, project-specific assistance.
+
+## 📖 Usage Examples
+
+### Basic Context Loading
+
+```yaml
+# Load default development context
+get-context default
+
+# Load feature development context with enhanced guidelines
+get-context feature --enhanced-prompt
+
+# Load API development context
+get-context api
+```
+
+### Context Structure Example
 
 ```yaml
 version: 1
@@ -66,181 +141,243 @@ context:
   rules:
     - rules/clean-code.yaml
     - rules/testing-principles.yaml
+    - rules/typescript-best-practices.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
+  notify:
+    - notify/slack.yaml
 ```
 
-### Predefined Contexts
+## 🎭 User Scenarios
 
-- **default**: Basic development context
-- **feature**: New feature development
-- **fix**: Bug fixing
-- **refactor**: Code refactoring
-- **api**: API development
-- **testing**: Test writing
-- **documentation**: Documentation work
-- **security**: Security-related work
-- **performance**: Performance optimization
+### 1. Frontend Developer - New Feature Development
 
-## 🛠️ CLI Commands
-
-### Basic Commands
+**Scenario**: Building a new React component with TypeScript
 
 ```bash
-# Initialize project
-context-compose init
-
-# Get context
-context-compose get-context <context-id>
-
-# Help
-context-compose --help
+# Load feature development context with React/TypeScript expertise
+get-context feature --enhanced-prompt
 ```
 
-### Context Usage Examples
+**What you get**:
+
+- Dan Abramov's React patterns and best practices
+- TypeScript strict typing guidelines
+- Component testing strategies
+- Performance optimization rules
+- Code review checklist
+
+### 2. Backend Developer - API Development
+
+**Scenario**: Creating RESTful APIs with proper error handling
 
 ```bash
-# Basic development context
-context-compose get-context default
-
-# Feature development context (with enhanced prompt)
-context-compose get-context feature --enhanced-prompt
-
-# API development context
-context-compose get-context api
-
-# Bug fix context
-context-compose get-context fix
+# Load API development context
+get-context api
 ```
 
-## 🔧 MCP Server
+**What you get**:
 
-Context Compose integrates directly with AI models through the Model Context Protocol.
+- RESTful API design principles
+- Error handling patterns
+- Security best practices
+- Database optimization guidelines
+- API documentation standards
 
-### Available MCP Tools
+### 3. DevOps Engineer - Performance Optimization
 
-- **get-context**: Get project context
-- **init**: Initialize project
-
-### Claude Desktop Setup
-
-1. Claude Desktop configuration file location:
-
-   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-2. Add context-compose server to configuration file:
-
-```json
-{
-  "mcpServers": {
-    "context-compose": {
-      "command": "context-compose-server",
-      "args": [],
-      "cwd": "/path/to/your/project"
-    }
-  }
-}
-```
-
-## 📁 Project Structure
-
-```
-your-project/
-├── .contextcompose/          # Context Compose configuration directory
-│   ├── default-context.yaml  # Default context
-│   ├── feature-context.yaml  # Feature development context
-│   ├── workflows/            # Workflow definitions
-│   ├── rules/               # Development rules
-│   ├── roles/               # Role definitions
-│   ├── mcps/                # MCP tool configurations
-│   └── notify/              # Notification settings
-└── your-project-files...
-```
-
-## 🎯 Usage Scenarios
-
-### 1. New Feature Development
+**Scenario**: Optimizing application performance and deployment
 
 ```bash
-# Apply feature development context
-context-compose get-context feature --enhanced-prompt
+# Load performance optimization context
+get-context performance
 ```
 
-AI automatically applies:
+**What you get**:
 
-- Development philosophy of Dan Abramov and Kent C. Dodds
-- Clean code and testing principles
-- Feature development workflow
-- Code review and documentation guidelines
+- Performance monitoring strategies
+- Caching patterns
+- Database query optimization
+- Infrastructure scaling guidelines
+- Deployment automation workflows
 
-### 2. Bug Fixing
+### 4. Team Lead - Code Review
+
+**Scenario**: Conducting thorough code reviews
 
 ```bash
-# Apply bug fix context
-context-compose get-context fix
+# Load code review context
+get-context review
 ```
 
-### 3. API Development
+**What you get**:
+
+- Code quality checklist
+- Security vulnerability patterns
+- Performance bottleneck identification
+- Best practice validation
+- Mentoring guidelines
+
+### 5. Bug Hunter - Issue Resolution
+
+**Scenario**: Debugging and fixing production issues
 
 ```bash
-# Apply API development context
-context-compose get-context api
+# Load bug fixing context
+get-context fix
 ```
 
-## 🔧 Development Environment Setup
+**What you get**:
 
-### Requirements
+- Systematic debugging approaches
+- Root cause analysis frameworks
+- Testing strategies for fixes
+- Regression prevention guidelines
+- Documentation requirements
 
-- Node.js 18+
-- npm 8+ or pnpm 8+
+## 🛠️ Customization
 
-### Local Development
+### Creating Custom Contexts
 
-```bash
-# Clone repository
-git clone https://github.com/weproud/context-compose.git
-cd context-compose
+1. **Create a new context file** in `.contextcompose/`:
 
-# Install dependencies
-pnpm install
+```yaml
+# .contextcompose/my-custom-context.yaml
+version: 1
+kind: task
+name: 'my-custom-workflow'
+description: 'Custom context for specific project needs'
 
-# Run development mode
-pnpm dev
-
-# Run tests
-pnpm test
-
-# Build
-pnpm build
+context:
+  workflow: workflows/custom-workflow.yaml
+  roles:
+    - roles/domain-expert.yaml
+  rules:
+    - rules/project-specific.yaml
+    - rules/company-standards.yaml
+  mcps:
+    - mcps/custom-tools.yaml
+prompt: |
+  Custom instructions for this specific context...
 ```
 
-## 📚 Documentation
+2. **Create supporting files**:
 
-- [Context Customization Guide](docs/context-customization.md)
-- [Workflow Writing Guide](docs/workflow-guide.md)
-- [MCP Server Setup](docs/mcp-server-setup.md)
-- [API Reference](docs/api-reference.md)
+```yaml
+# .contextcompose/roles/domain-expert.yaml
+version: 1
+kind: role
+name: domain-expert
+description: Domain-specific expertise
 
-## 🤝 Contributing
+prompt: |
+  You are a domain expert with deep knowledge of:
+  - Industry-specific patterns
+  - Regulatory requirements
+  - Business logic constraints
+```
 
-1. Fork this repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Create a Pull Request
+```yaml
+# .contextcompose/rules/project-specific.yaml
+version: 1
+kind: rule
+name: project-specific-rules
+description: Project-specific development rules
+
+prompt: |
+  ## Project-Specific Guidelines
+
+  1. **Architecture Patterns**:
+     - Use hexagonal architecture
+     - Implement CQRS for complex domains
+
+  2. **Code Standards**:
+     - Follow company naming conventions
+     - Use specific logging formats
+```
+
+### Customizing Existing Contexts
+
+1. **Override default contexts** by creating files with the same name:
+
+```yaml
+# .contextcompose/default-context.yaml
+version: 1
+kind: task
+name: default
+description: Customized default context for our team
+
+context:
+  workflow: workflows/team-workflow.yaml
+  roles:
+    - roles/senior-developer.yaml
+  rules:
+    - rules/team-standards.yaml
+    - rules/security-first.yaml
+```
+
+2. **Extend contexts** by referencing base contexts:
+
+```yaml
+# .contextcompose/extended-feature-context.yaml
+version: 1
+kind: task
+name: extended-feature
+description: Feature development with additional constraints
+
+extends: feature-context.yaml
+
+context:
+  rules:
+    - rules/compliance-requirements.yaml
+    - rules/accessibility-standards.yaml
+```
+
+### Environment-Specific Configurations
+
+```yaml
+# .contextcompose/environments/production.yaml
+version: 1
+kind: environment
+name: production
+description: Production deployment context
+
+context:
+  rules:
+    - rules/production-safety.yaml
+    - rules/monitoring-requirements.yaml
+  notify:
+    - notify/ops-team.yaml
+```
+
+### Team Collaboration
+
+1. **Share contexts via version control**:
+
+   - Commit `.contextcompose/` directory to your repository
+   - Team members automatically get consistent contexts
+
+2. **Organization-wide contexts**:
+
+   - Create organization templates
+   - Distribute via npm packages or git submodules
+
+3. **Role-based access**:
+   - Different contexts for different team roles
+   - Junior vs senior developer contexts
+   - Specialized domain contexts
+
+---
+
+**Transform your AI development workflow with Context Compose! 🚀**
 
 ## 📄 License
 
-This project is distributed under the ISC License. See the [LICENSE](LICENSE) file for details.
+This project is distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/weproud/context-compose)
 - [Issue Tracker](https://github.com/weproud/context-compose/issues)
 - [NPM Package](https://www.npmjs.com/package/@noanswer/context-compose)
-
----
-
-**Make your AI collaboration more systematic and efficient with Context Compose! 🚀**
