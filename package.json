@@ -1,6 +1,6 @@
 {
   "name": "@noanswer/context-compose",
-  "version": "1.0.8-beta.0",
+  "version": "1.0.8-beta.1",
   "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
   "type": "module",
   "main": "index.js",
@@ -29,7 +29,7 @@
     "changeset:status": "changeset status",
     "version": "changeset version && npm run build",
     "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
-    "beta-release": "npm run pre-publish && npm run public --access public --tag beta",
+    "beta-release": "npm publish --access public --tag beta",
     "release": "npm run pre-publish && changeset publish"
   },
   "repository": {
