@@ -46,7 +46,7 @@ Context Compose provides task-specific contexts that can be composed together, e
 ### Initialize Project
 
 ```
-initialize project with context-compose
+(prompt) initialize project with context-compose
 ```
 
 ### Basic Context Loading
@@ -54,13 +54,13 @@ initialize project with context-compose
 ```
 
 # Load default development context
-get-context default with context-compose
+(prompt) get-context default with context-compose
 
 # Load feature development context with enhanced guidelines
-get-context feature --enhanced-prompt with context-compose
+(prompt) get-context feature --enhanced-prompt with context-compose
 
 # Load API development context
-get-context api with context-compose
+(prompt) get-context api with context-compose
 ```
 
 ### Context Structure Example
@@ -95,7 +95,7 @@ context:
 
 ```bash
 # Load feature development context with React/TypeScript expertise
-get-context feature --enhanced-prompt
+(prompt) get-context feature --enhanced-prompt with context-compose
 ```
 
 **What you get**:
@@ -112,7 +112,7 @@ get-context feature --enhanced-prompt
 
 ```bash
 # Load API development context
-get-context api
+(prompt) get-context api with context-compose
 ```
 
 **What you get**:
@@ -129,7 +129,7 @@ get-context api
 
 ```bash
 # Load performance optimization context
-get-context performance
+(prompt) get-context performance with context-compose
 ```
 
 **What you get**:
@@ -146,7 +146,7 @@ get-context performance
 
 ```bash
 # Load code review context
-get-context review
+(prompt) get-context review with context-compose
 ```
 
 **What you get**:
@@ -163,7 +163,7 @@ get-context review
 
 ```bash
 # Load bug fixing context
-get-context fix
+(prompt) get-context fix with context-compose
 ```
 
 **What you get**:
