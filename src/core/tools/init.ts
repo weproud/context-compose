@@ -195,15 +195,15 @@ export async function executeInit(
       );
     }
 
-    // .contextcompose 디렉토리가 이미 존재하는지 확인
+    // Check if .contextcompose directory already exists
     const dirExists = await fileExists(configDir);
     if (dirExists) {
-      // 기존 디렉토리를 백업
+      // Backup existing directory
       backupPath = await backupExistingDirectory(configDir);
       skippedFiles.push(configDir);
     }
 
-    // assets 디렉토리를 .contextcompose로 복사
+    // Copy assets directory to .contextcompose
     const copiedFiles = await copyDirectory(assetsDir, configDir);
     createdFiles.push(...copiedFiles);
 

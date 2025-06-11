@@ -295,11 +295,11 @@ enhanced-prompt: |-
      const errorMessages: ErrorMessages = {
        'VALIDATION_ERROR': {
          'en': 'Invalid input provided',
-         'ko': '잘못된 입력이 제공되었습니다'
+         'ko': 'Invalid input provided'
        },
        'NETWORK_ERROR': {
          'en': 'Network connection failed',
-         'ko': '네트워크 연결에 실패했습니다'
+         'ko': 'Network connection failed'
        }
      };
      ```

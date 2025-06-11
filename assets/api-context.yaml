@@ -1,9 +1,9 @@
 version: 1
-kind: task
-name: 'api-development'
-description: 'Context for API development with RESTful design and comprehensive documentation'
+kind: context
+name: api context
+description: Context for API development with RESTful design and comprehensive documentation
 
-id: api-context
+id: api
 context:
   workflow: workflows/feature-workflow.yaml
   roles:

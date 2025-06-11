@@ -3,168 +3,168 @@ description:
 globs:
 alwaysApply: false
 ---
-# 디버깅 및 문제 해결 가이드
+# Debugging and Troubleshooting Guide
 
-## 일반적인 디버깅 전략
+## General Debugging Strategies
 
-### 로그 및 콘솔 출력
-- **개발 모드**: `console.log`를 사용한 디버깅 정보 출력
-- **구조화된 로깅**: JSON 형태의 구조화된 로그 메시지
-- **에러 스택 추적**: 상세한 에러 정보와 스택 트레이스 포함
+### Logging and Console Output
+- **Development Mode**: Output debugging information using `console.log`
+- **Structured Logging**: Structured log messages in JSON format
+- **Error Stack Tracing**: Include detailed error information and stack traces
 
-### TypeScript 타입 에러
-- **타입 검사**: `npm run type-check`로 전체 프로젝트 타입 검사
-- **점진적 타입 적용**: `any` 타입 사용을 최소화하고 구체적인 타입 정의
-- **타입 가드**: 런타임에서 타입 안전성 보장
+### TypeScript Type Errors
+- **Type Checking**: Check entire project types with `npm run type-check`
+- **Gradual Type Application**: Minimize `any` type usage and define specific types
+- **Type Guards**: Ensure type safety at runtime
 
-## MCP 서버 디버깅
+## MCP Server Debugging
 
-### MCP 서버 검사 도구
+### MCP Server Inspection Tools
 ```bash
-# 개발 중인 MCP 서버 검사
+# Inspect MCP server under development
 npm run inspect
 
-# 빌드된 MCP 서버 검사
+# Inspect built MCP server
 npm run inspect:built
 ```
 
-### 일반적인 MCP 문제들
+### Common MCP Issues
 
-#### 1. 도구 등록 실패
+#### 1. Tool Registration Failure
 ```typescript
-// 잘못된 예시
+// Incorrect example
 server.tool('invalid-tool', {
-  // 파라미터 스키마 누락
+  // Missing parameter schema
 }, handler);
 
-// 올바른 예시
+// Correct example
 server.tool('valid-tool', {
-  description: '명확한 설명',
+  description: 'Clear description',
   parameters: z.object({
-    param: z.string().describe('파라미터 설명')
+    param: z.string().describe('Parameter description')
   })
 }, handler);
 ```
 
-#### 2. 타입 불일치 문제
-- **Zod 스키마 검증**: 입력 파라미터의 타입 검증
-- **TypeScript 타입 정의**: 컴파일 타임 타입 안전성
+#### 2. Type Mismatch Issues
+- **Zod Schema Validation**: Type validation of input parameters
+- **TypeScript Type Definitions**: Compile-time type safety
 
-#### 3. 비동기 처리 오류
+#### 3. Asynchronous Processing Errors
 ```typescript
-// Promise 체인 적절히 처리
+// Properly handle Promise chains
 server.tool('async-tool', schema, async (params) => {
   try {
     const result = await someAsyncOperation(params);
     return { result };
   } catch (error) {
-    throw new Error(`작업 실패: ${error.message}`);
+    throw new Error(`Operation failed: ${error.message}`);
   }
 });
 ```
 
-## CLI 디버깅
+## CLI Debugging
 
-### CLI 명령어 테스트
+### CLI Command Testing
 ```bash
-# 로컬 개발 모드에서 CLI 실행
+# Run CLI in local development mode
 npm run context-compose -- --help
 
-# 특정 명령어 디버깅
+# Debug specific commands
 npm run context-compose -- get-context default --verbose
 ```
 
-### 일반적인 CLI 문제들
+### Common CLI Issues
 
-#### 1. 명령어 파싱 오류
-- **Commander.js 설정 확인**: [src/cli/index.ts](mdc:src/cli/index.ts)에서 명령어 정의 검토
-- **인자 검증**: 필수 인자와 선택적 인자 구분
+#### 1. Command Parsing Errors
+- **Commander.js Configuration Check**: Review command definitions in [src/cli/index.ts](mdc:src/cli/index.ts)
+- **Argument Validation**: Distinguish between required and optional arguments
 
-#### 2. 파일 경로 문제
+#### 2. File Path Issues
 ```typescript
-// 상대 경로 처리
+// Handle relative paths
 import path from 'path';
 const configPath = path.resolve(process.cwd(), '.contextcompose');
 
-// 파일 존재 확인
+// Check file existence
 import fs from 'fs-extra';
 if (!await fs.pathExists(configPath)) {
-  throw new Error('설정 디렉토리가 존재하지 않습니다');
+  throw new Error('Configuration directory does not exist');
 }
 ```
 
-## 빌드 및 배포 문제
+## Build and Deployment Issues
 
-### TypeScript 컴파일 오류
+### TypeScript Compilation Errors
 ```bash
-# 전체 타입 검사
+# Full type checking
 npm run type-check
 
-# 점진적 빌드
+# Incremental build
 npm run build
 ```
 
-### 의존성 문제
+### Dependency Issues
 ```bash
-# 의존성 재설치
+# Reinstall dependencies
 rm -rf node_modules pnpm-lock.yaml
 pnpm install
 
-# 의존성 버전 충돌 확인
+# Check dependency version conflicts
 pnpm list --depth=0
 ```
 
-### 패키지 배포 문제
+### Package Deployment Issues
 ```bash
-# 로컬 패키지 테스트
+# Test local package
 npm pack
 npm install -g context-compose-1.0.5.tgz
 
-# 배포 전 검증
+# Pre-deployment validation
 npm run lint && npm run test && npm run build
 ```
 
-## 테스트 디버깅
+## Test Debugging
 
-### Vitest 테스트 실행
+### Vitest Test Execution
 ```bash
-# 전체 테스트 실행
+# Run all tests
 npm test
 
-# 특정 테스트 파일 실행
+# Run specific test file
 npx vitest run tests/specific-test.test.ts
 
-# 감시 모드로 테스트 실행
+# Run tests in watch mode
 npx vitest --watch
 ```
 
-### Playwright E2E 테스트
+### Playwright E2E Tests
 ```bash
-# E2E 테스트 실행
+# Run E2E tests
 npx playwright test
 
-# 헤드리스 모드 비활성화 (디버깅용)
+# Disable headless mode (for debugging)
 npx playwright test --headed
 
-# 특정 브라우저에서만 테스트
+# Test only in specific browser
 npx playwright test --project=chromium
 ```
 
-## 성능 디버깅
+## Performance Debugging
 
-### 프로파일링
-- **Node.js 프로파일러**: `--inspect` 플래그 사용
-- **메모리 사용량 모니터링**: 메모리 리크 감지
-- **비동기 작업 병목 지점**: 느린 I/O 작업 식별
+### Profiling
+- **Node.js Profiler**: Use `--inspect` flag
+- **Memory Usage Monitoring**: Detect memory leaks
+- **Async Operation Bottlenecks**: Identify slow I/O operations
 
-### 최적화 전략
-- **번들 크기 최소화**: 불필요한 의존성 제거
-- **비동기 작업 병렬화**: Promise.all 활용
-- **캐싱 전략**: 반복적인 파일 읽기 작업 최적화
+### Optimization Strategies
+- **Minimize Bundle Size**: Remove unnecessary dependencies
+- **Parallelize Async Operations**: Utilize Promise.all
+- **Caching Strategy**: Optimize repetitive file read operations
 
-## 에러 핸들링 패턴
+## Error Handling Patterns
 
-### 구조화된 에러 처리
+### Structured Error Handling
 ```typescript
 class ContextComposeError extends Error {
   constructor(
@@ -177,15 +177,15 @@ class ContextComposeError extends Error {
   }
 }
 
-// 사용 예시
+// Usage example
 throw new ContextComposeError(
-  '컨텍스트 파일을 찾을 수 없습니다',
+  'Context file not found',
   'CONTEXT_NOT_FOUND',
   { path: contextPath }
 );
 ```
 
-### 우아한 실패 처리
-- **기본값 제공**: 설정 파일 누락 시 기본 설정 사용
-- **사용자 친화적 메시지**: 기술적 오류를 이해하기 쉬운 메시지로 변환
-- **복구 가능한 오류**: 자동으로 복구 시도할 수 있는 오류 구분
+### Graceful Failure Handling
+- **Provide Defaults**: Use default configuration when config file is missing
+- **User-Friendly Messages**: Convert technical errors to understandable messages
+- **Recoverable Errors**: Distinguish errors that can be automatically recovered

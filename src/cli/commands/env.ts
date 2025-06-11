@@ -2,54 +2,58 @@ import { Command } from 'commander';
 import { EnvLoader } from '../../core/env.js';
 
 /**
- * 환경변수 명령 생성
+ * Create environment variable command
  */
 export function createEnvCommand(): Command {
   const envCommand = new Command('env');
 
   envCommand
-    .description('환경변수 설정 상태를 확인합니다')
-    .option('-s, --setup', '.env 파일 설정 가이드 표시')
+    .description('Check environment variable configuration status')
+    .option('-s, --setup', 'Show .env file setup guide')
     .action(async (options: { setup?: boolean }) => {
       try {
         if (options.setup) {
           showEnvSetupGuide();
         } else {
-          // 전체 환경변수 상태 표시
+          // Display overall environment variable status
           EnvLoader.printStatus();
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
-        console.error(`❌ 환경변수 확인 중 오류 발생: ${errorMessage}`);
+        console.error(
+          `❌ Error checking environment variables: ${errorMessage}`
+        );
         process.exit(1);
       }
     });
 
-  // 도움말 개선
+  // Improve help
   envCommand.on('--help', () => {
     console.log('');
-    console.log('사용 예시:');
+    console.log('Usage examples:');
     console.log('  $ mcp-tool env');
     console.log('  $ mcp-tool env --setup');
     console.log('');
-    console.log('설명:');
-    console.log('  이 명령은 .env 파일과 환경변수 설정 상태를 확인합니다.');
+    console.log('Description:');
+    console.log(
+      '  This command checks .env file and environment variable configuration status.'
+    );
   });
 
   return envCommand;
 }
 
 /**
- * .env 파일 설정 가이드 표시
+ * Show .env file setup guide
  */
 function showEnvSetupGuide(): void {
-  console.log('🔧 .env 파일 설정 가이드');
+  console.log('🔧 .env File Setup Guide');
   console.log('');
-  console.log('1. 프로젝트 루트에 .env 파일을 생성하세요:');
+  console.log('1. Create .env file in project root:');
   console.log('   $ touch .env');
   console.log('');
-  console.log('2. .env 파일에 다음 내용을 추가하세요:');
+  console.log('2. Add the following content to .env file:');
   console.log('');
   console.log('# OpenWeather API Key');
   console.log('OPENWEATHER_API_KEY=your_api_key_here');
@@ -57,11 +61,11 @@ function showEnvSetupGuide(): void {
   console.log('# GitHub Token');
   console.log('GITHUB_TOKEN=your_github_token_here');
   console.log('');
-  console.log('3. 설정 확인:');
+  console.log('3. Verify configuration:');
   console.log('   $ mcp-tool env');
   console.log('');
   console.log(
-    '💡 .env.example 파일을 참고하여 다른 환경변수도 설정할 수 있습니다.'
+    '💡 You can set other environment variables by referring to .env.example file.'
   );
 }
 

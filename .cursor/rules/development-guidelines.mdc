@@ -3,70 +3,70 @@ description:
 globs:
 alwaysApply: false
 ---
-# 개발 가이드라인
+# Development Guidelines
 
-## TypeScript 코딩 스탠다드
+## TypeScript Coding Standards
 
-- **타입 안정성**: 모든 함수와 변수에 명시적 타입 정의
-- **Strict 모드**: [tsconfig.json](mdc:tsconfig.json)에서 엄격한 타입 검사 활성화
-- **타입 가드**: 런타임 검증을 위한 Zod 스키마 활용
+- **Type Safety**: Explicit type definitions for all functions and variables
+- **Strict Mode**: Enable strict type checking in [tsconfig.json](mdc:tsconfig.json)
+- **Type Guards**: Utilize Zod schemas for runtime validation
 
-## 코드 품질
+## Code Quality
 
-### ESLint 설정
-- 설정 파일: [eslint.config.js](mdc:eslint.config.js)와 [.eslintrc.json](mdc:.eslintrc.json)
-- TypeScript ESLint 규칙 적용
-- 자동 수정: `npm run lint:fix`
+### ESLint Configuration
+- Configuration files: [eslint.config.js](mdc:eslint.config.js) and [.eslintrc.json](mdc:.eslintrc.json)
+- Apply TypeScript ESLint rules
+- Auto-fix: `npm run lint:fix`
 
-### Prettier 포맷팅
-- 설정 파일: [.prettierrc](mdc:.prettierrc)
-- 자동 포맷팅: `npm run format`
-- 포맷 검사: `npm run format:check`
+### Prettier Formatting
+- Configuration file: [.prettierrc](mdc:.prettierrc)
+- Auto-formatting: `npm run format`
+- Format check: `npm run format:check`
 
-### Biome 통합
-- 설정 파일: [biome.json](mdc:biome.json)
-- 빠른 린팅과 포맷팅 제공
+### Biome Integration
+- Configuration file: [biome.json](mdc:biome.json)
+- Provides fast linting and formatting
 
-## 파일 구조 규칙
+## File Structure Rules
 
-### src/ 디렉토리 구조
+### src/ Directory Structure
 ```
 src/
-├── cli/          # CLI 관련 코드
-├── core/         # 핵심 비즈니스 로직
-├── schemas/      # Zod 스키마 정의
-└── types/        # TypeScript 타입 정의
+├── cli/          # CLI related code
+├── core/         # Core business logic
+├── schemas/      # Zod schema definitions
+└── types/        # TypeScript type definitions
 ```
 
-### mcp-server/ 디렉토리
-- MCP 서버 구현
-- FastMCP 프레임워크 사용
-- [mcp-server/server.ts](mdc:mcp-server/server.ts) 메인 파일
+### mcp-server/ Directory
+- MCP server implementation
+- Uses FastMCP framework
+- [mcp-server/server.ts](mdc:mcp-server/server.ts) main file
 
-## 테스트 전략
+## Testing Strategy
 
-### Vitest 단위 테스트
-- 설정 파일: [vitest.config.ts](mdc:vitest.config.ts)
-- 실행: `npm test`
-- 모든 유틸리티 함수와 핵심 로직에 테스트 작성
+### Vitest Unit Tests
+- Configuration file: [vitest.config.ts](mdc:vitest.config.ts)
+- Execution: `npm test`
+- Write tests for all utility functions and core logic
 
-### Playwright E2E 테스트
-- 설정 파일: [playwright.config.ts](mdc:playwright.config.ts)
-- CLI 인터페이스와 MCP 서버 통합 테스트
+### Playwright E2E Tests
+- Configuration file: [playwright.config.ts](mdc:playwright.config.ts)
+- Integration tests for CLI interface and MCP server
 
-## 빌드 및 배포
+## Build and Deployment
 
-### 빌드 프로세스
-- TypeScript 컴파일: `npm run build`
-- 타입 검사: `npm run type-check`
-- 출력 디렉토리: `dist/`
+### Build Process
+- TypeScript compilation: `npm run build`
+- Type checking: `npm run type-check`
+- Output directory: `dist/`
 
-### 패키지 배포
-- NPM 퍼블릭 패키지: `npm run publish-public`
-- 버전 관리: [package.json](mdc:package.json)에서 시맨틱 버저닝 적용
+### Package Deployment
+- NPM public package: `npm run publish-public`
+- Version management: Apply semantic versioning in [package.json](mdc:package.json)
 
-## 의존성 관리
+## Dependency Management
 
-- **런타임 의존성**: 최소한으로 유지
-- **개발 의존성**: 개발 도구와 테스트 프레임워크
-- **pnpm 사용**: [pnpm-lock.yaml](mdc:pnpm-lock.yaml)로 의존성 잠금
+- **Runtime Dependencies**: Keep to minimum
+- **Development Dependencies**: Development tools and testing frameworks
+- **Use pnpm**: Lock dependencies with [pnpm-lock.yaml](mdc:pnpm-lock.yaml)

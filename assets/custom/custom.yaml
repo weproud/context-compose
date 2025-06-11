@@ -1,0 +1,7 @@
+version: 1
+kind: <Whatever you want>
+name: <Whatever you want>
+description: <Whatever you want>
+prompt: <Whatever you want>
+enhanced-prompt: |-
+  <Whatever you want>

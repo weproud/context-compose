@@ -15,14 +15,14 @@ export function createGetContextCommand(): Command {
     .argument('<contextId>', 'Context ID')
     .option(
       '-e, --enhanced-prompt',
-      '상세한 enhanced prompt 사용 (기본값: 간단한 prompt)'
+      'Use detailed enhanced prompt (default: simple prompt)'
     )
     .action(
       async (contextId: string, options: { enhancedPrompt?: boolean }) => {
         try {
           const input: GetContextToolInput = {
             contextId,
-            projectRoot: process.cwd(), // CLI에서는 현재 작업 디렉토리 사용
+            projectRoot: process.cwd(), // Use current working directory in CLI
             enhancedPrompt: options.enhancedPrompt || false,
           };
 
@@ -37,7 +37,7 @@ export function createGetContextCommand(): Command {
           }
         } catch (error) {
           console.error(
-            `❌ Get Context 실행 중 오류 발생: ${error instanceof Error ? error.message : String(error)}`
+            `❌ Error executing Get Context: ${error instanceof Error ? error.message : String(error)}`
           );
           process.exit(1);
         }

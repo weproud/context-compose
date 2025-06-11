@@ -1,0 +1,25 @@
+version: 1
+kind: context
+name: <whatever you want>
+description: <whatever you want>
+
+id: custom
+context:
+  workflow: workflows/workflow.yaml
+  roles:
+    - roles/dan-abramov.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/clean-code.yaml
+    - rules/solid-principles.yaml
+    - rules/refactoring.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+prompt: |
+  <whatever you want>
+
+  ## Awaiting Work Request
+  After receiving specific work content from the user, begin development following all the above guidelines.
+
+  **What development work would you like to proceed with?**

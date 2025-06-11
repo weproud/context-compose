@@ -2,25 +2,25 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * 환경변수 로드 유틸리티
- * .env 파일에서 환경변수를 로드하고 관리합니다.
+ * Environment variable loading utility
+ * Loads and manages environment variables from .env file.
  */
 
-// 모듈 레벨 상태 관리
+// Module-level state management
 let loaded = false;
 
 /**
- * .env 파일에서 환경변수를 로드합니다.
- * 프로젝트 루트의 .env 파일을 찾아서 로드합니다.
+ * Loads environment variables from .env file.
+ * Finds and loads .env file from project root.
  */
 export function loadEnv(): void {
   if (loaded) return;
 
   try {
-    // 프로젝트 루트에서 .env 파일 찾기
+    // Find .env file in project root
     const envPath = join(process.cwd(), '.env');
 
-    // 간단한 .env 파일 파싱 (dotenv 없이)
+    // Simple .env file parsing (without dotenv)
     try {
       if (existsSync(envPath)) {
         const envContent = readFileSync(envPath, 'utf8');
@@ -36,68 +36,68 @@ export function loadEnv(): void {
             }
           }
         }
-        console.log('✅ .env 파일에서 환경변수를 로드했습니다.');
+        console.log('✅ Environment variables loaded from .env file.');
       } else {
         console.warn(
-          '⚠️  .env 파일을 찾을 수 없습니다. 환경변수는 시스템에서 로드됩니다.'
+          '⚠️  .env file not found. Environment variables will be loaded from system.'
         );
       }
     } catch (_parseError) {
       console.warn(
-        '⚠️  .env 파일 파싱 중 오류 발생. 시스템 환경변수만 사용합니다.'
+        '⚠️  Error parsing .env file. Using system environment variables only.'
       );
     }
 
     loaded = true;
   } catch (error) {
-    console.warn('⚠️  환경변수 로드 중 오류 발생:', error);
+    console.warn('⚠️  Error loading environment variables:', error);
   }
 }
 
 /**
- * 특정 환경변수 값을 가져옵니다.
- * @param key 환경변수 키
- * @param defaultValue 기본값 (선택사항)
- * @returns 환경변수 값 또는 기본값
+ * Gets specific environment variable value.
+ * @param key Environment variable key
+ * @param defaultValue Default value (optional)
+ * @returns Environment variable value or default value
  */
 export function getEnv(key: string, defaultValue?: string): string | undefined {
-  loadEnv(); // 자동으로 로드
+  loadEnv(); // Auto-load
   return process.env[key] ?? defaultValue;
 }
 
 /**
- * 필수 환경변수 값을 가져옵니다.
- * 값이 없으면 에러를 발생시킵니다.
- * @param key 환경변수 키
- * @returns 환경변수 값
- * @throws Error 환경변수가 설정되지 않은 경우
+ * Gets required environment variable value.
+ * Throws error if value is not set.
+ * @param key Environment variable key
+ * @returns Environment variable value
+ * @throws Error When environment variable is not set
  */
 export function getRequiredEnv(key: string): string {
-  loadEnv(); // 자동으로 로드
+  loadEnv(); // Auto-load
   const value = process.env[key];
   if (!value) {
-    throw new Error(`필수 환경변수 ${key}가 설정되지 않았습니다.`);
+    throw new Error(`Required environment variable ${key} is not set.`);
   }
   return value;
 }
 
 /**
- * 환경변수 설정 상태를 출력합니다.
+ * Prints environment variable configuration status.
  */
 export function printEnvStatus(): void {
   loadEnv();
 
-  console.log('🔧 환경변수 설정 상태:');
-  console.log(`  NODE_ENV: ${process.env.NODE_ENV ?? '미설정'}`);
+  console.log('🔧 Environment variable configuration status:');
+  console.log(`  NODE_ENV: ${process.env.NODE_ENV ?? 'not set'}`);
 
   if (process.env.OPENWEATHER_API_KEY) {
-    console.log('  OpenWeather API: ✅ 설정됨');
+    console.log('  OpenWeather API: ✅ configured');
   } else {
-    console.log('  OpenWeather API: ❌ 미설정');
+    console.log('  OpenWeather API: ❌ not configured');
   }
 }
 
-// 기존 클래스와의 호환성을 위한 객체 export
+// Object export for compatibility with existing classes
 export const EnvLoader = {
   load: loadEnv,
   get: getEnv,

@@ -1,9 +1,9 @@
 version: 1
-kind: task
-name: 'default'
-description: 'Default development context with comprehensive guidelines'
+kind: tascontextk
+name: default
+description: Default development context with comprehensive guidelines
 
-id: default-context
+id: default
 context:
   workflow: workflows/workflow.yaml
   roles:

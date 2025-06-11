@@ -55,9 +55,8 @@ class ContextComposeServer {
       if (existsSync(packagePath)) {
         try {
           return JSON.parse(readFileSync(packagePath, 'utf8'));
-        } catch (error) {
+        } catch {
           // Continue to next path if parsing fails
-          continue;
         }
       }
     }

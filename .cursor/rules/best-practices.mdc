@@ -3,21 +3,21 @@ description:
 globs:
 alwaysApply: false
 ---
-# 모범 사례 및 코드 패턴
+# Best Practices and Code Patterns
 
-## 코드 작성 원칙
+## Code Writing Principles
 
-### 클린 코드 원칙
-- **단일 책임 원칙**: 각 함수와 클래스는 하나의 명확한 책임만 가짐
-- **명확한 네이밍**: 변수, 함수, 클래스 이름이 목적을 명확히 표현
-- **작은 함수**: 함수는 한 화면에 들어갈 수 있는 크기로 제한
-- **의존성 주입**: 하드코딩된 의존성보다는 주입받는 구조
+### Clean Code Principles
+- **Single Responsibility Principle**: Each function and class has only one clear responsibility
+- **Clear Naming**: Variable, function, and class names clearly express their purpose
+- **Small Functions**: Functions are limited to a size that fits on one screen
+- **Dependency Injection**: Use injection structure rather than hardcoded dependencies
 
-### TypeScript 모범 사례
+### TypeScript Best Practices
 
-#### 타입 정의
+#### Type Definitions
 ```typescript
-// 좋은 예시: 명확하고 구체적인 타입
+// Good example: Clear and specific types
 interface ContextConfig {
   readonly version: number;
   readonly kind: 'task' | 'role' | 'workflow';
@@ -54,28 +54,28 @@ function isContextConfig(obj: unknown): obj is ContextConfig {
 }
 ```
 
-## 파일 구조 모범 사례
+## File Structure Best Practices
 
-### 모듈 분리 원칙
+### Module Separation Principles
 ```
 src/
 ├── cli/
-│   ├── commands/        # CLI 명령어별 모듈
-│   ├── utils/          # CLI 유틸리티
-│   └── index.ts        # CLI 진입점
+│   ├── commands/        # CLI command modules
+│   ├── utils/          # CLI utilities
+│   └── index.ts        # CLI entry point
 ├── core/
-│   ├── context/        # 컨텍스트 관련 로직
-│   ├── workflow/       # 워크플로우 엔진
-│   ├── notification/   # 알림 시스템
-│   └── types.ts        # 공통 타입 정의
+│   ├── context/        # Context-related logic
+│   ├── workflow/       # Workflow engine
+│   ├── notification/   # Notification system
+│   └── types.ts        # Common type definitions
 ├── schemas/
-│   ├── context.ts      # 컨텍스트 스키마
-│   ├── workflow.ts     # 워크플로우 스키마
-│   └── index.ts        # 스키마 export
+│   ├── context.ts      # Context schemas
+│   ├── workflow.ts     # Workflow schemas
+│   └── index.ts        # Schema exports
 └── types/
-    ├── cli.ts          # CLI 관련 타입
-    ├── mcp.ts          # MCP 관련 타입
-    └── index.ts        # 타입 export
+    ├── cli.ts          # CLI-related types
+    ├── mcp.ts          # MCP-related types
+    └── index.ts        # Type exports
 ```
 
 ### Export/Import 패턴
