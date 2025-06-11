@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FastMCP } from 'fastmcp';
@@ -22,12 +22,8 @@ class ContextComposeServer {
   private initialized: boolean;
 
   constructor() {
-    // Get version from package.json using synchronous fs
-    // When built, __dirname is dist/mcp-server/src, so we need to go up 3 levels to reach project root
-    const packagePath = path.join(__dirname, '../../../package.json');
-    const packageJson: PackageJson = JSON.parse(
-      readFileSync(packagePath, 'utf8')
-    );
+    // Get version from package.json using a more robust path resolution
+    const packageJson: PackageJson = this.findPackageJson();
 
     // Create FastMCP server with proper options
     this.server = new FastMCP({
@@ -40,6 +36,64 @@ class ContextComposeServer {
     this.init = this.init.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
+  }
+
+  /**
+   * Find package.json file using multiple strategies
+   */
+  private findPackageJson(): PackageJson {
+    const possiblePaths = [
+      // Strategy 1: Relative to current file (for built version)
+      path.join(__dirname, '../../../package.json'),
+      // Strategy 2: Relative to current file (for source version)
+      path.join(__dirname, '../../package.json'),
+      // Strategy 3: Look for package.json in parent directories
+      this.findPackageJsonUpwards(__dirname),
+    ].filter(Boolean) as string[];
+
+    for (const packagePath of possiblePaths) {
+      if (existsSync(packagePath)) {
+        try {
+          return JSON.parse(readFileSync(packagePath, 'utf8'));
+        } catch (error) {
+          // Continue to next path if parsing fails
+          continue;
+        }
+      }
+    }
+
+    // Fallback: return default version if no package.json found
+    return {
+      version: '1.0.0',
+      name: '@noanswer/context-compose',
+      description: 'Context Compose MCP Server',
+    };
+  }
+
+  /**
+   * Find package.json by walking up the directory tree
+   */
+  private findPackageJsonUpwards(startDir: string): string | null {
+    let currentDir = startDir;
+    const root = path.parse(currentDir).root;
+
+    while (currentDir !== root) {
+      const packagePath = path.join(currentDir, 'package.json');
+      if (existsSync(packagePath)) {
+        try {
+          const pkg = JSON.parse(readFileSync(packagePath, 'utf8'));
+          // Check if this is the correct package
+          if (pkg.name === '@noanswer/context-compose') {
+            return packagePath;
+          }
+        } catch {
+          // Continue searching if parsing fails
+        }
+      }
+      currentDir = path.dirname(currentDir);
+    }
+
+    return null;
   }
 
   /**

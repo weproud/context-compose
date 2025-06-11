@@ -41,7 +41,7 @@ context-compose get-context default
 {
   "context-compose": {
     "command": "npx",
-    "args": ["-y", "@noanswer/context-compose"]
+    "args": ["-y", "@noanswer/context-compose@latest"]
   }
 }
 ```
