@@ -4,111 +4,42 @@
 
 ## 🎯 Why Context Compose?
 
-Modern AI development assistants like Claude, ChatGPT, and Cursor are incredibly powerful, but they often lack project-specific context and consistent development guidelines. Context Compose solves this by providing:
+While PRDs (Product Requirements Documents) provide overall project descriptions, they lack the detailed context needed for specific development tasks. Each development unit (feature, fix, refactor, docs, etc.) requires its own contextual guidance to maintain consistency and quality.
 
-- **Systematic Context Management**: No more copy-pasting the same instructions repeatedly
-- **Consistent Development Standards**: Apply proven patterns and expert knowledge across your team
-- **Workflow Automation**: Streamline repetitive development tasks with predefined workflows
-- **Expert Personas**: Leverage the wisdom of industry experts like Dan Abramov, Martin Fowler, and Kent C. Dodds
-- **Seamless AI Integration**: Direct integration with AI models through Model Context Protocol (MCP)
+Context Compose was born from the idea of creating a composable system - like Docker Compose or GitHub Actions - where you can mix and match only the components you need for each specific task.
 
-Context Compose transforms ad-hoc AI interactions into systematic, repeatable, and efficient development workflows.
+**The Problem:**
+
+- PRDs are too high-level for granular development work
+- Developers constantly switch between different types of tasks requiring different mindsets
+- Inconsistent approaches across team members for similar tasks
+- Repetitive context-setting for AI assistants
+
+**The Solution:**
+Context Compose provides task-specific contexts that can be composed together, ensuring consistent, high-quality development practices across your entire team.
 
 ## ✨ Key Features
 
-- 🤖 **MCP Server**: Direct integration with AI models like Claude, ChatGPT via Model Context Protocol
-- 📋 **Context System**: Project-specific development guidelines, rules, and best practices management
-- 🔄 **Workflow Engine**: Automated task flows for development, testing, deployment, and code review
-- 🎯 **Role-based Development**: Apply expert personas and specialized knowledge domains
+- 🎯 **Task-Specific Contexts**: Maintain consistent context for each development unit (feature, fix, refactor, etc.)
+- 🔧 **Fully Customizable**: Extend and customize contexts to match your team's specific needs
+- 🤖 **MCP Integration**: Direct integration with AI models via Model Context Protocol
+- 📋 **Composable Architecture**: Mix and match components like Docker Compose
+- 🔄 **Workflow Engine**: Automated task flows for different development scenarios
+- � **Role-based Development**: Apply expert personas and specialized knowledge domains
 - 📢 **Notification System**: Work status notifications via Slack, email, and other channels
-- 🛠️ **Dual Interface**: Both MCP server and CLI tools for maximum flexibility
 
 ## 🚀 MCP Registration
-
-### Claude Desktop
-
-Add to your Claude Desktop configuration file (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
 ```json
 {
   "mcpServers": {
     "context-compose": {
       "command": "npx",
-      "args": ["-y", "@noanswer/context-compose@latest"],
-      "cwd": "/path/to/your/project"
+      "args": ["-y", "@noanswer/context-compose@latest"]
     }
   }
 }
 ```
-
-### Other MCP-Compatible Clients
-
-For any MCP-compatible client, use the following configuration:
-
-```json
-{
-  "context-compose": {
-    "command": "context-compose-mcp",
-    "args": [],
-    "cwd": "/path/to/your/project"
-  }
-}
-```
-
-## 🔧 Usage in Cursor and Windsurf
-
-### Cursor Integration
-
-1. **Install Context Compose**:
-
-   ```bash
-   npm install -g @noanswer/context-compose
-   ```
-
-2. **Initialize in your project**:
-
-   ```bash
-   context-compose init
-   ```
-
-3. **Use with Cursor Rules**: Add to your `.cursor/rules` directory:
-
-   ```markdown
-   # .cursor/rules/context-compose.md
-
-   Before starting any development task, use the MCP tool "get-context" to load appropriate project context:
-
-   - For new features: get-context feature
-   - For bug fixes: get-context fix
-   - For API development: get-context api
-   - For refactoring: get-context refactor
-   ```
-
-### Windsurf Integration
-
-1. **Setup MCP Server**: Configure Context Compose as an MCP server in Windsurf settings
-
-2. **Project Initialization**:
-
-   ```bash
-   context-compose init
-   ```
-
-3. **Context Loading**: Use the MCP tools directly in Windsurf:
-   - `get-context default` - Load basic development context
-   - `get-context feature --enhanced-prompt` - Load feature development context with detailed guidelines
-
-### 💡 Pro Tip: Enhanced AI Interaction
-
-For better AI responses, include "with context-compose" in your conversation when asking for development help:
-
-```
-"Help me build a React component with context-compose"
-"Review this API code with context-compose"
-"Debug this issue with context-compose"
-```
-
-This helps the AI understand that you want to leverage the loaded context and guidelines for more accurate, project-specific assistance.
 
 ## 📖 Usage Examples
 
@@ -236,7 +167,70 @@ get-context fix
 - Regression prevention guidelines
 - Documentation requirements
 
-## 🛠️ Customization
+## � Built-in Assets Structure
+
+Context Compose comes with a comprehensive set of pre-built components organized in the `assets/` directory:
+
+### 🎭 **Roles** (`assets/roles/`)
+
+Expert personas that provide specialized knowledge and perspectives:
+
+- **Frontend Experts**: Dan Abramov (React), Evan You (Vue), Rich Harris (Svelte)
+- **Backend Experts**: DHH (Rails), Ryan Dahl (Node.js), Linus Torvalds (Systems)
+- **Architecture Experts**: Martin Fowler (Patterns), Uncle Bob (Clean Code), John Carmack (Performance)
+- **Testing Experts**: Kent C. Dodds (Testing), Sindre Sorhus (Open Source)
+
+### 📋 **Rules** (`assets/rules/`)
+
+Development guidelines and best practices:
+
+- **Code Quality**: Clean code principles, SOLID principles, refactoring guidelines
+- **Security**: Security guidelines, error handling patterns
+- **Performance**: Performance optimization, accessibility guidelines
+- **Process**: Git workflow, testing principles, documentation standards
+- **API Design**: RESTful API patterns, API documentation standards
+
+### ⚡ **Actions** (`assets/actions/`)
+
+Automated workflow steps for common development tasks:
+
+- **Development**: Code implementation, testing, linting, building
+- **Git Operations**: Branch creation, commits, pull requests, merging
+- **Deployment**: Environment setup, deployment, rollback procedures
+- **Quality Assurance**: Code review, security audit, performance optimization
+- **Communication**: Status updates, documentation generation
+
+### 🔧 **MCPs** (`assets/mcps/`)
+
+Model Context Protocol integrations for enhanced AI capabilities:
+
+- **sequential-thinking**: Systematic problem-solving framework
+- **context7**: Advanced context management and retrieval
+- **github-api**: GitHub integration for repository operations
+- **playwright**: Browser automation and testing
+- **web-search**: Web search and information gathering
+
+### 📢 **Notify** (`assets/notify/`)
+
+Communication channels for status updates and notifications:
+
+- **Slack**: Rich message formatting with attachments and status indicators
+- **Discord**: Community notifications with embed support
+- **Email**: Professional email notifications with templates
+
+### 🔄 **Workflows** (`assets/workflows/`)
+
+Complete workflow orchestrations for different development scenarios:
+
+- **feature-workflow**: End-to-end feature development process
+- **hotfix-workflow**: Emergency bug fix procedures
+- **release-workflow**: Release preparation and deployment
+
+### 📝 **Custom** (`assets/custom/`)
+
+Template directory for creating your own custom components and extensions.
+
+## �🛠️ Customization
 
 ### Creating Custom Contexts
 
