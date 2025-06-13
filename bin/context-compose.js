@@ -13,27 +13,27 @@ const __dirname = dirname(__filename);
 const distCliPath = join(__dirname, '../dist/src/cli/index.js');
 const srcCliPath = join(__dirname, '../src/cli/index.ts');
 
-let cliPath;
+let entryPointPath;
 let useTypeScript = false;
 
 if (existsSync(distCliPath)) {
   // Production: use built JavaScript
-  cliPath = distCliPath;
+  entryPointPath = distCliPath;
 } else if (existsSync(srcCliPath)) {
   // Development: use TypeScript with tsx
-  cliPath = srcCliPath;
+  entryPointPath = srcCliPath;
   useTypeScript = true;
 } else {
   console.error(
-    '❌ CLI file not found. Please build the project or check the source files.'
+    '❌ Entry point file not found. Please build the project or check the source files.'
   );
   process.exit(1);
 }
 
-// Execute the CLI
+// Execute the unified CLI/server script
 const args = useTypeScript
-  ? ['npx', 'tsx', cliPath, ...process.argv.slice(2)]
-  : ['node', cliPath, ...process.argv.slice(2)];
+  ? ['npx', 'tsx', entryPointPath, ...process.argv.slice(2)]
+  : ['node', entryPointPath, ...process.argv.slice(2)];
 
 const child = spawn(args[0], args.slice(1), {
   stdio: 'inherit',
@@ -45,6 +45,6 @@ child.on('exit', code => {
 });
 
 child.on('error', error => {
-  console.error('❌ CLI execution failed:', error.message);
+  console.error('❌ Execution failed:', error.message);
   process.exit(1);
 });

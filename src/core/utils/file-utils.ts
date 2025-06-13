@@ -28,7 +28,6 @@ export async function copyDirectory(
 ): Promise<string[]> {
   const copiedFiles: string[] = [];
   await mkdir(dest, { recursive: true });
-  copiedFiles.push(dest);
 
   const entries = await readdir(src, { withFileTypes: true });
 
