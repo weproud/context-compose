@@ -5,12 +5,12 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
-import { createInitCommand } from './commands/init.js';
-import { createStartContextCommand } from './commands/start-context.js';
-import { createValidateContextCommand } from './commands/validate-context.js';
+import { initCommand } from './commands/init.js';
+import { startContextCommand } from './commands/start-context.js';
+import { validateContextCommand } from './commands/validate-context.js';
 
 function startMCPServer() {
-  console.log('🚀 Starting MCP server...');
+  console.info('🚀 Starting MCP server...');
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
@@ -68,9 +68,9 @@ function main() {
     .version('1.2.0'); // Make sure this is in sync with package.json
 
   // Register all commands
-  program.addCommand(createInitCommand());
-  program.addCommand(createStartContextCommand());
-  program.addCommand(createValidateContextCommand());
+  initCommand(program);
+  startContextCommand(program);
+  validateContextCommand(program);
 
   program.parse(process.argv);
 }

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -36,7 +37,7 @@ export function loadEnv(): void {
             }
           }
         }
-        console.log('✅ Environment variables loaded from .env file.');
+        console.info('✅ Environment variables loaded from .env file.');
       } else {
         console.warn(
           '⚠️  .env file not found. Environment variables will be loaded from system.'
@@ -87,13 +88,13 @@ export function getRequiredEnv(key: string): string {
 export function printEnvStatus(): void {
   loadEnv();
 
-  console.log('🔧 Environment variable configuration status:');
-  console.log(`  NODE_ENV: ${process.env.NODE_ENV ?? 'not set'}`);
+  console.info('🔧 Environment variable configuration status:');
+  console.info(`  NODE_ENV: ${process.env.NODE_ENV ?? 'not set'}`);
 
   if (process.env.OPENWEATHER_API_KEY) {
-    console.log('  OpenWeather API: ✅ configured');
+    console.info('  OpenWeather API: ✅ configured');
   } else {
-    console.log('  OpenWeather API: ❌ not configured');
+    console.info('  OpenWeather API: ❌ not configured');
   }
 }
 

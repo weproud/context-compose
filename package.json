@@ -3,25 +3,21 @@
   "version": "1.2.0",
   "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
   "bin": {
-    "context-compose": "bin/context-compose.js"
+    "context-compose": "dist/bin/context-compose.js"
   },
   "scripts": {
     "build": "tsc",
-    "context-compose": "tsx src/cli/index.ts",
+    "dev": "tsx src/cli/index.ts",
     "inspect": "npx fastmcp inspect mcp-server/server.ts",
     "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
     "test": "vitest tests/**/*.test.ts",
     "test:run": "vitest run tests/**/*.test.ts",
-    "lint": "biome lint src mcp-server",
-    "lint:fix": "biome lint --write src mcp-server",
-    "format": "biome format --write src mcp-server",
-    "format:check": "biome format src mcp-server",
     "check": "biome check src mcp-server",
     "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
-    "ci": "npm run format:check && npm run lint && npm run type-check && npm run test:run",
+    "ci": "npm run check && npm run type-check && npm run test:run",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "npm run pre-publish && changeset publish",
@@ -52,15 +48,10 @@
   },
   "homepage": "https://github.com/weproud/context-compose#readme",
   "files": [
-    "scripts/**",
     "assets/**",
     ".cursor/**",
     "README-task-master.md",
-    "index.js",
-    "bin/**",
-    "dist/**",
-    "mcp-server/**",
-    "src/**"
+    "dist/**"
   ],
   "dependencies": {
     "commander": "^11.1.0",
@@ -80,7 +71,6 @@
     "@types/inquirer": "^9.0.8",
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.15.29",
-    "@types/yaml": "^1.9.6",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vitest": "^3.2.0"

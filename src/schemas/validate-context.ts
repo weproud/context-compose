@@ -5,10 +5,6 @@ import { z } from 'zod';
  * Defines input parameters for the tool that validates a context and its components.
  */
 export const ValidateContextToolSchema = z.object({
-  contextName: z
-    .string()
-    .min(1, 'Context name is required')
-    .describe('Name of the context to validate (e.g., feature, api, test)'),
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
@@ -27,6 +23,7 @@ export type ValidateContextToolInput = z.infer<
 export interface ValidationError {
   filePath: string;
   message: string;
+  details?: string;
 }
 
 /**
@@ -35,7 +32,6 @@ export interface ValidationError {
 export interface ValidateContextToolResponse {
   success: boolean;
   message: string;
-  contextName: string;
   validatedFiles: number;
   errors: ValidationError[];
 }
