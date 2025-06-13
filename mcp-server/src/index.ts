@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FastMCP } from 'fastmcp';
-import { registerMCPTools } from './tools/index.js';
+import { registerAllTools } from './tools/index.js';
 
 // Constants
 const __filename = fileURLToPath(import.meta.url);
@@ -102,7 +102,7 @@ class ContextComposeServer {
     if (this.initialized) return;
 
     // Register all Context Compose tools
-    registerMCPTools(this.server);
+    registerAllTools(this.server);
 
     this.initialized = true;
     return this;

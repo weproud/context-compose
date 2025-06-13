@@ -27,18 +27,6 @@ interface ContextYaml {
 }
 
 /**
- * Component YAML file structure type (for personas, rules, etc.)
- */
-interface ComponentYaml {
-  version: number;
-  kind: string;
-  name: string;
-  description: string;
-  prompt: string;
-  'enhanced-prompt'?: string;
-}
-
-/**
  * Read and parse a YAML file.
  */
 function readYamlFile<T>(filePath: string): T {
@@ -76,39 +64,6 @@ function readContextFile(
     );
   }
   return context;
-}
-
-/**
- * Processes all sections defined in the context file (personas, rules, etc.),
- * reading each component file.
- */
-function processContextSections(
-  projectRoot: string,
-  context: ContextYaml['context']
-): Record<string, ComponentYaml[]> {
-  const processedSections: Record<string, ComponentYaml[]> = {};
-  const assetsPath = join(projectRoot, 'assets');
-
-  for (const [sectionName, sectionValue] of Object.entries(context)) {
-    if (!sectionValue || !Array.isArray(sectionValue)) continue;
-
-    try {
-      const components = sectionValue.map(filePath => {
-        const fullPath = join(assetsPath, filePath);
-        return readYamlFile<ComponentYaml>(fullPath);
-      });
-      processedSections[sectionName] = components;
-    } catch (error) {
-      console.warn(
-        `⚠️  Failed to read ${sectionName} files: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
-      processedSections[sectionName] = [];
-    }
-  }
-
-  return processedSections;
 }
 
 /**
@@ -156,10 +111,11 @@ export async function executeStartContext(
     // The `processContextSections` is not strictly needed to generate the prompt if we follow the pattern
     // in the provided `assets/*-context.yaml` files, but we can keep it for potential future use,
     // and to validate that all referenced files exist.
-    const processedSections = processContextSections(
-      input.projectRoot,
-      contextYaml.context
-    );
+    // const _processedSections = processContextSections(
+    //   input.projectRoot,
+    //   contextYaml.context,
+    //   true, // `validateFiles` is set to true
+    // );
 
     // 3. Combine prompts into a single string
     const combinedPrompt = combinePrompts(contextYaml, input.enhancedPrompt);
@@ -192,7 +148,7 @@ export async function executeStartContextTool(
   const validationResult = StartContextToolSchema.safeParse(args);
   if (!validationResult.success) {
     const errorMessages = validationResult.error.errors
-      .map(e => `${e.path.join('.')}: ${e.message}`)
+      .map((e) => `${e.path.join('.')}: ${e.message}`)
       .join(', ');
     return {
       success: false,

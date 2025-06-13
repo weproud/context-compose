@@ -7,7 +7,6 @@ import logger from '../logger.js';
 
 import { registerInitTool } from './init.js';
 import { registerStartContextTool } from './start-context.js';
-import { registerValidateTaskTool } from './validate-task.js';
 
 /**
  * Register all Hello MCP tools with the MCP server
@@ -17,7 +16,6 @@ export function registerAllTools(server: FastMCP): void {
   try {
     // Register each tool
     registerInitTool(server);
-    registerValidateTaskTool(server);
     registerStartContextTool(server);
 
     logger.info('All Context-Compose MCP tools registered successfully');

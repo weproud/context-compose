@@ -24,7 +24,7 @@ export function createValidateContextCommand(): Command {
 
         if (!result.success && result.errors.length > 0) {
           console.log('\nValidation Errors:');
-          result.errors.forEach(error => {
+          result.errors.forEach((error) => {
             console.error(`- File: ${error.filePath}`);
             console.error(`  Error: ${error.message}\n`);
           });

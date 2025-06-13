@@ -41,7 +41,9 @@ function validateComponentFile(
     const result = RequiredFieldsSchema.safeParse(yaml);
 
     if (!result.success) {
-      const missing = result.error.issues.map(i => i.path.join('.')).join(', ');
+      const missing = result.error.issues
+        .map((i) => i.path.join('.'))
+        .join(', ');
       errors.push({
         filePath,
         message: `Missing or invalid required fields: ${missing}`,
@@ -125,7 +127,7 @@ export async function executeValidateContextTool(
   const validationResult = ValidateContextToolSchema.safeParse(args);
   if (!validationResult.success) {
     const errorMessages = validationResult.error.errors
-      .map(e => `${e.path.join('.')}: ${e.message}`)
+      .map((e) => `${e.path.join('.')}: ${e.message}`)
       .join(', ');
     return {
       success: false,
