@@ -55,10 +55,12 @@ Context Compose provides task-specific contexts that can be composed together, e
 
 # Load default development context
 (prompt) get-context default with context-compose
-
+```
+```
 # Load feature development context with enhanced guidelines
 (prompt) get-context feature --enhanced-prompt with context-compose
-
+```
+```
 # Load API development context
 (prompt) get-context api with context-compose
 ```
