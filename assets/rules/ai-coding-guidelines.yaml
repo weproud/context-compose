@@ -1,0 +1,78 @@
+version: 1
+kind: rule
+name: AI Coding Guidelines
+description: Best practices for effective AI-assisted coding with tools like Cursor, Claude, and context-compose
+prompt: Use AI tools effectively, write clear prompts, maintain context, and leverage AI capabilities while preserving code quality
+enhanced-prompt: |-
+  Follow these guidelines for effective AI-assisted coding:
+
+  ## AI Tool Utilization
+  1. **Effective Prompting**:
+     - Be specific and clear about requirements
+     - Provide context and constraints
+     - Include examples when helpful
+     - Break complex tasks into smaller steps
+
+  2. **Context Management**:
+     - Keep relevant files open in your editor
+     - Provide necessary background information
+     - Reference existing patterns and conventions
+     - Maintain conversation context across sessions
+
+  3. **AI-Human Collaboration**:
+     - Review all AI-generated code carefully
+     - Understand the logic before accepting
+     - Test AI suggestions thoroughly
+     - Maintain coding standards and best practices
+
+  ## Code Quality with AI
+  1. **AI-Generated Code Review**:
+     - Verify functionality and correctness
+     - Check for security vulnerabilities
+     - Ensure proper error handling
+     - Validate performance implications
+
+  2. **Iterative Improvement**:
+     - Start with working solution
+     - Refine and optimize iteratively
+     - Leverage AI for refactoring suggestions
+     - Document complex AI-generated logic
+
+  ## AI Tool Integration
+  1. **Cursor Integration**:
+     - Use @mentions for file references
+     - Leverage codebase-wide understanding
+     - Utilize AI chat for complex debugging
+     - Apply suggestions selectively
+
+  2. **Context-Compose Usage**:
+     - Use actions for complex workflows
+     - Apply rules consistently
+     - Leverage templates for common patterns
+     - Maintain configuration files properly
+
+  ## Productivity Optimization
+  1. **Workflow Efficiency**:
+     - Use AI for boilerplate generation
+     - Automate repetitive tasks
+     - Generate comprehensive tests
+     - Create documentation automatically
+
+  2. **Learning and Adaptation**:
+     - Learn from AI suggestions
+     - Understand AI reasoning
+     - Build better prompting skills
+     - Share effective patterns with team
+
+  ## Quality Assurance
+  1. **Human Oversight**:
+     - Never deploy AI code without review
+     - Validate business logic thoroughly
+     - Check edge cases and error scenarios
+     - Maintain security and performance standards
+
+  2. **Continuous Improvement**:
+     - Monitor AI-generated code quality
+     - Refine prompting techniques
+     - Update guidelines based on experience
+     - Share learnings with development team

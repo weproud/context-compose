@@ -1,10 +1,10 @@
 version: 1
 kind: rule
-name: Development Rule
-description: Comprehensive development rules and best practices for context-compose development
-prompt: Follow TypeScript strict mode, ESLint/Prettier standards, conventional commits, mandatory PR reviews, comprehensive documentation, and utilize sequential-thinking/context7/playwright for complex tasks.
+name: Context-Compose Development
+description: Development standards and best practices specific to context-compose AI coding tool
+prompt: Follow TypeScript best practices, utilize AI tools effectively, maintain clean architecture, and focus on developer experience
 enhanced-prompt: |-
-  Follow these comprehensive development rules when working on context-compose:
+  Follow these development standards when working on context-compose AI coding tool:
 
   ## Code Quality Standards
   1. **TypeScript Excellence**:
