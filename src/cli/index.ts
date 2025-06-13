@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createGetContextCommand } from './commands/get-context.js';
+import { createEnvCommand } from './commands/env.js';
 import { createInitCommand } from './commands/init.js';
+import { createStartContextCommand } from './commands/start-context.js';
 // import { createEnvCommand, showEnvExamples } from './commands/env.js';
 
 /**
@@ -21,11 +22,11 @@ function createCLI(): Command {
   // Add Init command
   program.addCommand(createInitCommand());
 
-  // Add Get Context command (direct command)
-  program.addCommand(createGetContextCommand());
+  // Add Start Context command
+  program.addCommand(createStartContextCommand());
 
   // Add environment variable command
-  // program.addCommand(createEnvCommand());
+  program.addCommand(createEnvCommand());
 
   // Improve help
   program.on('--help', () => {
@@ -56,7 +57,7 @@ async function main(): Promise<void> {
 
 // 스크립트가 직접 실행될 때만 main 함수 호출 (ES modules 방식)
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
+  main().catch(error => {
     console.error('❌ 예상치 못한 오류:', error);
     process.exit(1);
   });
