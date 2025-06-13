@@ -2,7 +2,17 @@ version: 1
 kind: action
 name: Create Branch
 description: Create a new Git branch with proper naming conventions and best practices
-prompt: Create new Git branch with auto-generated name from updated main branch. Handle uncommitted changes and verify creation.
+prompt: |
+  Create new Git branches with intelligent naming and proper workflow setup.
+
+  This action creates well-named Git branches following team conventions with
+  automatic name generation based on context. It handles uncommitted changes,
+  updates base branches, and sets up proper tracking relationships with
+  remote repositories.
+
+  Use this when starting new features, bug fixes, or any development work
+  that requires a separate branch. The process includes change management,
+  branch naming optimization, and automated setup for immediate productivity.
 enhanced-prompt: |-
   # 🚀 Smart Git Branch Creation with Auto-Generated Names
 

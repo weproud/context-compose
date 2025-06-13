@@ -2,70 +2,73 @@ version: 1
 kind: action
 name: Build
 description: Build project with optimization, validation, and artifact generation
-prompt: Build the project with proper optimization and validation
+prompt: |
+  Build the project with comprehensive optimization, validation, and quality assurance.
+
+  This action performs a complete build process including dependency management, 
+  code quality checks, compilation, and artifact generation. It validates the 
+  build environment, runs pre-build checks, optimizes the output, and generates 
+  detailed build reports.
+
+  Use this when you need to create production-ready builds, validate code quality,
+  or prepare artifacts for deployment. The process includes automated testing,
+  security audits, and performance analysis to ensure build reliability.
 enhanced-prompt: |-
-  **Build the project with comprehensive optimization and validation.**
+  # 🔨 Build Workflow
 
-  ## Build Objectives
-  1. **Compilation & Bundling:**
-     - Compile TypeScript/JavaScript with proper type checking
-     - Bundle assets with optimization (minification, tree-shaking)
-     - Generate source maps for debugging
-     - Optimize images and static assets
+  ## Core Steps
 
-  2. **Quality Validation:**
-     - Run linting and formatting checks
-     - Validate TypeScript types and interfaces
-     - Check for unused imports and dead code
-     - Ensure build reproducibility
+  **1. Environment Check & Cleanup**
+  ```bash
+  # Check environment
+  node --version && npm --version
+  [ -f "package.json" ] || { echo "❌ No package.json"; exit 1; }
 
-  ## Build Process
-  1. **Pre-build Validation:**
-     - Clean previous build artifacts
-     - Verify all dependencies are installed
-     - Check for TypeScript compilation errors
-     - Validate configuration files
+  # Clean previous builds
+  rm -rf dist/ build/ .next/ out/ node_modules/.cache/
+  ```
 
-  2. **Compilation Phase:**
-     - Compile TypeScript with strict type checking
-     - Process CSS/SCSS with autoprefixer
-     - Optimize and compress images
-     - Generate optimized bundles
+  **2. Dependencies & Quality Checks**
+  ```bash
+  # Install dependencies
+  [ -f "package-lock.json" ] && npm ci || npm install
 
-  3. **Post-build Validation:**
-     - Verify all expected artifacts are generated
-     - Check bundle sizes against thresholds
-     - Validate critical paths and entry points
-     - Generate build reports and metrics
+  # Security audit
+  npm audit --audit-level=high
 
-  ## Build Configurations
-  - **Development**: Fast builds with source maps and hot reload
-  - **Production**: Optimized builds with minification and compression
-  - **Testing**: Builds optimized for test execution
-  - **Staging**: Production-like builds with additional debugging info
+  # Type checking & linting
+  [ -f "tsconfig.json" ] && npx tsc --noEmit
+  npm run lint 2>/dev/null || npx eslint src/
+  npm test 2>/dev/null || echo "⚠️ No tests"
+  ```
 
-  ## Optimization Strategies
-  1. **Bundle Optimization:**
-     - Code splitting for better caching
-     - Tree shaking to remove unused code
-     - Minification and compression
-     - Asset optimization and lazy loading
+  **3. Build Execution**
+  ```bash
+  # Determine and run build
+  if grep -q '"build"' package.json; then
+    npm run build
+  elif [ -f "webpack.config.js" ]; then
+    npx webpack --mode=production
+  elif [ -f "vite.config.js" ]; then
+    npx vite build
+  else
+    echo "❌ No build config found"; exit 1
+  fi
+  ```
 
-  2. **Performance Monitoring:**
-     - Bundle size analysis and reporting
-     - Build time optimization
-     - Memory usage monitoring
-     - Cache efficiency tracking
+  **4. Validation & Analysis**
+  ```bash
+  # Find build directory
+  BUILD_DIR=$(ls -d dist build .next out 2>/dev/null | head -1)
 
-  ## Error Handling
-  - Provide clear error messages for build failures
-  - Suggest fixes for common compilation errors
-  - Generate detailed build logs for debugging
-  - Implement retry mechanisms for transient failures
+  # Validate outputs
+  [ -d "$BUILD_DIR" ] || { echo "❌ No build output"; exit 1; }
 
-  ## Success Criteria
-  - ✅ All TypeScript compilation passes without errors
-  - ✅ Bundle sizes are within acceptable limits
-  - ✅ All assets are properly optimized
-  - ✅ Build artifacts are generated successfully
-  - ✅ Build process completes within time limits
+  # Size analysis
+  du -sh "$BUILD_DIR"
+  find "$BUILD_DIR" -name "*.js" -o -name "*.css" | wc -l
+
+  echo "✅ Build completed: $BUILD_DIR"
+  ```
+
+  **🎯 Result:** Production-ready build with validation and optimization

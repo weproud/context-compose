@@ -6,8 +6,8 @@ description: 'Context for code refactoring with safety and quality improvement f
 context:
   workflow: workflows/workflow.yaml
   roles:
-    - roles/martin-fowler.yaml
-    - roles/uncle-bob.yaml
+- personas/martin-fowler.yaml
+- personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml

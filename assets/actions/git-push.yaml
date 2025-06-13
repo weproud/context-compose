@@ -2,7 +2,17 @@ version: 1
 kind: action
 name: Git Push
 description: Push local changes to remote repository with comprehensive safety checks
-prompt: Push committed changes to remote repository with safety checks. Verify clean status, fetch latest changes, set upstream for new branches, and confirm successful push.
+prompt: |
+  Push local changes to remote repository with comprehensive safety checks.
+
+  This action safely pushes committed changes to remote repositories with
+  pre-push validation, conflict detection, and proper upstream configuration.
+  It ensures clean repository status, validates branch protection rules,
+  and handles both new and existing branch scenarios.
+
+  Use this after committing changes that need to be shared with the team.
+  The process includes safety checks, conflict resolution guidance, and
+  automated verification to maintain repository integrity.
 enhanced-prompt: |-
   Push changes to remote repository following these comprehensive guidelines:
 

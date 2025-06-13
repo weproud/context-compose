@@ -72,7 +72,7 @@ description: '새로운 기능 개발을 위한 컨텍스트'
 context:
   workflow: workflows/feature-workflow.yaml
   roles:
-    - roles/dan-abramov.yaml
+- personas/dan-abramov.yaml
   rules:
     - rules/clean-code.yaml
   mcps:

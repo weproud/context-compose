@@ -2,299 +2,86 @@ version: 1
 kind: action
 name: Deploy
 description: Safe deployment process with environment validation, health checks, and rollback capability
-prompt: Execute deployment with pre-deployment checks, environment validation, progressive rollout, health monitoring, and automated rollback on failure.
+prompt: |
+  Execute safe and reliable deployments with comprehensive validation and monitoring.
+
+  This action performs complete deployment workflows including pre-deployment validation,
+  environment configuration, progressive rollout, health checks, and automated rollback
+  capabilities. It ensures zero-downtime deployments with proper monitoring and
+  notification systems.
+
+  Use this for production deployments, staging releases, or any environment where
+  reliability is critical. The process includes security validation, performance
+  monitoring, and team notifications to maintain deployment transparency.
 enhanced-prompt: |-
-  # 🚀 Safe Deployment Workflow
+  # 🚀 Deployment Workflow
 
-  **Deploy your application with professional safety checks and monitoring.**
+  ## Core Steps
 
-  ## 🔍 Step 1: Pre-Deployment Validation
+  **1. Pre-deployment Validation**
   ```bash
-  echo "=== Pre-Deployment Validation ==="
-  
-  # Get deployment context
+  # Environment setup
   ENVIRONMENT=${1:-staging}
-  CURRENT_BRANCH=$(git branch --show-current)
   DEPLOY_VERSION=$(git rev-parse --short HEAD)
-  DEPLOY_TIME=$(date '+%Y-%m-%d %H:%M:%S')
-  
-  echo "🎯 Target environment: $ENVIRONMENT"
-  echo "🌿 Branch: $CURRENT_BRANCH"
-  echo "📦 Version: $DEPLOY_VERSION"
-  echo "⏰ Time: $DEPLOY_TIME"
-  echo ""
-  
+
   # Validate branch for production
-  if [ "$ENVIRONMENT" = "production" ] && [ "$CURRENT_BRANCH" != "main" ]; then
-    echo "❌ Production deployments must be from main branch"
-    exit 1
-  fi
-  
-  echo "✅ Branch validation passed"
-  ```
-
-  ## 🧪 Step 2: Test Suite Execution
-  ```bash
-  echo "=== Test Suite Execution ==="
-  
-  # Run comprehensive tests
-  echo "🧪 Running unit tests..."
-  npm test 2>/dev/null || echo "⚠️  No unit tests configured"
-  
-  echo "🔗 Running integration tests..."
-  npm run test:integration 2>/dev/null || echo "⚠️  No integration tests configured"
-  
-  # Environment-specific tests
   if [ "$ENVIRONMENT" = "production" ]; then
-    echo "🎭 Running E2E tests..."
-    npm run test:e2e 2>/dev/null || echo "⚠️  No E2E tests configured"
+    [ "$(git branch --show-current)" = "main" ] || { echo "❌ Production must be from main"; exit 1; }
   fi
-  
-  echo "✅ Test suite completed"
-  echo ""
+
+  # Run tests
+  npm test || { echo "❌ Tests failed"; exit 1; }
   ```
 
-  ## 🔧 Step 3: Build Process
+  **2. Build & Environment Setup**
   ```bash
-  echo "=== Build Process ==="
-  
-  # Clean previous builds
-  echo "🧹 Cleaning previous builds..."
-  rm -rf dist/ build/ .next/ 2>/dev/null || true
-  
-  # Install dependencies
-  echo "📦 Installing dependencies..."
-  npm ci || npm install
-  
-  # Build application
-  echo "🔨 Building application..."
+  # Clean build
+  rm -rf dist/ build/ .next/
+  npm ci
   npm run build
-  
-  if [ $? -eq 0 ]; then
-    echo "✅ Build successful"
-  else
-    echo "❌ Build failed"
-    exit 1
-  fi
-  echo ""
-  ```
 
-  ## 🌍 Step 4: Environment Configuration
-  ```bash
-  echo "=== Environment Configuration ==="
-  
-  # Check environment files
+  # Environment configuration
   ENV_FILE=".env.$ENVIRONMENT"
-  if [ -f "$ENV_FILE" ]; then
-    echo "📄 Using environment file: $ENV_FILE"
-    cp "$ENV_FILE" .env
-  else
-    echo "⚠️  No environment file found: $ENV_FILE"
-  fi
-  
-  # Validate required environment variables
-  echo "🔍 Validating environment variables..."
-  
-  # Add your required env vars here
-  REQUIRED_VARS="NODE_ENV DATABASE_URL API_KEY"
-  for var in $REQUIRED_VARS; do
-    if [ -z "${!var}" ]; then
-      echo "❌ Missing required environment variable: $var"
-      exit 1
-    else
-      echo "✅ $var is set"
-    fi
-  done
-  
-  echo "✅ Environment configuration validated"
-  echo ""
+  [ -f "$ENV_FILE" ] && cp "$ENV_FILE" .env
+
+  # Validate required env vars
+  [ -z "$DATABASE_URL" ] && { echo "❌ Missing DATABASE_URL"; exit 1; }
   ```
 
-  ## 🚀 Step 5: Deployment Execution
+  **3. Deployment Execution**
   ```bash
-  echo "=== Deployment Execution ==="
-  
-  # Create deployment backup
-  echo "💾 Creating deployment backup..."
+  # Create backup
   BACKUP_DIR="backups/deploy-$(date +%Y%m%d-%H%M%S)"
   mkdir -p "$BACKUP_DIR"
-  
-  # Backup current deployment (if exists)
-  if [ -d "current" ]; then
-    cp -r current/ "$BACKUP_DIR/"
-    echo "✅ Backup created: $BACKUP_DIR"
-  fi
-  
+  [ -d "current" ] && cp -r current/ "$BACKUP_DIR/"
+
   # Deploy based on environment
   case "$ENVIRONMENT" in
-    "staging")
-      echo "🎭 Deploying to staging..."
-      # Add staging deployment commands
-      npm run deploy:staging 2>/dev/null || echo "⚠️  No staging deploy script"
-      ;;
-    "production")
-      echo "🏭 Deploying to production..."
-      # Add production deployment commands
-      npm run deploy:production 2>/dev/null || echo "⚠️  No production deploy script"
-      ;;
-    *)
-      echo "🔧 Deploying to $ENVIRONMENT..."
-      npm run deploy 2>/dev/null || echo "⚠️  No deploy script configured"
-      ;;
+    "staging") npm run deploy:staging ;;
+    "production") npm run deploy:production ;;
+    *) npm run deploy ;;
   esac
-  
-  echo "✅ Deployment executed"
-  echo ""
   ```
 
-  ## 🏥 Step 6: Health Checks
+  **4. Health Checks & Validation**
   ```bash
-  echo "=== Health Checks ==="
-  
-  # Wait for deployment to stabilize
-  echo "⏳ Waiting for deployment to stabilize..."
+  # Wait for deployment
   sleep 30
-  
-  # Health check URL (customize for your app)
-  HEALTH_URL="https://your-app-$ENVIRONMENT.com/health"
-  
-  echo "🏥 Performing health checks..."
-  
-  # HTTP health check
+
+  # Health check
+  HEALTH_URL="https://app-$ENVIRONMENT.com/health"
   for i in {1..5}; do
-    echo "🔍 Health check attempt $i/5..."
-    
     if curl -f -s "$HEALTH_URL" > /dev/null; then
       echo "✅ Health check passed"
-      HEALTH_STATUS="healthy"
       break
     else
-      echo "⚠️  Health check failed, retrying in 10s..."
+      echo "⚠️ Health check $i/5 failed, retrying..."
       sleep 10
-      HEALTH_STATUS="unhealthy"
+      [ $i -eq 5 ] && { echo "❌ Health checks failed"; exit 1; }
     fi
   done
-  
-  if [ "$HEALTH_STATUS" = "unhealthy" ]; then
-    echo "❌ Health checks failed after 5 attempts"
-    echo "🔄 Initiating rollback..."
-    # Rollback logic here
-    exit 1
-  fi
-  
-  echo "✅ All health checks passed"
-  echo ""
+
+  echo "🚀 Deployment to $ENVIRONMENT successful!"
   ```
 
-  ## 📊 Step 7: Deployment Verification
-  ```bash
-  echo "=== Deployment Verification ==="
-  
-  # Verify deployment version
-  echo "🔍 Verifying deployment version..."
-  
-  # Check if version endpoint exists
-  VERSION_URL="https://your-app-$ENVIRONMENT.com/version"
-  DEPLOYED_VERSION=$(curl -s "$VERSION_URL" 2>/dev/null | grep -o '"version":"[^"]*"' | cut -d'"' -f4)
-  
-  if [ "$DEPLOYED_VERSION" = "$DEPLOY_VERSION" ]; then
-    echo "✅ Version verification passed: $DEPLOYED_VERSION"
-  else
-    echo "⚠️  Version mismatch - Expected: $DEPLOY_VERSION, Got: $DEPLOYED_VERSION"
-  fi
-  
-  # Performance check
-  echo "⚡ Performance check..."
-  RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' "$HEALTH_URL")
-  echo "📈 Response time: ${RESPONSE_TIME}s"
-  
-  echo "✅ Deployment verification completed"
-  echo ""
-  ```
-
-  ## 📱 Step 8: Notification & Documentation
-  ```bash
-  echo "=== Deployment Notification ==="
-  
-  # Create deployment summary
-  cat << EOF > /tmp/deployment_summary.md
-  ## 🚀 Deployment Summary
-
-  **Environment:** $ENVIRONMENT
-  **Version:** $DEPLOY_VERSION
-  **Branch:** $CURRENT_BRANCH
-  **Time:** $DEPLOY_TIME
-  **Status:** ✅ Successful
-
-  ### 📊 Metrics
-  - Health checks: ✅ Passed
-  - Response time: ${RESPONSE_TIME}s
-  - Version verified: ✅ $DEPLOYED_VERSION
-
-  ### 🔗 Links
-  - Application: https://your-app-$ENVIRONMENT.com
-  - Health check: $HEALTH_URL
-  - Monitoring: https://monitoring.com/dashboard
-
-  ### 📋 Next Steps
-  - Monitor application performance
-  - Watch for any error alerts
-  - Verify user functionality
-
-  ---
-  *Automated deployment by task-action*
-  EOF
-  
-  echo "📄 Deployment summary created"
-  
-  # Send notification
-  echo "📱 Sending deployment notification..."
-  task-action send-message --type deployment-success --environment "$ENVIRONMENT"
-  
-  echo "✅ Notifications sent"
-  echo ""
-  ```
-
-  ## 🔄 Step 9: Rollback Plan (if needed)
-  ```bash
-  echo "=== Rollback Plan ==="
-  echo ""
-  echo "🔄 If rollback is needed, run:"
-  echo "  # Quick rollback to previous version"
-  echo "  git checkout HEAD~1"
-  echo "  npm run deploy:$ENVIRONMENT"
-  echo ""
-  echo "  # Restore from backup"
-  echo "  cp -r $BACKUP_DIR/* current/"
-  echo ""
-  echo "  # Database rollback (if applicable)"
-  echo "  npm run db:rollback"
-  echo ""
-  echo "📋 Rollback checklist:"
-  echo "  - [ ] Stop current deployment"
-  echo "  - [ ] Restore previous version"
-  echo "  - [ ] Run health checks"
-  echo "  - [ ] Notify team of rollback"
-  echo "  - [ ] Investigate deployment issues"
-  ```
-
-  ## 🎉 Step 10: Deployment Success
-  ```bash
-  echo "=== Deployment Complete ==="
-  echo ""
-  echo "🎉 Deployment to $ENVIRONMENT successful!"
-  echo "📦 Version: $DEPLOY_VERSION"
-  echo "🔗 URL: https://your-app-$ENVIRONMENT.com"
-  echo "📊 Health: ✅ Healthy"
-  echo "⏰ Duration: $(date '+%Y-%m-%d %H:%M:%S')"
-  echo ""
-  echo "📋 Post-deployment checklist:"
-  echo "  - [ ] Monitor application logs"
-  echo "  - [ ] Check error rates"
-  echo "  - [ ] Verify user functionality"
-  echo "  - [ ] Update deployment documentation"
-  echo ""
-  echo "🚀 Deployment workflow completed successfully!"
-  ```
-
-  **🚀 Professional deployment completed with safety checks and monitoring!**
+  **🎯 Result:** Safe deployment with validation, health checks, and rollback capability

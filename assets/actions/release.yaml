@@ -1,0 +1,111 @@
+version: 1
+kind: action
+name: Release Management
+description: Comprehensive release preparation, versioning, and deployment with changelog generation
+prompt: |
+  Manage complete release cycles with versioning, changelog generation, and deployment.
+
+  This action handles semantic versioning, automated changelog creation, tag
+  management, and coordinated deployment across environments. It ensures
+  consistent release processes with proper documentation and rollback
+  capabilities for production releases.
+
+  Use this for major releases, version updates, or coordinated deployments.
+  The process includes version bumping, changelog generation, tag creation,
+  and automated deployment with comprehensive validation and monitoring.
+enhanced-prompt: |-
+  # 🚀 Release Management Workflow
+
+  ## Core Steps
+
+  **1. Release Preparation**
+  ```bash
+  # Determine release type
+  RELEASE_TYPE=${1:-patch}  # major, minor, patch
+  CURRENT_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "1.0.0")
+
+  echo "📦 Current version: $CURRENT_VERSION"
+  echo "🔄 Release type: $RELEASE_TYPE"
+
+  # Ensure clean working directory
+  [ -z "$(git status --porcelain)" ] || { echo "❌ Uncommitted changes"; exit 1; }
+
+  # Switch to main branch
+  git checkout main
+  git pull origin main
+  ```
+
+  **2. Version & Changelog**
+  ```bash
+  # Bump version
+  npm version $RELEASE_TYPE --no-git-tag-version
+  NEW_VERSION=$(node -p "require('./package.json').version")
+
+  echo "🏷️ New version: $NEW_VERSION"
+
+  # Generate changelog
+  echo "📝 Generating changelog..."
+  cat > CHANGELOG_TEMP.md << EOF
+  # Changelog
+
+  ## [$NEW_VERSION] - $(date +%Y-%m-%d)
+
+  ### Added
+  - New features and enhancements
+
+  ### Changed
+  - Updates and improvements
+
+  ### Fixed
+  - Bug fixes and patches
+
+  ### Security
+  - Security improvements
+  EOF
+
+  # Merge with existing changelog
+  [ -f "CHANGELOG.md" ] && tail -n +2 CHANGELOG.md >> CHANGELOG_TEMP.md
+  mv CHANGELOG_TEMP.md CHANGELOG.md
+  ```
+
+  **3. Release Build & Test**
+  ```bash
+  # Full test suite
+  echo "🧪 Running comprehensive tests..."
+  npm test || { echo "❌ Tests failed"; exit 1; }
+
+  # Production build
+  echo "🔨 Creating production build..."
+  npm run build || { echo "❌ Build failed"; exit 1; }
+
+  # Security audit
+  npm audit --audit-level=moderate || echo "⚠️ Security issues detected"
+
+  echo "✅ Release validation completed"
+  ```
+
+  **4. Release Deployment**
+  ```bash
+  # Commit release changes
+  git add package.json CHANGELOG.md
+  git commit -m "chore: release v$NEW_VERSION
+
+  - Version bump to $NEW_VERSION
+  - Updated changelog
+  - Production build validated"
+
+  # Create release tag
+  git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
+
+  # Push release
+  git push origin main
+  git push origin "v$NEW_VERSION"
+
+  # Deploy to production
+  echo "🚀 Deploying to production..."
+  npm run deploy:production || { echo "❌ Deployment failed"; exit 1; }
+
+  echo "🎉 Release v$NEW_VERSION deployed successfully!"
+  ```
+
+  **🎯 Result:** Complete release with versioning, changelog, and production deployment

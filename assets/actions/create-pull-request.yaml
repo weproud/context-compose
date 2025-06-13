@@ -2,98 +2,88 @@ version: 1
 kind: action
 name: Create Pull Request
 description: Create comprehensive Pull Request with detailed information and proper workflow
-prompt: Create detailed Pull Request with clear title, comprehensive description, proper reviewers, and relevant labels. Ensure all tests pass and include testing notes.
+prompt: |
+  Create comprehensive Pull Requests with professional standards and team collaboration.
+
+  This action generates detailed PR descriptions, assigns appropriate reviewers,
+  applies relevant labels, and ensures all quality checks pass before submission.
+  It follows best practices for code review preparation and team communication.
+
+  Use this when your feature branch is ready for review and merge. The process
+  includes automated validation, reviewer assignment, and comprehensive
+  documentation to facilitate efficient code review and collaboration.
 enhanced-prompt: |-
-  Create a Pull Request following these comprehensive guidelines:
+  # 🔄 Pull Request Creation Workflow
 
-  ## Pre-PR Preparation
-  1. **Code Quality Verification**:
-     - Ensure all tests pass locally
-     - Verify code formatting and linting compliance
-     - Check for any TODO comments or debug code
-     - Validate no sensitive information is exposed
+  ## Core Steps
 
-  2. **Branch Status Check**:
-     - Confirm all changes are pushed to remote branch
-     - Verify branch is up-to-date with target branch
-     - Check for merge conflicts with base branch
-     - Ensure commit history is clean and logical
+  **1. Pre-PR Validation**
+  ```bash
+  # Ensure branch is ready
+  git status --porcelain || { echo "❌ Uncommitted changes"; exit 1; }
 
-  ## PR Content Structure
-  1. **Title Guidelines**:
-     - Use clear, descriptive title (50 characters max)
-     - Follow conventional commit format: `<type>: <description>`
-     - Include issue/task number if applicable
-     - Examples:
-       - `feat: implement user authentication system`
-       - `fix: resolve memory leak in task runner (#123)`
+  # Run tests
+  npm test || { echo "❌ Tests failing"; exit 1; }
 
-  2. **Description Template**:
-     ```markdown
-     ## Summary
-     Brief description of changes and their purpose
+  # Push latest changes
+  git push origin $(git branch --show-current)
+  ```
 
-     ## Changes Made
-     - List specific changes
-     - Include technical details
-     - Mention any breaking changes
+  **2. Generate PR Content**
+  ```bash
+  # Get context
+  BRANCH=$(git branch --show-current)
+  BASE_BRANCH=${1:-main}
+  COMMITS=$(git log --oneline $BASE_BRANCH..$BRANCH | wc -l)
 
-     ## Testing
-     - Describe testing approach
-     - List test cases covered
-     - Include manual testing steps
+  # Create PR template
+  cat > /tmp/pr-description.md << EOF
+  ## Summary
+  Brief description of changes and their purpose
 
-     ## Screenshots/Demo (if applicable)
-     - Before/after comparisons
-     - UI changes demonstration
+  ## Changes Made
+  - List specific changes
+  - Include technical details
 
-     ## Checklist
-     - [ ] Tests pass locally
-     - [ ] Code follows style guidelines
-     - [ ] Documentation updated
-     - [ ] Breaking changes documented
-     ```
+  ## Testing
+  - [ ] Unit tests pass
+  - [ ] Integration tests pass
+  - [ ] Manual testing completed
 
-  ## PR Configuration
-  1. **Target Branch**:
-     - Select appropriate base branch (main/develop)
-     - Verify branch protection rules
-     - Confirm merge strategy compatibility
+  ## Checklist
+  - [ ] Code follows style guidelines
+  - [ ] Documentation updated
+  - [ ] No breaking changes
+  EOF
+  ```
 
-  2. **Reviewers & Assignees**:
-     - Assign relevant code reviewers
-     - Include domain experts for specialized changes
-     - Set yourself as assignee
-     - Request reviews from team leads for significant changes
+  **3. Create Pull Request**
+  ```bash
+  # Using GitHub CLI (if available)
+  if command -v gh >/dev/null; then
+    gh pr create \
+      --title "feat: $(echo $BRANCH | sed 's/.*\///')" \
+      --body-file /tmp/pr-description.md \
+      --base $BASE_BRANCH \
+      --head $BRANCH
+  else
+    echo "🔗 Create PR manually:"
+    echo "Branch: $BRANCH → $BASE_BRANCH"
+    echo "Commits: $COMMITS"
+  fi
+  ```
 
-  3. **Labels & Metadata**:
-     - Apply appropriate labels (feature, bugfix, documentation)
-     - Set milestone if applicable
-     - Link related issues or tasks
-     - Add priority labels if urgent
+  **4. Post-Creation Setup**
+  ```bash
+  # Add labels and reviewers
+  echo "📋 Add appropriate labels:"
+  echo "- feature, bugfix, documentation, etc."
 
-  ## Quality Assurance
-  1. **Self-Review**:
-     - Review your own changes first
-     - Check diff for unintended changes
-     - Verify all files are necessary
-     - Ensure commit messages are meaningful
+  echo "👥 Request reviewers:"
+  echo "- Team leads for significant changes"
+  echo "- Domain experts for specialized code"
 
-  2. **CI/CD Integration**:
-     - Verify automated checks are triggered
-     - Monitor build and test results
-     - Address any pipeline failures immediately
-     - Ensure deployment previews work correctly
+  echo "✅ PR created and ready for review!"
+  ```
 
-  ## Post-Creation Actions
-  1. **Communication**:
-     - Notify relevant team members
-     - Update issue/task status
-     - Share in team channels if significant
-     - Provide context for complex changes
-
-  2. **Monitoring**:
-     - Watch for review comments
-     - Respond to feedback promptly
-     - Address requested changes quickly
-     - Keep PR updated with base branch changes
+  **🎯 Result:** Professional PR ready for team review and collaboration

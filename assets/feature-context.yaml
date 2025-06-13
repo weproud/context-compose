@@ -6,8 +6,8 @@ description: 'Context for developing new features with comprehensive planning an
 context:
   workflow: workflows/feature-workflow.yaml
   roles:
-    - roles/dan-abramov.yaml
-    - roles/kent-c-dodds.yaml
+- personas/dan-abramov.yaml
+- personas/kent-c-dodds.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml

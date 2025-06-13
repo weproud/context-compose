@@ -2,70 +2,72 @@ version: 1
 kind: action
 name: Test
 description: Comprehensive testing execution with detailed analysis and reporting
-prompt: Execute comprehensive test suite including unit, integration, and e2e tests. Verify environment setup, run tests sequentially, analyze failures, and ensure 80%+ coverage before proceeding.
+prompt: |
+  Execute comprehensive testing with detailed analysis and quality validation.
+
+  This action runs complete test suites including unit, integration, and end-to-end
+  tests with proper environment setup and failure analysis. It ensures code quality
+  through coverage validation and provides detailed reporting for continuous
+  improvement.
+
+  Use this for quality assurance before deployments, code reviews, or when
+  validating new features. The process includes automated test discovery,
+  parallel execution, and comprehensive reporting for team visibility.
 enhanced-prompt: |-
-  Execute comprehensive project testing following these detailed guidelines:
+  # 🧪 Testing Workflow
 
-  ## Pre-Test Setup
-  1. **Environment Verification**:
-     - Check Node.js version compatibility
-     - Verify test environment variables are set
-     - Ensure test databases/services are available
-     - Validate test configuration files
+  ## Core Steps
 
-  2. **Dependency Management**:
-     - Verify all dependencies are installed (`npm ci` or `npm install`)
-     - Check for peer dependency warnings
-     - Ensure dev dependencies are available
-     - Validate package-lock.json integrity
+  **1. Environment Setup**
+  ```bash
+  # Check test environment
+  [ -f "package.json" ] || { echo "❌ No package.json"; exit 1; }
 
-  ## Test Discovery & Configuration
-  1. **Test Framework Detection**:
-     - Check package.json scripts for test commands
-     - Identify test framework (Jest, Mocha, Vitest, etc.)
-     - Locate test configuration files
-     - Review test patterns and file locations
+  # Install dependencies
+  npm ci || npm install
 
-  2. **Test Categories**:
-     - **Unit Tests**: Individual component/function testing
-     - **Integration Tests**: Component interaction testing
-     - **E2E Tests**: End-to-end user workflow testing
-     - **Performance Tests**: Load and performance testing
-     - **Security Tests**: Vulnerability and security testing
+  # Check test configuration
+  [ -f "jest.config.js" ] && echo "✅ Jest config found" || echo "⚠️ No Jest config"
+  ```
 
-  ## Test Execution Strategy
-  1. **Sequential Testing**:
-     - Run unit tests first (fastest feedback)
-     - Execute integration tests if unit tests pass
-     - Run E2E tests for critical user paths
-     - Perform performance tests if applicable
+  **2. Test Discovery & Execution**
+  ```bash
+  # Run different test types
+  echo "🧪 Running unit tests..."
+  npm run test:unit 2>/dev/null || npm test
 
-  2. **Parallel Execution**:
-     - Utilize test runner's parallel capabilities
-     - Monitor resource usage during parallel runs
-     - Handle test isolation and cleanup
+  echo "🔗 Running integration tests..."
+  npm run test:integration 2>/dev/null || echo "⚠️ No integration tests"
 
-  ## Test Analysis & Reporting
-  1. **Results Analysis**:
-     - Generate detailed test reports (coverage, performance)
-     - Identify failing tests and error patterns
-     - Analyze test coverage metrics
-     - Review performance benchmarks
+  echo "🌐 Running e2e tests..."
+  npm run test:e2e 2>/dev/null || echo "⚠️ No e2e tests"
+  ```
 
-  2. **Failure Investigation**:
-     - Categorize failures (syntax, logic, environment)
-     - Provide specific solutions for each failure type
-     - Suggest code improvements based on test results
-     - Recommend additional test cases for uncovered scenarios
+  **3. Coverage Analysis**
+  ```bash
+  # Generate coverage report
+  npm run test:coverage 2>/dev/null || npm test -- --coverage
 
-  ## Quality Gates
-  - Minimum test coverage threshold (typically 80%+)
-  - Zero critical test failures
-  - Performance benchmarks within acceptable limits
-  - Security vulnerability checks passed
+  # Check coverage threshold
+  COVERAGE=$(grep -o '"lines":{"pct":[0-9.]*' coverage/coverage-summary.json 2>/dev/null | cut -d: -f3 || echo "0")
 
-  ## Post-Test Actions
-  - Update test documentation if needed
-  - Commit test improvements or fixes
-  - Report test metrics to team/CI system
-  - Schedule follow-up for persistent issues
+  if [ $(echo "$COVERAGE >= 80" | bc -l 2>/dev/null || echo "0") -eq 1 ]; then
+    echo "✅ Coverage: ${COVERAGE}% (meets 80% threshold)"
+  else
+    echo "⚠️ Coverage: ${COVERAGE}% (below 80% threshold)"
+  fi
+  ```
+
+  **4. Results Analysis**
+  ```bash
+  # Test summary
+  echo "📊 Test Results Summary:"
+  echo "- Unit tests: $(npm test 2>&1 | grep -o '[0-9]* passing' || echo 'Unknown')"
+  echo "- Coverage: ${COVERAGE}%"
+  echo "- Status: $([ $? -eq 0 ] && echo '✅ All tests passed' || echo '❌ Some tests failed')"
+
+  # Generate report
+  echo "📄 Test report available in coverage/ directory"
+  ```
+
+  **🎯 Result:** Comprehensive test validation with quality metrics and detailed reporting

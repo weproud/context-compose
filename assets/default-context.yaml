@@ -6,7 +6,7 @@ description: Default development context with comprehensive guidelines
 context:
   workflow: workflows/workflow.yaml
   roles:
-    - roles/dan-abramov.yaml
+- personas/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml

@@ -2,7 +2,17 @@ version: 1
 kind: action
 name: Git Commit
 description: Commit changes to Git with conventional commit messages and best practices
-prompt: Stage and commit changes using conventional commit format with clear, descriptive messages
+prompt: |
+  Create Git commits with conventional commit format and best practices.
+
+  This action helps stage changes and create well-structured commit messages
+  following conventional commit standards. It ensures proper change staging,
+  validates commit message format, and maintains clean git history with
+  meaningful, descriptive commit messages.
+
+  Use this for any code changes that need to be committed to version control.
+  The process includes change review, selective staging, and automated
+  validation to maintain professional git workflow standards.
 enhanced-prompt: |-
   **Create a Git commit with proper conventional commit format and best practices.**
 

@@ -6,8 +6,8 @@ description: Context for API development with RESTful design and comprehensive d
 context:
   workflow: workflows/feature-workflow.yaml
   roles:
-    - roles/dan-abramov.yaml
-    - roles/martin-fowler.yaml
+- personas/dan-abramov.yaml
+- personas/martin-fowler.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/api-design.yaml

@@ -25,7 +25,7 @@ interface ContextConfig {
   readonly description: string;
   readonly context: {
     workflow?: string;
-    roles?: readonly string[];
+    personas?: readonly string[];
     rules?: readonly string[];
     mcps?: readonly string[];
   };
@@ -144,10 +144,10 @@ async function loadContext(path: string): Promise<Result<ContextConfig>> {
 ### Promise 패턴
 ```typescript
 // 병렬 처리
-const [contexts, workflows, roles] = await Promise.all([
+const [contexts, workflows, personas] = await Promise.all([
   loadContexts(),
   loadWorkflows(),
-  loadRoles()
+  loadPersonas()
 ]);
 
 // 에러 핸들링과 함께

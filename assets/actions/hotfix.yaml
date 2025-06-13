@@ -1,0 +1,97 @@
+version: 1
+kind: action
+name: Hotfix
+description: Emergency hotfix deployment with fast-track validation and immediate rollback capability
+prompt: |
+  Execute emergency hotfixes with streamlined validation and rapid deployment.
+
+  This action handles critical production issues requiring immediate fixes with
+  minimal validation overhead while maintaining safety protocols. It creates
+  hotfix branches, applies urgent changes, and deploys with accelerated testing
+  and automated rollback capabilities.
+
+  Use this for critical production bugs, security vulnerabilities, or system
+  outages requiring immediate resolution. The process prioritizes speed while
+  maintaining essential safety checks and audit trails.
+enhanced-prompt: |-
+  # 🚨 Emergency Hotfix Workflow
+
+  ## Core Steps
+
+  **1. Hotfix Branch Creation**
+  ```bash
+  # Create hotfix branch from production
+  HOTFIX_ID="hotfix-$(date +%m%d-%H%M)"
+  git checkout main
+  git pull origin main
+  git checkout -b "$HOTFIX_ID"
+
+  echo "🚨 Emergency hotfix branch: $HOTFIX_ID"
+  echo "⚠️ Fast-track mode: minimal validation"
+  ```
+
+  **2. Critical Validation Only**
+  ```bash
+  # Essential checks only
+  echo "🔍 Running critical validation..."
+
+  # Syntax check
+  npm run lint --silent || { echo "❌ Syntax errors"; exit 1; }
+
+  # Critical tests only
+  npm run test:critical 2>/dev/null || npm test --testNamePattern="critical" || echo "⚠️ No critical tests"
+
+  # Security check
+  npm audit --audit-level=critical --silent || echo "⚠️ Security issues detected"
+
+  echo "✅ Critical validation completed"
+  ```
+
+  **3. Emergency Deployment**
+  ```bash
+  # Fast deployment
+  echo "🚀 Emergency deployment starting..."
+
+  # Build
+  npm run build || { echo "❌ Build failed"; exit 1; }
+
+  # Deploy to production
+  npm run deploy:production:hotfix 2>/dev/null || npm run deploy:production
+
+  # Health check
+  sleep 30
+  curl -f -s "${PRODUCTION_URL}/health" >/dev/null || {
+    echo "❌ Health check failed - initiating rollback"
+    npm run rollback:production
+    exit 1
+  }
+
+  echo "✅ Emergency deployment successful"
+  ```
+
+  **4. Post-Hotfix Actions**
+  ```bash
+  # Immediate notification
+  echo "📱 Sending emergency notifications..."
+
+  # Commit and push
+  git add .
+  git commit -m "hotfix: emergency fix for critical issue
+
+  - Applied urgent fix
+  - Minimal validation due to emergency
+  - Requires follow-up testing"
+
+  git push origin "$HOTFIX_ID"
+
+  # Create emergency PR
+  echo "🔄 Creating emergency PR for review..."
+  echo "Branch: $HOTFIX_ID → main"
+  echo "⚠️ Post-deployment review required"
+
+  # Schedule follow-up
+  echo "📅 Schedule comprehensive testing and review"
+  echo "🎯 Hotfix completed - monitor closely!"
+  ```
+
+  **🎯 Result:** Emergency hotfix deployed with minimal validation and monitoring setup

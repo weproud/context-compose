@@ -6,8 +6,8 @@ description: 'Context for comprehensive documentation with user-centric approach
 context:
   workflow: workflows/workflow.yaml
   roles:
-    - roles/sindre-sorhus.yaml
-    - roles/dan-abramov.yaml
+- personas/sindre-sorhus.yaml
+- personas/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/documentation-standards.yaml

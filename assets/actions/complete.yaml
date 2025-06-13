@@ -2,7 +2,17 @@ version: 1
 kind: action
 name: Task Done
 description: Comprehensive task completion processing with validation, cleanup, and team notification
-prompt: Finalize task completion with requirement validation, code cleanup, comprehensive testing, status update, and multi-channel team notifications.
+prompt: |
+  Complete tasks with comprehensive validation and professional handover.
+
+  This action finalizes task completion with thorough requirement validation,
+  code quality assurance, comprehensive testing, and proper documentation.
+  It ensures all acceptance criteria are met and prepares professional
+  handover materials for team review and deployment.
+
+  Use this when finishing features, bug fixes, or any development work that
+  needs formal completion. The process includes quality validation, team
+  notifications, and status updates for seamless project management.
 enhanced-prompt: |-
   # 🎉 Task Completion Workflow
 

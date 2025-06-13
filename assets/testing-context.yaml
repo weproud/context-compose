@@ -6,8 +6,8 @@ description: 'Context for comprehensive testing with TDD and quality assurance f
 context:
   workflow: workflows/workflow.yaml
   roles:
-    - roles/kent-c-dodds.yaml
-    - roles/uncle-bob.yaml
+- personas/kent-c-dodds.yaml
+- personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/testing-principles.yaml

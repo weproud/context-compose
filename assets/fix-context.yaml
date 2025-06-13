@@ -6,8 +6,8 @@ description: 'Context for fixing bugs with systematic debugging and testing'
 context:
   workflow: workflows/workflow.yaml
   roles:
-    - roles/linus-torvalds.yaml
-    - roles/john-carmack.yaml
+- personas/linus-torvalds.yaml
+- personas/john-carmack.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml

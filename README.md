@@ -74,8 +74,8 @@ description: 'Context for new feature development'
 context:
   workflow: workflows/feature-workflow.yaml
   roles:
-    - roles/dan-abramov.yaml
-    - roles/kent-c-dodds.yaml
+- personas/dan-abramov.yaml
+- personas/kent-c-dodds.yaml
   rules:
     - rules/clean-code.yaml
     - rules/testing-principles.yaml
@@ -178,7 +178,7 @@ context:
 
 Context Compose comes with a comprehensive set of pre-built components organized in the `assets/` directory:
 
-### 🎭 **Roles** (`assets/roles/`)
+### 🎭 **Personas** (`assets/personas/`)
 
 Expert personas that provide specialized knowledge and perspectives:
 
@@ -253,7 +253,7 @@ description: 'Custom context for specific project needs'
 context:
   workflow: workflows/custom-workflow.yaml
   roles:
-    - roles/domain-expert.yaml
+- personas/domain-expert.yaml
   rules:
     - rules/project-specific.yaml
     - rules/company-standards.yaml
@@ -266,7 +266,7 @@ prompt: |
 2. **Create supporting files**:
 
 ```yaml
-# .contextcompose/roles/domain-expert.yaml
+# .contextcompose/personas/domain-expert.yaml
 version: 1
 kind: role
 name: domain-expert
@@ -312,7 +312,7 @@ description: Customized default context for our team
 context:
   workflow: workflows/team-workflow.yaml
   roles:
-    - roles/senior-developer.yaml
+- personas/senior-developer.yaml
   rules:
     - rules/team-standards.yaml
     - rules/security-first.yaml
@@ -365,7 +365,7 @@ context:
    - Distribute via npm packages or git submodules
 
 3. **Role-based access**:
-   - Different contexts for different team roles
+   - Different contexts for different team personas
    - Junior vs senior developer contexts
    - Specialized domain contexts
 

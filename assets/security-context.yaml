@@ -6,8 +6,8 @@ description: 'Context for security vulnerability fixes with comprehensive securi
 context:
   workflow: workflows/hotfix-workflow.yaml
   roles:
-    - roles/linus-torvalds.yaml
-    - roles/uncle-bob.yaml
+- personas/linus-torvalds.yaml
+- personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/security-guidelines.yaml
