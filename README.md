@@ -96,7 +96,7 @@ enhanced-prompt: 'Your mission is to construct a robust, secure, and well-docume
 # Here we compose the context from other files.
 context:
   personas:
-    - personas/backend-expert.yaml
+    - personas/uncle-bob.yaml
   rules:
     - rules/api-design.yaml
     - rules/clean-code.yaml
@@ -137,28 +137,46 @@ Customizing Context Compose is its core strength. You can override built-in asse
 
 3.  **Reference it in Your Context**: Now, you can add `principles` to any `*-context.yaml` file.
     `yaml
+
     # .contextcompose/feature-context.yaml
+
     version: 1
     kind: context
     name: 'feature'
+
     # ...
+
     context:
     personas: - personas/frontend-expert.yaml
     rules: - rules/typescript-best-practices.yaml
+
     # Your new custom category is now part of the context!
+
     principles: - principles/team-values.yaml
     `When you run`context-compose start-context feature`, the content of `team-values.yaml` will be automatically included in the final prompt.
+
+4.  **Validate Your Assets**
+
+    After creating or modifying asset files, it's a good practice to validate them. Context Compose provides a `validate` command to check for common errors.
+
+    ```bash
+    npx @noanswer/context-compose validate
+    ```
+
+    This command will check all your asset files inside the `.contextcompose` directory and verify that:
+
+    - The YAML syntax is correct.
+    - All required fields (`version`, `kind`, `name`, `description`, `prompt`) are present.
+
+    This helps you catch errors early and ensures your contexts are correctly structured.
 
 ## 🎭 User Scenarios
 
 ### 1. Frontend Developer: Building a New React Component
 
-A developer is tasked with building a new search component using React and TypeScript.
+A developer is tasked with building a new search component using React and TypeScript. They would start by telling their AI assistant:
 
-```bash
-# Load a context optimized for React feature development
-npx @noanswer/context-compose start-context react-feature -e
-```
+> start-context react-feature -e using context-compose
 
 **What they get**:
 
@@ -169,12 +187,9 @@ npx @noanswer/context-compose start-context react-feature -e
 
 ### 2. Backend Developer: Creating a Secure API Endpoint
 
-A developer needs to create a new RESTful API endpoint for user authentication.
+A developer needs to create a new RESTful API endpoint for user authentication. They would start by telling their AI assistant:
 
-```bash
-# Load a context focused on secure API development
-npx @noanswer/context-compose start-context secure-api
-```
+> start-context secure-api using context-compose
 
 **What they get**:
 
@@ -184,12 +199,9 @@ npx @noanswer/context-compose start-context secure-api
 
 ### 3. Team Lead: Performing a Code Review
 
-A team lead wants to ensure a consistent and thorough code review process.
+A team lead wants to ensure a consistent and thorough code review process. They would start by telling their AI assistant:
 
-```bash
-# Load a context designed for effective code reviews
-npx @noanswer/context-compose start-context code-review
-```
+> start-context code-review using context-compose
 
 **What they get**:
 
