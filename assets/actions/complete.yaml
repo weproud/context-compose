@@ -1,172 +1,104 @@
 version: 1
 kind: action
-name: Task Done
-description: Comprehensive task completion processing with validation, cleanup, and team notification
+name: Task Complete
+description: Complete current task with testing and commit
 prompt: |
-  Complete tasks with comprehensive validation and professional handover.
+  Complete the current task with proper testing, quality checks, and commit.
 
-  This action finalizes task completion with thorough requirement validation,
-  code quality assurance, comprehensive testing, and proper documentation.
-  It ensures all acceptance criteria are met and prepares professional
-  handover materials for team review and deployment.
+  This action runs final tests, performs code quality checks, commits changes,
+  and prepares the work for review. It ensures the task meets basic quality
+  standards before completion.
 
-  Use this when finishing features, bug fixes, or any development work that
-  needs formal completion. The process includes quality validation, team
-  notifications, and status updates for seamless project management.
+  Use this when finishing any development work to ensure proper completion
+  and handover to the team.
 enhanced-prompt: |-
-  # 🎉 Task Completion Workflow
+  # 🎉 작업 완료
 
-  **Complete your task with professional standards and team communication.**
-
-  ## 📋 Step 1: Requirement Validation
+  ## 1단계: 코드 품질 확인
   ```bash
-  echo "=== Task Completion Checklist ==="
-  echo "✅ All acceptance criteria met"
-  echo "✅ Code follows project standards"
-  echo "✅ Tests written and passing"
-  echo "✅ Documentation updated"
-  echo "✅ No breaking changes introduced"
-  echo ""
-  ```
+  echo "=== 작업 완료 시작 ==="
 
-  ## 🧹 Step 2: Code Cleanup & Quality Check
-  ```bash
-  # Format code
-  npm run format 2>/dev/null || echo "No formatter configured"
+  # 린팅 실행
+  echo "📝 코드 스타일 검사..."
+  npm run lint 2>/dev/null || echo "⚠️ 린터 설정되지 않음"
 
-  # Lint code
-  npm run lint 2>/dev/null || echo "No linter configured"
-
-  # Type check
-  npm run type-check 2>/dev/null || tsc --noEmit 2>/dev/null || echo "No TypeScript check"
-
-  echo "✅ Code quality checks completed"
-  ```
-
-  ## 🧪 Step 3: Comprehensive Testing
-  ```bash
-  echo "Running comprehensive test suite..."
-
-  # Unit tests
-  npm test 2>/dev/null || echo "No unit tests configured"
-
-  # Integration tests
-  npm run test:integration 2>/dev/null || echo "No integration tests"
-
-  # E2E tests (if applicable)
-  npm run test:e2e 2>/dev/null || echo "No E2E tests"
-
-  echo "✅ All tests completed"
-  ```
-
-  ## 📝 Step 4: Documentation Update
-  ```bash
-  # Update CHANGELOG if exists
-  if [ -f "CHANGELOG.md" ]; then
-    echo "📝 Remember to update CHANGELOG.md with your changes"
+  # TypeScript 검사
+  if [ -f "tsconfig.json" ]; then
+    echo "🔧 TypeScript 타입 검사..."
+    npx tsc --noEmit 2>/dev/null || echo "⚠️ TypeScript 오류 확인 필요"
   fi
 
-  # Check README updates needed
-  if [ -f "README.md" ]; then
-    echo "📖 Verify README.md reflects any new features"
+  echo "✅ 코드 품질 검사 완료"
+  ```
+
+  ## 2단계: 테스트 실행
+  ```bash
+  echo "🧪 테스트 실행..."
+
+  # 테스트 실행
+  npm test
+
+  if [ $? -eq 0 ]; then
+    echo "✅ 모든 테스트 통과"
+  else
+    echo "❌ 테스트 실패 - 수정 필요"
+    exit 1
   fi
-
-  echo "✅ Documentation review completed"
   ```
 
-  ## 🔄 Step 5: Final Git Operations
+  ## 3단계: 변경사항 커밋
   ```bash
-  # Stage all changes
-  git add .
-
-  # Create completion commit
-  BRANCH_NAME=$(git branch --show-current)
-  git commit -m "feat: complete task implementation
-
-  - All requirements implemented
-  - Tests passing
-  - Documentation updated
-  - Ready for review"
-
-  # Push to remote
-  git push origin "$BRANCH_NAME"
-
-  echo "✅ Code pushed to remote repository"
-  ```
-
-  ## 🔍 Step 6: Create Pull Request
-  ```bash
-  # Get current branch and repo info
+  # 현재 브랜치 정보
   CURRENT_BRANCH=$(git branch --show-current)
-  REPO_URL=$(git remote get-url origin | sed 's/\.git$//')
+  echo "🌿 현재 브랜치: $CURRENT_BRANCH"
 
-  echo "🔗 Create Pull Request:"
-  echo "Branch: $CURRENT_BRANCH → main"
-  echo "Repository: $REPO_URL"
-  echo ""
-  echo "PR Template:"
-  echo "## Summary"
-  echo "Brief description of changes made"
-  echo ""
-  echo "## Changes"
-  echo "- [ ] Feature implementation"
-  echo "- [ ] Tests added/updated"
-  echo "- [ ] Documentation updated"
-  echo ""
-  echo "## Testing"
-  echo "- [ ] Unit tests pass"
-  echo "- [ ] Integration tests pass"
-  echo "- [ ] Manual testing completed"
+  # 변경사항 확인
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "📋 변경된 파일들:"
+    git status --short
+    
+    # 모든 변경사항 스테이징
+    git add .
+    
+    # 커밋 메시지 작성
+    echo "💬 커밋 메시지를 입력하세요:"
+    read -p "> " COMMIT_MESSAGE
+    
+    git commit -m "$COMMIT_MESSAGE"
+    echo "✅ 변경사항 커밋 완료"
+  else
+    echo "ℹ️ 커밋할 변경사항이 없습니다"
+  fi
   ```
 
-  ## 📢 Step 7: Team Notification
+  ## 4단계: 원격 저장소 푸시
   ```bash
-  # Prepare notification message
-  TASK_SUMMARY="Task completed: $(basename $(pwd))"
-  BRANCH_NAME=$(git branch --show-current)
+  # 원격으로 푸시
+  echo "📤 원격 저장소에 푸시..."
+  git push origin "$CURRENT_BRANCH"
 
-  echo "📱 Send completion notification:"
-  echo "Subject: ✅ $TASK_SUMMARY"
-  echo "Message: Task implementation completed on branch '$BRANCH_NAME'"
-  echo "- All requirements met"
-  echo "- Tests passing"
-  echo "- Ready for code review"
-  echo ""
-  echo "Use task-action send-message to notify team"
+  if [ $? -eq 0 ]; then
+    echo "✅ 원격 푸시 완료"
+  else
+    echo "❌ 푸시 실패 - 충돌 해결 필요"
+    exit 1
+  fi
   ```
 
-  ## 📊 Step 8: Status Update
+  ## 5단계: 완료 요약
   ```bash
-  # Update task status
-  echo "📈 Updating task status to 'completed'"
-
-  # If using task-action
-  task-action task status done 2>/dev/null || echo "Manual status update needed"
-
-  echo "✅ Task marked as completed"
-  ```
-
-  ## 🎯 Step 9: Handover Preparation
-  ```bash
-  echo "=== Task Handover Summary ==="
-  echo "📁 Branch: $(git branch --show-current)"
-  echo "📝 Last commit: $(git log -1 --pretty=format:'%h - %s')"
-  echo "🧪 Test status: All passing"
-  echo "📖 Documentation: Updated"
-  echo "🔍 Ready for: Code review"
+  echo "🎉 작업 완료!"
   echo ""
-  echo "🎉 Task completion workflow finished!"
+  echo "📋 요약:"
+  echo "  - 브랜치: $CURRENT_BRANCH"
+  echo "  - 테스트: ✅ 통과"
+  echo "  - 커밋: ✅ 완료"
+  echo "  - 푸시: ✅ 완료"
+  echo ""
+  echo "🔄 다음 단계:"
+  echo "  1. Pull Request 생성"
+  echo "  2. 코드 리뷰 요청"
+  echo "  3. 팀에 완료 알림"
   ```
 
-  ## ✅ Completion Checklist
-  - [ ] All acceptance criteria validated
-  - [ ] Code quality checks passed
-  - [ ] Comprehensive testing completed
-  - [ ] Documentation updated
-  - [ ] Code committed and pushed
-  - [ ] Pull request created
-  - [ ] Team notified
-  - [ ] Task status updated
-  - [ ] Handover documentation prepared
-
-  **🚀 Your task is now ready for review and deployment!**
+  **🎯 결과:** 테스트되고 커밋된 완료된 작업

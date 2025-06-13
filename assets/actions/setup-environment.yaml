@@ -4,460 +4,185 @@ name: Setup Environment
 description: Automated development environment setup with dependencies, tools, and configuration
 prompt: Set up complete development environment including dependencies, development tools, environment variables, and project configuration.
 enhanced-prompt: |-
-  # ⚙️ Development Environment Setup Workflow
+  # ⚙️ 개발 환경 설정
 
-  **Automatically configure a complete development environment for your project.**
-
-  ## 🔍 Step 1: Environment Detection
+  ## 1단계: 프로젝트 타입 확인
   ```bash
-  echo "=== Environment Detection ==="
-  
+  echo "=== 개발 환경 설정 시작 ==="
+
   PROJECT_NAME=$(basename $(pwd))
-  SETUP_DATE=$(date '+%Y-%m-%d %H:%M:%S')
-  
-  echo "📁 Project: $PROJECT_NAME"
-  echo "📅 Setup Date: $SETUP_DATE"
-  echo "💻 OS: $(uname -s)"
-  echo "🏗️  Architecture: $(uname -m)"
-  echo ""
-  
-  # Detect project type
+  echo "📁 프로젝트: $PROJECT_NAME"
+
+  # 프로젝트 타입 자동 감지
   if [ -f "package.json" ]; then
     PROJECT_TYPE="node"
-    echo "📦 Detected: Node.js project"
+    echo "📦 Node.js 프로젝트 감지"
   elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
     PROJECT_TYPE="python"
-    echo "🐍 Detected: Python project"
-  elif [ -f "Cargo.toml" ]; then
-    PROJECT_TYPE="rust"
-    echo "🦀 Detected: Rust project"
-  elif [ -f "go.mod" ]; then
-    PROJECT_TYPE="go"
-    echo "🐹 Detected: Go project"
+    echo "🐍 Python 프로젝트 감지"
   else
     PROJECT_TYPE="generic"
-    echo "📄 Detected: Generic project"
+    echo "📄 일반 프로젝트"
   fi
-  
-  echo "✅ Environment detection completed"
-  echo ""
   ```
 
-  ## 🛠️ Step 2: System Prerequisites Check
+  ## 2단계: 의존성 설치
   ```bash
-  echo "=== System Prerequisites Check ==="
-  
-  # Check essential tools
-  echo "🔍 Checking system tools..."
-  
-  # Git
-  if command -v git >/dev/null 2>&1; then
-    GIT_VERSION=$(git --version)
-    echo "✅ Git: $GIT_VERSION"
-  else
-    echo "❌ Git not found - please install Git"
-    exit 1
-  fi
-  
-  # Node.js (for Node projects)
-  if [ "$PROJECT_TYPE" = "node" ]; then
-    if command -v node >/dev/null 2>&1; then
-      NODE_VERSION=$(node --version)
-      echo "✅ Node.js: $NODE_VERSION"
-    else
-      echo "❌ Node.js not found - please install Node.js"
-      exit 1
-    fi
-    
-    if command -v npm >/dev/null 2>&1; then
-      NPM_VERSION=$(npm --version)
-      echo "✅ npm: $NPM_VERSION"
-    else
-      echo "❌ npm not found"
-      exit 1
-    fi
-  fi
-  
-  # Python (for Python projects)
-  if [ "$PROJECT_TYPE" = "python" ]; then
-    if command -v python3 >/dev/null 2>&1; then
-      PYTHON_VERSION=$(python3 --version)
-      echo "✅ Python: $PYTHON_VERSION"
-    else
-      echo "❌ Python3 not found - please install Python"
-      exit 1
-    fi
-  fi
-  
-  echo "✅ Prerequisites check completed"
-  echo ""
-  ```
+  echo "📦 의존성 설치 중..."
 
-  ## 📦 Step 3: Package Manager Setup
-  ```bash
-  echo "=== Package Manager Setup ==="
-  
   case "$PROJECT_TYPE" in
     "node")
-      echo "📦 Setting up Node.js environment..."
-      
-      # Check for package-lock.json or yarn.lock
-      if [ -f "yarn.lock" ]; then
-        PACKAGE_MANAGER="yarn"
-        echo "🧶 Using Yarn package manager"
-        
-        # Install Yarn if not present
-        if ! command -v yarn >/dev/null 2>&1; then
-          echo "📥 Installing Yarn..."
-          npm install -g yarn
-        fi
-      else
-        PACKAGE_MANAGER="npm"
-        echo "📦 Using npm package manager"
+      # Node.js 환경 확인
+      if ! command -v node >/dev/null 2>&1; then
+        echo "❌ Node.js가 설치되지 않음"
+        echo "📥 https://nodejs.org 에서 Node.js를 설치하세요"
+        exit 1
       fi
       
-      # Install dependencies
-      echo "📥 Installing dependencies..."
-      $PACKAGE_MANAGER install
+      # 패키지 설치
+      echo "📥 npm 패키지 설치..."
+      npm install
       
-      # Install global development tools
-      echo "🛠️  Installing global development tools..."
-      npm list -g typescript >/dev/null 2>&1 || npm install -g typescript
-      npm list -g eslint >/dev/null 2>&1 || npm install -g eslint
-      npm list -g prettier >/dev/null 2>&1 || npm install -g prettier
+      # 개발 도구 설치
+      if ! npm list typescript >/dev/null 2>&1; then
+        echo "🔧 TypeScript 설치..."
+        npm install -D typescript @types/node
+      fi
       ;;
       
     "python")
-      echo "🐍 Setting up Python environment..."
+      # Python 환경 확인
+      if ! command -v python3 >/dev/null 2>&1; then
+        echo "❌ Python3가 설치되지 않음"
+        echo "📥 Python을 설치하세요"
+        exit 1
+      fi
       
-      # Create virtual environment
+      # 가상환경 생성
       if [ ! -d "venv" ]; then
-        echo "🏗️  Creating virtual environment..."
+        echo "🏗️ 가상환경 생성..."
         python3 -m venv venv
       fi
       
-      # Activate virtual environment
-      echo "🔌 Activating virtual environment..."
+      # 가상환경 활성화 및 의존성 설치
+      echo "🔌 가상환경 활성화..."
       source venv/bin/activate
-      
-      # Upgrade pip
-      echo "⬆️  Upgrading pip..."
       pip install --upgrade pip
       
-      # Install dependencies
       if [ -f "requirements.txt" ]; then
-        echo "📥 Installing requirements..."
         pip install -r requirements.txt
       fi
-      
-      if [ -f "pyproject.toml" ]; then
-        echo "📥 Installing from pyproject.toml..."
-        pip install -e .
-      fi
-      ;;
-      
-    *)
-      echo "📄 Generic project setup..."
       ;;
   esac
-  
-  echo "✅ Package manager setup completed"
-  echo ""
+
+  echo "✅ 의존성 설치 완료"
   ```
 
-  ## 🔧 Step 4: Development Tools Configuration
+  ## 3단계: 기본 설정 파일 생성
   ```bash
-  echo "=== Development Tools Configuration ==="
-  
-  # VS Code settings
-  echo "⚙️  Configuring VS Code settings..."
-  mkdir -p .vscode
-  
-  cat << EOF > .vscode/settings.json
-  {
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.organizeImports": true
-    },
-    "typescript.preferences.importModuleSpecifier": "relative",
-    "files.exclude": {
-      "**/node_modules": true,
-      "**/dist": true,
-      "**/.git": true
-    },
-    "search.exclude": {
-      "**/node_modules": true,
-      "**/dist": true
-    }
-  }
-  EOF
-  
-  # VS Code extensions recommendations
-  cat << EOF > .vscode/extensions.json
-  {
-    "recommendations": [
-      "esbenp.prettier-vscode",
-      "ms-vscode.vscode-eslint",
-      "bradlc.vscode-tailwindcss",
-      "ms-vscode.vscode-typescript-next",
-      "ms-vscode.vscode-json",
-      "redhat.vscode-yaml"
-    ]
-  }
-  EOF
-  
-  echo "✅ VS Code configuration created"
-  
-  # Git configuration
-  echo "🔧 Configuring Git..."
-  
-  # Git hooks setup
-  mkdir -p .git/hooks
-  
-  # Pre-commit hook
-  cat << 'EOF' > .git/hooks/pre-commit
-  #!/bin/sh
-  # Pre-commit hook for code quality
-  
-  echo "🔍 Running pre-commit checks..."
-  
-  # Run linter
-  npm run lint 2>/dev/null || echo "⚠️  Linting skipped"
-  
-  # Run tests
-  npm test 2>/dev/null || echo "⚠️  Tests skipped"
-  
-  echo "✅ Pre-commit checks completed"
-  EOF
-  
-  chmod +x .git/hooks/pre-commit
-  echo "✅ Git hooks configured"
-  echo ""
-  ```
+  echo "📄 기본 설정 파일 생성..."
 
-  ## 🌍 Step 5: Environment Variables Setup
-  ```bash
-  echo "=== Environment Variables Setup ==="
-  
-  # Create .env.example if it doesn't exist
-  if [ ! -f ".env.example" ]; then
-    echo "📄 Creating .env.example..."
-    
-    cat << EOF > .env.example
-  # Environment Configuration
-  NODE_ENV=development
-  PORT=3000
-  
-  # Database
-  DATABASE_URL=postgresql://user:password@localhost:5432/database
-  
-  # API Keys
-  API_KEY=your_api_key_here
-  SECRET_KEY=your_secret_key_here
-  
-  # External Services
-  REDIS_URL=redis://localhost:6379
-  
-  # Logging
-  LOG_LEVEL=info
-  EOF
-    
-    echo "✅ .env.example created"
-  fi
-  
-  # Create .env from .env.example if it doesn't exist
-  if [ ! -f ".env" ]; then
-    echo "📄 Creating .env from template..."
-    cp .env.example .env
-    echo "⚠️  Please update .env with your actual configuration"
-  else
-    echo "✅ .env already exists"
-  fi
-  
-  # Ensure .env is in .gitignore
+  # .gitignore 생성
   if [ ! -f ".gitignore" ]; then
-    echo "📄 Creating .gitignore..."
-    cat << EOF > .gitignore
+    cat > .gitignore << EOF
   # Dependencies
   node_modules/
   venv/
-  
-  # Environment variables
+
+  # Environment
   .env
   .env.local
-  .env.*.local
-  
-  # Build outputs
+
+  # Build
   dist/
   build/
-  .next/
-  
+
   # Logs
   *.log
-  logs/
-  
-  # OS generated files
+
+  # OS files
   .DS_Store
   Thumbs.db
-  
-  # IDE
-  .vscode/
-  .idea/
-  
-  # Temporary files
-  *.tmp
-  *.temp
   EOF
-  else
-    # Add .env to .gitignore if not present
-    grep -q "\.env" .gitignore || echo ".env" >> .gitignore
+    echo "✅ .gitignore 생성"
   fi
-  
-  echo "✅ Environment variables setup completed"
-  echo ""
+
+  # 환경변수 템플릿
+  if [ ! -f ".env.example" ]; then
+    cat > .env.example << EOF
+  NODE_ENV=development
+  PORT=3000
+  EOF
+    echo "✅ .env.example 생성"
+  fi
+
+  # VS Code 설정
+  mkdir -p .vscode
+  if [ ! -f ".vscode/settings.json" ]; then
+    cat > .vscode/settings.json << EOF
+  {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  }
+  EOF
+    echo "✅ VS Code 설정 생성"
+  fi
   ```
 
-  ## 🧪 Step 6: Testing Framework Setup
+  ## 4단계: 테스트 환경 설정
   ```bash
-  echo "=== Testing Framework Setup ==="
-  
   if [ "$PROJECT_TYPE" = "node" ]; then
-    echo "🧪 Setting up Node.js testing..."
+    echo "🧪 테스트 환경 설정..."
     
-    # Check if Jest is already configured
-    if ! grep -q "jest" package.json 2>/dev/null; then
-      echo "📦 Installing Jest testing framework..."
-      $PACKAGE_MANAGER add --dev jest @types/jest
-      
-      # Add test script to package.json
-      echo "📝 Adding test scripts..."
-      # This would require JSON manipulation - simplified for demo
-      echo "  Add to package.json scripts: \"test\": \"jest\""
+    # Jest 설치 확인
+    if ! npm list jest >/dev/null 2>&1; then
+      echo "📦 Jest 설치..."
+      npm install -D jest @types/jest
     fi
     
-    # Create basic test structure
-    mkdir -p tests src/__tests__
-    
+    # Jest 설정 파일 생성
     if [ ! -f "jest.config.js" ]; then
-      echo "⚙️  Creating Jest configuration..."
-      cat << EOF > jest.config.js
+      cat > jest.config.js << EOF
   module.exports = {
-    preset: 'ts-jest',
     testEnvironment: 'node',
     roots: ['<rootDir>/src', '<rootDir>/tests'],
-    testMatch: ['**/__tests__/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
-    collectCoverageFrom: [
-      'src/**/*.ts',
-      '!src/**/*.d.ts',
-    ],
-    coverageDirectory: 'coverage',
-    coverageReporters: ['text', 'lcov', 'html'],
+    testMatch: ['**/*.test.ts', '**/*.test.js'],
+    collectCoverageFrom: ['src/**/*.{ts,js}']
   };
   EOF
+      echo "✅ Jest 설정 생성"
     fi
+    
+    # 테스트 디렉토리 생성
+    mkdir -p tests
   fi
-  
-  echo "✅ Testing framework setup completed"
-  echo ""
   ```
 
-  ## 📚 Step 7: Documentation Setup
+  ## 5단계: 설정 완료
   ```bash
-  echo "=== Documentation Setup ==="
-  
-  # Create docs directory
-  mkdir -p docs
-  
-  # Create basic README if it doesn't exist
-  if [ ! -f "README.md" ]; then
-    echo "📖 Creating README.md..."
-    cat << EOF > README.md
-  # $PROJECT_NAME
-  
-  ## Quick Start
-  
-  1. Clone the repository
-  2. Run setup: \`task-action setup-environment\`
-  3. Start development: \`npm run dev\`
-  
-  ## Development
-  
-  - \`npm run dev\` - Start development server
-  - \`npm test\` - Run tests
-  - \`npm run build\` - Build for production
-  - \`npm run lint\` - Run linter
-  
-  ## Environment Setup
-  
-  This project uses automated environment setup. Run:
-  
-  \`\`\`bash
-  task-action setup-environment
-  \`\`\`
-  
-  ## Contributing
-  
-  1. Fork the repository
-  2. Create a feature branch
-  3. Make your changes
-  4. Run tests
-  5. Submit a pull request
-  EOF
+  echo "🎉 개발 환경 설정 완료!"
+  echo ""
+  echo "📋 설정된 항목:"
+  echo "  ✅ 프로젝트 타입: $PROJECT_TYPE"
+  echo "  ✅ 의존성 설치 완료"
+  echo "  ✅ 기본 설정 파일 생성"
+  echo "  ✅ 개발 도구 구성"
+  echo ""
+  echo "🚀 다음 단계:"
+  if [ "$PROJECT_TYPE" = "node" ]; then
+    echo "  1. npm run dev로 개발 서버 시작"
+    echo "  2. npm test로 테스트 실행"
+  else
+    echo "  1. 프로젝트별 개발 환경 설정"
+    echo "  2. 개발 시작"
   fi
-  
-  echo "✅ Documentation setup completed"
   echo ""
+  echo "📝 추가 설정이 필요한 경우:"
+  echo "  - .env 파일에 환경변수 설정"
+  echo "  - VS Code 확장 설치"
+  echo "  - 프로젝트별 설정 커스터마이징"
   ```
 
-  ## ✅ Step 8: Verification & Summary
-  ```bash
-  echo "=== Environment Setup Verification ==="
-  
-  echo "🔍 Verifying setup..."
-  
-  # Verify dependencies
-  case "$PROJECT_TYPE" in
-    "node")
-      echo "📦 Node.js dependencies:"
-      $PACKAGE_MANAGER list --depth=0 2>/dev/null | head -10
-      ;;
-    "python")
-      echo "🐍 Python packages:"
-      pip list | head -10
-      ;;
-  esac
-  
-  echo ""
-  echo "📋 Setup Summary:"
-  echo "  ✅ Project type: $PROJECT_TYPE"
-  echo "  ✅ Dependencies installed"
-  echo "  ✅ Development tools configured"
-  echo "  ✅ Environment variables setup"
-  echo "  ✅ Testing framework configured"
-  echo "  ✅ Documentation created"
-  echo "  ✅ Git hooks installed"
-  echo "  ✅ VS Code settings configured"
-  echo ""
-  
-  echo "🚀 Next Steps:"
-  echo "  1. Update .env with your configuration"
-  echo "  2. Install recommended VS Code extensions"
-  echo "  3. Review and customize configuration files"
-  echo "  4. Start development with: npm run dev"
-  echo ""
-  
-  echo "📁 Created Files:"
-  echo "  - .vscode/settings.json"
-  echo "  - .vscode/extensions.json"
-  echo "  - .env.example"
-  echo "  - .env"
-  echo "  - .gitignore"
-  echo "  - README.md"
-  echo "  - jest.config.js (if Node.js)"
-  echo ""
-  
-  echo "🎉 Development environment setup completed successfully!"
-  ```
-
-  **⚙️ Complete development environment configured with all necessary tools and settings!**
+  **🎯 결과:** 개발 준비가 완료된 환경

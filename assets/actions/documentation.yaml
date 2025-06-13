@@ -4,576 +4,215 @@ name: Documentation
 description: Comprehensive documentation generation and maintenance for code, APIs, and project setup
 prompt: Generate and update comprehensive documentation including README, API docs, code comments, and setup guides with automated content generation.
 enhanced-prompt: |-
-  # 📖 Comprehensive Documentation Workflow
+  # 📖 문서 생성
 
-  **Create and maintain professional documentation for your project.**
-
-  ## 📋 Step 1: Documentation Audit
+  ## 1단계: 기본 README 생성
   ```bash
-  echo "=== Documentation Audit ==="
-  
+  echo "=== 문서 생성 시작 ==="
+
   PROJECT_NAME=$(basename $(pwd))
-  CURRENT_DATE=$(date '+%Y-%m-%d')
-  
-  echo "📁 Project: $PROJECT_NAME"
-  echo "📅 Date: $CURRENT_DATE"
-  echo ""
-  
-  # Check existing documentation
-  echo "🔍 Existing documentation:"
-  [ -f "README.md" ] && echo "  ✅ README.md" || echo "  ❌ README.md (missing)"
-  [ -f "CHANGELOG.md" ] && echo "  ✅ CHANGELOG.md" || echo "  ❌ CHANGELOG.md (missing)"
-  [ -f "CONTRIBUTING.md" ] && echo "  ✅ CONTRIBUTING.md" || echo "  ❌ CONTRIBUTING.md (missing)"
-  [ -d "docs/" ] && echo "  ✅ docs/ directory" || echo "  ❌ docs/ directory (missing)"
-  [ -f "package.json" ] && echo "  ✅ package.json" || echo "  ❌ package.json (missing)"
-  
-  echo ""
-  ```
+  echo "📁 프로젝트: $PROJECT_NAME"
 
-  ## 📝 Step 2: Generate/Update README.md
-  ```bash
-  echo "=== README.md Generation ==="
-  
-  # Analyze project structure
-  HAS_PACKAGE_JSON=$([ -f "package.json" ] && echo "true" || echo "false")
-  HAS_TYPESCRIPT=$([ -f "tsconfig.json" ] && echo "true" || echo "false")
-  HAS_TESTS=$(find . -name "*.test.*" -o -name "*.spec.*" | grep -v node_modules | head -1)
-  
-  # Get package info if available
-  if [ "$HAS_PACKAGE_JSON" = "true" ]; then
-    DESCRIPTION=$(node -p "require('./package.json').description || ''" 2>/dev/null)
-    VERSION=$(node -p "require('./package.json').version || ''" 2>/dev/null)
-    SCRIPTS=$(node -p "Object.keys(require('./package.json').scripts || {}).join(', ')" 2>/dev/null)
-  fi
-  
-  # Create comprehensive README
-  cat << EOF > README.md
+  # README.md 생성
+  if [ ! -f "README.md" ]; then
+    echo "📝 README.md 생성 중..."
+    
+    # 프로젝트 정보 수집
+    if [ -f "package.json" ]; then
+      DESCRIPTION=$(node -p "require('./package.json').description || 'Node.js 프로젝트'" 2>/dev/null)
+    else
+      DESCRIPTION="개발 프로젝트"
+    fi
+    
+    cat > README.md << EOF
   # $PROJECT_NAME
-  
-  ${DESCRIPTION:-"A modern application built with best practices"}
-  
-  ## 📋 Table of Contents
-  
-  - [Features](#features)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [API Documentation](#api-documentation)
-  - [Development](#development)
-  - [Testing](#testing)
-  - [Deployment](#deployment)
-  - [Contributing](#contributing)
-  - [License](#license)
-  
-  ## ✨ Features
-  
-  - 🚀 Modern development stack
-  - 📱 Responsive design
-  - 🔒 Security best practices
-  - 🧪 Comprehensive testing
-  - 📖 Well-documented API
-  - 🔄 CI/CD pipeline
-  
-  ## 📋 Prerequisites
-  
-  Before you begin, ensure you have the following installed:
-  
-  - [Node.js](https://nodejs.org/) (v16 or higher)
-  - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-  $([ "$HAS_TYPESCRIPT" = "true" ] && echo "- [TypeScript](https://www.typescriptlang.com/)")
-  
-  ## 🚀 Installation
-  
-  1. Clone the repository:
-     \`\`\`bash
-     git clone <repository-url>
-     cd $PROJECT_NAME
-     \`\`\`
-  
-  2. Install dependencies:
-     \`\`\`bash
-     npm install
-     \`\`\`
-  
-  3. Set up environment variables:
-     \`\`\`bash
-     cp .env.example .env
-     # Edit .env with your configuration
-     \`\`\`
-  
-  ## 💻 Usage
-  
-  ### Development Server
-  
-  Start the development server:
-  
+
+  $DESCRIPTION
+
+  ## 🚀 시작하기
+
+  ### 필요 조건
+  - Node.js (v16 이상)
+  - npm 또는 yarn
+
+  ### 설치
+  \`\`\`bash
+  # 저장소 클론
+  git clone <repository-url>
+  cd $PROJECT_NAME
+
+  # 의존성 설치
+  npm install
+
+  # 환경변수 설정
+  cp .env.example .env
+  \`\`\`
+
+  ### 개발 서버 실행
   \`\`\`bash
   npm run dev
   \`\`\`
-  
-  The application will be available at \`http://localhost:3000\`
-  
-  ### Available Scripts
-  
-  $([ -n "$SCRIPTS" ] && echo "- \`$SCRIPTS\`" | tr ',' '\n' | sed 's/^/- `npm run /' | sed 's/$/`/')
-  
-  ## 📚 API Documentation
-  
-  ### Endpoints
-  
-  | Method | Endpoint | Description |
-  |--------|----------|-------------|
-  | GET    | /api/health | Health check |
-  | GET    | /api/version | Application version |
-  
-  For detailed API documentation, visit \`/api/docs\` when running the server.
-  
-  ## 🛠️ Development
-  
-  ### Project Structure
-  
-  \`\`\`
-  $PROJECT_NAME/
-  ├── src/                 # Source code
-  ├── tests/              # Test files
-  ├── docs/               # Documentation
-  ├── public/             # Static assets
-  ├── package.json        # Dependencies and scripts
-  $([ "$HAS_TYPESCRIPT" = "true" ] && echo "├── tsconfig.json       # TypeScript configuration")
-  └── README.md           # This file
-  \`\`\`
-  
-  ### Code Style
-  
-  This project uses:
-  - ESLint for code linting
-  - Prettier for code formatting
-  $([ "$HAS_TYPESCRIPT" = "true" ] && echo "- TypeScript for type safety")
-  
-  Run linting:
-  \`\`\`bash
-  npm run lint
-  \`\`\`
-  
-  ## 🧪 Testing
-  
-  $([ -n "$HAS_TESTS" ] && echo "Run the test suite:" || echo "Tests are not yet configured.")
-  
-  \`\`\`bash
-  # Run all tests
-  npm test
-  
-  # Run tests in watch mode
-  npm run test:watch
-  
-  # Run tests with coverage
-  npm run test:coverage
-  \`\`\`
-  
-  ## 🚀 Deployment
-  
-  ### Production Build
-  
-  \`\`\`bash
-  npm run build
-  \`\`\`
-  
-  ### Environment Variables
-  
-  | Variable | Description | Default |
-  |----------|-------------|---------|
-  | NODE_ENV | Environment | development |
-  | PORT     | Server port | 3000 |
-  
-  ## 🤝 Contributing
-  
-  1. Fork the repository
-  2. Create a feature branch (\`git checkout -b feature/amazing-feature\`)
-  3. Commit your changes (\`git commit -m 'Add amazing feature'\`)
-  4. Push to the branch (\`git push origin feature/amazing-feature\`)
-  5. Open a Pull Request
-  
-  Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and development process.
-  
-  ## 📄 License
-  
-  This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-  
-  ## 📞 Support
-  
-  If you have any questions or need help, please:
-  
-  - 📧 Email: support@example.com
-  - 💬 Discord: [Join our server](https://discord.gg/example)
-  - 🐛 Issues: [GitHub Issues](https://github.com/user/repo/issues)
-  
-  ---
-  
-  Made with ❤️ by the $PROJECT_NAME team
+
+  ## 📋 주요 명령어
+  - \`npm run dev\` - 개발 서버 시작
+  - \`npm test\` - 테스트 실행
+  - \`npm run build\` - 빌드
+  - \`npm run lint\` - 코드 검사
+
+  ## 🤝 기여하기
+  1. 이 저장소를 포크하세요
+  2. 기능 브랜치를 만드세요 (\`git checkout -b feature/amazing-feature\`)
+  3. 변경사항을 커밋하세요 (\`git commit -m 'Add amazing feature'\`)
+  4. 브랜치에 푸시하세요 (\`git push origin feature/amazing-feature\`)
+  5. Pull Request를 열어주세요
+
+  ## 📄 라이선스
+  MIT License
   EOF
-  
-  echo "✅ README.md generated/updated"
-  echo ""
+    
+    echo "✅ README.md 생성 완료"
+  else
+    echo "ℹ️ README.md가 이미 존재합니다"
+  fi
   ```
 
-  ## 📋 Step 3: Generate CHANGELOG.md
+  ## 2단계: CHANGELOG 생성
   ```bash
-  echo "=== CHANGELOG.md Generation ==="
-  
+  # CHANGELOG.md 생성
   if [ ! -f "CHANGELOG.md" ]; then
-    cat << EOF > CHANGELOG.md
-  # Changelog
-  
-  All notable changes to this project will be documented in this file.
-  
-  The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-  and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-  
+    echo "📋 CHANGELOG.md 생성 중..."
+    
+    cat > CHANGELOG.md << EOF
+  # 변경 이력
+
+  이 프로젝트의 모든 주요 변경사항이 이 파일에 문서화됩니다.
+
   ## [Unreleased]
-  
-  ### Added
-  - Initial project setup
-  - Basic documentation
-  
-  ### Changed
+
+  ### 추가
+  - 초기 프로젝트 설정
+  - 기본 문서화
+
+  ### 변경
   - 
-  
-  ### Deprecated
+
+  ### 수정
   - 
-  
-  ### Removed
-  - 
-  
-  ### Fixed
-  - 
-  
-  ### Security
-  - 
-  
-  ## [1.0.0] - $CURRENT_DATE
-  
-  ### Added
-  - Initial release
+
+  ## [1.0.0] - $(date +%Y-%m-%d)
+
+  ### 추가
+  - 프로젝트 초기 릴리스
   EOF
     
-    echo "✅ CHANGELOG.md created"
+    echo "✅ CHANGELOG.md 생성 완료"
   else
-    echo "✅ CHANGELOG.md already exists"
+    echo "ℹ️ CHANGELOG.md가 이미 존재합니다"
   fi
-  echo ""
   ```
 
-  ## 🤝 Step 4: Generate CONTRIBUTING.md
+  ## 3단계: API 문서 생성 (옵션)
   ```bash
-  echo "=== CONTRIBUTING.md Generation ==="
-  
-  if [ ! -f "CONTRIBUTING.md" ]; then
-    cat << EOF > CONTRIBUTING.md
-  # Contributing to $PROJECT_NAME
-  
-  Thank you for your interest in contributing! This document provides guidelines and information for contributors.
-  
-  ## 📋 Table of Contents
-  
-  - [Code of Conduct](#code-of-conduct)
-  - [Getting Started](#getting-started)
-  - [Development Process](#development-process)
-  - [Pull Request Process](#pull-request-process)
-  - [Coding Standards](#coding-standards)
-  - [Testing Guidelines](#testing-guidelines)
-  
-  ## 📜 Code of Conduct
-  
-  This project adheres to a code of conduct. By participating, you are expected to uphold this code.
-  
-  ## 🚀 Getting Started
-  
-  1. Fork the repository
-  2. Clone your fork: \`git clone <your-fork-url>\`
-  3. Install dependencies: \`npm install\`
-  4. Create a branch: \`git checkout -b feature/your-feature\`
-  
-  ## 🔄 Development Process
-  
-  1. **Issue First**: For major changes, please create an issue first
-  2. **Branch Naming**: Use descriptive branch names (e.g., \`feature/user-auth\`, \`bugfix/login-error\`)
-  3. **Commit Messages**: Follow conventional commit format
-  4. **Testing**: Ensure all tests pass before submitting
-  
-  ## 📝 Pull Request Process
-  
-  1. Update documentation if needed
-  2. Add tests for new functionality
-  3. Ensure all tests pass
-  4. Update CHANGELOG.md
-  5. Request review from maintainers
-  
-  ## 📏 Coding Standards
-  
-  - Follow ESLint configuration
-  - Use Prettier for formatting
-  - Write meaningful commit messages
-  - Add comments for complex logic
-  $([ "$HAS_TYPESCRIPT" = "true" ] && echo "- Use TypeScript types properly")
-  
-  ## 🧪 Testing Guidelines
-  
-  - Write tests for new features
-  - Maintain test coverage above 80%
-  - Use descriptive test names
-  - Test edge cases and error conditions
-  
-  ## 🐛 Reporting Bugs
-  
-  When reporting bugs, please include:
-  
-  - Clear description of the issue
-  - Steps to reproduce
-  - Expected vs actual behavior
-  - Environment details
-  - Screenshots if applicable
-  
-  ## 💡 Suggesting Features
-  
-  For feature requests:
-  
-  - Check if similar feature exists
-  - Provide clear use case
-  - Explain expected behavior
-  - Consider implementation complexity
-  
-  ## 📞 Getting Help
-  
-  - 💬 Discord: [Join our server](https://discord.gg/example)
-  - 📧 Email: dev@example.com
-  - 🐛 Issues: [GitHub Issues](https://github.com/user/repo/issues)
-  
-  Thank you for contributing! 🎉
-  EOF
+  # API 문서 디렉토리 생성
+  mkdir -p docs
+
+  echo "📚 API 문서를 생성하시겠습니까? (y/n)"
+  read -p "> " CREATE_API_DOCS
+
+  if [ "$CREATE_API_DOCS" = "y" ]; then
+    echo "📋 API 문서 생성 중..."
     
-    echo "✅ CONTRIBUTING.md created"
-  else
-    echo "✅ CONTRIBUTING.md already exists"
-  fi
-  echo ""
-  ```
+    cat > docs/API.md << EOF
+  # API 문서
 
-  ## 📚 Step 5: Generate API Documentation
-  ```bash
-  echo "=== API Documentation Generation ==="
-  
-  # Create docs directory
-  mkdir -p docs/api
-  
-  # Generate API documentation template
-  cat << EOF > docs/api/README.md
-  # API Documentation
-  
-  ## Overview
-  
-  This document describes the REST API for $PROJECT_NAME.
-  
-  ## Base URL
-  
+  ## 개요
+  $PROJECT_NAME API 문서입니다.
+
+  ## 기본 URL
   \`\`\`
-  https://api.example.com/v1
+  http://localhost:3000/api
   \`\`\`
-  
-  ## Authentication
-  
-  All API requests require authentication using API keys:
-  
-  \`\`\`bash
-  curl -H "Authorization: Bearer YOUR_API_KEY" https://api.example.com/v1/endpoint
-  \`\`\`
-  
-  ## Endpoints
-  
-  ### Health Check
-  
+
+  ## 엔드포인트
+
+  ### 헬스 체크
   \`\`\`http
   GET /health
   \`\`\`
-  
-  Returns the health status of the API.
-  
-  **Response:**
+
+  응답:
   \`\`\`json
   {
-    "status": "healthy",
-    "timestamp": "2023-12-05T10:30:00Z",
-    "version": "1.0.0"
+    "status": "ok",
+    "timestamp": "2023-12-05T10:30:00Z"
   }
   \`\`\`
-  
-  ### Version Information
-  
+
+  ### 버전 정보
   \`\`\`http
   GET /version
   \`\`\`
-  
-  Returns version information.
-  
-  **Response:**
+
+  응답:
   \`\`\`json
   {
     "version": "1.0.0",
-    "build": "abc123",
-    "environment": "production"
+    "environment": "development"
   }
   \`\`\`
-  
-  ## Error Handling
-  
-  The API uses standard HTTP status codes:
-  
-  | Code | Description |
-  |------|-------------|
-  | 200  | Success |
-  | 400  | Bad Request |
-  | 401  | Unauthorized |
-  | 404  | Not Found |
-  | 500  | Internal Server Error |
-  
-  **Error Response Format:**
-  \`\`\`json
-  {
-    "error": {
-      "code": "INVALID_REQUEST",
-      "message": "The request is invalid",
-      "details": "Additional error details"
-    }
-  }
-  \`\`\`
-  
-  ## Rate Limiting
-  
-  API requests are limited to 1000 requests per hour per API key.
-  
-  ## SDKs and Libraries
-  
-  - JavaScript/TypeScript: \`npm install @company/api-client\`
-  - Python: \`pip install company-api-client\`
-  - Go: \`go get github.com/company/api-client-go\`
-  EOF
-  
-  echo "✅ API documentation created"
-  echo ""
-  ```
 
-  ## 📖 Step 6: Generate Code Documentation
-  ```bash
-  echo "=== Code Documentation Generation ==="
-  
-  # Generate JSDoc/TSDoc if TypeScript project
-  if [ "$HAS_TYPESCRIPT" = "true" ]; then
-    echo "📝 Generating TypeScript documentation..."
-    npx typedoc src/ --out docs/code 2>/dev/null || echo "⚠️  TypeDoc not available"
+  ## 에러 처리
+
+  | 상태 코드 | 설명 |
+  |----------|------|
+  | 200 | 성공 |
+  | 400 | 잘못된 요청 |
+  | 500 | 서버 오류 |
+  EOF
+    
+    echo "✅ API 문서 생성 완료"
   fi
-  
-  # Create code documentation guide
-  cat << EOF > docs/CODE_DOCUMENTATION.md
-  # Code Documentation Guide
-  
-  ## Overview
-  
-  This guide explains how code is documented in $PROJECT_NAME.
-  
-  ## Documentation Standards
-  
-  ### Function Documentation
-  
-  \`\`\`typescript
-  /**
-   * Calculates the sum of two numbers
-   * @param a - The first number
-   * @param b - The second number
-   * @returns The sum of a and b
-   * @example
-   * \`\`\`typescript
-   * const result = add(2, 3); // returns 5
-   * \`\`\`
-   */
-  function add(a: number, b: number): number {
-    return a + b;
-  }
-  \`\`\`
-  
-  ### Class Documentation
-  
-  \`\`\`typescript
-  /**
-   * Represents a user in the system
-   * @example
-   * \`\`\`typescript
-   * const user = new User('john@example.com', 'John Doe');
-   * \`\`\`
-   */
-  class User {
-    /**
-     * Creates a new User instance
-     * @param email - User's email address
-     * @param name - User's full name
-     */
-    constructor(
-      private email: string,
-      private name: string
-    ) {}
-  }
-  \`\`\`
-  
-  ## Documentation Tools
-  
-  - **JSDoc/TSDoc**: For inline code documentation
-  - **README.md**: Project overview and setup
-  - **API Documentation**: REST API endpoints
-  - **CHANGELOG.md**: Version history
-  
-  ## Best Practices
-  
-  1. Document public APIs thoroughly
-  2. Include examples for complex functions
-  3. Keep documentation up-to-date
-  4. Use clear, concise language
-  5. Document edge cases and limitations
-  EOF
-  
-  echo "✅ Code documentation guide created"
-  echo ""
   ```
 
-  ## 📋 Step 7: Documentation Summary
+  ## 4단계: 문서 커밋
   ```bash
-  echo "=== Documentation Summary ==="
+  echo "📝 문서 변경사항 커밋..."
+
+  # 새로 생성된 파일들 확인
+  NEW_FILES=""
+  [ -f "README.md" ] && NEW_FILES="$NEW_FILES README.md"
+  [ -f "CHANGELOG.md" ] && NEW_FILES="$NEW_FILES CHANGELOG.md"
+  [ -f "docs/API.md" ] && NEW_FILES="$NEW_FILES docs/API.md"
+
+  if [ -n "$NEW_FILES" ]; then
+    echo "📋 생성된 문서:"
+    echo "$NEW_FILES" | tr ' ' '\n' | sed 's/^/  - /'
+    
+    # Git 커밋
+    git add $NEW_FILES
+    git commit -m "docs: add basic project documentation
+
+  - Add README.md with project overview
+  - Add CHANGELOG.md for version tracking
+  $([ -f "docs/API.md" ] && echo "- Add API documentation")
+  - Setup documentation structure"
+    
+    echo "✅ 문서 커밋 완료"
+  else
+    echo "ℹ️ 새로 생성된 문서가 없습니다"
+  fi
+
+  echo "🎉 문서 생성 완료!"
   echo ""
-  echo "📖 Generated/Updated Documentation:"
-  echo "  ✅ README.md - Project overview and setup"
-  echo "  ✅ CHANGELOG.md - Version history"
-  echo "  ✅ CONTRIBUTING.md - Contribution guidelines"
-  echo "  ✅ docs/api/README.md - API documentation"
-  echo "  ✅ docs/CODE_DOCUMENTATION.md - Code documentation guide"
+  echo "📋 생성된 문서 목록:"
+  [ -f "README.md" ] && echo "  ✅ README.md - 프로젝트 개요"
+  [ -f "CHANGELOG.md" ] && echo "  ✅ CHANGELOG.md - 변경 이력"
+  [ -f "docs/API.md" ] && echo "  ✅ docs/API.md - API 문서"
   echo ""
-  echo "📁 Documentation structure:"
-  echo "  ├── README.md"
-  echo "  ├── CHANGELOG.md"
-  echo "  ├── CONTRIBUTING.md"
-  echo "  └── docs/"
-  echo "      ├── api/"
-  echo "      │   └── README.md"
-  echo "      └── CODE_DOCUMENTATION.md"
-  echo ""
-  echo "🔄 Next steps:"
-  echo "  1. Review and customize generated documentation"
-  echo "  2. Add project-specific API endpoints"
-  echo "  3. Update environment variables section"
-  echo "  4. Add screenshots or diagrams if needed"
-  echo "  5. Commit documentation changes"
-  echo ""
-  echo "📝 Commit documentation:"
-  echo "  git add ."
-  echo "  git commit -m 'docs: add comprehensive project documentation'"
-  echo ""
-  echo "🎉 Documentation workflow completed!"
+  echo "📝 다음 단계:"
+  echo "  1. 문서 내용을 프로젝트에 맞게 수정"
+  echo "  2. 필요시 추가 문서 작성"
+  echo "  3. 정기적으로 문서 업데이트"
   ```
 
-  **📖 Comprehensive documentation generated with professional standards!**
+  **🎯 결과:** 프로젝트의 기본 문서 구조 완성

@@ -14,168 +14,100 @@ prompt: |
   that requires a separate branch. The process includes change management,
   branch naming optimization, and automated setup for immediate productivity.
 enhanced-prompt: |-
-  # 🚀 Smart Git Branch Creation with Auto-Generated Names
+  # 🌿 새 브랜치 생성
 
-  **I'll help you create a properly named branch. Just follow these steps:**
-
-  ## 🔍 Step 1: Pre-flight Check
+  ## 1단계: 현재 상태 확인
   ```bash
-  echo "=== Current Git Status ==="
-  git status --porcelain
-  echo ""
-  echo "=== Current Branch ==="
-  git branch --show-current
-  echo ""
-  echo "=== Recent Commits ==="
-  git log --oneline -3
+  echo "=== 브랜치 생성 시작 ==="
+
+  # 현재 브랜치 확인
+  CURRENT_BRANCH=$(git branch --show-current)
+  echo "📍 현재 브랜치: $CURRENT_BRANCH"
+
+  # 변경사항 확인
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "⚠️ 커밋되지 않은 변경사항이 있습니다"
+    echo "💾 변경사항을 스태시하거나 커밋하세요"
+    git status --short
+    exit 1
+  fi
   ```
 
-  ## 🧹 Step 2: Clean Up (if needed)
-  **Only run if Step 1 shows uncommitted changes:**
+  ## 2단계: 브랜치 정보 입력
   ```bash
-  git add .
-  git stash push -m "WIP: $(date '+%Y-%m-%d %H:%M') - before branch creation"
-  echo "✅ Changes stashed"
+  # 브랜치 타입 선택
+  echo "🔍 브랜치 타입을 선택하세요:"
+  echo "1) feature (새 기능)"
+  echo "2) bugfix (버그 수정)"
+  echo "3) hotfix (긴급 수정)"
+  echo "4) refactor (리팩토링)"
+  echo "5) docs (문서화)"
+
+  read -p "선택 (1-5): " BRANCH_TYPE_NUM
+
+  case "$BRANCH_TYPE_NUM" in
+    1) BRANCH_TYPE="feature" ;;
+    2) BRANCH_TYPE="bugfix" ;;
+    3) BRANCH_TYPE="hotfix" ;;
+    4) BRANCH_TYPE="refactor" ;;
+    5) BRANCH_TYPE="docs" ;;
+    *) BRANCH_TYPE="feature" ;;
+  esac
+
+  # 브랜치 설명 입력
+  echo "📝 브랜치 설명을 입력하세요:"
+  read -p "> " BRANCH_DESC
+
+  # 브랜치 이름 생성
+  DATE_PREFIX=$(date +%m%d)
+  CLEAN_DESC=$(echo "$BRANCH_DESC" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]//g')
+  BRANCH_NAME="${BRANCH_TYPE}/${DATE_PREFIX}-${CLEAN_DESC}"
+
+  echo "🌿 생성할 브랜치: $BRANCH_NAME"
   ```
 
-  ## 🔄 Step 3: Update Base Branch
+  ## 3단계: 베이스 브랜치 업데이트
   ```bash
+  # 메인 브랜치로 이동
   git checkout main
+  echo "📍 main 브랜치로 이동"
+
+  # 최신 상태로 업데이트
+  echo "🔄 최신 변경사항 가져오기..."
   git pull origin main
-  echo "✅ Base branch updated"
-  ```
 
-  ## 🤖 Step 4: Let Me Generate a Branch Name
-  **Based on your current work context, I suggest creating a branch. Tell me what you're working on, and I'll generate the perfect branch name following these patterns:**
-
-  - **Feature**: `feature/MMDD-descriptive-name`
-  - **Bug Fix**: `bugfix/MMDD-issue-description`
-  - **Refactor**: `refactor/MMDD-component-name`
-  - **Documentation**: `docs/MMDD-topic`
-  - **Testing**: `test/MMDD-test-type`
-
-  **Example auto-generated names:**
-  ```bash
-  # For a user authentication feature
-  BRANCH="feature/$(date +%m%d)-user-authentication"
-
-  # For fixing a login bug  
-  BRANCH="bugfix/$(date +%m%d)-login-validation-error"
-
-  # For database optimization
-  BRANCH="refactor/$(date +%m%d)-database-queries"
-  ```
-
-  ## 🌟 Step 5: Create Branch with Smart Naming
-  **I'll create a branch name based on your project context. Run this:**
-  ```bash
-  # Auto-generate branch name with timestamp
-  TODAY=$(date +%m%d)
-
-  # Let me suggest a name based on your current directory and recent commits
-  PROJECT_CONTEXT=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g')
-  BRANCH_NAME="feature/${TODAY}-${PROJECT_CONTEXT}-update"
-
-  echo "🤖 Suggested branch name: $BRANCH_NAME"
-  echo "Creating branch..."
-
-  git checkout -b "$BRANCH_NAME"
-  echo "✅ Created branch: $BRANCH_NAME"
-  ```
-
-  ## 🎯 Step 6: Alternative Smart Naming
-  **Or let me create a more specific branch based on recent activity:**
-  ```bash
-  # Analyze recent commit messages for context
-  RECENT_FILES=$(git diff --name-only HEAD~1 2>/dev/null | head -3 | xargs basename | tr '\n' '-' | sed 's/-$//')
-  TODAY=$(date +%m%d)
-
-  if [ ! -z "$RECENT_FILES" ]; then
-    BRANCH_NAME="feature/${TODAY}-update-${RECENT_FILES}"
-  else
-    # Fallback to generic but descriptive name
-    BRANCH_NAME="feature/${TODAY}-$(whoami)-development"
+  if [ $? -ne 0 ]; then
+    echo "❌ 업데이트 실패 - 네트워크나 충돌 확인 필요"
+    exit 1
   fi
 
-  echo "🤖 Smart branch name: $BRANCH_NAME"
-  git checkout -b "$BRANCH_NAME"
-  echo "✅ Branch created successfully!"
+  echo "✅ 베이스 브랜치 업데이트 완료"
   ```
 
-  ## 🔧 Step 7: Ultimate Smart Branch Creator
-  **Most intelligent option - I'll analyze your project and create the perfect name:**
+  ## 4단계: 새 브랜치 생성
   ```bash
-  #!/bin/bash
-
-  # Get current date for uniqueness
-  DATE_STAMP=$(date +%m%d)
-
-  # Analyze project structure
-  if [ -f "package.json" ]; then
-    PROJECT_TYPE="frontend"
-  elif [ -f "pom.xml" ]; then
-    PROJECT_TYPE="java"
-  elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
-    PROJECT_TYPE="python"
-  else
-    PROJECT_TYPE="general"
-  fi
-
-  # Generate intelligent branch name
-  BASE_NAME=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]//g')
-  BRANCH_NAME="feature/${DATE_STAMP}-${BASE_NAME}-enhancement"
-
-  echo "🧠 Intelligent branch analysis complete!"
-  echo "📁 Project type: $PROJECT_TYPE"
-  echo "🌿 Generated branch: $BRANCH_NAME"
-  echo ""
-  echo "Creating your branch..."
-
+  # 새 브랜치 생성 및 이동
+  echo "🌿 새 브랜치 생성 중..."
   git checkout -b "$BRANCH_NAME"
 
   if [ $? -eq 0 ]; then
-    echo "✅ SUCCESS: Branch '$BRANCH_NAME' created!"
-    echo "🎯 You're ready to start coding!"
+    echo "✅ 브랜치 '$BRANCH_NAME' 생성 완료"
   else
-    echo "❌ Error creating branch. Check git status."
+    echo "❌ 브랜치 생성 실패"
+    exit 1
   fi
-  ```
 
-  ## ✅ Step 8: Verify & Setup
-  ```bash
-  echo "=== Branch Creation Summary ==="
-  echo "Current branch: $(git branch --show-current)"
-  echo "Branch list:"
-  git branch | grep "^\*"
+  # 원격에 브랜치 생성
+  echo "📤 원격 저장소에 브랜치 생성..."
+  git push -u origin "$BRANCH_NAME"
+
+  echo "🎉 브랜치 생성 및 설정 완료!"
+  echo "📋 브랜치 정보:"
+  echo "  - 이름: $BRANCH_NAME"
+  echo "  - 타입: $BRANCH_TYPE"
+  echo "  - 설명: $BRANCH_DESC"
   echo ""
-  echo "Setting up remote tracking..."
-  git push -u origin "$(git branch --show-current)"
-  echo ""
-  echo "🎉 All set! Your intelligently named branch is ready!"
+  echo "🚀 이제 개발을 시작하세요!"
   ```
 
-  ## 🚀 Ready to Code!
-  ```bash
-  # Your first commit
-  echo "# $(git branch --show-current)" > BRANCH_NOTES.md
-  echo "Created: $(date)" >> BRANCH_NOTES.md
-  echo "Purpose: [Add your development goal here]" >> BRANCH_NOTES.md
-
-  git add BRANCH_NOTES.md
-  git commit -m "feat: initialize $(git branch --show-current) branch"
-  git push
-
-  echo "✨ Branch initialized with documentation!"
-  ```
-
-  ---
-
-  ## 🤖 How My Smart Naming Works:
-  | Context | Pattern | Example |
-  |---------|---------|---------|
-  | Date-based | `feature/MMDD-description` | `feature/1205-user-auth` |
-  | Project-aware | `feature/MMDD-projectname-type` | `feature/1205-ecommerce-checkout` |
-  | File-based | `feature/MMDD-modified-files` | `feature/1205-update-api-routes` |
-  | User-based | `feature/MMDD-username-task` | `feature/1205-john-database-migration` |
-
-  **🎯 Just run the commands and I'll handle the naming for you!**
+  **🎯 결과:** 개발 준비가 완료된 새 브랜치
