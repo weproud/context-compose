@@ -32,7 +32,7 @@ export async function copyDirectory(
   const entries = await readdir(src, { withFileTypes: true });
 
   await Promise.all(
-    entries.map(async entry => {
+    entries.map(async (entry) => {
       const srcPath = join(src, entry.name);
       const destPath = join(dest, entry.name);
 

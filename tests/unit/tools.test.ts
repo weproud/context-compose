@@ -83,8 +83,11 @@ prompt: |
       );
 
       // 참조되는 파일들 생성 (간략화)
-      const genericComponentContent = (name: string) => `version: 1
-kind: component
+      const genericComponentContent = (
+        name: string,
+        kind: 'rule' | 'mcp' | 'persona'
+      ) => `version: 1
+kind: ${kind}
 name: ${name}
 prompt: 'This is a prompt for ${name}'
 enhanced-prompt: 'This is an enhanced prompt for ${name}'`;
@@ -98,23 +101,23 @@ enhanced-prompt: 'This is an enhanced prompt for ${name}'`;
 
       writeFileSync(
         join(rulesDir, 'the-must-follow.yaml'),
-        genericComponentContent('the-must-follow')
+        genericComponentContent('the-must-follow', 'rule')
       );
       writeFileSync(
         join(rulesDir, 'development.yaml'),
-        genericComponentContent('development')
+        genericComponentContent('development', 'rule')
       );
       writeFileSync(
         join(mcpsDir, 'sequential-thinking.yaml'),
-        genericComponentContent('sequential-thinking')
+        genericComponentContent('sequential-thinking', 'mcp')
       );
       writeFileSync(
         join(mcpsDir, 'context7.yaml'),
-        genericComponentContent('context7')
+        genericComponentContent('context7', 'mcp')
       );
       writeFileSync(
         join(personasDir, 'software-developer.yaml'),
-        genericComponentContent('software-developer')
+        genericComponentContent('software-developer', 'persona')
       );
 
       // StartContextTool 실행
@@ -178,7 +181,10 @@ prompt: |
       );
       writeFileSync(
         join(rulesDir, 'the-must-follow.yaml'),
-        `version: 1\\nkind: rule\\nprompt: 'Rule prompt'\\nenhanced-prompt: 'Enhanced Rule prompt'`,
+        `version: 1
+kind: rule
+prompt: 'Rule prompt'
+enhanced-prompt: 'Enhanced Rule prompt'`,
         'utf8'
       );
 

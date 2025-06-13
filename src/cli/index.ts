@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
-import { createStartContextCommand } from './commands/start-context.js';
 import { createInitCommand } from './commands/init.js';
+import { createStartContextCommand } from './commands/start-context.js';
 import { createValidateContextCommand } from './commands/validate-context.js';
-import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
 
 function startMCPServer() {
   console.log('🚀 Starting MCP server...');
@@ -17,14 +17,14 @@ function startMCPServer() {
   const distServerPath = join(__dirname, '../../../dist/mcp-server/server.js');
   const srcServerPath = join(__dirname, '../../../mcp-server/server.ts');
 
-  let serverPath;
+  let serverPath: string;
   let useTypeScript = false;
 
-  if (existsSync(distServerPath)) {
-    serverPath = distServerPath;
-  } else if (existsSync(srcServerPath)) {
+  if (process.env.NODE_ENV === 'development' && existsSync(srcServerPath)) {
     serverPath = srcServerPath;
     useTypeScript = true;
+  } else if (existsSync(distServerPath)) {
+    serverPath = distServerPath;
   } else {
     console.error(
       '❌ MCP server file not found. Please build the project or check the source files.'

@@ -1,23 +1,16 @@
-import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { parse as parseYaml } from 'yaml';
+import * as z from 'zod';
 import type {
   StartContextToolInput,
   StartContextToolResponse,
 } from '../../schemas/start-context.js';
 import { StartContextToolSchema } from '../../schemas/start-context.js';
+import { InvalidContextError } from '../errors.js';
 import {
-  FileNotFoundError,
-  InvalidContextError,
-  YamlParseError,
-} from '../errors.js';
-import { fileExists } from '../utils/index.js';
-import * as z from 'zod';
-import { readYamlFile } from '../utils/yaml.js';
-import {
-  processContextSections,
   combinePrompts,
+  processContextSections,
 } from '../utils/prompt-combiner.js';
+import { readYamlFile } from '../utils/yaml.js';
 
 /**
  * Main context YAML file structure type
@@ -28,11 +21,7 @@ interface ContextYaml {
   name: string;
   description: string;
   context: {
-    personas?: string[];
-    rules?: string[];
-    mcps?: string[];
-    actions?: string[];
-    [key: string]: string | string[] | undefined; // Dynamic section support
+    [key: string]: string[] | undefined;
   };
   prompt?: string;
   'enhanced-prompt'?: string;
@@ -119,7 +108,7 @@ export async function executeStartContextTool(
     return await executeStartContext(validatedArgs);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessages = error.errors.map(e => e.message).join(', ');
+      const errorMessages = error.errors.map((e) => e.message).join(', ');
       return {
         success: false,
         message: `Invalid input: ${errorMessages}`,

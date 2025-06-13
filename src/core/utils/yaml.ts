@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
+import { FileNotFoundError, YamlParseError } from '../errors.js';
 import { fileExists } from './index.js';
-import { YamlParseError, FileNotFoundError } from '../errors.js';
 
 /**
  * Read and parse a YAML file asynchronously.

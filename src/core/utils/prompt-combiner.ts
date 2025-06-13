@@ -1,6 +1,6 @@
 import { join } from 'node:path';
-import { readYamlFile } from './yaml.js';
 import { InvalidContextError } from '../errors.js';
+import { readYamlFile } from './yaml.js';
 
 /**
  * Generic YAML structure for assets (personas, rules, actions, etc.)
@@ -105,7 +105,7 @@ export function combinePrompts(
   // 2. Add prompts from all other sections
   for (const section of Object.keys(processedSections).sort()) {
     const sectionPrompts = processedSections[section];
-    if (sectionPrompts.length > 0) {
+    if (sectionPrompts && sectionPrompts.length > 0) {
       prompts.push(`### ${section}\\n${sectionPrompts.join('\\n\\n')}`);
     }
   }

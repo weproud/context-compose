@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { InitToolResponse } from '../../schemas/index.js';
@@ -36,6 +37,7 @@ async function findAssetsDirectory(): Promise<string> {
 
   // As a fallback, try to resolve via require, which can find it in node_modules
   try {
+    const require = createRequire(import.meta.url);
     const packagePath = require.resolve(
       '@noanswer/context-compose/package.json'
     );
