@@ -1,13 +1,11 @@
 version: 1
-kind: task
-name: 'security-implementation'
-description: 'Context for security implementation with comprehensive threat protection and compliance'
+kind: context
+name: Application Security
+description: A context for implementing robust security measures, threat protection, and compliance.
 
 context:
-  workflow: workflows/workflow.yaml
-  roles:
-- personas/dan-abramov.yaml
-- personas/linus-torvalds.yaml
+  personas:
+    - personas/linus-torvalds.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/security-guidelines.yaml
@@ -18,73 +16,35 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/security-audit.yaml
 prompt: |
-  Implement comprehensive security measures with defense-in-depth strategy.
-  Apply security best practices for authentication, authorization, and data protection.
-  Conduct regular security audits and vulnerability assessments.
-  Ensure compliance with security standards while maintaining system performance.
+  Let's secure our application from potential threats.
+  We will adopt a defense-in-depth strategy to protect our system at every layer.
+  Our goal is to implement security by design, making it an integral part of our development lifecycle.
+  We'll focus on authentication, authorization, and data protection, following industry best practices.
+  Let's start by identifying and mitigating the most critical vulnerabilities.
 enhanced-prompt: |-
-  # Security Implementation Context
+  # Application Security Context
 
-  ## Security Philosophy
-  Implement comprehensive security measures with **defense-in-depth strategy** applying **security by design** principles throughout the development lifecycle.
+  ## Core Philosophy
+  Security is not an afterthought; it's a foundational component of our software. We will proactively identify and mitigate risks using a **Defense-in-Depth** strategy.
 
-  ## Core Security Areas
-  1. **Authentication & Authorization:**
-     - Implement robust user authentication systems
-     - Apply role-based access control (RBAC) and permissions
-     - Use secure session management and token handling
-     - Enable multi-factor authentication for sensitive operations
-
-  2. **Data Protection:**
-     - Encrypt sensitive data at rest and in transit
-     - Implement proper data sanitization and validation
-     - Apply principle of least privilege for data access
-     - Ensure secure backup and recovery procedures
-
-  3. **Application Security:**
-     - Prevent common vulnerabilities (OWASP Top 10)
-     - Implement input validation and output encoding
-     - Apply secure coding practices throughout development
-     - Use security headers and content security policies
-
-  ## Security Implementation Process
-  1. **Security Assessment & Planning:**
-     - Conduct threat modeling and risk assessment
-     - Identify security requirements and compliance needs
-     - Plan security architecture and controls
-     - Establish security testing and validation procedures
-
-  2. **Security Controls Implementation:**
-     - Deploy authentication and authorization mechanisms
-     - Implement encryption and data protection measures
-     - Configure security monitoring and logging systems
-     - Apply network security and firewall configurations
-
-  3. **Security Validation & Monitoring:**
-     - Conduct security testing and penetration testing
-     - Perform regular vulnerability scans and assessments
-     - Monitor security events and incident response
-     - Maintain security documentation and compliance records
+  ## Key Security Areas
+  1.  **Authentication & Authorization**: Implement strong authentication (MFA recommended) and role-based access control (RBAC).
+  2.  **Data Protection**: Encrypt sensitive data both in transit (TLS) and at rest. Sanitize all inputs to prevent injection attacks.
+  3.  **Vulnerability Management**: Actively protect against the OWASP Top 10 vulnerabilities (e.g., Injection, Broken Authentication).
+  4.  **Secure Configuration**: Harden all layers of the stack, from the web server to the database.
 
   ## Security Best Practices
-  - **Input Validation**: Validate and sanitize all user inputs
-  - **Secure Communications**: Use HTTPS/TLS for all data transmission
-  - **Error Handling**: Avoid information disclosure in error messages
-  - **Logging**: Implement comprehensive security event logging
-  - **Updates**: Keep all dependencies and systems updated
+  - **Principle of Least Privilege**: Grant only the permissions necessary for a function to perform its job.
+  - **Secure Defaults**: Configure systems to be secure out-of-the-box.
+  - **Fail Securely**: Ensure that failure modes do not expose sensitive information.
+  - **Regular Audits**: Continuously assess and test security controls.
+  - **Dependency Scanning**: Keep all third-party libraries updated and free of known vulnerabilities.
 
   ## Compliance & Standards
-  - Follow OWASP security guidelines and best practices
-  - Implement ISO 27001/SOC 2 compliance requirements
-  - Apply GDPR/CCPA data protection regulations
-  - Maintain security documentation and audit trails
+  - Adherence to OWASP, ISO 27001/SOC 2, and relevant data protection regulations (GDPR, CCPA) is critical.
 
-  ## Success Criteria
-  - ✅ All security vulnerabilities addressed and mitigated
-  - ✅ Authentication and authorization systems properly implemented
-  - ✅ Data encryption and protection measures active
-  - ✅ Security monitoring and incident response operational
-  - ✅ Compliance requirements met and documented
-
-  **Ready to implement security measures. What security areas would you like to focus on?**
+  **Ready to fortify our application. Which area should we secure first?**

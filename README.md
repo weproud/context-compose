@@ -25,7 +25,7 @@ Context Compose provides task-specific contexts that can be composed together, e
 - 🤖 **MCP Integration**: Direct integration with AI models via Model Context Protocol
 - 📋 **Composable Architecture**: Mix and match components like Docker Compose
 - 🔄 **Workflow Engine**: Automated task flows for different development scenarios
-- � **Role-based Development**: Apply expert personas and specialized knowledge domains
+- 🤖 **Role-based Development**: Apply expert personas and specialized knowledge domains
 - 📢 **Notification System**: Work status notifications via Slack, email, and other channels
 
 ## 🚀 MCP Registration
@@ -43,7 +43,7 @@ Context Compose provides task-specific contexts that can be composed together, e
 
 ## 📖 Usage Examples
 
-### Initialize Project (prompt) 
+### Initialize Project (prompt)
 
 ```
 initialize project with context-compose
@@ -52,16 +52,19 @@ initialize project with context-compose
 ### Basic Context Loading (prompt)
 
 #### Load default development context
+
 ```
 get-context default with context-compose
 ```
 
 #### Load feature development context with enhanced guidelines (prompt)
+
 ```
 get-context feature --enhanced-prompt with context-compose
 ```
 
 #### Load API development context (prompt)
+
 ```
 get-context api with context-compose
 ```
@@ -177,7 +180,7 @@ context:
 - Regression prevention guidelines
 - Documentation requirements
 
-## � Built-in Assets Structure
+## 📦 Built-in Assets Structure
 
 Context Compose comes with a comprehensive set of pre-built components organized in the `assets/` directory:
 
@@ -189,6 +192,62 @@ Expert personas that provide specialized knowledge and perspectives:
 - **Backend Experts**: DHH (Rails), Ryan Dahl (Node.js), Linus Torvalds (Systems)
 - **Architecture Experts**: Martin Fowler (Patterns), Uncle Bob (Clean Code), John Carmack (Performance)
 - **Testing Experts**: Kent C. Dodds (Testing), Sindre Sorhus (Open Source)
+
+### 🎯 **Actions** (`assets/actions/`)
+
+Specific AI tasks and operations:
+
+- **Code Generation**: Component creation, API endpoint generation, test writing
+- **Refactoring**: Code modernization, pattern application, optimization
+- **Analysis**: Code review, security audit, performance analysis
+
+### 🔧 **Workflows** (`assets/workflows/`)
+
+Multi-step automated processes:
+
+- **Full-stack Development**: Complete CRUD application creation
+- **Testing Setup**: Comprehensive testing environment configuration
+- **Deployment**: CI/CD pipeline construction and optimization
+
+### 📐 **Templates** (`assets/templates/`)
+
+Reusable code and configuration templates:
+
+- **React**: Components, hooks, context providers, test files
+- **Spring Boot**: Controllers, services, entities, configurations
+- **DevOps**: Docker files, CI/CD configs, monitoring setups
+
+### 📋 **Contexts** (`assets/contexts/`)
+
+Complete context definitions combining multiple components:
+
+- **Feature Development**: Full feature creation with testing and documentation
+- **Bug Fixing**: Systematic debugging and resolution workflows
+- **Performance**: Optimization and monitoring setup
+
+### 📚 **Documentation** (`assets/docs/`)
+
+Comprehensive guides and references:
+
+- **Getting Started**: Step-by-step setup and basic usage
+- **Workflow Writing**: Advanced workflow creation techniques
+- **Available Personas**: Complete persona reference with use cases
+
+### 🧪 **Tests** (`assets/tests/`)
+
+Automated validation and quality assurance:
+
+- **Code Quality**: Linting, formatting, and structure validation
+- **Functionality**: Unit test and integration test verification
+- **Security**: Vulnerability scanning and compliance checks
+
+### 💡 **Examples** (`assets/examples/`)
+
+Complete, runnable project examples:
+
+- **Full-stack CRUD**: React + Spring Boot application
+- **Legacy Refactoring**: Step-by-step modernization process
+- **Testing Environment**: Comprehensive test setup
 
 ### 📋 **Rules** (`assets/rules/`)
 
@@ -240,7 +299,7 @@ Complete workflow orchestrations for different development scenarios:
 
 Template directory for creating your own custom components and extensions.
 
-## �🛠️ Customization
+## 🛠️ Customization
 
 ### Creating Custom Contexts
 

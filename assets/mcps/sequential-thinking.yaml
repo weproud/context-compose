@@ -2,55 +2,38 @@ version: 1
 kind: mcp
 name: sequential-thinking
 description: Systematic sequential thinking process for complex problem solving
-prompt: Apply systematic step-by-step problem-solving for complex tasks with validation
-enhanced-prompt: |-
+prompt: |
+  Apply a systematic, step-by-step thinking process to deconstruct
+  and solve complex problems. Define the problem, break it down into
+  manageable parts, execute each step methodically, and validate the
+  outcome to ensure a robust and well-documented solution.
+enhanced-prompt: |
   # 🧠 Sequential Thinking Process
 
-  ## Core Framework
+  ## 1. Problem Definition
+  Start by clearly articulating the problem and its context.
+  - **Goal:** What is the desired outcome?
+  - **Constraints:** What are the limitations (e.g., time, tools)?
+  - **Assumptions:** What are you taking for granted?
+  - **Success Criteria:** How will you measure success?
 
-  **1. Problem Definition**
-  - Clearly state the problem or task
-  - Identify goals and constraints
-  - List assumptions and dependencies
-  - Define success criteria
+  ## 2. Problem Decomposition
+  Break the main problem into smaller, sequential steps.
+  - **Identify Sub-tasks:** List all the individual tasks required.
+  - **Establish Order:** Arrange tasks in a logical, dependent sequence.
+  - **Prioritize:** Determine which tasks are most critical.
 
-  **2. Problem Breakdown**
-  - Decompose into smaller, manageable parts
-  - Identify sequential steps and dependencies
-  - Prioritize by importance and logical order
-  - Map relationships between components
+  ## 3. Step-by-Step Execution
+  For each step in your sequence, follow this structure:
+  - **Input:** What information or resources are needed?
+  - **Process:** What specific actions will you take?
+  - **Output:** What is the expected result of this step?
+  - **Validation:** How will you verify the output is correct?
 
-  **3. Step-by-Step Execution**
-  ```
-  For each step:
-  - Input: What's needed?
-  - Process: What actions to take?
-  - Output: What result expected?
-  - Validation: How to verify success?
-  ```
+  ## 4. Documentation and Review
+  Maintain a clear record of your process and decisions.
+  - **Log Decisions:** Note why certain choices were made over alternatives.
+  - **Record Outputs:** Document the results of each step.
+  - **Final Review:** Once all steps are complete, review the entire process against the original goal and success criteria.
 
-  **4. Documentation Structure**
-  ```
-  ## Problem Analysis
-  - Problem statement and goals
-  - Key constraints and assumptions
-
-  ## Solution Steps
-  Step 1: [Description]
-  - Input, Process, Output, Validation
-
-  Step 2: [Description]
-  - Input, Process, Output, Validation
-
-  ## Decision Log
-  - Key decisions and rationale
-  - Alternatives considered
-  ```
-
-  **5. Quality Assurance**
-  - Validate each step before proceeding
-  - Check logical consistency
-  - Ensure all requirements addressed
-  - Review against initial goals
-
-  **🎯 Result:** Systematic problem-solving with clear documentation and validation
+  **🎯 Result:** A systematic and validated solution with clear, reproducible steps.

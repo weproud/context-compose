@@ -1,13 +1,13 @@
 version: 1
-kind: task
-name: 'feature-development'
-description: 'Context for developing new features with comprehensive planning and testing'
+kind: context
+name: Feature Development
+description: A context for planning, developing, and testing new features from concept to completion.
 
 context:
-  workflow: workflows/feature-workflow.yaml
-  roles:
-- personas/dan-abramov.yaml
-- personas/kent-c-dodds.yaml
+  personas:
+    - personas/dan-abramov.yaml
+    - personas/kent-c-dodds.yaml
+    - personas/guillermo-rauch.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml
@@ -23,63 +23,41 @@ context:
     - mcps/context7.yaml
     - mcps/github-api.yaml
     - mcps/web-search.yaml
+    - mcps/playwright.yaml
+  actions:
+    - actions/api-design.yaml
+    - actions/lint.yaml
+    - actions/test.yaml
 prompt: |
-  Develop new features through user-centric thinking and incremental development.
-  Implement high-quality functionality with comprehensive testing and documentation.
-  Focus on scalability, accessibility, and maintainability from the start.
-  Apply Test-Driven Development and integrate continuous feedback throughout process.
+  Let's build something new and exciting.
+  We will transform a great idea into a high-quality, user-centric feature.
+  Our process will be agile and iterative, focusing on delivering value quickly.
+  We'll balance innovation with solid engineering, ensuring our work is scalable and maintainable.
+  Let's start by defining the user stories and acceptance criteria.
 enhanced-prompt: |-
   # Feature Development Context
 
-  ## Development Philosophy
-  Implement high-quality functionality through **user-centric thinking** and **incremental development**.
+  ## Core Philosophy
+  We build features with the user in mind, following an incremental and test-driven approach. Quality, scalability, and maintainability are built-in from the start, not bolted on at the end.
 
-  ## Development Process
-  1. **Requirements Analysis & Design**:
-     - Write and review feature specifications
-     - Define user stories and acceptance criteria
-     - Plan technical design and architecture
-     - Design APIs and data modeling
+  ## Development Lifecycle
+  1.  **Define**: Clearly articulate the problem, user stories, and acceptance criteria.
+  2.  **Design**: Create a technical plan, considering architecture, data models, and APIs.
+  3.  **Build**: Implement the feature, starting with an MVP and iterating. Write clean, well-structured code.
+  4.  **Test**: Apply the testing pyramid (unit, integration, E2E) to ensure quality.
+  5.  **Document**: Write clear documentation for both users and developers.
 
-  2. **Incremental Development (MVP → Complete)**:
-     - Start with Minimum Viable Product (MVP)
-     - Maintain working versions at each stage
-     - Collect and incorporate early feedback
-     - Expand and improve features iteratively
-
-  3. **Quality Assurance**:
-     - Apply Test-Driven Development (TDD)
-     - Write unit/integration/E2E tests
-     - Conduct code reviews and pair programming
-     - Verify performance and accessibility requirements
-
-  ## Development Focus Areas
-  - **User Experience**: Intuitive and easy-to-use interfaces
-  - **Performance**: Fast response times and efficient resource usage
-  - **Accessibility**: Features accessible to all users
-  - **Scalability**: Structure capable of handling future requirements
-  - **Security**: Safe and reliable functionality
-  - **Maintainability**: Readable and easily modifiable code
-
-  ## Technical Considerations
-  - **API Design**: Follow RESTful principles, consistent response formats
-  - **Database**: Efficient schema design, index optimization
-  - **Frontend**: Component reusability, state management optimization
-  - **Error Handling**: Comprehensive error handling and user-friendly messages
-
-  ## Documentation Requirements
-  - **Feature Specifications**: Detailed feature descriptions and usage
-  - **API Documentation**: OpenAPI/Swagger specifications
-  - **User Guide**: Guide for end users
-  - **Developer Documentation**: Code structure and extension methods
+  ## Key Considerations
+  - **User Experience (UX)**: Is it intuitive and accessible?
+  - **Performance**: Is it fast and efficient?
+  - **Security**: Is it secure against common threats?
+  - **Code Quality**: Does it adhere to our standards (Clean Code, SOLID)?
 
   ## Success Criteria
-  - ✅ All acceptance criteria met
-  - ✅ Comprehensive test coverage (90%+)
-  - ✅ Performance targets achieved (response time < 200ms)
-  - ✅ Accessibility standards compliance (WCAG 2.1 AA)
-  - ✅ Security verification completed
-  - ✅ Code review approved
-  - ✅ Documentation completed
+  - ✅ All acceptance criteria are met.
+  - ✅ Comprehensive test suite with high coverage (90%+).
+  - ✅ Positive code review and architectural approval.
+  - ✅ Performance and security benchmarks are met.
+  - ✅ Complete and clear documentation.
 
-  **Ready to start new feature development. What feature would you like to develop?**
+  **Ready to bring a new feature to life. What problem are we solving?**

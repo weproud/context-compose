@@ -2,160 +2,42 @@ version: 1
 kind: mcp
 name: web-search
 description: Web search capabilities for research and information gathering
-prompt: Use web search for comprehensive research and information gathering
-enhanced-prompt: |-
+prompt: |
+  Conduct comprehensive research using targeted web searches.
+  Optimize queries, prioritize reliable sources, and validate
+  information to gather accurate and current data for any topic,
+  especially for technical problem-solving and documentation.
+enhanced-prompt: |
   # 🔍 Web Search Research
 
-  ## Search Strategy
+  ## 1. Search Strategy
+  Formulate precise queries to get the most relevant results.
 
-  **1. Query Optimization**
+  **A. Query Optimization**
+  Use quotes for exact phrases and site-specific searches for focus.
   ```bash
-  # Specific technical searches
+  # Search for a specific error within the official docs
   "React hooks useEffect cleanup" site:reactjs.org
-  "TypeScript generic constraints" official documentation
-  "Node.js stream API" latest version examples
+
+  # Find best practices for a technology
+  "TypeScript generic constraints" best practices
   ```
 
-  **2. Source Prioritization**
-  - Official documentation (highest priority)
-  - GitHub repositories and README files
-  - Stack Overflow and technical forums
-  - Technical blogs and recent tutorials
-  - Academic papers for research
+  **B. Source Prioritization**
+  - **High Priority:** Official documentation, reputable tech blogs.
+  - **Medium Priority:** GitHub issues, Stack Overflow.
+  - **Low Priority:** Unverified forums, outdated articles.
 
-  **3. Search Categories**
-  ```bash
-  # Documentation
-  "API documentation" [library name] official
+  ## 2. Information Validation
+  Always critically evaluate the information you find.
+  - **Check Recency:** Is the information up-to-date? Look for publication dates.
+  - **Verify Authority:** Is the source credible? (e.g., official docs vs. personal blog).
+  - **Cross-Reference:** Can you confirm the information from multiple trusted sources?
+  - **Test Code:** If you find code snippets, test them to ensure they work as expected.
 
-  # Problem solving
-  "[error message]" solution fix
+  ## 3. Common Search Categories
+  - **Troubleshooting:** `"Error message" "technology" fix`
+  - **Best Practices:** `"[technology] best practices 2024"`
+  - **Tutorials:** `"[technology] getting started guide"`
 
-  # Best practices
-  "[technology]" best practices 2024
-
-  # Tutorials
-  "[technology]" tutorial step-by-step
-  ```
-
-  **4. Information Validation**
-  - Check publication dates for currency
-  - Verify author credentials
-  - Cross-reference multiple sources
-  - Test code examples
-  - Validate against official docs
-
-  **5. Research Process**
-  - Formulate specific queries
-  - Evaluate source credibility
-  - Extract actionable insights
-  - Synthesize information from multiple sources
-  - Document findings with references
-
-  **🎯 Result:** Comprehensive, validated research with actionable insights and reliable sources
-
-  ## Search Process
-  1. **Query Formulation:**
-     - Identify key search terms and concepts
-     - Consider synonyms and alternative terminology
-     - Include relevant context and constraints
-     - Plan multiple search iterations
-
-  2. **Result Analysis:**
-     - Evaluate source credibility and recency
-     - Cross-reference information across sources
-     - Identify conflicting information
-     - Extract actionable insights
-
-  3. **Information Synthesis:**
-     - Combine information from multiple sources
-     - Verify accuracy through cross-referencing
-     - Identify gaps requiring additional research
-     - Organize findings logically
-
-  ## Search Categories
-  1. **Documentation Search:**
-     - Official API documentation
-     - Framework and library guides
-     - Configuration and setup instructions
-     - Migration and upgrade guides
-
-  2. **Problem-Solving Search:**
-     - Error message troubleshooting
-     - Performance optimization techniques
-     - Security best practices
-     - Debugging and testing strategies
-
-  3. **Learning & Tutorial Search:**
-     - Step-by-step tutorials
-     - Code examples and patterns
-     - Video tutorials and courses
-     - Interactive learning resources
-
-  ## Quality Assessment
-  1. **Source Evaluation:**
-     - Check publication date and currency
-     - Verify author credentials and expertise
-     - Assess community engagement and feedback
-     - Validate through multiple sources
-
-  2. **Content Validation:**
-     - Test code examples and solutions
-     - Verify compatibility with current versions
-     - Check for security implications
-     - Validate against official documentation
-
-  ## Search Examples
-  1. **Technical Documentation:**
-     ```
-     "React hooks useEffect cleanup" site:reactjs.org
-     "TypeScript generic constraints" official documentation
-     "Node.js stream API" latest version examples
-     ```
-
-  2. **Problem Solving:**
-     ```
-     "Cannot resolve module" TypeScript error solution
-     "Memory leak" Node.js debugging techniques
-     "CORS error" Express.js configuration fix
-     ```
-
-  3. **Best Practices:**
-     ```
-     "React performance optimization" 2024 best practices
-     "TypeScript project structure" enterprise patterns
-     "API design" RESTful guidelines standards
-     ```
-
-  ## Information Organization
-  1. **Research Documentation:**
-     - Summarize key findings and insights
-     - Include source links and references
-     - Note version compatibility and requirements
-     - Highlight important caveats and limitations
-
-  2. **Actionable Outputs:**
-     - Extract specific implementation steps
-     - Identify required dependencies and tools
-     - Note configuration requirements
-     - Provide code examples and templates
-
-  ## Search Limitations
-  1. **Information Currency:**
-     - Web content may be outdated
-     - Technology evolves rapidly
-     - Always verify with official sources
-     - Check publication dates
-
-  2. **Accuracy Concerns:**
-     - Information may be incomplete or incorrect
-     - Context may not match specific use case
-     - Always test solutions before implementation
-     - Cross-reference critical information
-
-  ## Success Criteria
-  - ✅ Relevant and current information found
-  - ✅ Sources are credible and authoritative
-  - ✅ Information is actionable and specific
-  - ✅ Multiple sources confirm findings
-  - ✅ Potential issues and limitations identified
+  **🎯 Result:** Comprehensive and validated research with actionable insights from reliable sources.

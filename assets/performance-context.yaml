@@ -1,13 +1,12 @@
 version: 1
-kind: task
-name: 'performance-optimization'
-description: 'Context for performance optimization with metrics monitoring and improvement strategies'
+kind: context
+name: Performance Optimization
+description: A context for analyzing, monitoring, and improving application performance.
 
 context:
-  workflow: workflows/workflow.yaml
-  roles:
-- personas/john-carmack.yaml
-- personas/brendan-eich.yaml
+  personas:
+    - personas/john-carmack.yaml
+    - personas/brendan-eich.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/performance-guidelines.yaml
@@ -18,62 +17,38 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
+    - mcps/github-api.yaml
+    - mcps/playwright.yaml
+  actions:
+    - actions/performance-optimization.yaml
 prompt: |
-  Optimize application performance through systematic analysis and targeted improvements.
-  Focus on critical path optimization and measurable performance gains.
-  Implement monitoring systems and establish performance benchmarks.
-  Balance optimization efforts with code maintainability and development velocity.
+  Let's make our application faster and more efficient.
+  Performance is a critical feature, directly impacting user experience.
+  We will use a data-driven approach to identify and eliminate bottlenecks.
+  Our focus will be on measurable improvements in speed and resource usage.
+  Let's start by profiling the application to find optimization opportunities.
 enhanced-prompt: |-
   # Performance Optimization Context
 
-  ## Performance Philosophy
-  Optimize application performance through **systematic analysis** and **targeted improvements** focusing on **critical path optimization** and **measurable performance gains**.
+  ## Core Philosophy
+  We treat performance as a feature. Our goal is to deliver a fast, responsive, and efficient user experience through systematic analysis, profiling, and targeted optimization.
 
   ## Performance Optimization Process
-  1. **Performance Analysis & Profiling:**
-     - Establish baseline performance metrics and benchmarks
-     - Identify performance bottlenecks using profiling tools
-     - Analyze critical user paths and high-traffic scenarios
-     - Monitor real-world performance data and user experience metrics
-
-  2. **Optimization Strategy:**
-     - Prioritize optimizations based on impact and effort analysis
-     - Focus on critical rendering path and core business logic
-     - Implement caching strategies and data optimization
-     - Optimize resource loading and minimize bundle sizes
-
-  3. **Implementation & Validation:**
-     - Apply targeted performance improvements incrementally
-     - Measure performance impact before and after changes
-     - Conduct load testing and stress testing validation
-     - Monitor production performance metrics continuously
+  1.  **Measure**: Identify key performance indicators (KPIs) and establish a baseline using profiling tools.
+  2.  **Analyze**: Analyze the data to find the most significant bottlenecks in our code.
+  3.  **Optimize**: Implement targeted improvements. This could involve algorithmic changes, caching, or reducing resource sizes.
+  4.  **Verify**: Measure again to confirm the improvement and ensure no regressions were introduced.
 
   ## Key Performance Areas
-  - **Load Time Optimization**: Minimize Time to First Byte (TTFB) and render times
-  - **Runtime Performance**: Optimize CPU usage and memory consumption
-  - **Network Optimization**: Reduce payload sizes and optimize request patterns
-  - **Database Performance**: Query optimization and caching strategies
-  - **Asset Optimization**: Image compression and efficient resource loading
+  - **Load Time**: Minimize Time to First Byte (TTFB), First Contentful Paint (FCP), and Time to Interactive (TTI).
+  - **Runtime Performance**: Optimize CPU usage, memory allocation, and rendering pipeline.
+  - **Network Efficiency**: Reduce payload sizes, minimize requests, and leverage caching.
+  - **Database Performance**: Optimize queries, use appropriate indexing, and manage connections efficiently.
 
-  ## Performance Metrics & Targets
-  - **Page Load Time**: < 2 seconds for initial load
-  - **Time to Interactive**: < 3 seconds for user interaction readiness
-  - **First Contentful Paint**: < 1.5 seconds for visual feedback
-  - **Memory Usage**: < 50MB baseline for typical operations
-  - **API Response Time**: < 200ms for database queries
+  ## Core Metrics to Track
+  - **Web Vitals**: LCP, FID, CLS.
+  - **Server Response Time**: Average and p95/p99 latencies.
+  - **Bundle Size**: JavaScript, CSS, and other critical assets.
+  - **Memory Usage**: Heap size and garbage collection frequency.
 
-  ## Optimization Techniques
-  - **Code Splitting**: Dynamic imports and lazy loading
-  - **Caching**: Browser caching, CDN, and application-level caching
-  - **Compression**: Gzip/Brotli compression and asset minification
-  - **Database**: Query optimization, indexing, and connection pooling
-  - **Monitoring**: Real-time performance tracking and alerting
-
-  ## Success Criteria
-  - ✅ Performance targets achieved across all key metrics
-  - ✅ No performance regressions in critical paths
-  - ✅ Monitoring systems provide actionable insights
-  - ✅ Code maintainability preserved during optimization
-  - ✅ User experience significantly improved
-
-  **Ready to optimize performance. What performance areas would you like to focus on?**
+  **Ready to boost performance. Where should we begin our analysis?**

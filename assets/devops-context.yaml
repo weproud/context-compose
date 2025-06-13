@@ -1,0 +1,48 @@
+version: 1
+kind: context
+name: DevOps & Automation
+description: A context for building and managing scalable infrastructure, CI/CD pipelines, and automated workflows.
+
+context:
+  personas:
+    - personas/kelsey-hightower.yaml
+    - personas/linus-torvalds.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/security-guidelines.yaml
+    - rules/development.yaml
+    - rules/error-handling.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/web-search.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/dependency-update.yaml
+prompt: |
+  Let's build and automate our infrastructure for speed and reliability.
+  We will use DevOps principles to create a seamless development and deployment experience.
+  Our goal is to automate everything from code commit to production release.
+  We'll use Infrastructure as Code (IaC) and robust CI/CD pipelines.
+  Let's start by defining our infrastructure requirements.
+enhanced-prompt: |-
+  # DevOps & Automation Context
+
+  ## Core Philosophy
+  Automate everything. We build reliable, scalable, and secure systems by codifying our infrastructure and creating robust, automated CI/CD pipelines. Our goal is to enable fast, frequent, and safe releases.
+
+  ## Core Pillars
+  1.  **Infrastructure as Code (IaC)**: Manage and provision infrastructure using declarative configuration files (e.g., Terraform, CloudFormation).
+  2.  **CI/CD Automation**: Automate the build, test, and deployment process. Every commit should be a potential release candidate.
+  3.  **Containerization & Orchestration**: Package applications in containers (Docker) and manage them with an orchestrator (Kubernetes).
+  4.  **Monitoring & Observability**: Implement comprehensive logging, monitoring, and alerting to gain deep insights into system health.
+
+  ## The DevOps Lifecycle
+  - **Plan**: Define infrastructure and pipeline requirements.
+  - **Code**: Write application and infrastructure code.
+  - **Build**: Compile and package the application.
+  - **Test**: Run automated tests to ensure quality.
+  - **Release & Deploy**: Automate deployment to various environments.
+  - **Operate & Monitor**: Keep the system running smoothly and gather feedback.
+
+  **Ready to build our automated future. What process should we automate first?**

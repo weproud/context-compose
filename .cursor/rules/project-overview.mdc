@@ -1,11 +1,11 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Context Compose Project Overview
 
-This project is **Context Compose**, a TypeScript-based package that provides Model Context Protocol (MCP) server and CLI tools.
+This project is **Context Compose**, a TypeScript-based package that provides Model Context Protocol (MCP) server and CLI tools. This tool is for AI-assisted development context management, so I want to ensure the assets contribute meaningfully to the project's purpose. I'll need to carefully analyze each file's role to determine its necessity.
 
 ## Project Structure
 

@@ -1,13 +1,12 @@
 version: 1
-kind: task
-name: 'documentation'
-description: 'Context for comprehensive documentation with user-centric approach'
+kind: context
+name: Technical Documentation
+description: A context for creating clear, comprehensive, and user-centric technical documentation.
 
 context:
-  workflow: workflows/workflow.yaml
-  roles:
-- personas/sindre-sorhus.yaml
-- personas/dan-abramov.yaml
+  personas:
+    - personas/sindre-sorhus.yaml
+    - personas/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/documentation-standards.yaml
@@ -17,52 +16,39 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/documentation.yaml
 prompt: |
-  Create comprehensive and user-centric documentation that serves as living knowledge base.
-  Focus on practical examples and accessibility across different skill levels.
-  Maintain consistency and ensure documentation evolves with code changes.
-  Prioritize developer experience and knowledge sharing through clear explanations.
+  Let's create documentation that developers will love.
+  Our goal is to produce clear, concise, and practical content.
+  Good documentation empowers users and accelerates adoption.
+  We will focus on accuracy, completeness, and real-world examples.
+  Let's start by identifying the target audience and their needs.
 enhanced-prompt: |-
-  # Documentation Context
+  # Technical Documentation Context
 
-  ## Documentation Philosophy
-  Documentation is the core of **knowledge sharing** and **developer experience improvement**. Create practical and accessible documents with a **user-centric approach**, making **living documents that evolve with code**.
+  ## Core Philosophy
+  Documentation is an essential part of the product. It should be user-centric, practical, and easy to maintain. We write for humans, prioritizing clarity and real-world applicability.
 
-  ## Documentation Principles
-  1. **User-Centric**: Provide necessary information from the reader's perspective
-  2. **Practicality**: Include practical examples and guides that can be actually used
-  3. **Consistency**: Maintain unified format and style
-  4. **Currency**: Update documentation along with code changes
-  5. **Accessibility**: Consider users of various skill levels
+  ## Key Principles
+  1.  **Clarity and Conciseness**: Use simple language. Get to the point quickly.
+  2.  **Accuracy**: Ensure all information is technically correct and up-to-date.
+  3.  **Completeness**: Cover the topic thoroughly, leaving no critical gaps.
+  4.  **Practicality**: Provide useful, real-world code examples and tutorials.
+  5.  **Discoverability**: Structure the documentation so users can easily find what they need.
 
-  ## Documentation Process
-  1. **Documentation Planning**
-     - Analyze target audience and identify requirements
-     - Design document structure and information architecture
-     - Define templates and guidelines for each document type
-     - Establish document management and update processes
+  ## Documentation Types
+  - **Tutorials**: Learning-oriented, step-by-step guides for beginners.
+  - **How-to Guides**: Goal-oriented steps to solve specific problems.
+  - **Reference**: Technical descriptions of APIs, classes, and functions.
+  - **Explanations**: Conceptual, big-picture discussions to deepen understanding.
 
-  2. **Content Creation**
-     - Write clear and concise explanations
-     - Include practical examples and code samples
-     - Provide step-by-step guides and tutorials
-     - Utilize visual elements (diagrams, screenshots)
+  ## Writing Process
+  1.  **Plan**: Define the audience, scope, and structure.
+  2.  **Draft**: Write the content, focusing on one section at a time.
+  3.  **Review**: Get feedback from peers and potential users.
+  4.  **Edit**: Revise for clarity, accuracy, and style.
+  5.  **Publish**: Make the documentation available and easy to find.
 
-  3. **Review & Improvement**
-     - Verify technical accuracy
-     - Collect and incorporate user feedback
-     - Improve document quality and readability
-     - Continuous updates and maintenance
-
-  ## Success Criteria
-  - ✅ All public APIs documented
-  - ✅ Installation and setup guide provided
-  - ✅ Practical examples and tutorials included
-  - ✅ Code comments and inline documentation
-  - ✅ Architecture and design documentation written
-  - ✅ Automated documentation generation and deployment
-  - ✅ User feedback collection and improvement
-
-  **Ready to start documentation. What documentation would you like to create?**
+  **Ready to write some excellent documentation. What topic should we cover?**

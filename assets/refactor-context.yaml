@@ -1,13 +1,12 @@
 version: 1
-kind: task
-name: 'refactoring'
-description: 'Context for code refactoring with safety and quality improvement focus'
+kind: context
+name: Code Refactoring
+description: A context for improving code structure, readability, and maintainability without changing external behavior.
 
 context:
-  workflow: workflows/workflow.yaml
-  roles:
-- personas/martin-fowler.yaml
-- personas/uncle-bob.yaml
+  personas:
+    - personas/martin-fowler.yaml
+    - personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml
@@ -18,147 +17,46 @@ context:
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
-  notify:
-    - notify/slack.yaml
+    - mcps/web-search.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/refactor.yaml
 prompt: |
-  # Refactoring Context
+  Let's improve the health of our codebase.
+  Refactoring is key to long-term maintainability and scalability.
+  We will identify code smells and apply proven patterns to fix them.
+  Our approach will be disciplined and safe, backed by a solid test suite.
+  Let's begin by analyzing the code and identifying areas for improvement.
+enhanced-prompt: |-
+  # Code Refactoring Context
 
-  ## Refactoring Philosophy
-  Refactoring is the work of **improving code structure without changing functionality** to enhance readability, maintainability, and extensibility. Prioritize **safety** and proceed through **incremental improvement**.
+  ## Core Philosophy
+  Refactoring improves code structure without altering external behavior. We focus on small, safe, and incremental changes to enhance readability, reduce complexity, and increase maintainability.
 
-  ## Refactoring Principles
-  1. **Preserve Functionality**: Do not change external behavior
-  2. **Incremental Improvement**: Proceed safely in small units
-  3. **Test First**: Start after securing sufficient test coverage
-  4. **Measurable**: Quantitatively measure improvement effects
-  5. **Documentation**: Clearly record changes and reasons
+  ## Key Principles
+  1.  **Preserve Functionality**: All external behavior must remain unchanged.
+  2.  **Test First**: Ensure comprehensive test coverage before starting.
+  3.  **Incremental Changes**: Apply small, verifiable refactorings one at a time.
+  4.  **Address Code Smells**: Systematically identify and fix issues like duplicated code, long methods, and large classes.
+
+  ## Common Refactoring Patterns
+  - **Extract Method**: Turn a code fragment into its own method.
+  - **Extract Class**: Move a group of related fields and methods to a new class.
+- **Rename Variable/Method**: Use clear and descriptive names.
+  - **Simplify Conditional**: Replace complex conditional logic with simpler, more expressive code.
+  - **Replace Magic Numbers with Constants**: Improve readability and maintainability.
 
   ## Refactoring Process
-  1. **Current State Analysis**
-     - Measure code quality metrics
-     - Identify technical debt and set priorities
-     - Check test coverage
-     - Establish performance benchmarks
-
-  2. **Refactoring Plan Development**
-     - Set goals and define success criteria
-     - Determine refactoring scope and order
-     - Risk assessment and mitigation measures
-     - Establish rollback plans
-
-  3. **Safety Net Construction**
-     - Write comprehensive test suites
-     - Set up automated regression testing
-     - Configure performance monitoring tools
-     - Verify backup and version control
-
-  4. **Incremental Refactoring Execution**
-     - Proceed in small units
-     - Run tests at each step
-     - Continuous integration and verification
-     - Immediate rollback when problems occur
-
-  ## Refactoring Patterns
-  1. **Extract Method**
-     ```typescript
-     // Before
-     function processOrder(order: Order) {
-       // Complex logic...
-       const total = order.items.reduce((sum, item) => {
-         return sum + (item.price * item.quantity * (1 - item.discount));
-       }, 0);
-       // More logic...
-     }
-
-     // After
-     function processOrder(order: Order) {
-       const total = calculateOrderTotal(order);
-       // Other logic...
-     }
-
-     function calculateOrderTotal(order: Order): number {
-       return order.items.reduce((sum, item) => {
-         return sum + calculateItemTotal(item);
-       }, 0);
-     }
-     ```
-
-  2. **Extract Class**
-     - When a single class has too many responsibilities
-     - Separate related data and methods into a new class
-     - Follow Single Responsibility Principle
-
-  3. **Simplify Conditionals**
-     ```typescript
-     // Before
-     if (user.type === 'premium' && user.subscriptionActive && user.paymentValid) {
-       // Premium logic
-     }
-
-     // After
-     if (user.isPremiumActive()) {
-       // Premium logic
-     }
-     ```
-
-  ## Code Quality Improvement Areas
-  1. **Readability Enhancement**
-     - Use meaningful variable and function names
-     - Simplify complex conditionals
-     - Remove duplicate code
-     - Appropriate comments and documentation
-
-  2. **Structure Improvement**
-     - Optimize function and class sizes
-     - Improve dependency management
-     - Layer separation and separation of concerns
-     - Apply design patterns
-
-  3. **Performance Optimization**
-     - Improve algorithm efficiency
-     - Optimize memory usage
-     - Remove unnecessary operations
-     - Apply caching strategies
-
-  ## Refactoring Tool Utilization
-  1. **Static Analysis Tools**
-     - Measure code quality with ESLint, SonarQube
-     - Complexity metrics (Cyclomatic Complexity)
-     - Duplicate code detection
-     - Dependency analysis
-
-  2. **Automation Tools**
-     - Utilize IDE refactoring features
-     - Automated code transformation tools
-     - Test automation and CI/CD integration
-     - Performance monitoring tools
-
-  ## Refactoring Precautions
-  - **Avoid Over-refactoring**: Don't make it more complex than necessary
-  - **No Feature Changes**: Don't add new features during refactoring
-  - **Test First**: Don't proceed with refactoring without tests
-  - **Incremental Progress**: Avoid too many changes at once
-  - **Team Communication**: Share refactoring plans and progress
-
-  ## Performance Measurement
-  1. **Quantitative Metrics**
-     - Code complexity reduction
-     - Test coverage improvement
-     - Build time reduction
-     - Performance improvement metrics
-
-  2. **Qualitative Metrics**
-     - Code readability improvement
-     - Development productivity increase
-     - Bug occurrence rate reduction
-     - Team satisfaction improvement
+  1.  **Analyze**: Identify code smells and areas for improvement.
+  2.  **Plan**: Define refactoring goals and ensure test coverage.
+  3.  **Execute**: Apply refactoring patterns incrementally.
+  4.  **Verify**: Run tests after each change to ensure correctness.
+  5.  **Commit**: Commit small, atomic changes with clear messages.
 
   ## Success Criteria
-  - ✅ All existing tests pass
-  - ✅ Code quality metrics improved
-  - ✅ No performance degradation or improved performance
-  - ✅ Readability and maintainability improved
-  - ✅ Technical debt reduced
-  - ✅ Team review and approval completed
+  - ✅ All existing tests pass.
+  - ✅ Code quality metrics (e.g., complexity, duplication) are improved.
+  - ✅ Readability and maintainability are demonstrably better.
+  - ✅ No performance degradation.
 
-  **Ready to start refactoring. What code would you like to refactor?**
+  **Ready to refactor. What part of the codebase should we improve first?**

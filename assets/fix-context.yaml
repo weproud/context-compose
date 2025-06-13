@@ -1,13 +1,12 @@
 version: 1
-kind: task
-name: 'bug-fix'
-description: 'Context for fixing bugs with systematic debugging and testing'
+kind: context
+name: Bug Fixing
+description: A context for systematic debugging, root cause analysis, and resolving software defects.
 
 context:
-  workflow: workflows/workflow.yaml
-  roles:
-- personas/linus-torvalds.yaml
-- personas/john-carmack.yaml
+  personas:
+    - personas/linus-torvalds.yaml
+    - personas/john-carmack.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/clean-code.yaml
@@ -19,65 +18,39 @@ context:
     - mcps/context7.yaml
     - mcps/web-search.yaml
     - mcps/github-api.yaml
+    - mcps/playwright.yaml
+  actions:
+    - actions/lint.yaml
+    - actions/test.yaml
 prompt: |
-  Fix bugs through systematic analysis and root cause resolution.
-  Implement preventive measures to ensure issues don't recur.
-  Focus on minimal changes while maintaining system stability.
-  Prioritize thorough testing and verification of fixes with comprehensive documentation.
+  Let's track down and squash this bug.
+  We will systematically analyze the problem to find the root cause.
+  Our goal is a minimal, precise fix that resolves the issue without side effects.
+  We'll write a regression test to ensure this bug never returns.
+  Let's start by reliably reproducing the issue.
 enhanced-prompt: |-
-  # Bug Fix Context
+  # Bug Fixing Context
 
-  ## Bug Fix Philosophy
-  Fix bugs through **systematic analysis** and **root cause resolution**, implementing preventive measures to ensure issues do not recur.
+  ## Core Philosophy
+  We approach bug fixing with a methodical and analytical mindset. The goal is not just to patch the symptom, but to understand and eliminate the root cause, preventing recurrence.
 
-  ## Bug Fix Process
-  1. **Problem Reproduction & Analysis**:
-     - Document bug reproduction steps
-     - Analyze error logs and stack traces
-     - Assess impact scope and severity
-     - Investigate related code and dependencies
+  ## Bug Squashing Process
+  1.  **Reproduce**: Reliably reproduce the bug. An unreproducible bug cannot be fixed.
+  2.  **Analyze**: Isolate the problem. Use logs, debuggers, and deductive reasoning to pinpoint the root cause.
+  3.  **Fix**: Implement the smallest possible change that corrects the issue.
+  4.  **Test**: Write a specific test that fails before the fix and passes after. Run all relevant regression tests.
+  5.  **Verify**: Confirm the fix resolves the original problem and introduces no new issues.
 
-  2. **Root Cause Analysis**:
-     - Detailed analysis using debugging tools
-     - Trace code flow and verify states
-     - Review data flow and transformation processes
-     - Check external dependencies and environmental factors
-
-  3. **Fix Strategy Design**:
-     - Prioritize minimally invasive fix approaches
-     - Assess side effects and risks
-     - Compare and review alternative solutions
-     - Establish testing strategy
-
-  4. **Implementation & Verification**:
-     - Implement targeted fix
-     - Write and execute regression tests
-     - Add edge case tests
-     - Verify performance impact
-
-  ## Debugging Strategy
-  - **Log Analysis**: Comprehensive analysis of error logs and system logs
-  - **Step-by-step Tracing**: Trace code execution path systematically
-  - **State Verification**: Check variable and object states at each step
-  - **Isolation Testing**: Isolate problem areas for independent testing
-
-  ## Fix Considerations
-  - **Minimal Change Principle**: Perform only minimum changes necessary
-  - **Side Effect Prevention**: Ensure no impact on other functionality
-  - **Performance Impact**: Minimize performance impact of the fix
-  - **Documentation**: Clearly document fix content and reasoning
-
-  ## Testing Strategy
-  1. **Regression Testing**: Verify existing functionality works correctly
-  2. **Bug Reproduction Testing**: Confirm bug reproduces before fix and is resolved after
-  3. **Edge Case Testing**: Test boundary values and exception scenarios
+  ## Key Principles
+  - **Minimal Change**: Avoid unrelated changes. Focus solely on the fix.
+  - **Root Cause Analysis**: Don't just treat the symptom.
+  - **Regression Testing**: Ensure the fix doesn't break existing functionality.
+  - **Clear Documentation**: Document the bug, the cause, and the solution.
 
   ## Success Criteria
-  - ✅ Bug completely resolved
-  - ✅ All regression tests pass
-  - ✅ No performance impact or improved performance
-  - ✅ Root cause eliminated
-  - ✅ Preventive measures implemented
-  - ✅ Documentation completed
+  - ✅ The bug is fully resolved and verified.
+  - ✅ A regression test has been added.
+  - ✅ All related tests pass.
+  - ✅ The fix is documented.
 
-  **Ready to start bug fixing. What bug would you like to fix?**
+  **Ready to eliminate this bug. How can we reproduce it?**

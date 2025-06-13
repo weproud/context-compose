@@ -2,56 +2,53 @@ version: 1
 kind: mcp
 name: github-api
 description: GitHub API integration for repository management and automation
-prompt: Use GitHub API for repository operations, issue management, and workflow automation
-enhanced-prompt: |-
+prompt: |
+  Automate your GitHub workflows using the GitHub API and `gh` CLI.
+  Manage repositories, branches, issues, and pull requests programmatically.
+  This allows for powerful integrations, custom tooling, and streamlined
+  development processes, directly from your command line or scripts.
+enhanced-prompt: |
   # 🐙 GitHub API Integration
 
-  ## Core Operations
-
-  **1. Authentication Setup**
+  ## 1. Authentication
+  First, ensure you are authenticated. Your `GITHUB_TOKEN` environment variable should be set for non-interactive use.
   ```bash
-  # Set GitHub token
-  export GITHUB_TOKEN="your_token_here"
-
-  # Test connection
+  # Check authentication status
   gh auth status
   ```
 
-  **2. Repository Management**
+  ## 2. Common Repository Operations
+  **A. View Repository Info**
   ```bash
-  # Get repo info
   gh repo view owner/repo
+  ```
 
-  # Create branch
+  **B. Create a Branch**
+  This requires getting the SHA of the base branch first.
+  ```bash
+  BASE_SHA=$(gh api repos/owner/repo/git/ref/heads/main -q '.object.sha')
   gh api repos/owner/repo/git/refs \
     --method POST \
-    --field ref="refs/heads/feature" \
-    --field sha="$BASE_SHA"
+    -f ref="refs/heads/new-feature" \
+    -f sha="$BASE_SHA"
   ```
 
-  **3. Issue & PR Operations**
+  ## 3. Issue & PR Management
+  **A. Create an Issue**
   ```bash
-  # Create issue
-  gh issue create --title "Bug fix" --body "Description"
-
-  # Create PR
-  gh pr create --title "Feature" --body "Changes" --base main
-
-  # Request reviews
-  gh pr edit --add-reviewer user1,user2
+  gh issue create --title "New Feature Request" --body "Details here."
   ```
 
-  **4. Automation Patterns**
-  - Auto-assign issues by labels
-  - Create PRs from feature branches
-  - Update project boards
-  - Generate release notes
+  **B. Create a Pull Request**
+  ```bash
+  gh pr create --title "Feature" --body "Implementation details." --base main
+  ```
 
-  **5. Best Practices**
-  - Use minimal required permissions
-  - Implement rate limiting
-  - Handle errors gracefully
-  - Cache responses when possible
-  - Log operations for audit
+  ## 4. Automation Best Practices
+  - **Scoped Tokens:** Use tokens with the minimum required permissions.
+  - **Error Handling:** Check exit codes and API responses for errors.
+  - **Rate Limiting:** Be mindful of API rate limits in scripts.
+  - **Idempotency:** Design scripts to be safely repeatable.
+  - **Logging:** Keep a record of operations for auditing purposes.
 
-  **🎯 Result:** Automated GitHub workflows with proper error handling and security
+  **🎯 Result:** Automated GitHub workflows with improved security and reliability.

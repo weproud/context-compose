@@ -2,45 +2,50 @@ version: 1
 kind: mcp
 name: context7
 description: Research library documentation and implementation guidance through Context7
-prompt: Research library documentation using Context7 for accurate implementation and best practices
-enhanced-prompt: |-
+prompt: |
+  Leverage Context7 to conduct in-depth research on software libraries.
+  Resolve library IDs, fetch comprehensive documentation, and extract
+  key information for implementation. This process ensures you use
+  accurate, up-to-date, and secure code from trusted sources.
+enhanced-prompt: |
   # 📚 Context7 Library Research
 
-  ## Core Usage
+  ## 1. Core Workflow
+  The primary workflow consists of two main steps: resolving a library name to a unique ID and then fetching its documentation.
 
-  **1. Library Resolution**
+  **A. Resolve Library ID**
+  First, find the canonical ID for the library you're interested in.
   ```bash
-  # Resolve library ID first
+  # Example: Find the ID for "React"
   context7 resolve-library-id --library "react"
-  # Returns: /facebook/react
+  # Expected Output: /facebook/react
   ```
 
-  **2. Documentation Retrieval**
+  **B. Retrieve Documentation**
+  Use the library ID to fetch detailed documentation on a specific topic.
   ```bash
-  # Get comprehensive docs
+  # Example: Get docs for React Hooks
   context7 get-library-docs \
     --library-id "/facebook/react" \
     --topic "hooks" \
     --tokens 10000
   ```
 
-  **3. Research Strategy**
-  - Start with official documentation
-  - Focus on latest stable versions
-  - Cross-reference multiple sources
-  - Verify with working examples
+  ## 2. Research Best Practices
+  - **Start Broad, Then Narrow:** Begin with general topics, then dive into specific APIs.
+  - **Focus on Stable Versions:** Prioritize docs for the latest stable release.
+  - **Validate with Examples:** Test code snippets to confirm their functionality.
 
-  **4. Key Information to Extract**
-  - Installation and setup steps
-  - Core API methods and patterns
-  - Best practices and common pitfalls
-  - Version compatibility requirements
-  - Security considerations
+  ## 3. Key Information to Extract
+  - **Installation:** `npm install`, `yarn add`, or other setup commands.
+  - **Core API:** Key functions, classes, and components.
+  - **Usage Patterns:** Recommended ways to use the library.
+  - **Best Practices:** Performance, security, and maintenance advice.
+  - **Version Compatibility:** Breaking changes and migration guides.
 
-  **5. Quality Validation**
-  - Check publication dates
-  - Verify against official sources
-  - Test code examples
-  - Note breaking changes
+  ## 4. Quality Checks
+  - **Official Sources:** Ensure documentation is from official or trusted sources.
+  - **Recency:** Check the publication or update date.
+  - **Cross-Reference:** Compare with other reliable sources.
 
-  **🎯 Result:** Accurate, up-to-date library documentation with implementation guidance
+  **🎯 Result:** Accurate, up-to-date library documentation with actionable implementation guidance.
