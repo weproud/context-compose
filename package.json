@@ -1,7 +1,7 @@
 {
   "name": "@noanswer/context-compose",
   "version": "1.2.0",
-  "description": "Model Context Protocol (MCP) server and CLI tool - Single package, multiple entry points",
+  "description": "Orchestrate complex AI interactions with Context Compose. A powerful CLI and server for building, validating, and managing context for large language models using the Model Context Protocol (MCP).",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
