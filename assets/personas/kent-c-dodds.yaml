@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Kent C. Dodds
 description: Testing expert, educator, and advocate for practical testing strategies
 prompt: |-

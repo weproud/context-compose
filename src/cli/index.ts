@@ -4,63 +4,27 @@ import { Command } from 'commander';
 import { createEnvCommand } from './commands/env.js';
 import { createInitCommand } from './commands/init.js';
 import { createStartContextCommand } from './commands/start-context.js';
-// import { createEnvCommand, showEnvExamples } from './commands/env.js';
+import { createValidateContextCommand } from './commands/validate-context.js';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+import packageJson from '../../../package.json' assert { type: 'json' };
 
 /**
- * MCP CLI tool main program
+ * Create main CLI command
  */
-function createCLI(): Command {
+export function createCli(): Command {
   const program = new Command();
 
   program
     .name('context-compose')
-    .description(
-      'CLI for Context Compose Model Context Protocol (MCP) server tools'
-    )
-    .version('1.0.0');
+    .version(packageJson.version)
+    .description('CLI tool for composing and managing AI development contexts');
 
-  // Add Init command
+  // Add commands
   program.addCommand(createInitCommand());
-
-  // Add Start Context command
   program.addCommand(createStartContextCommand());
-
-  // Add environment variable command
+  program.addCommand(createValidateContextCommand());
   program.addCommand(createEnvCommand());
-
-  // Improve help
-  program.on('--help', () => {
-    console.log('');
-    console.log('Usage examples:');
-    console.log('  $ context-compose init');
-    console.log('  $ context-compose get-context default');
-    console.log('  $ context-compose get-context feature --enhanced-prompt');
-  });
 
   return program;
 }
-
-/**
- * CLI 실행
- */
-async function main(): Promise<void> {
-  const program = createCLI();
-
-  try {
-    await program.parseAsync(process.argv);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ CLI 실행 중 오류 발생: ${errorMessage}`);
-    process.exit(1);
-  }
-}
-
-// 스크립트가 직접 실행될 때만 main 함수 호출 (ES modules 방식)
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(error => {
-    console.error('❌ 예상치 못한 오류:', error);
-    process.exit(1);
-  });
-}
-
-export { createCLI };

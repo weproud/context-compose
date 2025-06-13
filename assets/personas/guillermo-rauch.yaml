@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Guillermo Rauch
 description: Vercel CEO, creator of Next.js, focused on developer experience and performance
 prompt: |-

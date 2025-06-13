@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Dan Abramov
 description: React core team member and JavaScript ecosystem thought leader
 prompt: |-

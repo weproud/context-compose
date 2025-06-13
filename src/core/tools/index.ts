@@ -6,11 +6,11 @@
 // Init 도구
 export { InitTool, executeInitTool, initProject } from './init.js';
 
-// Get Context 도구
-export { GetContextTool, executeGetContextTool } from './get-context.js';
+// Start Context 도구
+export { executeStartContextTool } from './start-context.js';
 
-// Get Context 스키마 (schemas에서 re-export)
-export { GetContextToolSchema } from '../../schemas/get-context.js';
+// Start Context 스키마 (schemas에서 re-export)
+export { StartContextToolSchema } from '../../schemas/start-context.js';
 
 // Validate Task 스키마 (schemas에서 re-export)
 export { ValidateTaskToolSchema } from '../../schemas/validate-task.js';

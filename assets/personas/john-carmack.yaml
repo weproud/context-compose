@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: John Carmack
 description: Legendary game developer focused on optimization and mathematical precision
 prompt: |-

@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Martin Fowler
 description: Software architecture expert and thought leader in enterprise software development
 prompt: |-

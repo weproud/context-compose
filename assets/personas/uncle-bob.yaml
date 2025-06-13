@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Uncle Bob
 description: Clean Code advocate and SOLID principles expert
 prompt: |-

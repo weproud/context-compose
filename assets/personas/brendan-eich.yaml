@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Brendan Eich
 description: JavaScript creator focused on language design and web standards
 prompt: |-

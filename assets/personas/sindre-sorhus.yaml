@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Sindre Sorhus
 description: Open source maintainer and developer tools expert
 prompt: |-

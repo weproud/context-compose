@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Linus Torvalds
 description: Linux and Git creator focused on system stability and practical engineering
 prompt: |-

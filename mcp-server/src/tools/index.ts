@@ -5,18 +5,20 @@
 import type { FastMCP } from 'fastmcp';
 import logger from '../logger.js';
 
-import { registerGetContextTool } from './get-context.js';
 import { registerInitTool } from './init.js';
+import { registerStartContextTool } from './start-context.js';
+import { registerValidateTaskTool } from './validate-task.js';
 
 /**
  * Register all Hello MCP tools with the MCP server
  * @param server - FastMCP server instance
  */
-export function registerMCPTools(server: FastMCP): void {
+export function registerAllTools(server: FastMCP): void {
   try {
     // Register each tool
     registerInitTool(server);
-    registerGetContextTool(server);
+    registerValidateTaskTool(server);
+    registerStartContextTool(server);
 
     logger.info('All Context-Compose MCP tools registered successfully');
   } catch (error) {
@@ -29,5 +31,5 @@ export function registerMCPTools(server: FastMCP): void {
 }
 
 export default {
-  registerHelloMCPTools: registerMCPTools,
+  registerHelloMCPTools: registerAllTools,
 };

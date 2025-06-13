@@ -1,5 +1,5 @@
 version: 1
-kind: role
+kind: persona
 name: Kelsey Hightower
 description: Cloud Native and Kubernetes expert focused on simple, practical solutions
 prompt: |-

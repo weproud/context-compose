@@ -9,11 +9,11 @@ export {
   type InitToolResponse,
 } from './init.js';
 
-// Get Context tool schema
+// Start Context tool schema
 export {
-  GetContextToolSchema,
-  type GetContextToolInput,
-} from './get-context.js';
+  StartContextToolSchema,
+  type StartContextToolInput,
+} from './start-context.js';
 
 // Validate Task tool schema
 export {
