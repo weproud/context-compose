@@ -19,8 +19,6 @@ context:
     - mcps/context7.yaml
     - mcps/playwright.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Implement comprehensive testing strategy with high coverage and quality validation.
   Write unit, integration, and end-to-end tests following industry best practices.

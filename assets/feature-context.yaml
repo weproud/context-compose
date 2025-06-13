@@ -23,9 +23,6 @@ context:
     - mcps/context7.yaml
     - mcps/github-api.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
-    - notify/email.yaml
 prompt: |
   Develop new features through user-centric thinking and incremental development.
   Implement high-quality functionality with comprehensive testing and documentation.

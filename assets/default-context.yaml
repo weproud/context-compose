@@ -16,8 +16,6 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/playwright.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Execute development work following all provided context guidelines.
   Analyze requirements thoroughly before implementation and use conservative approach.
@@ -25,7 +23,7 @@ prompt: |
   Respect existing codebase patterns and maintain high code quality standards.
 enhanced-prompt: |-
   # Development Work Guidelines
-  Execute development work based on all provided context information (workflow, rules, mcps, notify).
+  Execute development work based on all provided context information (workflow, rules, mcps).
 
   ## Mandatory Requirements
   1. **Context Analysis**: Thoroughly analyze and understand all provided context before starting work

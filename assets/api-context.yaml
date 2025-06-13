@@ -20,8 +20,6 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Develop RESTful APIs with comprehensive documentation and testing.
   Prioritize developer experience, consistency, and scalability in all API design.

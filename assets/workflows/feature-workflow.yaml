@@ -34,9 +34,6 @@ jobs:
     - name: Create Pull Request
       uses: actions/create-pull-request.yaml
 
-    - name: Send Message
-      uses: actions/send-message.yaml
-
     - name: Complete
       uses: actions/complete.yaml
 
@@ -84,7 +81,7 @@ enhanced-prompt: |-
      - Update API documentation and user guides
      - Create pull request with detailed description
      - Ensure all CI/CD checks pass
-     - Notify team and gather feedback
+     - Document completion and next steps
 
   ## Success Criteria
   - ✅ All acceptance criteria met

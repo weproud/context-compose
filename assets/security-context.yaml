@@ -18,8 +18,6 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Implement comprehensive security measures with defense-in-depth strategy.
   Apply security best practices for authentication, authorization, and data protection.

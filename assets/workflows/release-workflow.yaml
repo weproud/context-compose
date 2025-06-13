@@ -1,11 +1,14 @@
 version: 1
 kind: workflow
 name: Release Workflow
-description: Comprehensive release workflow with quality gates and deployment automation
+description: Production release workflow with comprehensive validation and deployment
 jobs:
   steps:
     - name: Create Release Branch
       uses: actions/create-branch.yaml
+
+    - name: Version Bump
+      uses: actions/version-bump.yaml
 
     - name: Build
       uses: actions/build.yaml
@@ -16,8 +19,8 @@ jobs:
     - name: Security Audit
       uses: actions/security-audit.yaml
 
-    - name: Performance Optimization
-      uses: actions/performance-optimization.yaml
+    - name: Performance Test
+      uses: actions/performance-test.yaml
 
     - name: Documentation
       uses: actions/documentation.yaml
@@ -34,275 +37,74 @@ jobs:
     - name: Deploy
       uses: actions/deploy.yaml
 
-    - name: Send Message
-      uses: actions/send-message.yaml
-
     - name: Complete
       uses: actions/complete.yaml
 
 prompt: |
-  Execute comprehensive release workflow with quality gates, testing, documentation, and deployment automation.
+  Execute production release workflow with comprehensive validation and deployment.
+  Apply rigorous quality gates and ensure thorough testing before release.
+  Coordinate version management and deployment procedures systematically.
+  Document all release activities and maintain release integrity throughout process.
 enhanced-prompt: |-
-  Execute comprehensive release workflow with quality gates, testing, documentation, and deployment automation:
+  # Production Release Workflow
 
-  ## Release Workflow Strategy
-  1. **Release Planning:**
-     - Coordinate with product and engineering teams
-     - Validate all features are complete and tested
-     - Ensure documentation is up-to-date
-     - Plan deployment timing and communication
+  Execute production release with comprehensive validation and deployment procedures:
 
-  2. **Quality Assurance:**
-     - Comprehensive testing at all levels
-     - Performance validation and optimization
-     - Security audit and vulnerability assessment
-     - Documentation review and updates
+  ## Release Strategy
+  1. **Quality Assurance**: Rigorous testing and validation at every stage
+  2. **Version Management**: Systematic version control and changelog maintenance  
+  3. **Deployment Safety**: Safe deployment with rollback capabilities
+  4. **Documentation**: Complete release documentation and communication
 
-  ## Release Execution Process
-  1. **Pre-Release Preparation:**
-     - **Version Planning:**
-       ```bash
-       # Determine version number (semantic versioning)
-       # Major: Breaking changes
-       # Minor: New features (backward compatible)
-       # Patch: Bug fixes
-       RELEASE_VERSION="2.1.0"
-       ```
+  ## Release Process
+  1. **Release Preparation**:
+     - Create release branch from develop/main
+     - Bump version numbers according to semantic versioning
+     - Update changelogs and release notes
+     - Prepare deployment configurations
 
-     - **Release Branch Creation:**
-       ```bash
-       git checkout develop
-       git pull origin develop
-       git checkout -b release/v${RELEASE_VERSION}
-       ```
+  2. **Build & Validation**:
+     - Execute production build process
+     - Run comprehensive test suites (unit/integration/E2E)
+     - Perform security audits and vulnerability scans
+     - Conduct performance testing and benchmarking
 
-     - **Feature Freeze:**
-       - No new features after branch creation
-       - Only bug fixes and documentation updates
-       - Code review for all changes
+  3. **Documentation & Review**:
+     - Update API documentation and user guides
+     - Generate release notes and migration guides
+     - Review all changes and prepare release summary
+     - Validate all dependencies and compatibility
 
-  2. **Build & Compilation Phase:**
-     - **Production Build:**
-       - Compile with production optimizations
-       - Generate source maps for debugging
-       - Optimize assets and bundle sizes
-       - Validate build artifacts
+  4. **Release Integration**:
+     - Commit all release changes with proper versioning
+     - Push release branch with appropriate tags
+     - Create release pull request with complete documentation
+     - Deploy to production environment with monitoring
 
-     - **Build Validation:**
-       ```typescript
-       // Validate build outputs
-       const buildValidation = {
-         bundleSize: checkBundleSize(),
-         dependencies: auditDependencies(),
-         assets: validateAssets(),
-         sourceMaps: validateSourceMaps()
-       };
-       ```
+  5. **Release Completion**:
+     - Validate successful deployment and functionality
+     - Monitor system health and performance metrics
+     - Complete release documentation and archiving
+     - Plan post-release activities and next iteration
 
-  3. **Comprehensive Testing Phase:**
-     - **Unit Testing:**
-       - Run full unit test suite
-       - Achieve minimum coverage thresholds
-       - Validate all edge cases
-       - Test error handling scenarios
+  ## Quality Gates
+  - All tests must pass with 90%+ coverage
+  - Security scans must show no critical vulnerabilities
+  - Performance tests must meet defined benchmarks
+  - Documentation must be complete and accurate
 
-     - **Integration Testing:**
-       - API integration tests
-       - Database integration tests
-       - External service integration tests
-       - Cross-browser compatibility tests
-
-     - **End-to-End Testing:**
-       - Critical user journey tests
-       - Performance regression tests
-       - Accessibility compliance tests
-       - Mobile responsiveness tests
-
-     - **Load Testing:**
-       ```yaml
-       load_testing:
-         scenarios:
-           - name: normal_load
-             users: 100
-             duration: 10m
-           - name: peak_load
-             users: 500
-             duration: 5m
-           - name: stress_test
-             users: 1000
-             duration: 2m
-       ```
-
-  4. **Security Audit Phase:**
-     - **Vulnerability Assessment:**
-       - Dependency vulnerability scan
-       - Static code analysis for security issues
-       - Dynamic security testing
-       - Penetration testing for critical features
-
-     - **Security Checklist:**
-       - Authentication and authorization review
-       - Input validation and sanitization
-       - Data encryption and protection
-       - API security and rate limiting
-
-  5. **Performance Optimization:**
-     - **Performance Metrics:**
-       ```javascript
-       const performanceTargets = {
-         firstContentfulPaint: 1500, // ms
-         largestContentfulPaint: 2500, // ms
-         firstInputDelay: 100, // ms
-         cumulativeLayoutShift: 0.1
-       };
-       ```
-
-     - **Optimization Tasks:**
-       - Bundle size optimization
-       - Image compression and optimization
-       - Caching strategy implementation
-       - CDN configuration and testing
-
-  6. **Documentation Updates:**
-     - **Release Documentation:**
-       - Update CHANGELOG.md with new features and fixes
-       - Update API documentation
-       - Update user guides and tutorials
-       - Create migration guides for breaking changes
-
-     - **Technical Documentation:**
-       ```markdown
-       # Release v2.1.0
-       
-       ## New Features
-       - User authentication with OAuth2
-       - Real-time notifications
-       - Advanced search functionality
-       
-       ## Bug Fixes
-       - Fixed memory leak in background tasks
-       - Resolved CORS issues with external APIs
-       
-       ## Breaking Changes
-       - Deprecated old authentication endpoints
-       - Changed API response format for user data
-       
-       ## Migration Guide
-       See [MIGRATION.md](MIGRATION.md) for detailed upgrade instructions.
-       ```
-
-  7. **Staging Deployment & Validation:**
-     - **Staging Environment:**
-       - Deploy to production-like staging environment
-       - Run smoke tests and critical path validation
-       - Performance testing in staging
-       - User acceptance testing
-
-     - **Staging Validation:**
-       ```bash
-       # Automated staging validation
-       npm run test:staging
-       npm run test:performance
-       npm run test:security
-       ```
-
-  8. **Production Deployment:**
-     - **Deployment Strategy:**
-       - Blue-green deployment for zero downtime
-       - Canary deployment for gradual rollout
-       - Feature flags for controlled feature release
-       - Database migration execution
-
-     - **Deployment Monitoring:**
-       ```yaml
-       monitoring:
-         metrics:
-           - response_time
-           - error_rate
-           - throughput
-           - resource_utilization
-         alerts:
-           - high_error_rate
-           - slow_response_time
-           - resource_exhaustion
-       ```
-
-  9. **Post-Deployment Validation:**
-     - **Health Checks:**
-       - Application health endpoints
-       - Database connectivity
-       - External service integration
-       - Critical functionality validation
-
-     - **Rollback Preparation:**
-       - Validate rollback procedures
-       - Prepare rollback scripts
-       - Monitor key metrics for issues
-       - Set up automated rollback triggers
-
-  10. **Release Communication:**
-      - **Internal Communication:**
-        - Team notification of successful release
-        - Stakeholder updates with release notes
-        - Support team briefing on new features
-        - Operations team handoff
-
-      - **External Communication:**
-        - Customer notification of new features
-        - Blog post or announcement
-        - Documentation site updates
-        - Social media announcements
-
-  ## Release Quality Gates
-  1. **Mandatory Gates:**
-     - All tests pass (unit, integration, e2e)
-     - Security audit completed without critical issues
-     - Performance targets met
-     - Documentation updated and reviewed
-
-  2. **Approval Gates:**
-     - Product owner approval
-     - Technical lead approval
-     - Security team approval (for security-sensitive releases)
-     - Operations team readiness confirmation
-
-  ## Release Metrics & Monitoring
-  1. **Success Metrics:**
-     ```yaml
-     release_metrics:
-       deployment_success_rate: 99.9%
-       rollback_rate: < 1%
-       time_to_deploy: < 30min
-       post_deployment_issues: < 5
-     ```
-
-  2. **Monitoring Dashboard:**
-     - Release pipeline status
-     - Deployment progress tracking
-     - System health metrics
-     - User experience indicators
-
-  ## Rollback Procedures
-  1. **Automated Rollback Triggers:**
-     - Error rate exceeds threshold
-     - Response time degradation
-     - Critical functionality failures
-     - Security incident detection
-
-  2. **Manual Rollback Process:**
-     - Immediate stakeholder notification
-     - Database rollback if necessary
-     - Application version rollback
-     - Post-rollback validation
+  ## Deployment Safety
+  - Blue-green or canary deployment strategies
+  - Real-time monitoring during deployment
+  - Immediate rollback capability if issues arise
+  - Health checks and smoke tests post-deployment
 
   ## Success Criteria
   - ✅ All quality gates passed successfully
   - ✅ Production deployment completed without issues
-  - ✅ Performance targets met or exceeded
-  - ✅ No critical security vulnerabilities
-  - ✅ Documentation updated and accurate
-  - ✅ Stakeholders notified and informed
-  - ✅ Monitoring and alerting operational
-  - ✅ Rollback procedures validated and ready
+  - ✅ System performance meets expectations
+  - ✅ Documentation updated and accessible
+  - ✅ Release tagged and archived properly
+  - ✅ Rollback procedures tested and ready
 
-  Execute each phase methodically, ensuring quality and reliability at every step.
+  Execute each step with precision, ensuring release quality and system stability.

@@ -11,7 +11,7 @@ jobs:
       uses: actions/test.yaml
 
 prompt: |
-  Execute complete workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, notify team, and finalize completion.
+  Execute complete workflow sequentially with quality gates. Create branch, develop with best practices, test comprehensively, commit conventionally, push safely, create detailed PR, and finalize completion.
 enhanced-prompt: |-
   Execute the complete workflow following these comprehensive guidelines:
 
@@ -53,8 +53,8 @@ enhanced-prompt: |-
      - Create detailed pull request with comprehensive information
      - Ensure all CI/CD checks pass successfully
 
-  5. **Communication Phase**:
-     - Notify relevant team members through configured channels
+  5. **Documentation Phase**:
+     - Update relevant documentation with changes
      - Provide comprehensive task completion summary
      - Include links to pull request and relevant documentation
      - Highlight any important considerations or next steps
@@ -109,7 +109,6 @@ enhanced-prompt: |-
   - All steps complete without critical errors
   - Code quality and testing standards are met
   - Pull request is created and ready for review
-  - Team notifications are sent successfully
   - Task status is properly updated
   - All documentation is current and accurate
 

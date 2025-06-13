@@ -19,8 +19,6 @@ context:
     - mcps/context7.yaml
     - mcps/web-search.yaml
     - mcps/github-api.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Fix bugs through systematic analysis and root cause resolution.
   Implement preventive measures to ensure issues don't recur.

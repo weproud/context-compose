@@ -18,8 +18,6 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
-  notify:
-    - notify/slack.yaml
 prompt: |
   Optimize application performance through systematic analysis and targeted improvements.
   Focus on critical path optimization and measurable performance gains.
