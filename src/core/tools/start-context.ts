@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import type {
@@ -6,6 +6,13 @@ import type {
   StartContextToolResponse,
 } from '../../schemas/start-context.js';
 import { StartContextToolSchema } from '../../schemas/start-context.js';
+import {
+  FileNotFoundError,
+  InvalidContextError,
+  YamlParseError,
+} from '../errors.js';
+import { fileExists } from '../utils/index.js';
+import * as z from 'zod';
 
 /**
  * Main context YAML file structure type
@@ -27,39 +34,38 @@ interface ContextYaml {
 }
 
 /**
- * Read and parse a YAML file.
+ * Read and parse a YAML file asynchronously.
  */
-function readYamlFile<T>(filePath: string): T {
-  if (!existsSync(filePath)) {
-    throw new Error(`File not found: ${filePath}`);
+async function readYamlFile<T>(filePath: string): Promise<T> {
+  if (!(await fileExists(filePath))) {
+    throw new FileNotFoundError(filePath);
   }
   try {
-    const content = readFileSync(filePath, 'utf8');
+    const content = await readFile(filePath, 'utf8');
     return parseYaml(content) as T;
   } catch (error) {
-    throw new Error(
-      `YAML file parsing failed (${filePath}): ${
-        error instanceof Error ? error.message : String(error)
-      }`
+    throw new YamlParseError(
+      filePath,
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 }
 
 /**
- * Reads the main context file (e.g., feature-context.yaml).
+ * Reads the main context file (e.g., feature-context.yaml) asynchronously.
  */
-function readContextFile(
+async function readContextFile(
   projectRoot: string,
   contextName: string
-): ContextYaml {
+): Promise<ContextYaml> {
   const contextFilePath = join(
     projectRoot,
-    'assets',
+    '.contextcompose',
     `${contextName}-context.yaml`
   );
-  const context = readYamlFile<ContextYaml>(contextFilePath);
+  const context = await readYamlFile<ContextYaml>(contextFilePath);
   if (context.kind !== 'context') {
-    throw new Error(
+    throw new InvalidContextError(
       `Invalid context file kind: ${context.kind}. Expected 'context'.`
     );
   }
@@ -91,7 +97,7 @@ function combinePrompts(
   // The `enhanced-prompt` in the context files already summarizes the philosophy.
   // The user's final instruction is to ask the user what to do next.
 
-  const finalPrompt = `${promptToUse}\n\n어떤 작업을 시작할까요?`;
+  const finalPrompt = `${promptToUse}\\n\\nWhat task should we start?`;
 
   return finalPrompt;
 }
@@ -105,7 +111,10 @@ export async function executeStartContext(
 ): Promise<StartContextToolResponse> {
   try {
     // 1. Read the main context file
-    const contextYaml = readContextFile(input.projectRoot, input.contextName);
+    const contextYaml = await readContextFile(
+      input.projectRoot,
+      input.contextName
+    );
 
     // 2. The new logic is to just use the enhanced prompt from the context file.
     // The `processContextSections` is not strictly needed to generate the prompt if we follow the pattern
@@ -139,23 +148,32 @@ export async function executeStartContext(
 }
 
 /**
- * Wrapper for the Start Context tool to be used in CLI.
- * Validates input against the Zod schema.
+ * Validates the input arguments for the Start Context tool and executes the core logic.
+ * This function serves as the main entry point for the MCP tool, ensuring
+ * that the provided arguments are valid before proceeding.
+ * It reads the specified context file and constructs the initial prompt.
  */
 export async function executeStartContextTool(
   args: unknown
 ): Promise<StartContextToolResponse> {
-  const validationResult = StartContextToolSchema.safeParse(args);
-  if (!validationResult.success) {
-    const errorMessages = validationResult.error.errors
-      .map((e) => `${e.path.join('.')}: ${e.message}`)
-      .join(', ');
+  try {
+    const validatedArgs = StartContextToolSchema.parse(args);
+    return await executeStartContext(validatedArgs);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errorMessages = error.errors.map(e => e.message).join(', ');
+      return {
+        success: false,
+        message: `Invalid input: ${errorMessages}`,
+        contextName: (args as StartContextToolInput)?.contextName || '',
+      };
+    }
+    // Handle other errors (e.g., from executeStartContext)
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,
-      message: `Invalid input: ${errorMessages}`,
-      contextName: (args as any)?.contextName || '',
+      message: `Failed to start context: ${errorMessage}`,
+      contextName: (args as { contextName?: string })?.contextName || '',
     };
   }
-
-  return executeStartContext(validationResult.data);
 }

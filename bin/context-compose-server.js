@@ -25,7 +25,7 @@ if (existsSync(distServerPath)) {
   useTypeScript = true;
 } else {
   console.error(
-    '❌ MCP 서버 파일을 찾을 수 없습니다. 프로젝트를 빌드하거나 소스 파일을 확인하세요.'
+    '❌ MCP server file not found. Please build the project or check the source files.'
   );
   process.exit(1);
 }
@@ -45,6 +45,6 @@ child.on('exit', code => {
 });
 
 child.on('error', error => {
-  console.error('❌ MCP 서버 실행 실패:', error.message);
+  console.error('❌ MCP server execution failed:', error.message);
   process.exit(1);
 });

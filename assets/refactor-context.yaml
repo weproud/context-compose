@@ -42,7 +42,7 @@ enhanced-prompt: |-
   ## Common Refactoring Patterns
   - **Extract Method**: Turn a code fragment into its own method.
   - **Extract Class**: Move a group of related fields and methods to a new class.
-- **Rename Variable/Method**: Use clear and descriptive names.
+  - **Rename Variable/Method**: Use clear and descriptive names.
   - **Simplify Conditional**: Replace complex conditional logic with simpler, more expressive code.
   - **Replace Magic Numbers with Constants**: Improve readability and maintainability.
 

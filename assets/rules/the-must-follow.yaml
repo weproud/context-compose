@@ -3,62 +3,28 @@ kind: rule
 name: The Must Follow Rule
 description: Critical rules that must be followed unconditionally in all circumstances
 prompt: |
-  Only develop what is explicitly requested. Never add features beyond scope.
-  Protect sensitive data and validate all inputs. Test thoroughly before committing.
+  Develop only what is explicitly requested; do not add features beyond the scope.
+  Protect sensitive data, validate all inputs, and test thoroughly before committing.
   Follow established coding standards and document decisions clearly.
-  When uncertain about requirements, ask for clarification immediately.
-  Communicate blockers and maintain system integrity at all times.
+  If requirements are unclear, ask for clarification immediately.
 enhanced-prompt: |-
-  These rules must be followed unconditionally in all circumstances:
+  ### Scope Adherence
+  - **Requirement Compliance**: Develop only explicitly requested features. Do not add "nice-to-have" features arbitrarily. If requirements are unclear, confirm them before proceeding.
+  - **No Scope Creep**: Focus solely on the defined acceptance criteria. Document any discovered additional issues separately for future discussion.
 
-  ## Scope Adherence
-  1. **Strict Requirement Compliance**:
-     - Only develop what is explicitly requested in task specification
-     - Do not add features, optimizations, or changes beyond stated requirements
-     - If unclear about requirements, ask for clarification before proceeding
+  ### Safety & Security
+  - **Data Protection**: Never expose sensitive information like API keys or passwords. Validate and sanitize all user inputs, and adhere to the principle of least privilege.
+  - **System Integrity**: Do not modify production systems without authorization. Always back up critical data before making changes and test thoroughly in dev/staging environments first.
 
-  2. **No Scope Creep**:
-     - Avoid implementing "nice-to-have" features during task execution
-     - Focus solely on defined acceptance criteria
-     - Document any discovered issues separately for future consideration
+  ### Quality Assurance
+  - **Testing Requirements**: All code changes must include appropriate tests and must not break existing functionality. Passing tests is a prerequisite for task completion.
+  - **Code Standards**: Follow established coding conventions without exception. Code must be readable and maintainable. Do not include debugging code or `console.log` statements in production code.
 
-  ## Safety & Security
-  1. **Data Protection**:
-     - Never expose sensitive information (API keys, passwords, personal data)
-     - Always validate and sanitize user inputs
-     - Follow principle of least privilege for access controls
+  ### Communication & Documentation
+  - **Transparency**: Immediately share any issues that arise. Document all assumptions and decisions to provide clear progress updates.
+  - **Knowledge Preservation**: Document complex solutions and their reasoning. Keep relevant documentation up-to-date. Write clear commit histories and PR descriptions.
 
-  2. **System Integrity**:
-     - Do not modify production systems without explicit authorization
-     - Always backup critical data before making changes
-     - Test changes thoroughly in development/staging environments first
+  ### Emergency Protocols
+  - **Critical Issues**: Stop work immediately if a security vulnerability is discovered. Report it to the relevant team and follow incident response procedures.
 
-  ## Quality Assurance
-  1. **Testing Requirements**:
-     - All code changes must include appropriate tests
-     - Tests must pass before considering task complete
-     - No code should break existing functionality
-
-  2. **Code Standards**:
-     - Follow established coding conventions without exception
-     - Code must be readable and maintainable
-     - No debugging code or console.log statements in production
-
-  ## Communication & Documentation
-  1. **Transparency**:
-     - Communicate blockers or issues immediately
-     - Document all assumptions and decisions made
-     - Provide clear status updates on task progress
-
-  2. **Knowledge Preservation**:
-     - Document complex solutions and reasoning
-     - Update relevant documentation with changes
-     - Maintain clear commit history and PR descriptions
-
-  ## Emergency Protocols
-  1. **Critical Issues**:
-     - Stop work immediately if security vulnerabilities are discovered
-     - Escalate critical issues to appropriate team members
-     - Follow established incident response procedures
-
-  **Remember: When in doubt, ask. It's better to clarify requirements than to deliver the wrong solution.**
+  **When in doubt, always ask. It is better to clarify requirements than to deliver the wrong solution.**

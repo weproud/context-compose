@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 
 assets 디렉토리에 있는 파일의 모든 내용은 영어로만 작성한다

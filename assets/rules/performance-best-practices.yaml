@@ -1,0 +1,31 @@
+version: 1
+kind: rule
+name: Performance Best Practices
+description: Guidelines for writing high-performance, scalable, and efficient code.
+prompt: |
+  Choose efficient algorithms and data structures, and minimize unnecessary computations.
+  Optimize network requests, reduce bundle size, and actively use lazy loading.
+  Prevent memory leaks and profile code execution time to resolve bottlenecks.
+  Actively implement caching strategies to speed up repetitive data access.
+enhanced-prompt: |-
+  ### Algorithms & Data Structures
+  - **Efficient Selection**: Choose the most appropriate algorithms and data structures for the problem. Always consider time and space complexity to prevent performance degradation.
+  - **Computation Optimization**: Minimize unnecessary or redundant calculations. Avoid repetitive computations within loops and use memoization to store and reuse results.
+
+  ### Frontend Optimization
+  - **Rendering Optimization**: Understand the browser rendering pipeline and minimize reflows and repaints. In frameworks using a virtual DOM, prevent unnecessary re-renders.
+  - **Bundle Size Optimization**: Minimize JavaScript bundle size using techniques like tree shaking and code splitting. Compress assets like images and use modern formats like WebP.
+  - **Loading Optimization**: Use lazy loading to defer the loading of non-critical components, images, and scripts. Inline critical CSS to speed up initial rendering.
+
+  ### Backend & Network Optimization
+  - **Database Optimization**: Optimize queries and create appropriate indexes to reduce database response times. Be wary of N+1 query problems and fetch only necessary data.
+  - **Network Request Optimization**: Reduce the number of API requests and minimize payload size. Utilize HTTP/2 or HTTP/3 and use a CDN to deliver static content quickly.
+  - **Caching Strategy**: Use in-memory caches (e.g., Redis, Memcached) or HTTP caching to reduce repetitive database queries or API calls. Establish a clear cache invalidation strategy.
+
+  ### Code-Level Optimization
+  - **Memory Management**: Prevent memory leaks by cleaning up event listeners, timers, and subscriptions when components are unmounted. Use WeakMap and WeakSet to aid garbage collection.
+  - **Asynchronous Processing**: Convert synchronous, blocking code to asynchronous code to reduce the load on the main thread. Consider using Web Workers to offload heavy computations to a background thread.
+
+  ### Measurement & Monitoring
+  - **Profiling**: Regularly use browser developer tools (Lighthouse, Performance) or Node.js profilers to measure and analyze bottlenecks in your code.
+  - **Performance Budgets**: Set performance budgets for key metrics like Core Web Vitals (e.g., LCP, TTI) and continuously monitor them in the CI/CD pipeline to prevent performance regressions.

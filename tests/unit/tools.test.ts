@@ -1,33 +1,27 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
-  InitTool,
+  executeInit,
+  executeInitTool,
   executeStartContextTool,
 } from '../../src/core/tools/index.js';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 
-const StartContextTool = {
-  execute: executeStartContextTool,
-};
-
 describe('MCP Tools', () => {
   describe('Init Tool', () => {
     it('should initialize project with default settings', async () => {
-      const result = await InitTool.execute();
-
+      const result = await executeInit(tmpdir());
+      expect(result.success).toBe(true);
       expect(result).toMatchObject({
         success: expect.any(Boolean),
         message: expect.any(String),
         createdFiles: expect.any(Array),
-        skippedFiles: expect.any(Array),
       });
     });
 
     it('should validate input parameters', async () => {
-      await expect(
-        InitTool.executeWithValidation({ projectRoot: 123 })
-      ).rejects.toThrow();
+      await expect(executeInitTool({ projectRoot: 123 })).rejects.toThrow();
     });
   });
 
@@ -80,8 +74,10 @@ context:
 prompt: |
   This is the simple prompt for the feature context.`;
 
+      const contextComposeDir = join(testProjectRoot, '.contextcompose');
+      mkdirSync(contextComposeDir, { recursive: true });
       writeFileSync(
-        join(testProjectRoot, 'assets', 'feature-context.yaml'),
+        join(contextComposeDir, 'feature-context.yaml'),
         contextFeatureContent,
         'utf8'
       );
@@ -90,35 +86,39 @@ prompt: |
       const genericComponentContent = (name: string) => `version: 1
 kind: component
 name: ${name}
-prompt: 'This is a prompt for ${name}'`;
+prompt: 'This is a prompt for ${name}'
+enhanced-prompt: 'This is an enhanced prompt for ${name}'`;
 
-      mkdirSync(join(testProjectRoot, 'assets', 'rules'));
-      mkdirSync(join(testProjectRoot, 'assets', 'mcps'));
-      mkdirSync(join(testProjectRoot, 'assets', 'personas'));
+      const rulesDir = join(contextComposeDir, 'rules');
+      const mcpsDir = join(contextComposeDir, 'mcps');
+      const personasDir = join(contextComposeDir, 'personas');
+      mkdirSync(rulesDir, { recursive: true });
+      mkdirSync(mcpsDir, { recursive: true });
+      mkdirSync(personasDir, { recursive: true });
 
       writeFileSync(
-        join(testProjectRoot, 'assets', 'rules', 'the-must-follow.yaml'),
+        join(rulesDir, 'the-must-follow.yaml'),
         genericComponentContent('the-must-follow')
       );
       writeFileSync(
-        join(testProjectRoot, 'assets', 'rules', 'development.yaml'),
+        join(rulesDir, 'development.yaml'),
         genericComponentContent('development')
       );
       writeFileSync(
-        join(testProjectRoot, 'assets', 'mcps', 'sequential-thinking.yaml'),
+        join(mcpsDir, 'sequential-thinking.yaml'),
         genericComponentContent('sequential-thinking')
       );
       writeFileSync(
-        join(testProjectRoot, 'assets', 'mcps', 'context7.yaml'),
+        join(mcpsDir, 'context7.yaml'),
         genericComponentContent('context7')
       );
       writeFileSync(
-        join(testProjectRoot, 'assets', 'personas', 'software-developer.yaml'),
+        join(personasDir, 'software-developer.yaml'),
         genericComponentContent('software-developer')
       );
 
       // StartContextTool 실행
-      const result = await StartContextTool.execute({
+      const result = await executeStartContextTool({
         contextName: 'feature',
         projectRoot: testProjectRoot,
         enhancedPrompt: false,
@@ -133,13 +133,13 @@ prompt: 'This is a prompt for ${name}'`;
       expect(result.message).toContain(
         "Context 'feature' started successfully."
       );
-      expect(result.combinedPrompt).toContain('어떤 작업을 시작할까요?');
+      expect(result.combinedPrompt).toContain('What task should we start?');
       expect(result.files).toBeDefined();
     });
 
     it('should handle missing context file gracefully', async () => {
       // 존재하지 않는 context 파일에 대한 테스트
-      const result = await StartContextTool.execute({
+      const result = await executeStartContextTool({
         contextName: 'nonexistent',
         projectRoot: testProjectRoot,
         enhancedPrompt: false,
@@ -166,21 +166,24 @@ context:
 prompt: |
   This is the simple prompt for the feature context.`;
 
-      mkdirSync(join(testProjectRoot, 'assets'), { recursive: true });
-      mkdirSync(join(testProjectRoot, 'assets', 'rules'), { recursive: true });
+      const contextComposeDir = join(testProjectRoot, '.contextcompose');
+      mkdirSync(contextComposeDir, { recursive: true });
+      const rulesDir = join(contextComposeDir, 'rules');
+      mkdirSync(rulesDir, { recursive: true });
+
       writeFileSync(
-        join(testProjectRoot, 'assets', 'feature-context.yaml'),
+        join(contextComposeDir, 'feature-context.yaml'),
         contextFeatureContent,
         'utf8'
       );
       writeFileSync(
-        join(testProjectRoot, 'assets', 'rules', 'the-must-follow.yaml'),
-        `version: 1\nkind: rule\nprompt: 'Rule prompt'`,
+        join(rulesDir, 'the-must-follow.yaml'),
+        `version: 1\\nkind: rule\\nprompt: 'Rule prompt'\\nenhanced-prompt: 'Enhanced Rule prompt'`,
         'utf8'
       );
 
       // enhanced prompt 사용
-      const result = await StartContextTool.execute({
+      const result = await executeStartContextTool({
         contextName: 'feature',
         projectRoot: testProjectRoot,
         enhancedPrompt: true,

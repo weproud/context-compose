@@ -4,7 +4,6 @@ import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createEnvCommand } from './commands/env.js';
 import { createInitCommand } from './commands/init.js';
 import { createStartContextCommand } from './commands/start-context.js';
 import { createValidateContextCommand } from './commands/validate-context.js';
@@ -12,7 +11,7 @@ import { createValidateContextCommand } from './commands/validate-context.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageJson = JSON.parse(
-  readFileSync(join(__dirname, '../../../package.json'), 'utf-8')
+  readFileSync(join(__dirname, '../../package.json'), 'utf-8')
 );
 
 /**
@@ -30,7 +29,11 @@ export function createCli(): Command {
   program.addCommand(createInitCommand());
   program.addCommand(createStartContextCommand());
   program.addCommand(createValidateContextCommand());
-  program.addCommand(createEnvCommand());
 
   return program;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const program = createCli();
+  program.parse(process.argv);
 }

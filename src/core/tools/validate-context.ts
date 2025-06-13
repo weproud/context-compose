@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
@@ -8,6 +8,7 @@ import type {
   ValidationError,
 } from '../../schemas/validate-context.js';
 import { ValidateContextToolSchema } from '../../schemas/validate-context.js';
+import { fileExists } from '../utils/index.js';
 
 interface ContextYaml {
   context?: {
@@ -26,97 +27,114 @@ const RequiredFieldsSchema = z
   })
   .passthrough();
 
-function validateComponentFile(
-  filePath: string,
-  errors: ValidationError[]
-): void {
-  if (!existsSync(filePath)) {
-    errors.push({ filePath, message: 'File does not exist.' });
-    return;
+async function validateComponentFile(
+  filePath: string
+): Promise<ValidationError | null> {
+  if (!(await fileExists(filePath))) {
+    return { filePath, message: 'File does not exist.' };
   }
 
   try {
-    const content = readFileSync(filePath, 'utf8');
+    const content = await readFile(filePath, 'utf8');
     const yaml = parseYaml(content);
     const result = RequiredFieldsSchema.safeParse(yaml);
 
     if (!result.success) {
-      const missing = result.error.issues
-        .map((i) => i.path.join('.'))
-        .join(', ');
-      errors.push({
+      const missing = result.error.issues.map(i => i.path.join('.')).join(', ');
+      return {
         filePath,
         message: `Missing or invalid required fields: ${missing}`,
-      });
+      };
     }
   } catch (error) {
-    errors.push({
+    return {
       filePath,
       message: `Failed to parse YAML file: ${
         error instanceof Error ? error.message : String(error)
       }`,
-    });
+    };
   }
+  return null;
 }
 
 export async function executeValidateContext(
   input: ValidateContextToolInput
 ): Promise<ValidateContextToolResponse> {
   const { projectRoot, contextName } = input;
-  const errors: ValidationError[] = [];
-  let validatedFiles = 0;
+  const allErrors: ValidationError[] = [];
+  let validatedFilesCount = 0;
 
   try {
     const contextFilePath = join(
       projectRoot,
-      'assets',
+      '.contextcompose',
       `${contextName}-context.yaml`
     );
-    validateComponentFile(contextFilePath, errors);
-    validatedFiles++;
 
-    // If the main context file has errors, we can stop early, but it's more comprehensive to check all files.
-    const contextContent = readFileSync(contextFilePath, 'utf8');
+    const mainContextError = await validateComponentFile(contextFilePath);
+    validatedFilesCount++;
+    if (mainContextError) {
+      allErrors.push(mainContextError);
+      // Stop early if the main context file is invalid
+      return {
+        success: false,
+        message: `Validation failed for context '${contextName}'. The main context file has errors.`,
+        contextName,
+        validatedFiles: validatedFilesCount,
+        errors: allErrors,
+      };
+    }
+
+    const contextContent = await readFile(contextFilePath, 'utf8');
     const contextYaml = parseYaml(contextContent) as ContextYaml;
 
     if (contextYaml.context) {
+      const validationPromises: Promise<ValidationError | null>[] = [];
       for (const files of Object.values(contextYaml.context)) {
         if (!Array.isArray(files)) continue;
         for (const relativePath of files) {
-          const componentPath = join(projectRoot, 'assets', relativePath);
-          validateComponentFile(componentPath, errors);
-          validatedFiles++;
+          const componentPath = join(
+            projectRoot,
+            '.contextcompose',
+            relativePath
+          );
+          validationPromises.push(validateComponentFile(componentPath));
         }
       }
+
+      const results = await Promise.all(validationPromises);
+      validatedFilesCount += results.length;
+      allErrors.push(
+        ...results.filter((e): e is ValidationError => e !== null)
+      );
     }
 
-    if (errors.length > 0) {
+    if (allErrors.length > 0) {
       return {
         success: false,
-        message: `Validation failed for context '${contextName}' with ${errors.length} error(s).`,
+        message: `Validation failed for context '${contextName}' with ${allErrors.length} error(s).`,
         contextName,
-        validatedFiles,
-        errors,
+        validatedFiles: validatedFilesCount,
+        errors: allErrors,
       };
     }
 
     return {
       success: true,
-      message: `✅ Context '${contextName}' is valid. All ${validatedFiles} files checked successfully.`,
+      message: `✅ Context '${contextName}' is valid. All ${validatedFilesCount} files checked successfully.`,
       contextName,
-      validatedFiles,
+      validatedFiles: validatedFilesCount,
       errors: [],
     };
   } catch (error) {
-    // This catches errors from reading the main context file if it's unparsable or missing after the initial check
     return {
       success: false,
       message: `An unexpected error occurred: ${
         error instanceof Error ? error.message : String(error)
       }`,
       contextName,
-      validatedFiles,
-      errors,
+      validatedFiles: validatedFilesCount,
+      errors: allErrors,
     };
   }
 }
@@ -127,12 +145,12 @@ export async function executeValidateContextTool(
   const validationResult = ValidateContextToolSchema.safeParse(args);
   if (!validationResult.success) {
     const errorMessages = validationResult.error.errors
-      .map((e) => `${e.path.join('.')}: ${e.message}`)
+      .map(e => `${e.path.join('.')}: ${e.message}`)
       .join(', ');
     return {
       success: false,
       message: `Invalid input: ${errorMessages}`,
-      contextName: (args as any)?.contextName || '',
+      contextName: (args as ValidateContextToolInput)?.contextName || '',
       validatedFiles: 0,
       errors: [],
     };

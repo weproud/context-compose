@@ -1,0 +1,35 @@
+version: 1
+kind: rule
+name: Testing Standards
+description: Guidelines for writing effective, reliable, and maintainable tests.
+prompt: |
+  Follow the test pyramid strategy by combining unit, integration, and E2E tests.
+  Tests must be clear, deterministic, and capable of running independently.
+  Use the Arrange-Act-Assert (AAA) pattern to structure tests clearly.
+  Ensure testing covers not only success cases but also edge and failure cases.
+enhanced-prompt: |-
+  ### Test Strategy
+  - **Test Pyramid**: Follow the test pyramid model for a robust strategy. Build upon a base of fast, isolated 'unit tests', add 'integration tests' to verify interactions between services, and supplement with a few 'E2E tests' to validate real user scenarios.
+  - **Test Scope**: All new features and bug fixes must be accompanied by test code. Use code coverage as a reference, but focus on testing core business logic and complex scenarios rather than just increasing line coverage.
+
+  ### Test Writing Principles
+  - **Clarity**: Test code should be as readable as production code. Use descriptive names that clearly state the test's purpose (e.g., `it('should throw an error if the user is not authenticated')`).
+  - **Determinism**: Tests should always return the same result, independent of external factors like network or time. Control non-deterministic elements by mocking or stubbing.
+  - **Independence**: Each test must be able to run independently without affecting others. Do not share state between tests; initialize state before each test (`beforeEach`) and clean up after (`afterEach`).
+
+  ### Test Structure
+  - **Arrange-Act-Assert (AAA) Pattern**: Follow the AAA pattern to structure tests clearly.
+      - **Arrange**: Set up the necessary data, mocks, and environment for the test.
+      - **Act**: Call the function or method being tested.
+      - **Assert**: Verify that the result matches the expectation.
+  - **Single Responsibility Principle**: A single test case should verify only one scenario. If multiple assertions are needed, separate them into distinct test cases.
+
+  ### Test-Type Guide
+  - **Unit Tests**: Test individual functions, methods, or components in isolation. Replace dependencies with mock objects to block external influences.
+  - **Integration Tests**: Verify that multiple components or services work together correctly. Can test integration with a real database or external APIs, but this should be controlled within the test environment.
+  - **E2E Tests**: Test the entire application flow from a real user's perspective. Use tools like Playwright or Cypress to run scenarios directly in a browser. These tests are expensive, so focus on critical user journeys.
+
+  ### Testing Best Practices
+  - **Test Failure Cases**: In addition to success scenarios, be sure to test various exceptions and failure situations, such as invalid inputs, unauthorized access, and network errors.
+  - **Use Mock Objects**: Replace uncontrollable dependencies like external API calls or database access with mock objects using functions like `jest.mock`. This improves test speed and reliability.
+  - **Test Doubles**: Use appropriate test doubles like mocks, stubs, or spies as needed to achieve the test's objective.

@@ -2,119 +2,29 @@ version: 1
 kind: rule
 name: Context-Compose Development
 description: Development standards and best practices specific to context-compose AI coding tool
-prompt: Follow TypeScript best practices, utilize AI tools effectively, maintain clean architecture, and focus on developer experience
+prompt: |
+  Follow TypeScript best practices and utilize AI tools effectively.
+  Maintain a clean architecture and focus on developer experience when writing code.
+  Adhere to the Conventional Commits specification and have all changes reviewed via PR.
+  Ensure test coverage and always consider performance and security during development.
 enhanced-prompt: |-
-  Follow these development standards when working on context-compose AI coding tool:
+  ### Code Quality Standards
+  - **TypeScript Excellence**: Use `strict` settings and define clear `interface` and `type` for all data structures. Do not allow implicit `any` and manage errors with typed exceptions.
+  - **Code Architecture**: Follow SOLID principles and clean architecture patterns. Implement Separation of Concerns (SoC) and use Dependency Injection (DI) appropriately to lower coupling and increase cohesion.
+  - **Formatting & Linting**: Adhere to ESLint and Prettier settings without exception. Production code must have no linting warnings or errors. Maintain consistent naming conventions.
 
-  ## Code Quality Standards
-  1. **TypeScript Excellence**:
-     - Use strict TypeScript configuration with no implicit any
-     - Define proper interfaces and types for all data structures
-     - Implement comprehensive error handling with typed exceptions
-     - Utilize advanced TypeScript features (generics, conditional types, etc.)
+  ### Version Control & Branching
+  - **Branch Management**: Use prefixes like `feature/`, `bugfix/`, `hotfix/` to clarify branch purposes. Branches should focus on a single feature or fix.
+  - **Commit Standards**: Follow the Conventional Commits specification. Commit messages should be meaningful and descriptive, containing only one logical change.
 
-  2. **Code Formatting & Linting**:
-     - ESLint configuration must be followed without exceptions
-     - Prettier formatting applied to all code files
-     - No linting warnings or errors allowed in production code
-     - Use consistent naming conventions (camelCase, PascalCase, kebab-case)
+  ### Code Review & Documentation
+  - **Pull Request**: All code changes must go through a PR review, requiring at least one approval. Self-review is mandatory before requesting reviews, and PR descriptions must include testing notes.
+  - **Documentation**: Write comprehensive JSDoc comments for all public APIs and add inline comments for complex business logic. Always keep the README up-to-date.
 
-  3. **Code Architecture**:
-     - Follow SOLID principles and clean architecture patterns
-     - Implement proper separation of concerns
-     - Use dependency injection where appropriate
-     - Maintain low coupling and high cohesion
+  ### Testing Requirements
+  - **Test Coverage**: New features must achieve at least 80% code coverage. Write unit tests for all business logic, integration tests for API endpoints, and E2E tests for critical user workflows.
+  - **Test Quality**: Tests must be deterministic and reliable. Flaky tests are not allowed. Test data must be properly isolated and cleaned up.
 
-  ## Version Control & Branching
-  1. **Branch Management**:
-     - Use feature/ prefix for new features: `feature/task-description`
-     - Use bugfix/ prefix for bug fixes: `bugfix/issue-description`
-     - Use hotfix/ prefix for critical fixes: `hotfix/critical-issue`
-     - Keep branches focused on single features or fixes
-
-  2. **Commit Standards**:
-     - Follow Conventional Commits specification
-     - Use meaningful, descriptive commit messages
-     - Keep commits atomic (one logical change per commit)
-     - Include issue/task references in commit messages
-
-  ## Code Review Process
-  1. **Pull Request Requirements**:
-     - All code changes must go through Pull Request review
-     - Minimum of one approval required before merging
-     - Self-review mandatory before requesting reviews
-     - Include comprehensive PR description with testing notes
-
-  2. **Review Criteria**:
-     - Code functionality and correctness
-     - Performance implications and optimizations
-     - Security considerations and vulnerability checks
-     - Documentation completeness and accuracy
-
-  ## Documentation Standards
-  1. **Code Documentation**:
-     - Comprehensive JSDoc comments for all public APIs
-     - Inline comments for complex business logic
-     - README files updated with new features and changes
-     - API documentation generated and maintained
-
-  2. **Project Documentation**:
-     - Architecture decisions recorded (ADRs)
-     - Setup and deployment instructions current
-     - Troubleshooting guides maintained
-     - Contributing guidelines followed
-
-  ## Testing Requirements
-  1. **Test Coverage**:
-     - Minimum 80% code coverage for new features
-     - Unit tests for all business logic
-     - Integration tests for API endpoints
-     - End-to-end tests for critical user workflows
-
-  2. **Test Quality**:
-     - Tests must be deterministic and reliable
-     - No flaky tests allowed in main branch
-     - Test data properly isolated and cleaned up
-     - Performance tests for critical paths
-
-  ## Tool Utilization
-  1. **Complex Problem Solving**:
-     - Use sequential-thinking for breaking down complex tasks
-     - Apply systematic approach to architectural decisions
-     - Document thought processes for future reference
-
-  2. **Library Integration**:
-     - Use context7 for researching library documentation
-     - Verify compatibility and best practices
-     - Follow official documentation and examples
-
-  3. **Browser Testing**:
-     - Utilize playwright for comprehensive browser testing
-     - Test across multiple browsers and devices
-     - Implement visual regression testing where applicable
-
-  ## Performance & Security
-  1. **Performance Standards**:
-     - Monitor and optimize bundle sizes
-     - Implement lazy loading where appropriate
-     - Use performance profiling tools regularly
-     - Set performance budgets and monitor them
-
-  2. **Security Practices**:
-     - Regular dependency vulnerability scans
-     - Input validation and sanitization
-     - Secure coding practices followed
-     - Security headers and configurations implemented
-
-  ## Continuous Integration
-  1. **CI/CD Pipeline**:
-     - All tests must pass before merging
-     - Automated code quality checks enforced
-     - Deployment automation properly configured
-     - Rollback procedures documented and tested
-
-  2. **Quality Gates**:
-     - Code coverage thresholds enforced
-     - Performance benchmarks maintained
-     - Security scans passing
-     - Documentation builds successfully
+  ### Tool Utilization & Optimization
+  - **Tool Utilization**: Actively use `sequential-thinking` for complex problem-solving, `context7` for library research, and `playwright` for browser testing.
+  - **Performance & Security**: Monitor and optimize bundle sizes and implement lazy loading where appropriate. Regularly scan for dependency vulnerabilities and perform thorough input validation.

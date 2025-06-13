@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { InitTool } from '../../core/tools/index.js';
+import { executeInit } from '../../core/tools/init.js';
 
 /**
  * CLI handler for Init command
@@ -14,7 +14,7 @@ export function createInitCommand(): Command {
     .action(async () => {
       try {
         // Use current working directory as default in CLI
-        const result = await InitTool.execute(process.cwd());
+        const result = await executeInit(process.cwd());
 
         if (result.success) {
           console.log(result.message);

@@ -7,7 +7,7 @@ export function info(
   data: Record<string, unknown> = {}
 ): void {
   const timestamp = new Date().toISOString();
-  console.error(`[${timestamp}] INFO: ${message}`, data);
+  console.info(`[${timestamp}] INFO: ${message}`, data);
 }
 
 export function warn(
@@ -15,7 +15,7 @@ export function warn(
   data: Record<string, unknown> = {}
 ): void {
   const timestamp = new Date().toISOString();
-  console.error(`[${timestamp}] WARN: ${message}`, data);
+  console.warn(`[${timestamp}] WARN: ${message}`, data);
 }
 
 export function error(
@@ -30,12 +30,10 @@ export function debug(
   message: string,
   data: Record<string, unknown> = {}
 ): void {
-  if (process.env.DEBUG) {
-    const timestamp = new Date().toISOString();
-    console.error(`[${timestamp}] DEBUG: ${message}`, data);
-  }
+  const timestamp = new Date().toISOString();
+  console.debug(`[${timestamp}] DEBUG: ${message}`, data);
 }
 
-// 기존 default export와의 호환성을 위한 객체 export
+// For backward compatibility with existing default exports
 const logger = { info, warn, error, debug };
 export default logger;

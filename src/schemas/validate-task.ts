@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Validate Task 도구 스키마
- * Context Compose 프로젝트의 task 파일과 관련 파일들의 유효성을 검사하는 도구의 입력 매개변수를 정의합니다.
+ * Validate Task Tool Schema
+ * Defines the input parameters for the tool that validates task files and related files in a Context Compose project.
  */
 export const ValidateTaskToolSchema = z.object({
   taskId: z
     .string()
-    .min(1, 'Task ID는 필수입니다')
-    .describe('검증할 task의 고유 식별자'),
+    .min(1, 'Task ID is required')
+    .describe('The unique identifier of the task to be validated'),
   projectRoot: z
     .string()
     .describe('The directory of the project. Must be an absolute path.'),
@@ -22,17 +22,17 @@ export const ValidateTaskToolSchema = z.object({
 });
 
 /**
- * Validate Task 도구 입력 타입
+ * Validate Task tool input type
  */
 export type ValidateTaskToolInput = z.infer<typeof ValidateTaskToolSchema>;
 
 /**
- * Validation 결과 상태
+ * Validation result status
  */
 export type ValidationStatus = 'pass' | 'fail' | 'warning';
 
 /**
- * 개별 Validation 결과
+ * Individual validation result
  */
 export interface ValidationResult {
   category: string;
@@ -42,7 +42,7 @@ export interface ValidationResult {
 }
 
 /**
- * Validation 요약 정보
+ * Validation summary information
  */
 export interface ValidationSummary {
   total: number;
@@ -52,7 +52,7 @@ export interface ValidationSummary {
 }
 
 /**
- * Validate Task 도구 응답 타입
+ * Validate Task tool response type
  */
 export interface ValidateTaskToolResponse {
   success: boolean;
