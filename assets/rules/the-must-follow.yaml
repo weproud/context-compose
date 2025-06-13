@@ -2,21 +2,24 @@ version: 1
 kind: rule
 name: The Must Follow Rule
 description: Critical rules that must be followed unconditionally in all circumstances
-prompt: Only develop what is explicitly requested. No scope creep, ensure data protection, maintain system integrity, follow testing requirements, and communicate transparently. When in doubt, ask for clarification.
+prompt: |
+  Only develop what is explicitly requested. Never add features beyond scope.
+  Protect sensitive data and validate all inputs. Test thoroughly before committing.
+  Follow established coding standards and document decisions clearly.
+  When uncertain about requirements, ask for clarification immediately.
+  Communicate blockers and maintain system integrity at all times.
 enhanced-prompt: |-
   These rules must be followed unconditionally in all circumstances:
 
   ## Scope Adherence
   1. **Strict Requirement Compliance**:
-     - Only develop what is explicitly requested in the task specification
-     - Do not add features, optimizations, or changes beyond the stated requirements
-     - Resist the temptation to "improve" or "enhance" unless specifically asked
+     - Only develop what is explicitly requested in task specification
+     - Do not add features, optimizations, or changes beyond stated requirements
      - If unclear about requirements, ask for clarification before proceeding
 
   2. **No Scope Creep**:
      - Avoid implementing "nice-to-have" features during task execution
-     - Do not refactor unrelated code unless it's part of the task
-     - Focus solely on the defined acceptance criteria
+     - Focus solely on defined acceptance criteria
      - Document any discovered issues separately for future consideration
 
   ## Safety & Security
@@ -24,64 +27,38 @@ enhanced-prompt: |-
      - Never expose sensitive information (API keys, passwords, personal data)
      - Always validate and sanitize user inputs
      - Follow principle of least privilege for access controls
-     - Implement proper error handling without information leakage
 
   2. **System Integrity**:
      - Do not modify production systems without explicit authorization
      - Always backup critical data before making changes
      - Test changes thoroughly in development/staging environments first
-     - Have rollback procedures ready before deployment
 
   ## Quality Assurance
   1. **Testing Requirements**:
      - All code changes must include appropriate tests
      - Tests must pass before considering task complete
-     - No code should be committed that breaks existing functionality
-     - Performance regressions are not acceptable
+     - No code should break existing functionality
 
   2. **Code Standards**:
      - Follow established coding conventions without exception
      - Code must be readable and maintainable
-     - All public APIs must be properly documented
      - No debugging code or console.log statements in production
 
   ## Communication & Documentation
   1. **Transparency**:
-     - Communicate any blockers or issues immediately
+     - Communicate blockers or issues immediately
      - Document all assumptions and decisions made
      - Provide clear status updates on task progress
-     - Report any deviations from original plan
 
   2. **Knowledge Preservation**:
      - Document complex solutions and reasoning
      - Update relevant documentation with changes
-     - Share knowledge with team members when appropriate
      - Maintain clear commit history and PR descriptions
-
-  ## Compliance & Ethics
-  1. **Legal Compliance**:
-     - Respect all software licenses and intellectual property
-     - Follow data protection regulations (GDPR, CCPA, etc.)
-     - Adhere to company policies and procedures
-     - Report any compliance concerns immediately
-
-  2. **Professional Standards**:
-     - Maintain professional conduct in all communications
-     - Respect team members' time and contributions
-     - Follow established review and approval processes
-     - Take responsibility for the quality of delivered work
 
   ## Emergency Protocols
   1. **Critical Issues**:
      - Stop work immediately if security vulnerabilities are discovered
      - Escalate critical issues to appropriate team members
-     - Do not attempt to fix critical production issues without approval
      - Follow established incident response procedures
-
-  2. **Rollback Procedures**:
-     - Be prepared to rollback changes if issues arise
-     - Maintain clear documentation of rollback steps
-     - Test rollback procedures before deployment
-     - Communicate rollback actions to all stakeholders
 
   **Remember: When in doubt, ask. It's better to clarify requirements than to deliver the wrong solution.**

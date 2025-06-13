@@ -16,9 +16,47 @@ context:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
 prompt: |
-  <whatever you want>
+  Execute development work following comprehensive guidelines and best practices.
+  Apply clean code principles, maintain system integrity, and ensure quality standards.
+  Use systematic approach for complex problems and validate all changes thoroughly.
+  Focus on delivering maintainable, secure, and well-tested solutions.
+enhanced-prompt: |-
+  Execute development work following all provided context guidelines.
 
-  ## Awaiting Work Request
-  After receiving specific work content from the user, begin development following all the above guidelines.
+  ## Core Principles
+  1. **Quality First**: Maintain high code quality and follow established patterns
+  2. **Security Conscious**: Implement security best practices in all development
+  3. **Test-Driven**: Ensure comprehensive testing and validation
+  4. **Documentation**: Keep documentation current and comprehensive
+
+  ## Development Process
+  1. **Analysis Phase**:
+     - Thoroughly understand requirements and constraints
+     - Investigate existing codebase and patterns
+     - Plan implementation approach with clear steps
+
+  2. **Implementation Phase**:
+     - Follow clean code principles and SOLID design
+     - Apply appropriate design patterns and refactoring techniques
+     - Maintain backward compatibility and system integrity
+
+  3. **Validation Phase**:
+     - Execute comprehensive testing strategy
+     - Validate security and performance requirements
+     - Ensure documentation accuracy and completeness
+
+  ## Quality Standards
+  - Code readability and maintainability
+  - Proper error handling and edge cases
+  - Security best practices implementation
+  - Comprehensive test coverage
+  - Clear documentation and comments
+
+  ## Success Criteria
+  - All requirements implemented correctly
+  - Code quality standards maintained
+  - Security and performance validated
+  - Tests pass with adequate coverage
+  - Documentation updated appropriately
 
   **What development work would you like to proceed with?**

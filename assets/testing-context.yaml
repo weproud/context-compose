@@ -1,18 +1,19 @@
 version: 1
-kind: task
-name: 'testing'
-description: 'Context for comprehensive testing with TDD and quality assurance focus'
+kind: context
+name: testing context
+description: Context for comprehensive testing strategy with unit, integration, and end-to-end testing
 
 context:
   workflow: workflows/workflow.yaml
   roles:
 - personas/kent-c-dodds.yaml
-- personas/uncle-bob.yaml
+- personas/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/testing-principles.yaml
     - rules/clean-code.yaml
-    - rules/development.yaml
+    - rules/error-handling.yaml
+    - rules/performance-guidelines.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
@@ -21,378 +22,66 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # Testing Development Context
+  Implement comprehensive testing strategy with high coverage and quality validation.
+  Write unit, integration, and end-to-end tests following industry best practices.
+  Focus on test reliability, maintainability, and meaningful coverage metrics.
+  Ensure all edge cases and error scenarios are thoroughly tested and documented.
+enhanced-prompt: |-
+  # Testing Strategy Context
 
   ## Testing Philosophy
-  Testing is the **safety net for code quality** and provides **confidence for refactoring**. Induce better design through **Test-Driven Development (TDD)** and build efficient testing strategies following the **test pyramid**.
+  Implement comprehensive testing strategy with **high coverage** and **quality validation** following **Test-Driven Development (TDD)** principles.
 
-  ## Testing Strategy
-  1. **Test Pyramid**
-     - **Unit Tests (70%)**: Fast and isolated unit tests
-     - **Integration Tests (20%)**: Component interaction tests
-     - **E2E Tests (10%)**: Complete user scenario tests
+  ## Testing Pyramid Strategy
+  1. **Unit Tests (70%):**
+     - Test individual functions and components in isolation
+     - Fast execution with minimal dependencies
+     - High coverage of business logic and edge cases
+     - Mock external dependencies and services
 
-  2. **Testing Principles**
-     - **FIRST**: Fast, Independent, Repeatable, Self-validating, Timely
-     - **AAA**: Arrange, Act, Assert pattern
-     - **Given-When-Then**: BDD style test writing
+  2. **Integration Tests (20%):**
+     - Test component interactions and API endpoints
+     - Validate data flow between system layers
+     - Test database operations and external service integrations
+     - Ensure contract compliance between modules
 
-  ## Test Development Process
-  1. **Test Planning**
-     - Determine test scope and priorities
-     - Design test cases and define scenarios
-     - Prepare test data and environment
-     - Establish automation strategy
+  3. **End-to-End Tests (10%):**
+     - Test complete user workflows and critical paths
+     - Validate UI interactions and user experience
+     - Test cross-browser compatibility and accessibility
+     - Simulate real user scenarios and environments
 
-  2. **TDD Cycle Application**
-     - **Red**: Write failing test
-     - **Green**: Write minimal code to pass test
-     - **Refactor**: Improve code and remove duplication
+  ## Testing Implementation Process
+  1. **Test Planning & Setup:**
+     - Define test strategy and coverage targets (90%+)
+     - Set up testing framework and configuration
+     - Create test data and mock services
+     - Establish CI/CD integration for automated testing
 
-  3. **Test Implementation & Execution**
-     - Write tests at various levels
-     - Test automation and CI/CD integration
-     - Measure and improve test coverage
-     - Test maintenance and refactoring
+  2. **Test Development:**
+     - Write tests before or alongside implementation (TDD)
+     - Create meaningful test descriptions and assertions
+     - Implement proper test isolation and cleanup
+     - Use data-driven testing for comprehensive coverage
 
-  ## Unit Tests
-  ```typescript
-  // Unit testing with Jest
-  describe('UserService', () => {
-    let userService: UserService;
-    let userRepository: jest.Mocked<UserRepository>;
-
-    beforeEach(() => {
-      userRepository = {
-        findById: jest.fn(),
-        save: jest.fn(),
-        delete: jest.fn(),
-      } as any;
-
-      userService = new UserService(userRepository);
-    });
-
-    describe('getUserById', () => {
-      it('should return user when user exists', async () => {
-        // Arrange
-        const userId = '123';
-        const expectedUser = { id: userId, name: 'John Doe' };
-        userRepository.findById.mockResolvedValue(expectedUser);
-
-        // Act
-        const result = await userService.getUserById(userId);
-
-        // Assert
-        expect(result).toEqual(expectedUser);
-        expect(userRepository.findById).toHaveBeenCalledWith(userId);
-      });
-
-      it('should throw error when user not found', async () => {
-        // Arrange
-        const userId = '999';
-        userRepository.findById.mockResolvedValue(null);
-
-        // Act & Assert
-        await expect(userService.getUserById(userId))
-          .rejects.toThrow('User not found');
-      });
-    });
-
-    describe('createUser', () => {
-      it('should create user with valid data', async () => {
-        // Arrange
-        const userData = { name: 'Jane Doe', email: 'jane@example.com' };
-        const savedUser = { id: '456', ...userData };
-        userRepository.save.mockResolvedValue(savedUser);
-
-        // Act
-        const result = await userService.createUser(userData);
-
-        // Assert
-        expect(result).toEqual(savedUser);
-        expect(userRepository.save).toHaveBeenCalledWith(
-          expect.objectContaining(userData)
-        );
-      });
-    });
-  });
-  ```
-
-  ## Integration Tests
-  ```typescript
-  // API integration testing
-  describe('User API Integration', () => {
-    let app: INestApplication;
-    let database: TestDatabase;
-
-    beforeAll(async () => {
-      database = await TestDatabase.create();
-
-      const moduleFixture = await Test.createTestingModule({
-        imports: [AppModule],
-      })
-      .overrideProvider(DatabaseService)
-      .useValue(database)
-      .compile();
-
-      app = moduleFixture.createNestApplication();
-      await app.init();
-    });
-
-    afterAll(async () => {
-      await database.cleanup();
-      await app.close();
-    });
-
-    beforeEach(async () => {
-      await database.clear();
-    });
-
-    describe('POST /users', () => {
-      it('should create user and return 201', async () => {
-        const userData = {
-          name: 'John Doe',
-          email: 'john@example.com',
-          password: 'SecurePassword123!'
-        };
-
-        const response = await request(app.getHttpServer())
-          .post('/api/v1/users')
-          .send(userData)
-          .expect(201);
-
-        expect(response.body.success).toBe(true);
-        expect(response.body.data).toMatchObject({
-          name: userData.name,
-          email: userData.email
-        });
-        expect(response.body.data.password).toBeUndefined();
-
-        // Database verification
-        const savedUser = await database.findUserByEmail(userData.email);
-        expect(savedUser).toBeDefined();
-      });
-
-      it('should return 400 for invalid email', async () => {
-        const invalidData = {
-          name: 'John Doe',
-          email: 'invalid-email',
-          password: 'SecurePassword123!'
-        };
-
-        const response = await request(app.getHttpServer())
-          .post('/api/v1/users')
-          .send(invalidData)
-          .expect(400);
-
-        expect(response.body.success).toBe(false);
-        expect(response.body.error.message).toContain('email');
-      });
-    });
-  });
-  ```
-
-  ## E2E Tests (End-to-End Tests)
-  ```typescript
-  // E2E testing with Playwright
-  import { test, expect } from '@playwright/test';
-
-  test.describe('User Registration Flow', () => {
-    test('should complete user registration successfully', async ({ page }) => {
-      // Given: User accesses registration page
-      await page.goto('/register');
-
-      // When: Fill out and submit registration form
-      await page.fill('[data-testid="name-input"]', 'John Doe');
-      await page.fill('[data-testid="email-input"]', 'john@example.com');
-      await page.fill('[data-testid="password-input"]', 'SecurePassword123!');
-      await page.fill('[data-testid="confirm-password-input"]', 'SecurePassword123!');
-
-      await page.click('[data-testid="register-button"]');
-
-      // Then: Success message displayed and redirected to login page
-      await expect(page.locator('[data-testid="success-message"]'))
-        .toContainText('Registration successful');
-
-      await expect(page).toHaveURL('/login');
-    });
-
-    test('should show validation errors for invalid input', async ({ page }) => {
-      await page.goto('/register');
-
-      // Submit empty form
-      await page.click('[data-testid="register-button"]');
-
-      // Verify validation error messages
-      await expect(page.locator('[data-testid="name-error"]'))
-        .toContainText('Name is required');
-      await expect(page.locator('[data-testid="email-error"]'))
-        .toContainText('Email is required');
-    });
-  });
-
-  test.describe('User Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      // Set up logged-in state
-      await page.goto('/login');
-      await page.fill('[data-testid="email-input"]', 'test@example.com');
-      await page.fill('[data-testid="password-input"]', 'password123');
-      await page.click('[data-testid="login-button"]');
-      await expect(page).toHaveURL('/dashboard');
-    });
-
-    test('should display user profile information', async ({ page }) => {
-      await expect(page.locator('[data-testid="user-name"]'))
-        .toContainText('Test User');
-      await expect(page.locator('[data-testid="user-email"]'))
-        .toContainText('test@example.com');
-    });
-
-    test('should allow profile editing', async ({ page }) => {
-      await page.click('[data-testid="edit-profile-button"]');
-
-      await page.fill('[data-testid="name-input"]', 'Updated Name');
-      await page.click('[data-testid="save-button"]');
-
-      await expect(page.locator('[data-testid="success-message"]'))
-        .toContainText('Profile updated successfully');
-      await expect(page.locator('[data-testid="user-name"]'))
-        .toContainText('Updated Name');
-    });
-  });
-  ```
-
-  ## Test Utilities & Helpers
-  ```typescript
-  // Test data factory
-  export class UserFactory {
-    static create(overrides: Partial<User> = {}): User {
-      return {
-        id: faker.datatype.uuid(),
-        name: faker.name.fullName(),
-        email: faker.internet.email(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        ...overrides
-      };
-    }
-
-    static createMany(count: number, overrides: Partial<User> = {}): User[] {
-      return Array.from({ length: count }, () => this.create(overrides));
-    }
-  }
-
-  // Test database helper
-  export class TestDatabase {
-    static async create(): Promise<TestDatabase> {
-      const connection = await createConnection({
-        type: 'sqlite',
-        database: ':memory:',
-        entities: [User, Order],
-        synchronize: true
-      });
-
-      return new TestDatabase(connection);
-    }
-
-    async seed(): Promise<void> {
-      const users = UserFactory.createMany(10);
-      await this.connection.getRepository(User).save(users);
-    }
-
-    async clear(): Promise<void> {
-      const entities = this.connection.entityMetadatas;
-      for (const entity of entities) {
-        const repository = this.connection.getRepository(entity.name);
-        await repository.clear();
-      }
-    }
-  }
-
-  // Custom matchers
-  expect.extend({
-    toBeValidEmail(received: string) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const pass = emailRegex.test(received);
-
-      return {
-        message: () => `expected ${received} ${pass ? 'not ' : ''}to be a valid email`,
-        pass
-      };
-    }
-  });
-  ```
-
-  ## Test Coverage & Quality
-  ```json
-  // jest.config.js
-  {
-    "collectCoverage": true,
-    "coverageDirectory": "coverage",
-    "coverageReporters": ["text", "lcov", "html"],
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    },
-    "collectCoverageFrom": [
-      "src/**/*.{js,ts}",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts",
-      "!src/**/*.test.ts"
-    ]
-  }
-  ```
-
-  ## Test Automation & CI/CD
-  ```yaml
-  # GitHub Actions workflow
-  name: Test Suite
-  on: [push, pull_request]
-
-  jobs:
-    test:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-node@v3
-          with:
-            node-version: '18'
-            cache: 'npm'
-
-        - run: npm ci
-        - run: npm run test:unit
-        - run: npm run test:integration
-        - run: npm run test:e2e
-
-        - name: Upload coverage reports
-          uses: codecov/codecov-action@v3
-          with:
-            file: ./coverage/lcov.info
-  ```
+  3. **Quality Assurance:**
+     - Validate test reliability and consistency
+     - Review test coverage reports and identify gaps
+     - Ensure tests are maintainable and well-documented
+     - Regular test suite optimization and refactoring
 
   ## Testing Best Practices
-  1. **Test Writing Guidelines**
-     - Test names should be clear and descriptive
-     - One test should verify one behavior
-     - Remove dependencies between tests
-     - Test data should be independent for each test
-
-  2. **Mocking Strategy**
-     - Mock external dependencies
-     - Use in-memory or test-dedicated DB for database
-     - Mock HTTP requests or use test servers
-     - Control time-related logic with mocking
+  - **Arrange-Act-Assert Pattern**: Clear test structure and organization
+  - **Test Isolation**: Independent tests that don't affect each other
+  - **Meaningful Assertions**: Test actual behavior, not implementation details
+  - **Edge Case Coverage**: Test boundary conditions and error scenarios
+  - **Performance Testing**: Validate response times and resource usage
 
   ## Success Criteria
-  - ✅ Test coverage 90%+ achieved
-  - ✅ All tests pass reliably
-  - ✅ Test execution time optimized (unit: <5min, total: <15min)
-  - ✅ CI/CD pipeline integration completed
-  - ✅ Test documentation and guidelines written
-  - ✅ Team testing culture established
+  - ✅ Test coverage > 90% for critical code paths
+  - ✅ All tests pass consistently in CI/CD pipeline
+  - ✅ Edge cases and error scenarios covered
+  - ✅ Tests are maintainable and well-documented
+  - ✅ Performance benchmarks validated
 
-  **Ready to start test development. What tests would you like to write?**
+  **Ready to implement comprehensive testing. What would you like to test?**

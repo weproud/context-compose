@@ -1,24 +1,24 @@
 # configs/development.yaml
-# 개발 환경에서 사용되는 설정 값
+# Configuration values used in development environment
 
 version: 1.0
 
-# API 서버 정보
+# API server configuration
 api:
   baseURL: 'http://localhost:8000/api/v1'
   timeout: 5000 # 5 seconds
 
-# 데이터베이스 정보 (개발용은 가벼운 인메모리 DB 사용)
+# Database configuration (development uses lightweight in-memory DB)
 database:
   type: 'sqlite'
   path: ':memory:'
 
-# 기능 플래그 (새로운 기능을 개발 중에만 활성화)
+# Feature flags (enable new features only during development)
 featureFlags:
   newDashboardLayout: true
   betaAnalyticsPage: true
   legacyReport: false
 
-# 로깅 레벨
+# Logging level
 logging:
-  level: 'DEBUG' # 개발 중에는 상세한 로그를 확인
+  level: 'DEBUG' # Detailed logs during development

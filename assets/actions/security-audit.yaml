@@ -3,410 +3,66 @@ kind: action
 name: Security Check
 description: Basic security audit and vulnerability scanning
 prompt: |
-  Perform basic security checks including dependency scanning and common vulnerabilities.
-
-  This action scans for known vulnerabilities in dependencies, checks for
-  common security issues in code, and validates basic security configurations.
-  It provides actionable recommendations for improving security.
-
-  Use this when you need to identify security issues or ensure basic
-  security best practices are followed in your project.
+  Perform comprehensive security audits including dependency scanning and vulnerability detection.
+  Scan for known security issues in code and validate configurations.
+  Provide actionable recommendations with prioritized remediation steps.
+  Generate detailed security reports for ensuring security best practices.
 enhanced-prompt: |-
-  # 🔒 보안 체크
+  # 🔒 Security Audit Workflow
 
-  ## 1단계: 의존성 취약점 스캔
+  ## Dependency Vulnerability Scan
   ```bash
-  echo "=== 보안 체크 시작 ==="
+  # Run npm security audit
+  npm audit --json > audit-report.json
 
-  PROJECT_NAME=$(basename $(pwd))
-  echo "🔒 프로젝트: $PROJECT_NAME"
+  # Check critical and high vulnerabilities
+  CRITICAL=$(cat audit-report.json | jq '.metadata.vulnerabilities.critical // 0')
+  HIGH=$(cat audit-report.json | jq '.metadata.vulnerabilities.high // 0')
 
-  # npm 보안 감사
-  if [ -f "package.json" ]; then
-    echo "📦 npm 보안 감사 실행 중..."
-    
-    # npm audit 실행
-    npm audit > npm-audit-report.txt 2>/dev/null || echo "보안 감사 실행 중 오류 발생"
-    
-    # 취약점 개수 확인
-    CRITICAL=$(npm audit --json 2>/dev/null | grep -o '"critical":[0-9]*' | cut -d: -f2 || echo "0")
-    HIGH=$(npm audit --json 2>/dev/null | grep -o '"high":[0-9]*' | cut -d: -f2 || echo "0")
-    
-    echo "🚨 심각한 취약점: ${CRITICAL}개"
-    echo "⚠️ 높은 위험 취약점: ${HIGH}개"
-    
-    if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-      echo "🔧 수정 방법: npm audit fix 실행"
-    else
-      echo "✅ 심각한 취약점 없음"
-    fi
-  fi
+  echo "Critical vulnerabilities: $CRITICAL"
+  echo "High vulnerabilities: $HIGH"
+
+  # Auto-fix if possible
+  npm audit fix
   ```
 
-  ## 2단계: 코드 보안 패턴 검사
+  ## Code Security Pattern Analysis
   ```bash
-  echo "🔍 코드 보안 이슈 검사..."
+  # Scan for hardcoded secrets
+  grep -r "password\|secret\|key\|token" --include="*.js" --include="*.ts" src/
 
-  # 하드코딩된 비밀번호/키 검사
-  echo "🔑 하드코딩된 비밀정보 검사:"
-  SECRET_COUNT=$(grep -r -i "password.*=\|secret.*=\|key.*=\|token.*=" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 의심스러운 패턴: ${SECRET_COUNT}개"
+  # Check for SQL injection patterns
+  grep -r "SELECT.*+\|INSERT.*+" --include="*.js" --include="*.ts" src/
 
-  # SQL 인젝션 패턴 검사
-  echo "💉 SQL 인젝션 패턴 검사:"
-  SQL_COUNT=$(grep -r "SELECT.*+\|INSERT.*+\|UPDATE.*+" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 위험한 SQL 패턴: ${SQL_COUNT}개"
+  # Detect XSS vulnerabilities
+  grep -r "innerHTML\|document.write\|eval" --include="*.js" --include="*.ts" src/
 
-  # XSS 취약점 패턴 검사
-  echo "🌐 XSS 취약점 패턴 검사:"
-  XSS_COUNT=$(grep -r "innerHTML\|document.write\|eval(" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 위험한 DOM 조작: ${XSS_COUNT}개"
-
-  # HTTP 사용 검사
-  echo "🔓 비보안 HTTP 사용 검사:"
-  HTTP_COUNT=$(grep -r "http://" --include="*.js" --include="*.ts" --include="*.json" . 2>/dev/null | grep -v node_modules | wc -l)
-  echo "  - HTTP 사용: ${HTTP_COUNT}개 (HTTPS 권장)"
+  # Find insecure HTTP usage
+  grep -r "http://" --exclude-dir=node_modules .
   ```
 
-  ## 3단계: 환경 설정 보안 검사
+  ## Configuration Security Review
   ```bash
-  echo "⚙️ 환경 설정 보안 검사..."
-
-  # .env 파일 보안
+  # Check environment file protection
   if [ -f ".env" ]; then
-    echo "⚠️ .env 파일 발견"
-    if grep -q "\.env" .gitignore 2>/dev/null; then
-      echo "✅ .env가 .gitignore에 포함됨"
-    else
-      echo "❌ .env가 .gitignore에 없음 - 추가 필요!"
-    fi
-  else
-    echo "ℹ️ .env 파일 없음"
+    grep -q "\.env" .gitignore || echo "WARNING: .env not in .gitignore"
   fi
 
-  # package.json 스크립트 보안
-  if [ -f "package.json" ]; then
-    echo "📦 package.json 보안 검사:"
-    
-    # sudo 사용 검사
-    if grep -q "sudo" package.json; then
-      echo "⚠️ 스크립트에서 sudo 사용 발견"
-    else
-      echo "✅ sudo 사용 없음"
-    fi
-    
-    # postinstall 스크립트 검사
-    if grep -q "postinstall" package.json; then
-      echo "⚠️ postinstall 스크립트 발견 - 검토 필요"
-    else
-      echo "✅ postinstall 스크립트 없음"
-    fi
-  fi
+  # Validate package.json security
+  grep -q "sudo\|postinstall" package.json && echo "WARNING: Potentially unsafe scripts"
 
-  # Dockerfile 보안 (있는 경우)
+  # Docker security check
   if [ -f "Dockerfile" ]; then
-    echo "🐳 Docker 보안 검사:"
-    
-    if grep -q "USER" Dockerfile; then
-      echo "✅ 비루트 사용자 지정됨"
-    else
-      echo "⚠️ 루트 사용자로 실행 - 비루트 사용자 권장"
-    fi
+    grep -q "USER" Dockerfile || echo "WARNING: Running as root user"
   fi
   ```
 
-  ## 4단계: 보안 미들웨어 검사
+  ## Security Middleware Validation
   ```bash
-  if [ -f "package.json" ]; then
-    echo "🛡️ 보안 미들웨어 검사:"
-    
-    # Helmet.js 검사
-    if grep -q "helmet" package.json; then
-      echo "✅ Helmet.js 보안 헤더 설정됨"
-    else
-      echo "⚠️ Helmet.js 미설치 - 보안 헤더 권장"
-    fi
-    
-    # CORS 설정 검사
-    if grep -q "cors" package.json; then
-      echo "✅ CORS 설정 패키지 있음"
-    else
-      echo "⚠️ CORS 설정 필요"
-    fi
-    
-    # Rate limiting 검사
-    if grep -q "rate-limit\|express-rate-limit" package.json; then
-      echo "✅ Rate limiting 설정됨"
-    else
-      echo "⚠️ Rate limiting 미설정 - DDoS 방어 권장"
-    fi
-  fi
+  # Check for security packages
+  grep -q "helmet" package.json && echo "✅ Security headers configured"
+  grep -q "cors" package.json && echo "✅ CORS configured"
+  grep -q "rate-limit" package.json && echo "✅ Rate limiting configured"
   ```
 
-  ## 5단계: 보안 권장사항
-  ```bash
-  echo "💡 보안 개선 권장사항:"
-  echo ""
-  echo "🔐 인증 및 권한:"
-  echo "  - 강력한 비밀번호 정책 적용"
-  echo "  - JWT 토큰 보안 설정"
-  echo "  - 2FA (이중 인증) 구현"
-  echo ""
-  echo "🛡️ 웹 보안:"
-  echo "  - HTTPS 강제 사용"
-  echo "  - CSP (Content Security Policy) 설정"
-  echo "  - 보안 헤더 추가 (Helmet.js)"
-  echo ""
-  echo "📦 의존성 보안:"
-  echo "  - 정기적인 보안 업데이트"
-  echo "  - 취약점 스캔 자동화"
-  echo "  - 최소 권한 원칙 적용"
-  echo ""
-  echo "🔍 모니터링:"
-  echo "  - 로그 보안 이벤트"
-  echo "  - 비정상 접근 탐지"
-  echo "  - 정기적인 보안 감사"
-  echo ""
-  echo "🎉 보안 체크 완료!"
-  echo "🔒 식별된 보안 이슈를 우선순위에 따라 해결하세요."
-
-  # 보고서 정리
-  if [ -f "npm-audit-report.txt" ]; then
-    echo ""
-    echo "📄 상세 보안 보고서: npm-audit-report.txt"
-  fi
-  ```
-
-  **🎯 결과:** 기본 보안 이슈 식별 및 개선 방향 제시
-
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    }
-  }));
-  \`\`\`
-  EOF
-
-  echo "✅ Web security headers check completed"
-  echo ""
-  ```
-
-  ## 🔐 Step 6: Authentication & Authorization Review
-  ```bash
-  echo "=== Authentication & Authorization Review ==="
-
-  echo "🔐 Reviewing authentication implementation..."
-
-  # Check for authentication libraries
-  if [ -f "package.json" ]; then
-    echo "🔍 Checking authentication libraries..."
-    
-    # JWT libraries
-    grep -q "jsonwebtoken\|jwt" package.json && echo "✅ JWT library found" || echo "ℹ️  No JWT library detected"
-    
-    # Passport.js
-    grep -q "passport" package.json && echo "✅ Passport.js found" || echo "ℹ️  No Passport.js detected"
-    
-    # bcrypt for password hashing
-    grep -q "bcrypt" package.json && echo "✅ bcrypt found" || echo "⚠️  Consider using bcrypt for password hashing"
-  fi
-
-  # Check for common auth vulnerabilities
-  echo "🔍 Checking for authentication vulnerabilities..."
-
-  # Weak password validation
-  grep -r "password.*length.*[1-5]" --include="*.js" --include="*.ts" . > "$AUDIT_DIR/weak-password-validation.txt" 2>/dev/null || true
-
-  # Session management
-  grep -r "session\|cookie" --include="*.js" --include="*.ts" . > "$AUDIT_DIR/session-usage.txt" 2>/dev/null || true
-
-  # Create auth security checklist
-  cat << EOF > "$AUDIT_DIR/auth-security-checklist.md"
-  # Authentication & Authorization Security Checklist
-
-  ## Password Security
-  - [ ] Strong password requirements (min 8 chars, complexity)
-  - [ ] Password hashing with bcrypt/scrypt/argon2
-  - [ ] No password storage in plain text
-  - [ ] Password reset functionality secure
-
-  ## Session Management
-  - [ ] Secure session configuration
-  - [ ] Session timeout implemented
-  - [ ] Session invalidation on logout
-  - [ ] CSRF protection enabled
-
-  ## JWT Security (if applicable)
-  - [ ] Strong secret key
-  - [ ] Appropriate expiration times
-  - [ ] Refresh token rotation
-  - [ ] Secure storage (httpOnly cookies)
-
-  ## Authorization
-  - [ ] Role-based access control (RBAC)
-  - [ ] Principle of least privilege
-  - [ ] Input validation and sanitization
-  - [ ] API endpoint protection
-  EOF
-
-  echo "✅ Authentication & authorization review completed"
-  echo ""
-  ```
-
-  ## 📊 Step 7: Generate Security Report
-  ```bash
-  echo "=== Security Report Generation ==="
-
-  echo "📊 Generating comprehensive security report..."
-
-  # Count issues
-  SECRET_COUNT=$(wc -l < "$AUDIT_DIR/potential-secrets.txt" 2>/dev/null || echo "0")
-  SQL_COUNT=$(wc -l < "$AUDIT_DIR/sql-injection-patterns.txt" 2>/dev/null || echo "0")
-  XSS_COUNT=$(wc -l < "$AUDIT_DIR/xss-patterns.txt" 2>/dev/null || echo "0")
-  HTTP_COUNT=$(wc -l < "$AUDIT_DIR/insecure-http.txt" 2>/dev/null || echo "0")
-
-  # Generate main security report
-  cat << EOF > "$AUDIT_DIR/security-report.md"
-  # Security Audit Report
-
-  **Project:** $PROJECT_NAME  
-  **Audit Date:** $AUDIT_DATE  
-  **Audit ID:** $AUDIT_ID
-
-  ## Executive Summary
-
-  This report contains the results of a comprehensive security audit performed on $PROJECT_NAME.
-
-  ## Vulnerability Summary
-
-  | Category | Count | Severity |
-  |----------|-------|----------|
-  | Critical Dependencies | $CRITICAL_VULNS | 🚨 Critical |
-  | High Dependencies | $HIGH_VULNS | ⚠️ High |
-  | Potential Secrets | $SECRET_COUNT | ⚠️ High |
-  | SQL Injection Patterns | $SQL_COUNT | 🚨 Critical |
-  | XSS Patterns | $XSS_COUNT | ⚠️ High |
-  | Insecure HTTP | $HTTP_COUNT | ⚠️ Medium |
-
-  ## Detailed Findings
-
-  ### 1. Dependency Vulnerabilities
-  - Critical: $CRITICAL_VULNS vulnerabilities found
-  - High: $HIGH_VULNS vulnerabilities found
-  - See: npm-audit.json for details
-
-  ### 2. Code Security Issues
-  - Potential secrets: $SECRET_COUNT instances
-  - SQL injection patterns: $SQL_COUNT instances
-  - XSS vulnerabilities: $XSS_COUNT instances
-  - Insecure HTTP usage: $HTTP_COUNT instances
-
-  ### 3. Configuration Security
-  - Environment file protection: $([ -f ".env" ] && grep -q "\.env" .gitignore && echo "✅ Protected" || echo "❌ Needs attention")
-  - Docker security: $([ -f "Dockerfile" ] && echo "Reviewed" || echo "N/A")
-
-  ## Recommendations
-
-  ### Immediate Actions (Critical)
-  1. Update dependencies with critical vulnerabilities
-  2. Remove or secure hardcoded secrets
-  3. Fix SQL injection vulnerabilities
-  4. Implement input validation and sanitization
-
-  ### Short-term Actions (High Priority)
-  1. Add security headers middleware
-  2. Implement rate limiting
-  3. Review authentication implementation
-  4. Add CSRF protection
-
-  ### Long-term Actions (Medium Priority)
-  1. Implement security monitoring
-  2. Regular security audits
-  3. Security training for development team
-  4. Penetration testing
-
-  ## Next Steps
-
-  1. Address critical vulnerabilities immediately
-  2. Create remediation plan for high-priority issues
-  3. Implement security best practices
-  4. Schedule regular security audits
-
-  ---
-  *Generated by task-action security audit*
-  EOF
-
-  echo "📄 Security report generated: $AUDIT_DIR/security-report.md"
-  echo ""
-  ```
-
-  ## 🚨 Step 8: Critical Issues Alert
-  ```bash
-  echo "=== Critical Issues Alert ==="
-
-  TOTAL_CRITICAL=$((CRITICAL_VULNS + SQL_COUNT))
-
-  if [ $TOTAL_CRITICAL -gt 0 ]; then
-    echo "🚨 CRITICAL SECURITY ISSUES FOUND!"
-    echo "   Critical dependency vulnerabilities: $CRITICAL_VULNS"
-    echo "   SQL injection patterns: $SQL_COUNT"
-    echo ""
-    echo "⚠️  IMMEDIATE ACTION REQUIRED:"
-    echo "   1. Review security report: $AUDIT_DIR/security-report.md"
-    echo "   2. Address critical vulnerabilities"
-    echo "   3. Do not deploy until issues are resolved"
-    echo ""
-    
-    # Send critical alert notification
-    echo "📱 Sending critical security alert..."
-    task-action send-message --type security-critical --audit-id "$AUDIT_ID"
-  else
-    echo "✅ No critical security issues found"
-  fi
-
-  echo ""
-  ```
-
-  ## 📋 Step 9: Remediation Guidance
-  ```bash
-  echo "=== Remediation Guidance ==="
-
-  echo "🛠️  Security remediation guidance:"
-  echo ""
-  echo "📦 Dependency Updates:"
-  echo "   npm audit fix                    # Auto-fix vulnerabilities"
-  echo "   npm audit fix --force           # Force updates (may break)"
-  echo "   npm update                      # Update to latest versions"
-  echo ""
-  echo "🔒 Security Hardening:"
-  echo "   npm install helmet              # Security headers"
-  echo "   npm install express-rate-limit  # Rate limiting"
-  echo "   npm install cors                # CORS configuration"
-  echo "   npm install bcrypt              # Password hashing"
-  echo ""
-  echo "🧪 Security Testing:"
-  echo "   npm install --save-dev jest-security  # Security testing"
-  echo "   npm install -g snyk                   # Vulnerability scanning"
-  echo ""
-  echo "📚 Resources:"
-  echo "   - OWASP Top 10: https://owasp.org/www-project-top-ten/"
-  echo "   - Node.js Security: https://nodejs.org/en/security/"
-  echo "   - Security Headers: https://securityheaders.com/"
-  echo ""
-  echo "🎯 Next audit: Schedule in 30 days"
-  echo ""
-  echo "🔒 Security audit completed!"
-  echo "📄 Full report: $AUDIT_DIR/security-report.md"
-  ```
-
-  **🔒 Comprehensive security audit completed with detailed findings and remediation guidance!**
+  **🎯 Result:** Comprehensive security assessment with prioritized remediation recommendations

@@ -27,29 +27,34 @@ context:
     - notify/slack.yaml
     - notify/email.yaml
 prompt: |
+  Develop new features through user-centric thinking and incremental development.
+  Implement high-quality functionality with comprehensive testing and documentation.
+  Focus on scalability, accessibility, and maintainability from the start.
+  Apply Test-Driven Development and integrate continuous feedback throughout process.
+enhanced-prompt: |-
   # Feature Development Context
 
-  ## Feature Development Philosophy
-  When developing new features, implement high-quality functionality through **user-centric thinking** and **incremental development**.
+  ## Development Philosophy
+  Implement high-quality functionality through **user-centric thinking** and **incremental development**.
 
-  ## Feature Development Process
-  1. **Requirements Analysis & Design**
+  ## Development Process
+  1. **Requirements Analysis & Design**:
      - Write and review feature specifications
      - Define user stories and acceptance criteria
      - Plan technical design and architecture
      - Design APIs and data modeling
 
-  2. **Incremental Development (MVP → Complete)**
+  2. **Incremental Development (MVP → Complete)**:
      - Start with Minimum Viable Product (MVP)
      - Maintain working versions at each stage
      - Collect and incorporate early feedback
-     - Expand and improve features
+     - Expand and improve features iteratively
 
-  3. **Quality Assurance**
+  3. **Quality Assurance**:
      - Apply Test-Driven Development (TDD)
      - Write unit/integration/E2E tests
      - Conduct code reviews and pair programming
-     - Verify performance and accessibility
+     - Verify performance and accessibility requirements
 
   ## Development Focus Areas
   - **User Experience**: Intuitive and easy-to-use interfaces
@@ -64,7 +69,6 @@ prompt: |
   - **Database**: Efficient schema design, index optimization
   - **Frontend**: Component reusability, state management optimization
   - **Error Handling**: Comprehensive error handling and user-friendly messages
-  - **Logging**: Appropriate logging for debugging and monitoring
 
   ## Documentation Requirements
   - **Feature Specifications**: Detailed feature descriptions and usage

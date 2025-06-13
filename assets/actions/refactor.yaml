@@ -3,160 +3,72 @@ kind: action
 name: Refactor
 description: Basic code refactoring and improvement
 prompt: |
-  Perform basic code refactoring to improve code quality and maintainability.
-
-  This action identifies common refactoring opportunities like large files,
-  code duplication, and outdated patterns. It provides a systematic approach
-  to improving code quality while maintaining functionality.
-
-  Use this when you need to improve code structure, readability, or
-  maintainability through targeted refactoring efforts.
+  Perform systematic code refactoring to improve code quality and maintainability.
+  Identify common refactoring opportunities and apply best practices.
+  Focus on reducing complexity while maintaining functionality.
+  Use this for improving code structure and readability through targeted refactoring.
 enhanced-prompt: |-
-  # 🔧 코드 리팩토링
+  # 🔧 Code Refactoring
 
-  ## 1단계: 코드 현황 분석
+  ## Code Analysis
   ```bash
-  echo "=== 리팩토링 준비 ==="
-
   PROJECT_NAME=$(basename $(pwd))
-  echo "🔧 프로젝트: $PROJECT_NAME"
+  echo "🔧 Project: $PROJECT_NAME"
 
-  # 백업 생성
-  echo "💾 현재 상태 백업..."
+  # Create backup
+  echo "💾 Creating backup..."
   if git status >/dev/null 2>&1; then
-    git stash push -m "리팩토링 전 백업 $(date)" 2>/dev/null || echo "백업할 변경사항 없음"
-    echo "✅ Git stash로 백업 완료"
+    git stash push -m "Pre-refactoring backup $(date)" 2>/dev/null || echo "No changes to backup"
+    echo "✅ Backup completed with git stash"
   else
-    echo "ℹ️ Git 저장소 아님 - 수동 백업 권장"
+    echo "ℹ️ Not a git repository - manual backup recommended"
   fi
   ```
 
-  ## 2단계: 문제점 식별
+  ## Issue Identification
   ```bash
-  echo "🔍 코드 문제점 분석..."
+  echo "🔍 Analyzing code issues..."
 
-  # 큰 파일 찾기
-  echo "📄 큰 파일들 (500줄 이상):"
+  # Find large files
+  echo "📄 Large files (500+ lines):"
   find src/ -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" 2>/dev/null | \
-    xargs wc -l 2>/dev/null | awk '$1 > 500 {print "  - " $2 ": " $1 "줄"}' | head -5
+    xargs wc -l 2>/dev/null | awk '$1 > 500 {print "  - " $2 ": " $1 " lines"}' | head -5
 
-  # 복잡한 함수 탐지
-  echo "🧮 복잡한 코드 패턴:"
+  # Detect complex patterns
+  echo "🧮 Complex code patterns:"
   NESTED_LOOPS=$(grep -r "for.*for\|while.*while" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
   DEEP_NESTING=$(grep -r "if.*if.*if" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 중첩 루프: ${NESTED_LOOPS}개"
-  echo "  - 깊은 중첩: ${DEEP_NESTING}개"
+  echo "  - Nested loops: $NESTED_LOOPS"
+  echo "  - Deep nesting: $DEEP_NESTING"
 
-  # 코드 중복 검사 (간단한 방법)
-  echo "🔄 코드 중복:"
-  TOTAL_LINES=$(find src/ -name "*.js" -o -name "*.ts" 2>/dev/null | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
-  UNIQUE_LINES=$(find src/ -name "*.js" -o -name "*.ts" 2>/dev/null | xargs cat 2>/dev/null | sort -u | wc -l)
-  if [ "$TOTAL_LINES" -gt 0 ]; then
-    DUPLICATE_PERCENT=$(echo "scale=1; ($TOTAL_LINES - $UNIQUE_LINES) * 100 / $TOTAL_LINES" | bc 2>/dev/null || echo "계산불가")
-    echo "  - 예상 중복률: ${DUPLICATE_PERCENT}%"
-  fi
-
-  # 구식 패턴 검사
-  echo "📊 개선 필요 패턴:"
+  # Check for outdated patterns
+  echo "📊 Improvement opportunities:"
   VAR_COUNT=$(grep -r "var " --include="*.js" src/ 2>/dev/null | wc -l)
   CONSOLE_COUNT=$(grep -r "console.log" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - var 사용: ${VAR_COUNT}개 (let/const 권장)"
-  echo "  - console.log: ${CONSOLE_COUNT}개 (로깅 개선 권장)"
+  echo "  - var usage: $VAR_COUNT (recommend let/const)"
+  echo "  - console.log: $CONSOLE_COUNT (recommend proper logging)"
   ```
 
-  ## 3단계: 리팩토링 계획
+  ## Validation & Testing
   ```bash
-  echo "📝 리팩토링 우선순위:"
-  echo ""
-  echo "🔴 높은 우선순위:"
-  echo "  - 500줄 이상 파일 분리"
-  echo "  - 중복 코드 제거"
-  echo "  - 복잡한 함수 분해"
-  echo ""
-  echo "🟡 중간 우선순위:"
-  echo "  - var → let/const 변경"
-  echo "  - 함수명 개선"
-  echo "  - 에러 처리 개선"
-  echo ""
-  echo "🟢 낮은 우선순위:"
-  echo "  - 주석 개선"
-  echo "  - 코드 포맷팅"
-  echo "  - 성능 최적화"
-  ```
+  echo "🧪 Refactoring validation:"
 
-  ## 4단계: 단계별 리팩토링
-  ```bash
-  echo "🛠️ 리팩토링 실행 가이드:"
-  echo ""
-  echo "1️⃣ 함수 분해:"
-  echo "  - 20줄 이상 함수는 분리 고려"
-  echo "  - 단일 책임 원칙 적용"
-  echo "  - 재사용 가능한 유틸리티 함수 추출"
-  echo ""
-  echo "2️⃣ 파일 구조 개선:"
-  echo "  - 관련 기능별로 파일 분리"
-  echo "  - utils/, components/, services/ 디렉토리 활용"
-  echo "  - index.js로 export 정리"
-  echo ""
-  echo "3️⃣ 코드 모던화:"
-  echo "  - ES6+ 문법 사용"
-  echo "  - 화살표 함수 적절히 활용"
-  echo "  - 구조 분해 할당 사용"
-  echo ""
-  echo "4️⃣ 타입 안전성 (TypeScript):"
-  if [ -f "tsconfig.json" ]; then
-    echo "  - any 타입 제거"
-    echo "  - 인터페이스 정의"
-    echo "  - 제네릭 활용"
-  else
-    echo "  - TypeScript 도입 고려"
-  fi
-  ```
-
-  ## 5단계: 검증 및 테스트
-  ```bash
-  echo "🧪 리팩토링 검증:"
-
-  # 테스트 실행
+  # Run tests
   if [ -f "package.json" ]; then
-    echo "🧪 테스트 실행..."
+    echo "🧪 Running tests..."
     if npm test >/dev/null 2>&1; then
-      echo "✅ 모든 테스트 통과"
+      echo "✅ All tests passed"
     else
-      echo "❌ 테스트 실패 - 수정 필요"
-      echo "🔧 테스트 실행: npm test"
+      echo "❌ Tests failed - requires fixes"
     fi
     
-    # 린트 검사
+    # Run linting
     if npm run lint >/dev/null 2>&1; then
-      echo "✅ 린트 검사 통과"
+      echo "✅ Linting passed"
     else
-      echo "⚠️ 린트 오류 있음"
-      echo "🔧 린트 실행: npm run lint"
+      echo "⚠️ Linting errors found"
     fi
   fi
-
-  # TypeScript 타입 체크
-  if [ -f "tsconfig.json" ] && command -v tsc >/dev/null 2>&1; then
-    echo "🔍 타입 체크..."
-    if tsc --noEmit >/dev/null 2>&1; then
-      echo "✅ 타입 오류 없음"
-    else
-      echo "❌ 타입 오류 있음"
-      echo "🔧 타입 체크: tsc --noEmit"
-    fi
-  fi
-
-  # 최종 커밋
-  echo ""
-  echo "💡 리팩토링 완료 후:"
-  echo "  1. 모든 테스트가 통과하는지 확인"
-  echo "  2. 코드 리뷰 진행"
-  echo "  3. 단계별로 커밋"
-  echo "  4. 문서 업데이트"
-  echo ""
-  echo "🎉 리팩토링 완료!"
-  echo "📈 코드 품질이 향상되었습니다."
   ```
 
-  **🎯 결과:** 체계적인 코드 개선 및 품질 향상
+  **🎯 Result:** Systematic code improvement with quality validation

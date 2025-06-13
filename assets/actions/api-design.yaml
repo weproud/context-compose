@@ -4,21 +4,13 @@ name: API Design
 description: Comprehensive API design and documentation with OpenAPI specification, testing, and best practices implementation
 prompt: |
   Design and implement comprehensive RESTful APIs with industry best practices.
-
-  This action creates complete API solutions including OpenAPI 3.0 specifications,
-  endpoint implementation, authentication/authorization, input validation, error
-  handling, and comprehensive documentation. It follows REST principles and
-  generates automated tests for all endpoints.
-
-  Use this for new API development, API modernization, or when you need to
-  establish API governance standards. The process includes security audits,
-  performance optimization, and developer experience enhancements.
+  Create complete API solutions including OpenAPI 3.0 specifications and endpoint implementation.
+  Follow REST principles and generate automated tests for all endpoints.
+  Include authentication, validation, error handling, and comprehensive documentation.
 enhanced-prompt: |-
   # 🔌 API Design Workflow
 
-  ## Core Steps
-
-  **1. Project Setup & Planning**
+  ## Project Setup & Planning
   ```bash
   # Create API structure
   mkdir -p api/{specs,docs,tests,controllers,models}
@@ -38,7 +30,7 @@ enhanced-prompt: |-
   EOF
   ```
 
-  **2. Define API Endpoints**
+  ## Define API Endpoints
   ```bash
   # Add basic CRUD endpoints to OpenAPI spec
   # GET /users - List users
@@ -52,7 +44,7 @@ enhanced-prompt: |-
   # Define proper HTTP status codes
   ```
 
-  **3. Implementation & Testing**
+  ## Implementation & Testing
   ```bash
   # Generate API documentation
   npx swagger-ui-serve api/specs/openapi.yaml
@@ -73,7 +65,7 @@ enhanced-prompt: |-
   npm test
   ```
 
-  **4. Documentation & Validation**
+  ## Documentation & Validation
   ```bash
   # Validate OpenAPI spec
   npx swagger-codegen validate -i api/specs/openapi.yaml

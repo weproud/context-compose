@@ -2,217 +2,93 @@ version: 1
 kind: action
 name: Documentation
 description: Comprehensive documentation generation and maintenance for code, APIs, and project setup
-prompt: Generate and update comprehensive documentation including README, API docs, code comments, and setup guides with automated content generation.
+prompt: |
+  Generate comprehensive project documentation including README, API docs, and setup guides.
+  Create automated documentation with proper structure and user-friendly content.
+  Maintain living documentation that evolves with code changes.
+  Focus on clarity, practical examples, and accessibility for different skill levels.
 enhanced-prompt: |-
-  # 📖 문서 생성
+  # 📖 Documentation Generation
 
-  ## 1단계: 기본 README 생성
+  ## Core Documentation Types
+
+  **1. README Generation**
   ```bash
-  echo "=== 문서 생성 시작 ==="
-
   PROJECT_NAME=$(basename $(pwd))
-  echo "📁 프로젝트: $PROJECT_NAME"
-
-  # README.md 생성
-  if [ ! -f "README.md" ]; then
-    echo "📝 README.md 생성 중..."
-    
-    # 프로젝트 정보 수집
-    if [ -f "package.json" ]; then
-      DESCRIPTION=$(node -p "require('./package.json').description || 'Node.js 프로젝트'" 2>/dev/null)
-    else
-      DESCRIPTION="개발 프로젝트"
-    fi
-    
-    cat > README.md << EOF
+  cat > README.md << EOF
   # $PROJECT_NAME
 
-  $DESCRIPTION
+  ## 🚀 Quick Start
+  ### Prerequisites
+  - Node.js (v16+)
+  - npm or yarn
 
-  ## 🚀 시작하기
-
-  ### 필요 조건
-  - Node.js (v16 이상)
-  - npm 또는 yarn
-
-  ### 설치
+  ### Installation
   \`\`\`bash
-  # 저장소 클론
   git clone <repository-url>
   cd $PROJECT_NAME
-
-  # 의존성 설치
   npm install
-
-  # 환경변수 설정
   cp .env.example .env
   \`\`\`
 
-  ### 개발 서버 실행
+  ### Development
   \`\`\`bash
   npm run dev
   \`\`\`
 
-  ## 📋 주요 명령어
-  - \`npm run dev\` - 개발 서버 시작
-  - \`npm test\` - 테스트 실행
-  - \`npm run build\` - 빌드
-  - \`npm run lint\` - 코드 검사
+  ## 📋 Available Scripts
+  - \`npm run dev\` - Start development server
+  - \`npm test\` - Run tests
+  - \`npm run build\` - Build for production
+  - \`npm run lint\` - Code linting
 
-  ## 🤝 기여하기
-  1. 이 저장소를 포크하세요
-  2. 기능 브랜치를 만드세요 (\`git checkout -b feature/amazing-feature\`)
-  3. 변경사항을 커밋하세요 (\`git commit -m 'Add amazing feature'\`)
-  4. 브랜치에 푸시하세요 (\`git push origin feature/amazing-feature\`)
-  5. Pull Request를 열어주세요
-
-  ## 📄 라이선스
-  MIT License
+  ## 🤝 Contributing
+  1. Fork repository
+  2. Create feature branch
+  3. Commit changes
+  4. Push to branch
+  5. Open Pull Request
   EOF
-    
-    echo "✅ README.md 생성 완료"
-  else
-    echo "ℹ️ README.md가 이미 존재합니다"
-  fi
   ```
 
-  ## 2단계: CHANGELOG 생성
+  **2. API Documentation**
   ```bash
-  # CHANGELOG.md 생성
-  if [ ! -f "CHANGELOG.md" ]; then
-    echo "📋 CHANGELOG.md 생성 중..."
-    
-    cat > CHANGELOG.md << EOF
-  # 변경 이력
-
-  이 프로젝트의 모든 주요 변경사항이 이 파일에 문서화됩니다.
-
-  ## [Unreleased]
-
-  ### 추가
-  - 초기 프로젝트 설정
-  - 기본 문서화
-
-  ### 변경
-  - 
-
-  ### 수정
-  - 
-
-  ## [1.0.0] - $(date +%Y-%m-%d)
-
-  ### 추가
-  - 프로젝트 초기 릴리스
-  EOF
-    
-    echo "✅ CHANGELOG.md 생성 완료"
-  else
-    echo "ℹ️ CHANGELOG.md가 이미 존재합니다"
-  fi
-  ```
-
-  ## 3단계: API 문서 생성 (옵션)
-  ```bash
-  # API 문서 디렉토리 생성
   mkdir -p docs
+  cat > docs/API.md << EOF
+  # API Documentation
 
-  echo "📚 API 문서를 생성하시겠습니까? (y/n)"
-  read -p "> " CREATE_API_DOCS
+  ## Base URL
+  \`http://localhost:3000/api\`
 
-  if [ "$CREATE_API_DOCS" = "y" ]; then
-    echo "📋 API 문서 생성 중..."
-    
-    cat > docs/API.md << EOF
-  # API 문서
+  ## Authentication
+  Bearer token required for protected endpoints.
 
-  ## 개요
-  $PROJECT_NAME API 문서입니다.
-
-  ## 기본 URL
-  \`\`\`
-  http://localhost:3000/api
-  \`\`\`
-
-  ## 엔드포인트
-
-  ### 헬스 체크
-  \`\`\`http
-  GET /health
-  \`\`\`
-
-  응답:
+  ## Endpoints
+  ### GET /health
+  Health check endpoint
   \`\`\`json
   {
     "status": "ok",
     "timestamp": "2023-12-05T10:30:00Z"
   }
   \`\`\`
-
-  ### 버전 정보
-  \`\`\`http
-  GET /version
-  \`\`\`
-
-  응답:
-  \`\`\`json
-  {
-    "version": "1.0.0",
-    "environment": "development"
-  }
-  \`\`\`
-
-  ## 에러 처리
-
-  | 상태 코드 | 설명 |
-  |----------|------|
-  | 200 | 성공 |
-  | 400 | 잘못된 요청 |
-  | 500 | 서버 오류 |
   EOF
-    
-    echo "✅ API 문서 생성 완료"
-  fi
   ```
 
-  ## 4단계: 문서 커밋
+  **3. Changelog Generation**
   ```bash
-  echo "📝 문서 변경사항 커밋..."
+  cat > CHANGELOG.md << EOF
+  # Changelog
 
-  # 새로 생성된 파일들 확인
-  NEW_FILES=""
-  [ -f "README.md" ] && NEW_FILES="$NEW_FILES README.md"
-  [ -f "CHANGELOG.md" ] && NEW_FILES="$NEW_FILES CHANGELOG.md"
-  [ -f "docs/API.md" ] && NEW_FILES="$NEW_FILES docs/API.md"
+  ## [Unreleased]
+  ### Added
+  - Initial project setup
+  - Basic documentation
 
-  if [ -n "$NEW_FILES" ]; then
-    echo "📋 생성된 문서:"
-    echo "$NEW_FILES" | tr ' ' '\n' | sed 's/^/  - /'
-    
-    # Git 커밋
-    git add $NEW_FILES
-    git commit -m "docs: add basic project documentation
-
-  - Add README.md with project overview
-  - Add CHANGELOG.md for version tracking
-  $([ -f "docs/API.md" ] && echo "- Add API documentation")
-  - Setup documentation structure"
-    
-    echo "✅ 문서 커밋 완료"
-  else
-    echo "ℹ️ 새로 생성된 문서가 없습니다"
-  fi
-
-  echo "🎉 문서 생성 완료!"
-  echo ""
-  echo "📋 생성된 문서 목록:"
-  [ -f "README.md" ] && echo "  ✅ README.md - 프로젝트 개요"
-  [ -f "CHANGELOG.md" ] && echo "  ✅ CHANGELOG.md - 변경 이력"
-  [ -f "docs/API.md" ] && echo "  ✅ docs/API.md - API 문서"
-  echo ""
-  echo "📝 다음 단계:"
-  echo "  1. 문서 내용을 프로젝트에 맞게 수정"
-  echo "  2. 필요시 추가 문서 작성"
-  echo "  3. 정기적으로 문서 업데이트"
+  ## [1.0.0] - $(date +%Y-%m-%d)
+  ### Added
+  - Initial project release
+  EOF
   ```
 
-  **🎯 결과:** 프로젝트의 기본 문서 구조 완성
+  **🎯 Result:** Complete documentation structure with essential project information

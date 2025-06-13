@@ -1,291 +1,92 @@
 version: 1
 kind: task
-name: 'security-fix'
-description: 'Context for security vulnerability fixes with comprehensive security practices'
+name: 'security-implementation'
+description: 'Context for security implementation with comprehensive threat protection and compliance'
 
 context:
-  workflow: workflows/hotfix-workflow.yaml
+  workflow: workflows/workflow.yaml
   roles:
+- personas/dan-abramov.yaml
 - personas/linus-torvalds.yaml
-- personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/security-guidelines.yaml
-    - rules/error-handling.yaml
     - rules/clean-code.yaml
-    - rules/testing-principles.yaml
+    - rules/error-handling.yaml
+    - rules/development.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml
     - mcps/web-search.yaml
-    - mcps/github-api.yaml
   notify:
     - notify/slack.yaml
-    - notify/email.yaml
 prompt: |
-  # Security Fix Context
+  Implement comprehensive security measures with defense-in-depth strategy.
+  Apply security best practices for authentication, authorization, and data protection.
+  Conduct regular security audits and vulnerability assessments.
+  Ensure compliance with security standards while maintaining system performance.
+enhanced-prompt: |-
+  # Security Implementation Context
 
-  ## Security Fix Philosophy
-  Security vulnerabilities are top priority issues requiring **immediate response**. Implement multi-layered security following **Defense in Depth** principles and adhere to the **Principle of Least Privilege** for fundamental security enhancement.
+  ## Security Philosophy
+  Implement comprehensive security measures with **defense-in-depth strategy** applying **security by design** principles throughout the development lifecycle.
 
-  ## Security Fix Priorities
-  1. **Critical**: Immediate fix (RCE, SQL Injection, authentication bypass)
-  2. **High**: Within 24 hours (XSS, CSRF, privilege escalation)
-  3. **Medium**: Within 1 week (information disclosure, session management)
-  4. **Low**: Next release (configuration hardening, logging improvements)
+  ## Core Security Areas
+  1. **Authentication & Authorization:**
+     - Implement robust user authentication systems
+     - Apply role-based access control (RBAC) and permissions
+     - Use secure session management and token handling
+     - Enable multi-factor authentication for sensitive operations
 
-  ## Security Fix Process
-  1. **Vulnerability Analysis**
-     - Check CVE database
-     - Analyze impact scope and attack vectors
-     - Assess current system exposure level
-     - Determine urgency and priority
+  2. **Data Protection:**
+     - Encrypt sensitive data at rest and in transit
+     - Implement proper data sanitization and validation
+     - Apply principle of least privilege for data access
+     - Ensure secure backup and recovery procedures
 
-  2. **Immediate Mitigation Measures**
-     - Add WAF rules
-     - Network-level blocking
-     - Temporarily disable features
-     - Enhanced monitoring
+  3. **Application Security:**
+     - Prevent common vulnerabilities (OWASP Top 10)
+     - Implement input validation and output encoding
+     - Apply secure coding practices throughout development
+     - Use security headers and content security policies
 
-  3. **Fundamental Fixes**
-     - Apply secure coding patterns
-     - Input validation and output encoding
-     - Authentication/authorization strengthening
-     - Encryption and hashing improvements
+  ## Security Implementation Process
+  1. **Security Assessment & Planning:**
+     - Conduct threat modeling and risk assessment
+     - Identify security requirements and compliance needs
+     - Plan security architecture and controls
+     - Establish security testing and validation procedures
 
-  4. **Verification & Testing**
-     - Perform security testing
-     - Conduct penetration testing
-     - Code security audit
-     - Automated security scanning
+  2. **Security Controls Implementation:**
+     - Deploy authentication and authorization mechanisms
+     - Implement encryption and data protection measures
+     - Configure security monitoring and logging systems
+     - Apply network security and firewall configurations
 
-  ## Major Security Vulnerability Response
-  1. **SQL Injection Prevention**
-     ```typescript
-     // ❌ Vulnerable code
-     const query = `SELECT * FROM users WHERE id = ${userId}`;
+  3. **Security Validation & Monitoring:**
+     - Conduct security testing and penetration testing
+     - Perform regular vulnerability scans and assessments
+     - Monitor security events and incident response
+     - Maintain security documentation and compliance records
 
-     // ✅ Safe code
-     const query = 'SELECT * FROM users WHERE id = ?';
-     const result = await db.execute(query, [userId]);
+  ## Security Best Practices
+  - **Input Validation**: Validate and sanitize all user inputs
+  - **Secure Communications**: Use HTTPS/TLS for all data transmission
+  - **Error Handling**: Avoid information disclosure in error messages
+  - **Logging**: Implement comprehensive security event logging
+  - **Updates**: Keep all dependencies and systems updated
 
-     // Using ORM
-     const user = await User.findOne({ where: { id: userId } });
-     ```
-
-  2. **XSS Prevention**
-     ```typescript
-     // ❌ Vulnerable code
-     element.innerHTML = userInput;
-
-     // ✅ Safe code
-     element.textContent = userInput;
-
-     // Or use DOMPurify
-     import DOMPurify from 'dompurify';
-     element.innerHTML = DOMPurify.sanitize(userInput);
-     ```
-
-  3. **CSRF Prevention**
-     ```typescript
-     // CSRF token generation and verification
-     app.use(csrf({
-       cookie: {
-         httpOnly: true,
-         secure: true,
-         sameSite: 'strict'
-       }
-     }));
-
-     // Include token in API requests
-     fetch('/api/data', {
-       method: 'POST',
-       headers: {
-         'X-CSRF-Token': csrfToken,
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify(data)
-     });
-     ```
-
-  ## Authentication & Authorization Enhancement
-  1. **Secure Authentication**
-     ```typescript
-     // Password hashing
-     import bcrypt from 'bcrypt';
-
-     const hashPassword = async (password: string) => {
-       const saltRounds = 12;
-       return await bcrypt.hash(password, saltRounds);
-     };
-
-     // JWT token security
-     const token = jwt.sign(
-       { userId, role },
-       process.env.JWT_SECRET,
-       {
-         expiresIn: '15m',
-         issuer: 'your-app',
-         audience: 'your-users'
-       }
-     );
-     ```
-
-  2. **Authorization Verification**
-     ```typescript
-     // Role-based access control
-     const authorize = (requiredRole: string) => {
-       return (req: Request, res: Response, next: NextFunction) => {
-         if (!req.user || req.user.role !== requiredRole) {
-           return res.status(403).json({ error: 'Insufficient permissions' });
-         }
-         next();
-       };
-     };
-
-     // Resource ownership verification
-     const checkOwnership = async (req: Request, res: Response, next: NextFunction) => {
-       const resource = await Resource.findById(req.params.id);
-       if (resource.userId !== req.user.id) {
-         return res.status(403).json({ error: 'Access denied' });
-       }
-       next();
-     };
-     ```
-
-  ## Data Protection
-  1. **Encryption**
-     ```typescript
-     import crypto from 'crypto';
-
-     // Data encryption
-     const encrypt = (text: string, key: string) => {
-       const iv = crypto.randomBytes(16);
-       const cipher = crypto.createCipher('aes-256-gcm', key, iv);
-       let encrypted = cipher.update(text, 'utf8', 'hex');
-       encrypted += cipher.final('hex');
-       const authTag = cipher.getAuthTag();
-       return { encrypted, iv: iv.toString('hex'), authTag: authTag.toString('hex') };
-     };
-
-     // Sensitive data masking
-     const maskSensitiveData = (data: any) => {
-       return {
-         ...data,
-         email: data.email.replace(/(.{2}).*(@.*)/, '$1***$2'),
-         phone: data.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
-       };
-     };
-     ```
-
-  2. **Secure Session Management**
-     ```typescript
-     app.use(session({
-       secret: process.env.SESSION_SECRET,
-       resave: false,
-       saveUninitialized: false,
-       cookie: {
-         secure: true, // HTTPS only
-         httpOnly: true, // XSS prevention
-         maxAge: 30 * 60 * 1000, // 30 minutes
-         sameSite: 'strict' // CSRF prevention
-       },
-       store: new RedisStore({ client: redisClient })
-     }));
-     ```
-
-  ## Security Headers Configuration
-  ```typescript
-  import helmet from 'helmet';
-
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"]
-      }
-    },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true
-    }
-  }));
-  ```
-
-  ## Security Testing
-  1. **Automated Security Scanning**
-     ```bash
-     # Dependency vulnerability scanning
-     npm audit
-     yarn audit
-
-     # SAST (Static Application Security Testing)
-     eslint --ext .js,.ts src/ --config .eslintrc.security.js
-
-     # Container security scanning
-     docker scan myapp:latest
-     ```
-
-  2. **Penetration Testing**
-     - Dynamic scanning with OWASP ZAP
-     - Manual testing with Burp Suite
-     - Security expert review
-
-  ## Security Monitoring
-  ```typescript
-  // Security event logging
-  const securityLogger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
-    transports: [
-      new winston.transports.File({ filename: 'security.log' })
-    ]
-  });
-
-  // Suspicious activity detection
-  const detectSuspiciousActivity = (req: Request) => {
-    const suspiciousPatterns = [
-      /script/i, /union/i, /select/i, /<script>/i
-    ];
-
-    const userInput = JSON.stringify(req.body) + req.url;
-    const isSuspicious = suspiciousPatterns.some(pattern =>
-      pattern.test(userInput)
-    );
-
-    if (isSuspicious) {
-      securityLogger.warn('Suspicious activity detected', {
-        ip: req.ip,
-        userAgent: req.get('User-Agent'),
-        url: req.url,
-        body: req.body
-      });
-    }
-  };
-  ```
-
-  ## Incident Response Procedures
-  1. **Immediate Response**
-     - Block attacks and isolate systems
-     - Assess impact scope
-     - Apply temporary mitigation measures
-     - Report to relevant teams and management
-
-  2. **Recovery & Strengthening**
-     - Fix root causes
-     - Apply security enhancement measures
-     - System recovery and verification
-     - Post-incident analysis and improvement
+  ## Compliance & Standards
+  - Follow OWASP security guidelines and best practices
+  - Implement ISO 27001/SOC 2 compliance requirements
+  - Apply GDPR/CCPA data protection regulations
+  - Maintain security documentation and audit trails
 
   ## Success Criteria
-  - ✅ Vulnerabilities completely eliminated
-  - ✅ All security tests passed
-  - ✅ Additional security enhancement measures applied
-  - ✅ Monitoring and alert systems established
-  - ✅ Incident response procedures documented
-  - ✅ Team security training completed
+  - ✅ All security vulnerabilities addressed and mitigated
+  - ✅ Authentication and authorization systems properly implemented
+  - ✅ Data encryption and protection measures active
+  - ✅ Security monitoring and incident response operational
+  - ✅ Compliance requirements met and documented
 
-  **Ready to start security fixes. What security vulnerability would you like to fix?**
+  **Ready to implement security measures. What security areas would you like to focus on?**

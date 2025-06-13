@@ -41,7 +41,10 @@ jobs:
       uses: actions/complete.yaml
 
 prompt: |
-  Execute feature development workflow with iterative development, comprehensive testing, and quality gates.
+  Execute feature development workflow with iterative development and comprehensive testing.
+  Break features into manageable increments and implement MVP first.
+  Apply quality gates at each step including linting, testing, and security audits.
+  Maintain backward compatibility and gather feedback early for continuous improvement.
 enhanced-prompt: |-
   Execute feature development workflow with iterative development, comprehensive testing, and quality gates:
 
@@ -58,146 +61,40 @@ enhanced-prompt: |-
      - Code review at every step
      - Documentation as part of development
 
-  ## Feature Workflow Execution
-  1. **Feature Planning & Branch Creation:**
-     - **Feature Specification:**
-       ```markdown
-       # Feature: User Profile Management
-       
-       ## Description
-       Allow users to create, edit, and manage their profiles
-       
-       ## Acceptance Criteria
-       - [ ] Users can create a new profile
-       - [ ] Users can edit existing profile information
-       - [ ] Users can upload profile pictures
-       - [ ] Profile data is validated and sanitized
-       - [ ] Changes are saved automatically
-       
-       ## Technical Requirements
-       - RESTful API endpoints
-       - Form validation
-       - Image upload handling
-       - Database schema updates
-       ```
+  ## Workflow Execution Steps
+  1. **Planning & Setup:**
+     - Create feature specification with acceptance criteria
+     - Set up feature branch from develop
+     - Define technical requirements and API contracts
+     - Plan development cycles and milestones
 
-     - **Branch Creation:**
-       ```bash
-       # Create feature branch from develop
-       git checkout develop
-       git pull origin develop
-       git checkout -b feature/user-profile-management
-       ```
+  2. **Development Cycles:**
+     - Start with core functionality implementation
+     - Add features incrementally with working state maintenance
+     - Write tests for each increment
+     - Apply continuous linting and code quality checks
 
-  2. **Iterative Development Phase:**
-     - **Development Cycles:**
-       ```typescript
-       // Cycle 1: Basic CRUD operations
-       interface UserProfile {
-         id: string;
-         firstName: string;
-         lastName: string;
-         email: string;
-         createdAt: Date;
-         updatedAt: Date;
-       }
-       
-       // Cycle 2: Add profile picture support
-       interface UserProfile extends BaseProfile {
-         profilePicture?: {
-           url: string;
-           thumbnailUrl: string;
-           uploadedAt: Date;
-         };
-       }
-       
-       // Cycle 3: Add preferences and settings
-       interface UserProfile extends ProfileWithPicture {
-         preferences: {
-           theme: 'light' | 'dark';
-           notifications: boolean;
-           language: string;
-         };
-       }
-       ```
+  3. **Quality Assurance:**
+     - Execute comprehensive testing (unit/integration/E2E)
+     - Perform code reviews with quality checklist
+     - Run security audits and vulnerability scans
+     - Validate performance and accessibility requirements
 
-     - **Implementation Strategy:**
-       - Start with core functionality
-       - Add features incrementally
-       - Maintain working state at each iteration
-       - Write tests for each increment
+  4. **Documentation & Integration:**
+     - Update API documentation and user guides
+     - Create pull request with detailed description
+     - Ensure all CI/CD checks pass
+     - Notify team and gather feedback
 
-  3. **Code Quality & Linting:**
-     - **Automated Linting:**
-       ```bash
-       # Run comprehensive linting
-       npm run lint
-       npm run lint:fix
-       npm run type-check
-       npm run format
-       ```
+  ## Success Criteria
+  - ✅ All acceptance criteria met
+  - ✅ Comprehensive test coverage (90%+)
+  - ✅ Code quality standards maintained
+  - ✅ Security vulnerabilities addressed
+  - ✅ Documentation updated
+  - ✅ Pull request approved and ready for merge
 
-     - **Quality Checks:**
-       - ESLint for code quality
-       - Prettier for formatting
-       - TypeScript for type safety
-       - Import organization and optimization
-
-  4. **Comprehensive Testing:**
-     - **Test Strategy:**
-       ```typescript
-       // Unit Tests
-       describe('UserProfileService', () => {
-         it('should create a new user profile', async () => {
-           const profileData = {
-             firstName: 'John',
-             lastName: 'Doe',
-             email: 'john@example.com'
-           };
-           
-           const profile = await userProfileService.create(profileData);
-           
-           expect(profile).toMatchObject(profileData);
-           expect(profile.id).toBeDefined();
-         });
-       });
-       
-       // Integration Tests
-       describe('Profile API', () => {
-         it('should handle profile creation workflow', async () => {
-           const response = await request(app)
-             .post('/api/profiles')
-             .send(validProfileData)
-             .expect(201);
-           
-           expect(response.body.profile).toBeDefined();
-         });
-       });
-       
-       // E2E Tests
-       describe('Profile Management Flow', () => {
-         it('should allow complete profile management', async () => {
-           await page.goto('/profile');
-           await page.fill('[data-testid="firstName"]', 'John');
-           await page.click('[data-testid="save-button"]');
-           await expect(page.locator('.success-message')).toBeVisible();
-         });
-       });
-       ```
-
-  5. **Code Review Process:**
-     - **Review Checklist:**
-       ```markdown
-       ## Code Review Checklist
-       
-       ### Functionality
-       - [ ] Feature works as specified
-       - [ ] Edge cases are handled
-       - [ ] Error handling is comprehensive
-       - [ ] Performance is acceptable
-       
-       ### Code Quality
-       - [ ] Code is readable and well-structured
+  Execute each step methodically, ensuring quality and completeness at every stage.
        - [ ] Functions are single-purpose and focused
        - [ ] Variable names are descriptive
        - [ ] No code duplication

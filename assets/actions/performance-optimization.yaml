@@ -3,452 +3,70 @@ kind: action
 name: Performance Check
 description: Basic performance analysis and optimization recommendations
 prompt: |
-  Perform basic performance checks and provide optimization recommendations.
-
-  This action analyzes build times, bundle sizes, and common performance
-  issues while providing actionable recommendations for improvement.
-  It focuses on quick wins and essential optimizations.
-
-  Use this when you need to identify performance bottlenecks or optimize
-  application performance with practical improvements.
+  Perform comprehensive performance analysis and provide optimization recommendations.
+  Analyze build times, bundle sizes, and identify performance bottlenecks.
+  Generate actionable recommendations for improvement with measurable results.
+  Use this for identifying performance issues and implementing optimizations.
 enhanced-prompt: |-
-  # ⚡ 성능 체크
+  # ⚡ Performance Analysis
 
-  ## 1단계: 기본 성능 측정
+  ## Basic Performance Measurement
   ```bash
-  echo "=== 성능 체크 시작 ==="
-
   PROJECT_NAME=$(basename $(pwd))
-  echo "📁 프로젝트: $PROJECT_NAME"
+  echo "📁 Project: $PROJECT_NAME"
 
-  # 빌드 시간 측정
+  # Measure build time
   if [ -f "package.json" ]; then
-    echo "⏱️ 빌드 시간 측정..."
-    echo "시작 시간: $(date)"
+    echo "⏱️ Measuring build time..."
+    START_TIME=$(date +%s)
     
     if npm run build >/dev/null 2>&1; then
-      echo "✅ 빌드 성공"
+      END_TIME=$(date +%s)
+      BUILD_TIME=$((END_TIME - START_TIME))
+      echo "✅ Build completed in ${BUILD_TIME}s"
     else
-      echo "❌ 빌드 실패 또는 스크립트 없음"
+      echo "❌ Build failed or script not found"
     fi
-    
-    echo "완료 시간: $(date)"
   fi
   ```
 
-  ## 2단계: 번들 크기 분석
+  ## Bundle Size Analysis
   ```bash
-  echo "📦 번들 크기 분석..."
+  echo "📦 Analyzing bundle size..."
 
-  # 빌드 파일 크기 확인
+  # Check build file sizes
   if [ -d "dist" ] || [ -d "build" ]; then
-    echo "📊 번들 파일 크기:"
+    echo "📊 Bundle file sizes:"
     find dist/ build/ -name "*.js" -o -name "*.css" 2>/dev/null | while read file; do
       if [ -f "$file" ]; then
         SIZE=$(du -h "$file" | cut -f1)
         echo "  - $(basename "$file"): $SIZE"
       fi
     done
-  else
-    echo "ℹ️ 빌드 디렉토리 없음"
   fi
 
-  # node_modules 크기
+  # Check node_modules size
   if [ -d "node_modules" ]; then
     MODULES_SIZE=$(du -sh node_modules 2>/dev/null | cut -f1)
-    echo "📚 node_modules 크기: $MODULES_SIZE"
+    echo "📚 node_modules size: $MODULES_SIZE"
   fi
   ```
 
-  ## 3단계: 의존성 분석
+  ## Performance Issue Detection
   ```bash
-  echo "📊 의존성 분석..."
+  echo "🔍 Detecting performance issues..."
 
-  if [ -f "package.json" ]; then
-    # 의존성 개수
-    DEPS_COUNT=$(node -p "Object.keys(require('./package.json').dependencies || {}).length" 2>/dev/null || echo "0")
-    DEV_DEPS_COUNT=$(node -p "Object.keys(require('./package.json').devDependencies || {}).length" 2>/dev/null || echo "0")
-    
-    echo "📦 의존성: $DEPS_COUNT개"
-    echo "🛠️ 개발 의존성: $DEV_DEPS_COUNT개"
-    
-    # 사용하지 않는 의존성 체크 (간단한 방법)
-    echo "🔍 큰 의존성 패키지들:"
-    npm ls --depth=0 2>/dev/null | head -10 || echo "의존성 정보 확인 불가"
-  fi
-  ```
-
-  ## 4단계: 성능 이슈 탐지
-  ```bash
-  echo "🔍 성능 이슈 탐지..."
-
-  # 큰 파일들 찾기
-  echo "📄 큰 소스 파일들 (상위 5개):"
+  # Find large files
+  echo "📄 Large source files (top 5):"
   find src/ -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" 2>/dev/null | \
     xargs wc -l 2>/dev/null | sort -nr | head -5 | while read lines file; do
-      echo "  - $(basename "$file"): $lines줄"
+      echo "  - $(basename "$file"): $lines lines"
     done
 
-  # 동기 작업 탐지
-  echo "⚠️ 동기 작업 패턴:"
+  # Detect synchronous operations
+  echo "⚠️ Synchronous operation patterns:"
   SYNC_OPS=$(grep -r "readFileSync\|writeFileSync\|execSync" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 동기 파일 작업: $SYNC_OPS개"
-
-  # 중첩 루프 탐지
-  NESTED_LOOPS=$(grep -r "for.*for\|while.*while" --include="*.js" --include="*.ts" src/ 2>/dev/null | wc -l)
-  echo "  - 중첩 루프: $NESTED_LOOPS개"
+  echo "  - Synchronous file operations: $SYNC_OPS"
   ```
 
-  ## 5단계: 최적화 권장사항
-  ```bash
-  echo "💡 최적화 권장사항:"
-  echo ""
-  echo "📦 번들 최적화:"
-  echo "  - 코드 스플리팅 적용"
-  echo "  - 트리 쉐이킹 활성화"
-  echo "  - 이미지 압축"
-  echo "  - 가즈화 (gzip) 적용"
-  echo ""
-  echo "⚡ 코드 최적화:"
-  echo "  - 큰 파일 분리 고려"
-  echo "  - 동기 작업을 비동기로 변경"
-  echo "  - 중첩 루프 최적화"
-  echo "  - 메모이제이션 적용"
-  echo ""
-  echo "🗄️ 데이터베이스 최적화:"
-  echo "  - 인덱스 추가"
-  echo "  - 쿼리 최적화"
-  echo "  - 커넥션 풀링"
-  echo "  - 캐싱 적용"
-  echo ""
-  echo "🎉 성능 체크 완료!"
-  echo "📈 개선이 필요한 부분을 확인하고 단계별로 최적화하세요."
-  ```
-
-  **🎯 결과:** 성능 현황 파악 및 최적화 방향 제시
-
-  # Caching strategy
-  echo "🗂️  Caching optimization recommendations:"
-  echo "  1. HTTP caching headers"
-  echo "  2. Redis/Memcached implementation"
-  echo "  3. CDN configuration"
-  echo "  4. Browser caching strategy"
-
-  echo "✅ Optimization recommendations generated"
-  echo ""
-  ```
-
-  ## 📊 Step 6: Performance Monitoring Setup
-  ```bash
-  echo "=== Performance Monitoring Setup ==="
-
-  echo "📊 Setting up performance monitoring..."
-
-  # Create performance monitoring script
-  cat << 'EOF' > "$PERF_DIR/performance-monitor.js"
-  // Performance Monitoring Script
-  const fs = require('fs');
-  const path = require('path');
-
-  class PerformanceMonitor {
-    constructor() {
-      this.metrics = {
-        startTime: Date.now(),
-        memoryUsage: [],
-        responseTime: [],
-        errorCount: 0
-      };
-    }
-    
-    recordMemoryUsage() {
-      const usage = process.memoryUsage();
-      this.metrics.memoryUsage.push({
-        timestamp: Date.now(),
-        heapUsed: usage.heapUsed,
-        heapTotal: usage.heapTotal,
-        external: usage.external,
-        rss: usage.rss
-      });
-    }
-    
-    recordResponseTime(duration) {
-      this.metrics.responseTime.push({
-        timestamp: Date.now(),
-        duration: duration
-      });
-    }
-    
-    recordError() {
-      this.metrics.errorCount++;
-    }
-    
-    generateReport() {
-      const report = {
-        uptime: Date.now() - this.metrics.startTime,
-        averageMemory: this.calculateAverageMemory(),
-        averageResponseTime: this.calculateAverageResponseTime(),
-        errorRate: this.metrics.errorCount / this.metrics.responseTime.length,
-        timestamp: new Date().toISOString()
-      };
-      
-      return report;
-    }
-    
-    calculateAverageMemory() {
-      if (this.metrics.memoryUsage.length === 0) return 0;
-      const total = this.metrics.memoryUsage.reduce((sum, usage) => sum + usage.heapUsed, 0);
-      return total / this.metrics.memoryUsage.length;
-    }
-    
-    calculateAverageResponseTime() {
-      if (this.metrics.responseTime.length === 0) return 0;
-      const total = this.metrics.responseTime.reduce((sum, time) => sum + time.duration, 0);
-      return total / this.metrics.responseTime.length;
-    }
-  }
-
-  module.exports = PerformanceMonitor;
-  EOF
-
-  # Create performance test script
-  cat << 'EOF' > "$PERF_DIR/performance-test.js"
-  // Performance Test Script
-  const PerformanceMonitor = require('./performance-monitor');
-
-  const monitor = new PerformanceMonitor();
-
-  // Simulate application load
-  function simulateLoad() {
-    const start = Date.now();
-    
-    // Simulate some work
-    for (let i = 0; i < 1000000; i++) {
-      Math.random();
-    }
-    
-    const duration = Date.now() - start;
-    monitor.recordResponseTime(duration);
-    monitor.recordMemoryUsage();
-  }
-
-  // Run performance test
-  console.log('Starting performance test...');
-
-  const interval = setInterval(() => {
-    simulateLoad();
-  }, 100);
-
-  setTimeout(() => {
-    clearInterval(interval);
-    const report = monitor.generateReport();
-    console.log('Performance Test Results:');
-    console.log(JSON.stringify(report, null, 2));
-  }, 5000);
-  EOF
-
-  echo "✅ Performance monitoring setup completed"
-  echo ""
-  ```
-
-  ## 📈 Step 7: Performance Testing
-  ```bash
-  echo "=== Performance Testing ==="
-
-  echo "📈 Running performance tests..."
-
-  # Load testing (if autocannon is available)
-  if command -v autocannon >/dev/null 2>&1; then
-    echo "🔥 Running load test with autocannon..."
-    autocannon -c 10 -d 30 http://localhost:3000 > "$PERF_DIR/load-test.txt" 2>/dev/null || echo "Application not running on port 3000"
-  else
-    echo "⚠️  Autocannon not installed - run: npm install -g autocannon"
-  fi
-
-  # Memory stress test
-  echo "💾 Running memory stress test..."
-  node "$PERF_DIR/performance-test.js" > "$PERF_DIR/memory-stress-test.txt" 2>/dev/null || echo "Node.js not available"
-
-  # Bundle analysis
-  if [ -f "package.json" ] && grep -q "webpack-bundle-analyzer" package.json; then
-    echo "📊 Generating bundle analysis..."
-    npm run analyze > "$PERF_DIR/bundle-analysis.txt" 2>/dev/null || echo "Bundle analyzer not configured"
-  fi
-
-  echo "✅ Performance testing completed"
-  echo ""
-  ```
-
-  ## 📊 Step 8: Performance Report Generation
-  ```bash
-  echo "=== Performance Report Generation ==="
-
-  echo "📊 Generating comprehensive performance report..."
-
-  # Calculate metrics
-  LARGE_FILES_COUNT=$(wc -l < "$PERF_DIR/large-files.txt" 2>/dev/null || echo "0")
-  SYNC_OPS_COUNT=$(wc -l < "$PERF_DIR/sync-operations.txt" 2>/dev/null || echo "0")
-  NESTED_LOOPS_COUNT=$(wc -l < "$PERF_DIR/nested-loops.txt" 2>/dev/null || echo "0")
-
-  # Generate performance report
-  cat << EOF > "$PERF_DIR/performance-report.md"
-  # Performance Optimization Report
-
-  **Project:** $PROJECT_NAME  
-  **Analysis Date:** $OPTIMIZATION_DATE  
-  **Baseline ID:** $BASELINE_ID
-
-  ## Executive Summary
-
-  This report contains the results of a comprehensive performance analysis and optimization recommendations for $PROJECT_NAME.
-
-  ## Performance Metrics
-
-  | Metric | Count | Impact |
-  |--------|-------|--------|
-  | Large Files (>500 lines) | $LARGE_FILES_COUNT | 📄 Medium |
-  | Synchronous Operations | $SYNC_OPS_COUNT | ⏳ High |
-  | Nested Loops | $NESTED_LOOPS_COUNT | 🧮 Medium |
-
-  ## Detailed Analysis
-
-  ### 1. Code Performance
-  - Large files detected: $LARGE_FILES_COUNT
-  - Synchronous operations: $SYNC_OPS_COUNT
-  - Complex nested loops: $NESTED_LOOPS_COUNT
-
-  ### 2. Bundle Performance
-  - Bundle size analysis completed
-  - Code splitting opportunities identified
-  - Tree shaking recommendations provided
-
-  ### 3. Memory Usage
-  - Memory baseline established
-  - Potential memory leaks identified
-  - Optimization recommendations provided
-
-  ## Optimization Recommendations
-
-  ### Immediate Actions (High Impact)
-  1. Replace synchronous operations with async alternatives
-  2. Implement code splitting for large bundles
-  3. Add database indexes for slow queries
-  4. Implement caching strategy
-
-  ### Short-term Actions (Medium Impact)
-  1. Optimize large files and complex functions
-  2. Implement lazy loading for components
-  3. Add performance monitoring
-  4. Optimize asset delivery (CDN, compression)
-
-  ### Long-term Actions (Low Impact)
-  1. Regular performance audits
-  2. Performance budgets implementation
-  3. Advanced caching strategies
-  4. Microservices architecture consideration
-
-  ## Implementation Guide
-
-  ### Bundle Optimization
-  \`\`\`javascript
-  // webpack.config.js optimization
-  module.exports = {
-    optimization: {
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\\\/]node_modules[\\\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      },
-    },
-  };
-  \`\`\`
-
-  ### Caching Implementation
-  \`\`\`javascript
-  // Express.js caching middleware
-  const cache = require('memory-cache');
-
-  app.use((req, res, next) => {
-    const key = req.originalUrl;
-    const cached = cache.get(key);
-    
-    if (cached) {
-      return res.send(cached);
-    }
-    
-    res.sendResponse = res.send;
-    res.send = (body) => {
-      cache.put(key, body, 300000); // 5 minutes
-      res.sendResponse(body);
-    };
-    
-    next();
-  });
-  \`\`\`
-
-  ## Performance Monitoring
-
-  Implement continuous performance monitoring:
-
-  1. Response time tracking
-  2. Memory usage monitoring
-  3. Error rate monitoring
-  4. User experience metrics
-
-  ## Next Steps
-
-  1. Implement high-impact optimizations
-  2. Set up performance monitoring
-  3. Establish performance budgets
-  4. Schedule regular performance reviews
-
-  ---
-  *Generated by task-action performance optimization*
-  EOF
-
-  echo "📄 Performance report generated: $PERF_DIR/performance-report.md"
-  echo ""
-  ```
-
-  ## 🎯 Step 9: Optimization Summary
-  ```bash
-  echo "=== Performance Optimization Summary ==="
-
-  echo "⚡ Performance optimization analysis completed!"
-  echo ""
-  echo "📊 Key Findings:"
-  echo "  📄 Large files: $LARGE_FILES_COUNT"
-  echo "  ⏳ Sync operations: $SYNC_OPS_COUNT"
-  echo "  🧮 Nested loops: $NESTED_LOOPS_COUNT"
-  echo ""
-  echo "🎯 Priority Actions:"
-  if [ $SYNC_OPS_COUNT -gt 0 ]; then
-    echo "  🚨 HIGH: Replace $SYNC_OPS_COUNT synchronous operations"
-  fi
-  if [ $LARGE_FILES_COUNT -gt 5 ]; then
-    echo "  ⚠️  MEDIUM: Refactor $LARGE_FILES_COUNT large files"
-  fi
-  if [ $NESTED_LOOPS_COUNT -gt 0 ]; then
-    echo "  ⚠️  MEDIUM: Optimize $NESTED_LOOPS_COUNT nested loops"
-  fi
-  echo ""
-  echo "📁 Generated Files:"
-  echo "  - performance-report.md"
-  echo "  - performance-monitor.js"
-  echo "  - performance-test.js"
-  echo "  - webpack-optimization.js"
-  echo ""
-  echo "🔄 Next Steps:"
-  echo "  1. Review performance report"
-  echo "  2. Implement high-priority optimizations"
-  echo "  3. Set up performance monitoring"
-  echo "  4. Schedule follow-up analysis"
-  echo ""
-  echo "📈 Performance optimization workflow completed!"
-  ```
-
-  **⚡ Comprehensive performance analysis completed with actionable optimization recommendations!**
+  **🎯 Result:** Performance analysis with optimization recommendations

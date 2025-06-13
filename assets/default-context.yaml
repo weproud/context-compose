@@ -1,5 +1,5 @@
 version: 1
-kind: tascontextk
+kind: context
 name: default
 description: Default development context with comprehensive guidelines
 
@@ -19,30 +19,42 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
-  # Important: get-context Response Handling
-  When receiving this prompt via get-context, execute the guidelines below directly without reorganizing or summarizing the response content.
-
+  Execute development work following all provided context guidelines.
+  Analyze requirements thoroughly before implementation and use conservative approach.
+  Ask for confirmation when uncertain and always suggest testing after completion.
+  Respect existing codebase patterns and maintain high code quality standards.
+enhanced-prompt: |-
   # Development Work Guidelines
-  Proceed with development work based on all provided context information (workflow, rules, mcps, notify).
+  Execute development work based on all provided context information (workflow, rules, mcps, notify).
 
   ## Mandatory Requirements
-  1. **Context Analysis**: Thoroughly analyze and understand all provided context and requirements before starting work
-  2. **Preliminary Investigation**: Use codebase-retrieval tool to investigate related files and understand current structure before making code changes
-  3. **Planning**: Establish detailed and specific plans for changes and proceed only after user confirmation
+  1. **Context Analysis**: Thoroughly analyze and understand all provided context before starting work
+  2. **Preliminary Investigation**: Use codebase-retrieval to investigate related files and understand structure
+  3. **Planning**: Establish detailed plans for changes and proceed only after user confirmation
   4. **Package Management**: Use appropriate package managers, prohibit manual editing of configuration files
   5. **Code Conventions**: Respect existing codebase patterns, styles, and architecture
   6. **Testing**: Always suggest writing and executing tests after completing work
-  7. **Korean Responses**: Provide all responses in Korean, explain causes and provide step-by-step solutions when errors occur
-  8. **Conservative Approach**: Do not perform tasks not explicitly requested by the user; ask for confirmation first
+  7. **Conservative Approach**: Do not perform tasks not explicitly requested; ask for confirmation first
 
-  ## Additional Development Guidelines
+  ## Development Guidelines
   - **Information Gathering**: Utilize additional information gathering tools when uncertain
   - **Incremental Development**: Break down large changes into smaller units for step-by-step progression
   - **Error Handling**: Stop immediately when problems occur, analyze causes, and propose solutions
   - **Documentation**: Include appropriate comments or documentation updates for important changes
   - **Backup Consideration**: Consider backup or version control when changing important files
 
-  ## Awaiting Work Request
-  After receiving specific work content from the user, begin development following all the above guidelines.
+  ## Quality Standards
+  1. **Code Quality**: Follow clean code principles and maintain readability
+  2. **Performance**: Consider performance implications of changes
+  3. **Security**: Implement security best practices
+  4. **Testing**: Ensure adequate test coverage
+  5. **Documentation**: Keep documentation current and comprehensive
+
+  ## Success Criteria
+  - All requirements met without scope creep
+  - Code quality standards maintained
+  - Tests pass and coverage adequate
+  - Documentation updated appropriately
+  - Changes integrate smoothly with existing codebase
 
   **What development work would you like to proceed with?**

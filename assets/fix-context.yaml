@@ -22,93 +22,57 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
+  Fix bugs through systematic analysis and root cause resolution.
+  Implement preventive measures to ensure issues don't recur.
+  Focus on minimal changes while maintaining system stability.
+  Prioritize thorough testing and verification of fixes with comprehensive documentation.
+enhanced-prompt: |-
   # Bug Fix Context
 
   ## Bug Fix Philosophy
-  Fix bugs through **systematic analysis** and **root cause resolution**, implementing preventive measures to ensure the same issues do not recur.
+  Fix bugs through **systematic analysis** and **root cause resolution**, implementing preventive measures to ensure issues do not recur.
 
   ## Bug Fix Process
-  1. **Problem Reproduction & Analysis**
+  1. **Problem Reproduction & Analysis**:
      - Document bug reproduction steps
      - Analyze error logs and stack traces
      - Assess impact scope and severity
      - Investigate related code and dependencies
 
-  2. **Root Cause Analysis**
+  2. **Root Cause Analysis**:
      - Detailed analysis using debugging tools
      - Trace code flow and verify states
      - Review data flow and transformation processes
      - Check external dependencies and environmental factors
 
-  3. **Fix Strategy Design**
+  3. **Fix Strategy Design**:
      - Prioritize minimally invasive fix approaches
      - Assess side effects and risks
      - Compare and review alternative solutions
      - Establish testing strategy
 
-  4. **Implementation & Verification**
+  4. **Implementation & Verification**:
      - Implement targeted fix
      - Write and execute regression tests
      - Add edge case tests
      - Verify performance impact
 
   ## Debugging Strategy
-  - **Log Analysis**: Comprehensive analysis of error logs, application logs, and system logs
-  - **Step-by-step Tracing**: Trace code execution path step by step
+  - **Log Analysis**: Comprehensive analysis of error logs and system logs
+  - **Step-by-step Tracing**: Trace code execution path systematically
   - **State Verification**: Check variable and object states at each step
   - **Isolation Testing**: Isolate problem areas for independent testing
-  - **Environment Reproduction**: Reproduce identical conditions where the problem occurred
 
   ## Fix Considerations
-  - **Minimal Change Principle**: Perform only the minimum changes necessary to solve the problem
+  - **Minimal Change Principle**: Perform only minimum changes necessary
   - **Side Effect Prevention**: Ensure no impact on other functionality
   - **Performance Impact**: Minimize performance impact of the fix
-  - **Code Quality**: Utilize opportunities to improve code quality during the fix process
   - **Documentation**: Clearly document fix content and reasoning
 
   ## Testing Strategy
-  1. **Regression Testing**
-     - Verify existing functionality works correctly
-     - Execute automated test suites
-     - Additional verification through manual testing
-
-  2. **Bug Reproduction Testing**
-     - Confirm bug reproduces before fix
-     - Verify bug is resolved after fix
-     - Test across various scenarios
-
-  3. **Edge Case Testing**
-     - Boundary value testing
-     - Exception scenario testing
-     - Concurrency and race condition testing
-
-  ## Preventive Measures
-  - **Root Cause Elimination**: Prevent recurrence of similar bug types
-  - **Enhanced Code Review**: Review code with similar patterns
-  - **Test Case Addition**: Add tests that can detect the specific bug
-  - **Monitoring Improvement**: Enhance monitoring for early detection
-  - **Documentation Update**: Document precautions and best practices
-
-  ## Priority-based Response
-  1. **Critical (Immediate Fix)**
-     - System down, data loss, security vulnerabilities
-     - Apply hotfix process
-     - Rapid deployment with minimal testing
-
-  2. **High (Within 24 hours)**
-     - Major functionality failures, severe user experience degradation
-     - High-priority fix work
-     - Deploy after sufficient testing
-
-  3. **Medium (Within 1 week)**
-     - Partial functionality issues, performance degradation
-     - Include in regular development cycle
-     - Comprehensive testing and verification
-
-  4. **Low (Next Release)**
-     - Minor UI issues, improvements
-     - Handle together with other work
-     - Approach from overall quality improvement perspective
+  1. **Regression Testing**: Verify existing functionality works correctly
+  2. **Bug Reproduction Testing**: Confirm bug reproduces before fix and is resolved after
+  3. **Edge Case Testing**: Test boundary values and exception scenarios
 
   ## Success Criteria
   - ✅ Bug completely resolved

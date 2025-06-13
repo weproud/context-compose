@@ -1,17 +1,18 @@
 version: 1
 kind: task
 name: 'performance-optimization'
-description: 'Context for performance optimization with measurement-driven approach'
+description: 'Context for performance optimization with metrics monitoring and improvement strategies'
 
 context:
   workflow: workflows/workflow.yaml
   roles:
-- personas/addy-osmani.yaml
 - personas/john-carmack.yaml
+- personas/brendan-eich.yaml
   rules:
     - rules/the-must-follow.yaml
     - rules/performance-guidelines.yaml
     - rules/clean-code.yaml
+    - rules/development.yaml
     - rules/testing-principles.yaml
   mcps:
     - mcps/sequential-thinking.yaml
@@ -20,196 +21,61 @@ context:
   notify:
     - notify/slack.yaml
 prompt: |
+  Optimize application performance through systematic analysis and targeted improvements.
+  Focus on critical path optimization and measurable performance gains.
+  Implement monitoring systems and establish performance benchmarks.
+  Balance optimization efforts with code maintainability and development velocity.
+enhanced-prompt: |-
   # Performance Optimization Context
 
-  ## Performance Optimization Philosophy
-  Performance optimization proceeds through a **measurement-driven approach** with **user experience improvement** as the top priority. Identify and improve optimization points based on **data rather than assumptions**.
-
-  ## Performance Optimization Principles
-  1. **Measurement First**: Measure, don't guess
-  2. **User-Centric**: Prioritize Core Web Vitals and user experience metrics
-  3. **Incremental Improvement**: Leverage cumulative effects of small improvements
-  4. **Cost-Benefit Analysis**: Consider performance improvement effects vs development costs
-  5. **Continuous Monitoring**: Continuous surveillance to prevent performance regression
+  ## Performance Philosophy
+  Optimize application performance through **systematic analysis** and **targeted improvements** focusing on **critical path optimization** and **measurable performance gains**.
 
   ## Performance Optimization Process
-  1. **Current Performance Measurement**
-     - Measure Core Web Vitals (LCP, FID, CLS)
-     - Analyze page load times
-     - Runtime performance profiling
-     - Network and resource analysis
-     - Memory usage and leak inspection
+  1. **Performance Analysis & Profiling:**
+     - Establish baseline performance metrics and benchmarks
+     - Identify performance bottlenecks using profiling tools
+     - Analyze critical user paths and high-traffic scenarios
+     - Monitor real-world performance data and user experience metrics
 
-  2. **Bottleneck Identification**
-     - Hotspot analysis through performance profilers
-     - Network request optimization points
-     - Rendering performance issue identification
-     - Database query performance analysis
-     - Algorithm complexity review
+  2. **Optimization Strategy:**
+     - Prioritize optimizations based on impact and effort analysis
+     - Focus on critical rendering path and core business logic
+     - Implement caching strategies and data optimization
+     - Optimize resource loading and minimize bundle sizes
 
-  3. **Optimization Strategy Development**
-     - Priority-based optimization planning
-     - Estimate expected performance improvement effects
-     - Assess implementation complexity and risks
-     - Establish A/B testing plans
+  3. **Implementation & Validation:**
+     - Apply targeted performance improvements incrementally
+     - Measure performance impact before and after changes
+     - Conduct load testing and stress testing validation
+     - Monitor production performance metrics continuously
 
-  4. **Optimization Implementation & Verification**
-     - Apply step-by-step optimization
-     - Performance measurement and comparative analysis
-     - Side effect verification
-     - User experience impact assessment
+  ## Key Performance Areas
+  - **Load Time Optimization**: Minimize Time to First Byte (TTFB) and render times
+  - **Runtime Performance**: Optimize CPU usage and memory consumption
+  - **Network Optimization**: Reduce payload sizes and optimize request patterns
+  - **Database Performance**: Query optimization and caching strategies
+  - **Asset Optimization**: Image compression and efficient resource loading
 
-  ## Frontend Performance Optimization
-  1. **Loading Performance**
-     ```typescript
-     // Code splitting
-     const LazyComponent = React.lazy(() => import('./HeavyComponent'));
+  ## Performance Metrics & Targets
+  - **Page Load Time**: < 2 seconds for initial load
+  - **Time to Interactive**: < 3 seconds for user interaction readiness
+  - **First Contentful Paint**: < 1.5 seconds for visual feedback
+  - **Memory Usage**: < 50MB baseline for typical operations
+  - **API Response Time**: < 200ms for database queries
 
-     // Resource preloading
-     <link rel="preload" href="critical.css" as="style">
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-
-     // Image optimization
-     <img
-       src="image.webp"
-       loading="lazy"
-       decoding="async"
-       alt="Description"
-     />
-     ```
-
-  2. **Runtime Performance**
-     ```typescript
-     // Memoization
-     const ExpensiveComponent = React.memo(({ data }) => {
-       const processedData = useMemo(() =>
-         heavyComputation(data), [data]
-       );
-       return <div>{processedData}</div>;
-     });
-
-     // Virtualization
-     import { FixedSizeList as List } from 'react-window';
-
-     // Debouncing
-     const debouncedSearch = useCallback(
-       debounce((query) => performSearch(query), 300),
-       []
-     );
-     ```
-
-  ## Backend Performance Optimization
-  1. **Database Optimization**
-     ```sql
-     -- Index optimization
-     CREATE INDEX idx_user_email ON users(email);
-     CREATE INDEX idx_order_date ON orders(created_at);
-
-     -- Query optimization
-     SELECT u.name, COUNT(o.id) as order_count
-     FROM users u
-     LEFT JOIN orders o ON u.id = o.user_id
-     WHERE u.created_at > '2024-01-01'
-     GROUP BY u.id, u.name;
-     ```
-
-  2. **Caching Strategy**
-     ```typescript
-     // Redis caching
-     async function getUserProfile(userId: string) {
-       const cacheKey = `user:${userId}`;
-       let profile = await redis.get(cacheKey);
-
-       if (!profile) {
-         profile = await database.getUser(userId);
-         await redis.setex(cacheKey, 3600, JSON.stringify(profile));
-       }
-
-       return JSON.parse(profile);
-     }
-
-     // Memory caching
-     const cache = new Map();
-     function memoize<T>(fn: Function): T {
-       return ((...args: any[]) => {
-         const key = JSON.stringify(args);
-         if (cache.has(key)) return cache.get(key);
-         const result = fn(...args);
-         cache.set(key, result);
-         return result;
-       }) as T;
-     }
-     ```
-
-  ## Performance Measurement Tools
-  1. **Browser Tools**
-     - Chrome DevTools Performance tab
-     - Lighthouse performance audit
-     - WebPageTest analysis
-     - Core Web Vitals measurement
-
-  2. **Monitoring Tools**
-     ```typescript
-     // Performance Observer API
-     const observer = new PerformanceObserver((list) => {
-       list.getEntries().forEach((entry) => {
-         if (entry.entryType === 'largest-contentful-paint') {
-           console.log('LCP:', entry.startTime);
-           // Send to analytics server
-           analytics.track('performance.lcp', entry.startTime);
-         }
-       });
-     });
-     observer.observe({ entryTypes: ['largest-contentful-paint'] });
-     ```
-
-  ## Performance Target Setting
-  1. **Core Web Vitals Targets**
-     - LCP (Largest Contentful Paint): < 2.5s
-     - FID (First Input Delay): < 100ms
-     - CLS (Cumulative Layout Shift): < 0.1
-
-  2. **Additional Performance Metrics**
-     - TTFB (Time to First Byte): < 200ms
-     - FCP (First Contentful Paint): < 1.8s
-     - TTI (Time to Interactive): < 3.8s
-
-  ## Performance Budget Management
-  ```json
-  {
-    "budgets": [
-      {
-        "type": "bundle",
-        "name": "main",
-        "baseline": "250kb",
-        "maximum": "350kb"
-      },
-      {
-        "type": "initial",
-        "maximum": "500kb"
-      },
-      {
-        "type": "anyScript",
-        "maximum": "150kb"
-      }
-    ]
-  }
-  ```
-
-  ## Optimization Checklist
-  - **Image Optimization**: WebP/AVIF formats, appropriate sizing, lazy loading
-  - **Code Splitting**: Route-based, component-based splitting
-  - **Bundle Optimization**: Tree shaking, compression, caching
-  - **Network Optimization**: HTTP/2, CDN, resource hints
-  - **Rendering Optimization**: Virtualization, memoization, batch updates
-  - **Database**: Indexing, query optimization, connection pooling
+  ## Optimization Techniques
+  - **Code Splitting**: Dynamic imports and lazy loading
+  - **Caching**: Browser caching, CDN, and application-level caching
+  - **Compression**: Gzip/Brotli compression and asset minification
+  - **Database**: Query optimization, indexing, and connection pooling
+  - **Monitoring**: Real-time performance tracking and alerting
 
   ## Success Criteria
-  - ✅ Core Web Vitals targets achieved
-  - ✅ Page load time improved by 20% or more
-  - ✅ Bundle size performance budget compliance
-  - ✅ User experience metrics improved
-  - ✅ Performance regression prevention system established
-  - ✅ Continuous monitoring system established
+  - ✅ Performance targets achieved across all key metrics
+  - ✅ No performance regressions in critical paths
+  - ✅ Monitoring systems provide actionable insights
+  - ✅ Code maintainability preserved during optimization
+  - ✅ User experience significantly improved
 
-  **Ready to start performance optimization. Which area's performance would you like to improve?**
+  **Ready to optimize performance. What performance areas would you like to focus on?**

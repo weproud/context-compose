@@ -4,21 +4,13 @@ name: Test
 description: Comprehensive testing execution with detailed analysis and reporting
 prompt: |
   Execute comprehensive testing with detailed analysis and quality validation.
-
-  This action runs complete test suites including unit, integration, and end-to-end
-  tests with proper environment setup and failure analysis. It ensures code quality
-  through coverage validation and provides detailed reporting for continuous
-  improvement.
-
-  Use this for quality assurance before deployments, code reviews, or when
-  validating new features. The process includes automated test discovery,
-  parallel execution, and comprehensive reporting for team visibility.
+  Run complete test suites including unit, integration, and end-to-end tests.
+  Ensure proper environment setup and failure analysis.
+  Provide detailed reporting for continuous improvement and team visibility.
 enhanced-prompt: |-
   # 🧪 Testing Workflow
 
-  ## Core Steps
-
-  **1. Environment Setup**
+  ## Environment Setup
   ```bash
   # Check test environment
   [ -f "package.json" ] || { echo "❌ No package.json"; exit 1; }
@@ -30,20 +22,22 @@ enhanced-prompt: |-
   [ -f "jest.config.js" ] && echo "✅ Jest config found" || echo "⚠️ No Jest config"
   ```
 
-  **2. Test Discovery & Execution**
+  ## Test Execution
   ```bash
-  # Run different test types
+  # Run unit tests
   echo "🧪 Running unit tests..."
   npm run test:unit 2>/dev/null || npm test
 
+  # Run integration tests
   echo "🔗 Running integration tests..."
   npm run test:integration 2>/dev/null || echo "⚠️ No integration tests"
 
+  # Run e2e tests
   echo "🌐 Running e2e tests..."
   npm run test:e2e 2>/dev/null || echo "⚠️ No e2e tests"
   ```
 
-  **3. Coverage Analysis**
+  ## Coverage Analysis
   ```bash
   # Generate coverage report
   npm run test:coverage 2>/dev/null || npm test -- --coverage
@@ -58,16 +52,13 @@ enhanced-prompt: |-
   fi
   ```
 
-  **4. Results Analysis**
+  ## Results Analysis
   ```bash
   # Test summary
   echo "📊 Test Results Summary:"
   echo "- Unit tests: $(npm test 2>&1 | grep -o '[0-9]* passing' || echo 'Unknown')"
   echo "- Coverage: ${COVERAGE}%"
   echo "- Status: $([ $? -eq 0 ] && echo '✅ All tests passed' || echo '❌ Some tests failed')"
-
-  # Generate report
-  echo "📄 Test report available in coverage/ directory"
   ```
 
   **🎯 Result:** Comprehensive test validation with quality metrics and detailed reporting
