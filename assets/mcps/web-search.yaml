@@ -4,34 +4,55 @@ name: web-search
 description: Web search capabilities for research and information gathering
 prompt: Use web search for comprehensive research and information gathering
 enhanced-prompt: |-
-  **Use web search capabilities for comprehensive research and accurate information gathering.**
+  # 🔍 Web Search Research
 
-  ## Search Objectives
-  1. **Information Research:**
-     - Find current documentation and tutorials
-     - Research best practices and patterns
-     - Discover solutions to technical problems
-     - Gather competitive intelligence
+  ## Search Strategy
 
-  2. **Technical Research:**
-     - Find library documentation and examples
-     - Research API specifications and usage
-     - Discover troubleshooting solutions
-     - Identify security vulnerabilities and fixes
+  **1. Query Optimization**
+  ```bash
+  # Specific technical searches
+  "React hooks useEffect cleanup" site:reactjs.org
+  "TypeScript generic constraints" official documentation
+  "Node.js stream API" latest version examples
+  ```
 
-  ## Search Strategies
-  1. **Query Optimization:**
-     - Use specific technical terms and keywords
-     - Include version numbers and technology stack
-     - Add context like "tutorial", "documentation", "example"
-     - Use site-specific searches (site:github.com, site:stackoverflow.com)
+  **2. Source Prioritization**
+  - Official documentation (highest priority)
+  - GitHub repositories and README files
+  - Stack Overflow and technical forums
+  - Technical blogs and recent tutorials
+  - Academic papers for research
 
-  2. **Source Prioritization:**
-     - Official documentation sites (highest priority)
-     - GitHub repositories and README files
-     - Stack Overflow and technical forums
-     - Technical blogs and tutorials
-     - Academic papers and research
+  **3. Search Categories**
+  ```bash
+  # Documentation
+  "API documentation" [library name] official
+
+  # Problem solving
+  "[error message]" solution fix
+
+  # Best practices
+  "[technology]" best practices 2024
+
+  # Tutorials
+  "[technology]" tutorial step-by-step
+  ```
+
+  **4. Information Validation**
+  - Check publication dates for currency
+  - Verify author credentials
+  - Cross-reference multiple sources
+  - Test code examples
+  - Validate against official docs
+
+  **5. Research Process**
+  - Formulate specific queries
+  - Evaluate source credibility
+  - Extract actionable insights
+  - Synthesize information from multiple sources
+  - Document findings with references
+
+  **🎯 Result:** Comprehensive, validated research with actionable insights and reliable sources
 
   ## Search Process
   1. **Query Formulation:**

@@ -4,43 +4,43 @@ name: playwright
 description: Browser automation and end-to-end testing with Playwright
 prompt: Create E2E tests and browser automation using Playwright with best practices
 enhanced-prompt: |-
-  **Create comprehensive browser automation and E2E tests using Playwright.**
+  # 🎭 Playwright E2E Testing
 
-  ## Test Development Process
-  1. **Test Planning:**
-     - Identify user flows and critical paths to test
-     - Define test scenarios and acceptance criteria
-     - Plan cross-browser testing strategy
-     - Determine test data requirements
+  ## Core Test Patterns
 
-  2. **Test Implementation:**
-     - Write user-centric test cases focusing on real workflows
-     - Use robust selectors (data-testid, role, text)
-     - Implement proper wait strategies for async operations
-     - Handle dynamic content and loading states
-
-  3. **Test Enhancement:**
-     - Add visual regression testing with screenshots
-     - Include accessibility testing checks
-     - Monitor performance metrics during tests
-     - Implement retry logic for flaky tests
-
-  ## Playwright Best Practices
-  **Selector Strategy:**
-  - Prefer `data-testid` attributes for test-specific selectors
-  - Use semantic selectors: `page.getByRole()`, `page.getByText()`
-  - Avoid CSS selectors that depend on styling
-  - Chain locators for precise element targeting
-
-  **Async Handling:**
-  - Use `page.waitForSelector()` for element visibility
-  - Implement `page.waitForResponse()` for API calls
-  - Use `expect(locator).toBeVisible()` for assertions
-  - Handle network requests with `page.route()`
-
-  ## Common Test Patterns
+  **1. Test Setup**
   ```typescript
-  // Page Object Model
+  import { test, expect, Page } from '@playwright/test';
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+  ```
+
+  **2. Robust Selectors**
+  ```typescript
+  // Preferred selectors
+  await page.getByTestId('submit-button').click();
+  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByText('Welcome').waitFor();
+
+  // Avoid CSS selectors that depend on styling
+  ```
+
+  **3. Async Handling**
+  ```typescript
+  // Wait for elements
+  await page.waitForSelector('[data-testid="results"]');
+
+  // Wait for API responses
+  await page.waitForResponse('**/api/users');
+
+  // Assertions with auto-wait
+  await expect(page.getByText('Success')).toBeVisible();
+  ```
+
+  **4. Page Object Model**
+  ```typescript
   class LoginPage {
     constructor(private page: Page) {}
     
@@ -50,29 +50,16 @@ enhanced-prompt: |-
       await this.page.getByRole('button', { name: 'Login' }).click();
     }
   }
+  ```
 
-  // Visual Testing
+  **5. Visual & Accessibility Testing**
+  ```typescript
+  // Screenshot comparison
   await expect(page).toHaveScreenshot('homepage.png');
 
-  // Accessibility Testing
+  // Accessibility testing
   const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
   expect(accessibilityScanResults.violations).toEqual([]);
   ```
 
-  ## Cross-Browser Testing
-  - Configure multiple browser contexts (Chromium, Firefox, WebKit)
-  - Test responsive design across different viewport sizes
-  - Validate browser-specific features and compatibility
-  - Use parallel execution for faster test runs
-
-  ## Test Structure
-  - **Setup**: Browser launch, context creation, test data preparation
-  - **Execution**: User action simulation and state verification
-  - **Teardown**: Cleanup, screenshot capture, artifact collection
-  - **Reporting**: Test results, failure analysis, performance metrics
-
-  ## Quality Assurance
-  - Use Page Object Model for maintainable test code
-  - Implement proper error handling and debugging
-  - Add test timeouts and retry mechanisms
-  - Include test data management and cleanup
+  **🎯 Result:** Reliable E2E tests with robust selectors and comprehensive validation
