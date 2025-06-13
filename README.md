@@ -43,24 +43,27 @@ Context Compose provides task-specific contexts that can be composed together, e
 
 ## 📖 Usage Examples
 
-### Initialize Project
+### Initialize Project (prompt) 
 
 ```
-(prompt) initialize project with context-compose
+initialize project with context-compose
 ```
 
-### Basic Context Loading
+### Basic Context Loading (prompt)
 
+#### Load default development context
+```
+get-context default with context-compose
 ```
 
-# Load default development context
-(prompt) get-context default with context-compose
+#### Load feature development context with enhanced guidelines (prompt)
+```
+get-context feature --enhanced-prompt with context-compose
+```
 
-# Load feature development context with enhanced guidelines
-(prompt) get-context feature --enhanced-prompt with context-compose
-
-# Load API development context
-(prompt) get-context api with context-compose
+#### Load API development context (prompt)
+```
+get-context api with context-compose
 ```
 
 ### Context Structure Example
