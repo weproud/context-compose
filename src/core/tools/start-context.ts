@@ -13,6 +13,11 @@ import {
 } from '../errors.js';
 import { fileExists } from '../utils/index.js';
 import * as z from 'zod';
+import { readYamlFile } from '../utils/yaml.js';
+import {
+  processContextSections,
+  combinePrompts,
+} from '../utils/prompt-combiner.js';
 
 /**
  * Main context YAML file structure type
@@ -31,24 +36,6 @@ interface ContextYaml {
   };
   prompt?: string;
   'enhanced-prompt'?: string;
-}
-
-/**
- * Read and parse a YAML file asynchronously.
- */
-async function readYamlFile<T>(filePath: string): Promise<T> {
-  if (!(await fileExists(filePath))) {
-    throw new FileNotFoundError(filePath);
-  }
-  try {
-    const content = await readFile(filePath, 'utf8');
-    return parseYaml(content) as T;
-  } catch (error) {
-    throw new YamlParseError(
-      filePath,
-      error instanceof Error ? error : new Error(String(error))
-    );
-  }
 }
 
 /**
@@ -73,36 +60,6 @@ async function readContextFile(
 }
 
 /**
- * Combines prompts from the main context file and all its components
- * into a single string for the AI model.
- */
-function combinePrompts(
-  contextYaml: ContextYaml,
-  useEnhancedPrompt = true
-): string {
-  const promptToUse = useEnhancedPrompt
-    ? contextYaml['enhanced-prompt']
-    : contextYaml.prompt;
-
-  if (!promptToUse) {
-    throw new Error(
-      `No suitable prompt found for context '${contextYaml.name}'. Checked for 'enhanced-prompt' and 'prompt'.`
-    );
-  }
-
-  // The final prompt is now just the enhanced prompt from the context file itself.
-  // The referenced files are for future use or can be used by the model if it's aware of them.
-  // The user's request was to combine prompts, but the provided `*-context.yaml` files already contain a perfect "enhanced-prompt".
-  // Re-building it would be redundant. The important part is loading it.
-  // The `enhanced-prompt` in the context files already summarizes the philosophy.
-  // The user's final instruction is to ask the user what to do next.
-
-  const finalPrompt = `${promptToUse}\\n\\nWhat task should we start?`;
-
-  return finalPrompt;
-}
-
-/**
  * Main tool logic for starting a context.
  * It reads the specified context file and constructs the initial prompt.
  */
@@ -116,18 +73,19 @@ export async function executeStartContext(
       input.contextName
     );
 
-    // 2. The new logic is to just use the enhanced prompt from the context file.
-    // The `processContextSections` is not strictly needed to generate the prompt if we follow the pattern
-    // in the provided `assets/*-context.yaml` files, but we can keep it for potential future use,
-    // and to validate that all referenced files exist.
-    // const _processedSections = processContextSections(
-    //   input.projectRoot,
-    //   contextYaml.context,
-    //   true, // `validateFiles` is set to true
-    // );
+    // 2. Process all referenced files (personas, rules, etc.)
+    const processedSections = await processContextSections(
+      input.projectRoot,
+      contextYaml.context,
+      input.enhancedPrompt
+    );
 
     // 3. Combine prompts into a single string
-    const combinedPrompt = combinePrompts(contextYaml, input.enhancedPrompt);
+    const combinedPrompt = combinePrompts(
+      contextYaml,
+      processedSections,
+      input.enhancedPrompt
+    );
 
     return {
       success: true,
