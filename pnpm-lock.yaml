@@ -11,9 +11,6 @@ importers:
       commander:
         specifier: ^11.1.0
         version: 11.1.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.5.0
       fastmcp:
         specifier: ^2.2.1
         version: 2.2.1

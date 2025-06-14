@@ -21,7 +21,7 @@
     "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
     "beta-release": "npm run pre-publish && npm publish --access public --tag beta",
     "publish": "npm run pre-publish && npm publish --access public",
-    "release": "release-it",
+    "release": "GITHUB_TOKEN=$(gh auth token) release-it",
     "release:dry": "release-it --dry-run",
     "release:beta": "release-it --preRelease=beta",
     "gh:view-releases": "gh release list",
@@ -55,7 +55,6 @@
   ],
   "dependencies": {
     "commander": "^11.1.0",
-    "dotenv": "^16.4.5",
     "fastmcp": "^2.2.1",
     "fs-extra": "^11.3.0",
     "inquirer": "^12.6.3",

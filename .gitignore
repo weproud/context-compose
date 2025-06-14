@@ -93,3 +93,23 @@ temp/
 
 .contextcompose/
 .contextcompose*
+
+# Additional changes from the code block
+/dist
+/mcp-server/dist
+/node_modules
+
+.DS_Store
+*.pem
+*.key
+*.cer
+*.p12
+*.pfx
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables file
+.env
