@@ -21,7 +21,11 @@
     "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
     "beta-release": "npm run pre-publish && npm publish --access public --tag beta",
     "publish": "npm run pre-publish && npm publish --access public",
-    "release": "release-it"
+    "release": "release-it",
+    "release:dry": "release-it --dry-run",
+    "release:beta": "release-it --preRelease=beta",
+    "gh:view-releases": "gh release list",
+    "gh:view-latest": "gh release view --web"
   },
   "repository": {
     "type": "git",
