@@ -142,13 +142,13 @@ Customizing Context Compose is its core strength. You can override built-in asse
     # ...
 
     context:
-    personas: - personas/frontend-expert.yaml
-    rules: - rules/typescript-best-practices.yaml
+      personas: - personas/frontend-expert.yaml
+      rules: - rules/typescript-best-practices.yaml
 
-    # Your new custom category is now part of the context!
+      # Your new custom category is now part of the context!
 
-    principles: - principles/team-values.yaml
-    `When you run`context-compose start-context feature`, the content of `team-values.yaml` will be automatically included in the final prompt.
+      principles: - principles/team-values.yaml
+      `When you run`context-compose start-context feature`, the content of `team-values.yaml` will be automatically included in the final prompt.
 
     ```
 
