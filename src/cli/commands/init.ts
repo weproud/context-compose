@@ -34,7 +34,7 @@ export function initCommand(program: Command): void {
           }
         }
 
-        const result = await executeInitTool(process.cwd());
+        const result = await executeInitTool({ projectRoot: process.cwd() });
         if (result.success) {
           console.info(result.message);
         } else {

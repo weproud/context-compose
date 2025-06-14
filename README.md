@@ -2,7 +2,7 @@
 
 **Composable Contexts for High-Quality, AI-Powered Development**
 
-## 🎯 Why Context Compose?
+## Why Context Compose?
 
 While high-level requirements documents (like PRDs) provide overall project goals, they often lack the detailed, task-specific context needed for day-to-day development. Each unit of work—be it a new feature, a bug fix, or a refactor—requires its own focused set of rules, expert perspectives, and guidelines to ensure consistency and quality.
 
@@ -18,7 +18,7 @@ Context Compose provides a simple yet powerful system for defining, composing, a
 **The Solution:**
 Context Compose allows you to define reusable, task-specific contexts that can be composed on demand. This ensures every task is approached with the right expertise and standards, leading to consistent, high-quality results across your entire team.
 
-## ✨ Key Features
+## Key Features
 
 - 🎯 **Task-Specific Contexts**: Create dedicated contexts for features, bug fixes, refactoring, API design, and more.
 - 🧩 **Composable Architecture**: Mix and match components—like expert personas, coding rules, and specialized tools—to build the perfect context for any task.
@@ -26,15 +26,9 @@ Context Compose allows you to define reusable, task-specific contexts that can b
 - ⌨️ **Simple CLI**: A straightforward command-line interface (`start-context`) makes it easy to load contexts and integrate with your existing workflows.
 - 📂 **Clear File-Based Structure**: All contexts and assets are managed as simple YAML files, making them easy to version control, share, and edit.
 
-## 🤖 MCP Server Integration
+## MCP Server Integration
 
 To integrate Context Compose with an MCP-compatible client (like an IDE extension), you can register it as an MCP server.
-
-If you are running `context-compose` from your terminal, you can start the server by simply running the command without any arguments:
-
-```bash
-npx @noanswer/context-compose
-```
 
 For integration with automated tools, use the following configuration in your settings file:
 
@@ -51,7 +45,23 @@ For integration with automated tools, use the following configuration in your se
 
 This configuration tells the client how to start the `context-compose` server, ensuring it runs non-interactively.
 
-## 🚀 How It Works
+## Project Initialization
+
+Before using contexts, you need to initialize your project. This sets up the necessary `.contextcompose` directory and default assets.
+
+Copy and paste the following into your prompt to run it.
+
+```
+initialize my project using context-compose
+```
+
+**What happens**:
+
+- The `init` command runs.
+- A `.contextcompose` directory is created in your project root.
+- Default assets (personas, rules, etc.) are copied into it, ready for you to use or customize.
+
+## How It Works
 
 Context Compose works by reading a main context file and dynamically assembling a final, detailed prompt from various component files. The entire system is driven by a special directory in your project root: `.contextcompose/`.
 
@@ -61,22 +71,6 @@ Context Compose works by reading a main context file and dynamically assembling 
 4.  **Dynamic Composition**: The tool reads each referenced file, extracts its prompt, and combines everything into a single, comprehensive prompt.
 
 **The best part? It's fully extensible.** You can create any category you want. If you add a `security:` section to your context file, the tool will automatically look for files in a `.contextcompose/security/` directory.
-
-## 💻 Installation & Usage
-
-You can use `context-compose` directly without a local installation via `npx`.
-
-To start a task, simply run the `start-context` command with the name of your desired context.
-
-```bash
-# Start a new task using the 'feature' context
-npx @noanswer/context-compose start-context feature
-
-# Use the "--enhanced-prompt" flag for more detailed instructions
-npx @noanswer/context-compose start-context feature -e
-```
-
-This command assembles and outputs the full prompt, ready to be passed to an AI model.
 
 ### Context Structure Example
 
@@ -136,7 +130,8 @@ Customizing Context Compose is its core strength. You can override built-in asse
     ```
 
 3.  **Reference it in Your Context**: Now, you can add `principles` to any `*-context.yaml` file.
-    `yaml
+
+    ```yaml
 
     # .contextcompose/feature-context.yaml
 
@@ -155,6 +150,8 @@ Customizing Context Compose is its core strength. You can override built-in asse
     principles: - principles/team-values.yaml
     `When you run`context-compose start-context feature`, the content of `team-values.yaml` will be automatically included in the final prompt.
 
+    ```
+
 4.  **Validate Your Assets**
 
     After creating or modifying asset files, it's a good practice to validate them. Context Compose provides a `validate` command to check for common errors.
@@ -172,7 +169,19 @@ Customizing Context Compose is its core strength. You can override built-in asse
 
 ## 🎭 User Scenarios
 
-### 1. Frontend Developer: Building a New React Component
+### 1. Project Initialization
+
+Before using contexts, you need to initialize your project. This sets up the necessary `.contextcompose` directory and default assets.
+
+> initialize my project using context-compose
+
+**What happens**:
+
+- The `init` command runs.
+- A `.contextcompose` directory is created in your project root.
+- Default assets (personas, rules, etc.) are copied into it, ready for you to use or customize.
+
+### 2. Frontend Developer: Building a New React Component
 
 A developer is tasked with building a new search component using React and TypeScript. They would start by telling their AI assistant:
 
@@ -185,7 +194,7 @@ A developer is tasked with building a new search component using React and TypeS
 - Checklists from **Testing Rules** to ensure Jest/RTL coverage.
 - A **Sequential Thinking** framework to break down the task.
 
-### 2. Backend Developer: Creating a Secure API Endpoint
+### 3. Backend Developer: Creating a Secure API Endpoint
 
 A developer needs to create a new RESTful API endpoint for user authentication. They would start by telling their AI assistant:
 
@@ -197,7 +206,7 @@ A developer needs to create a new RESTful API endpoint for user authentication. 
 - Critical reminders from custom **Security Rules** based on OWASP guidelines.
 - Best practices from **Clean Code Rules** for maintainability.
 
-### 3. Team Lead: Performing a Code Review
+### 4. Team Lead: Performing a Code Review
 
 A team lead wants to ensure a consistent and thorough code review process. They would start by telling their AI assistant:
 
