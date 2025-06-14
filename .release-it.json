@@ -7,11 +7,7 @@
   },
   "github": {
     "release": true,
-    "releaseName": "Release v${version}",
-    "releaseNotes": "## Changes\n\n${changelog}",
-    "draft": false,
-    "preRelease": false,
-    "autoGenerate": true
+    "releaseName": "Release v${version}"
   },
   "npm": {
     "publish": false
