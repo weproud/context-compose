@@ -19,7 +19,8 @@
     "type-check": "tsc --noEmit",
     "ci": "npm run check && npm run type-check && npm run test:run",
     "pre-publish": "npm run check:fix && npm run test:run && npm run type-check && npm run build",
-    "beta-release": "npm publish --access public --tag beta",
+    "beta-release": "npm run pre-publish && npm publish --access public --tag beta",
+    "publish": "npm run pre-publish && npm publish --access public",
     "release": "release-it"
   },
   "repository": {
