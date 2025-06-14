@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+# [1.5.0](https://github.com/weproud/context-compose/compare/v1.4.0...v1.5.0) (2025-06-14)
+
+
+### Features
+
+* release-it 테스트 v4 ([42dd116](https://github.com/weproud/context-compose/commit/42dd116347b18b7bef62b7c3a46c6e7e6e44c511))
+
 # [1.4.0](https://github.com/weproud/context-compose/compare/v1.3.0...v1.4.0) (2025-06-14)
 
 
