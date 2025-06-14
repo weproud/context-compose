@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [1.5.1](https://github.com/weproud/context-compose/compare/v1.5.0...v1.5.1) (2025-06-14)
+
+
+### Bug Fixes
+
+* init cli 수정 ([19ef251](https://github.com/weproud/context-compose/commit/19ef251836a5254052707773c2db7ec8f0a0509e))
+
 # [1.5.0](https://github.com/weproud/context-compose/compare/v1.4.0...v1.5.0) (2025-06-14)
 
 
