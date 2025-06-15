@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "context-compose": "dist/bin/context-compose.js"
+    "context-compose": "dist/src/cli/index.js"
   },
   "scripts": {
     "build": "tsc",
