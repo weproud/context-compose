@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+# [1.8.0](https://github.com/weproud/context-compose/compare/v1.7.0...v1.8.0) (2025-06-16)
+
+
+### Features
+
+* 빌드 실패 해결 ([2a194c5](https://github.com/weproud/context-compose/commit/2a194c539b4e195b5a8c8ed61825f4edf97fe5b5))
+
 # [1.7.0](https://github.com/weproud/context-compose/compare/v1.6.0...v1.7.0) (2025-06-16)
 
 
