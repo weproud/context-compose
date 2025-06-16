@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [1.8.2](https://github.com/weproud/context-compose/compare/v1.8.1...v1.8.2) (2025-06-16)
+
+
+### Bug Fixes
+
+* stdio 에러 해결 ([06d2335](https://github.com/weproud/context-compose/commit/06d2335eeddba72c30ad64404f4955f7be6550f6))
+
 ## [1.8.1](https://github.com/weproud/context-compose/compare/v1.8.0...v1.8.1) (2025-06-16)
 
 
