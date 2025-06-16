@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -54,7 +55,6 @@ export async function findPackageJsonAsync(): Promise<PackageJson> {
  */
 export function findPackageJson(): PackageJson {
   // For CLI usage where we need synchronous access
-  const { existsSync, readFileSync } = require('node:fs');
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
@@ -117,7 +117,6 @@ async function findPackageJsonUpwardsAsync(
  * Synchronous version for backward compatibility
  */
 function findPackageJsonUpwards(startDir: string): string | null {
-  const { existsSync, readFileSync } = require('node:fs');
   let currentDir = startDir;
   const root = path.parse(currentDir).root;
 
