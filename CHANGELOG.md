@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 
 
+# [1.6.0](https://github.com/weproud/context-compose/compare/v1.5.2...v1.6.0) (2025-06-16)
+
+
+### Bug Fixes
+
+* test 케이스 실패 수정 ([a4bd5db](https://github.com/weproud/context-compose/commit/a4bd5dbc0c3ce7f99d48999c127478418cd211de))
+
+
+### Features
+
+* example 추가 ([ade518e](https://github.com/weproud/context-compose/commit/ade518e1213f848df4d70bf7431811c60b27e559))
+
 ## [1.5.2](https://github.com/weproud/context-compose/compare/v1.5.1...v1.5.2) (2025-06-16)
 
 
