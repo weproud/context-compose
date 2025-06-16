@@ -19,19 +19,17 @@
     "test:comprehensive": "pnpm test:smoke && pnpm test:unit",
     "test:all": "pnpm test:comprehensive && pnpm test:coverage",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest tests/**/*.test.ts",
+    "test:watch": "vitest",
     "test:automation": "./scripts/test-automation.sh",
     "check": "biome check src mcp-server",
     "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
-    "ci": "npm run check && npm run type-check && npm run test:comprehensive",
-    "pre-publish": "npm run check:fix && npm run test:all && npm run type-check && npm run build",
-    "npm-release": "npm run pre-publish && npm publish --access public",
-    "release": "GITHUB_TOKEN=$(gh auth token) release-it",
+    "ci": "pnpm check && pnpm run type-check && pnpm run test:comprehensive",
+    "pre-publish": "pnpm run check:fix && pnpm run test:all && pnpm run type-check && pnpm run build",
+    "pnpm-release": "pnpm run pre-publish && pnpm publish --access public",
+    "release": "release-it",
     "release:dry": "release-it --dry-run",
-    "release:beta": "release-it --preRelease=beta",
-    "gh:view-releases": "gh release list",
-    "gh:view-latest": "gh release view --web"
+    "release:beta": "release-it --preRelease=beta"
   },
   "repository": {
     "type": "git",
@@ -70,16 +68,16 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@playwright/test": "^1.52.0",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.8",
     "@types/mustache": "^4.2.6",
     "@types/node": "^22.15.29",
+    "@vitest/coverage-v8": "^3.2.3",
     "release-it": "^19.0.3",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.3"
   },
   "engines": {
     "node": ">=18.0.0"
