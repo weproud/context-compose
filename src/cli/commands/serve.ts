@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import ContextComposeServer from '../../../mcp-server/src/index.js';
-import logger from '../../../mcp-server/src/logger.js';
+import logger from '../../../mcp-server/src/logger';
 
 export function registerServeCommand(program: Command) {
   program

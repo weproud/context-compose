@@ -14,7 +14,7 @@ export function info(message: string, data: LogData = {}): void {
     message,
     ...data,
   };
-  console.info(JSON.stringify(logEntry));
+  process.stderr.write(JSON.stringify(logEntry) + '\n');
 }
 
 export function warn(message: string, data: LogData = {}): void {
@@ -25,7 +25,7 @@ export function warn(message: string, data: LogData = {}): void {
     message,
     ...data,
   };
-  console.warn(JSON.stringify(logEntry));
+  process.stderr.write(JSON.stringify(logEntry) + '\n');
 }
 
 export function error(message: string, data: LogData = {}): void {
@@ -36,7 +36,7 @@ export function error(message: string, data: LogData = {}): void {
     message,
     ...data,
   };
-  console.error(JSON.stringify(logEntry));
+  process.stderr.write(JSON.stringify(logEntry) + '\n');
 }
 
 export function debug(message: string, data: LogData = {}): void {
@@ -48,7 +48,7 @@ export function debug(message: string, data: LogData = {}): void {
       message,
       ...data,
     };
-    console.debug(JSON.stringify(logEntry));
+    process.stderr.write(JSON.stringify(logEntry) + '\n');
   }
 }
 

@@ -1,7 +1,7 @@
 import type { FastMCP } from 'fastmcp';
 import { executeValidateContextTool } from '../../../src/core/tools/validate-context.js';
 import { ValidateContextToolSchema } from '../../../src/schemas/validate-context.js';
-import logger from '../logger.js';
+import logger from '../logger';
 
 /**
  * Register Validate Context tool with MCP server

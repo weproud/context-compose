@@ -3,7 +3,7 @@
  * Export all Hello MCP tools for MCP server
  */
 import type { FastMCP } from 'fastmcp';
-import logger from '../logger.js';
+import logger from '../logger';
 
 import { registerInitTool } from './init.js';
 import { registerStartContextTool } from './start-context.js';

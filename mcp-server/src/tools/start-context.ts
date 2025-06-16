@@ -1,7 +1,7 @@
 import type { FastMCP } from 'fastmcp';
 import { executeStartContextTool } from '../../../src/core/tools/start-context.js';
 import { StartContextToolSchema } from '../../../src/schemas/start-context.js';
-import logger from '../logger.js';
+import logger from '../logger';
 
 /**
  * Register Start Context tool with MCP server
