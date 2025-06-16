@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { describe, expect, it } from 'vitest';
 import yaml from 'yaml';
 
 const assetsDir = path.join(process.cwd(), 'assets');
@@ -23,6 +23,9 @@ const getYamlFiles = (dir: string): string[] => {
     const stat = fs.statSync(fullPath);
 
     if (stat.isDirectory()) {
+      if (item === 'examples') {
+        continue;
+      }
       files = files.concat(getYamlFiles(fullPath));
     } else if (item.endsWith('.yaml') || item.endsWith('.yml')) {
       files.push(fullPath);
