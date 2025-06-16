@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { EnvSecurity } from './utils/security.js';
+import { getSafeEnvVars as getSecureSafeEnvVars } from './utils/security.js';
 
 /**
  * Environment variable loading utility
@@ -88,7 +88,7 @@ export function getRequiredEnv(key: string): string {
  */
 export function getSafeEnvVars(): Record<string, string> {
   loadEnv(); // Auto-load
-  return EnvSecurity.getSafeEnvVars();
+  return getSecureSafeEnvVars();
 }
 
 /**

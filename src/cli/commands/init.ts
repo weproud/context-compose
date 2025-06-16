@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import type { Command } from 'commander';
 import inquirer from 'inquirer';
-import { ErrorHandler } from '../../core/errors.js';
+import { handleError, logError } from '../../core/errors.js';
 import { executeInitTool } from '../../core/tools/init.js';
 
 async function confirmOverwrite(): Promise<boolean> {
@@ -43,8 +43,8 @@ export function initCommand(program: Command): void {
           process.exit(1);
         }
       } catch (error) {
-        ErrorHandler.logError(error, { command: 'init', cwd: process.cwd() });
-        const errorInfo = ErrorHandler.handleError(error);
+        logError(error, { command: 'init', cwd: process.cwd() });
+        const errorInfo = handleError(error);
         console.error(`❌ ${errorInfo.message}`);
         process.exit(errorInfo.statusCode >= 500 ? 1 : 0);
       }

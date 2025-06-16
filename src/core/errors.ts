@@ -121,87 +121,85 @@ export class InvalidProjectRootError extends AppError {
 }
 
 /**
- * Error handling utilities
+ * Handle error and return user-friendly message
  */
-export class ErrorHandler {
-  /**
-   * Handle error and return user-friendly message
-   */
-  static handleError(error: unknown): {
-    message: string;
-    code: string;
-    statusCode: number;
-    details?: Record<string, unknown>;
-  } {
-    if (error instanceof AppError) {
-      const result: {
-        message: string;
-        code: string;
-        statusCode: number;
-        details?: Record<string, unknown>;
-      } = {
-        message: error.toUserMessage(),
-        code: error.code,
-        statusCode: error.statusCode,
-      };
+export function handleError(error: unknown): {
+  message: string;
+  code: string;
+  statusCode: number;
+  details?: Record<string, unknown>;
+} {
+  if (error instanceof AppError) {
+    const result: {
+      message: string;
+      code: string;
+      statusCode: number;
+      details?: Record<string, unknown>;
+    } = {
+      message: error.toUserMessage(),
+      code: error.code,
+      statusCode: error.statusCode,
+    };
 
-      if (error.details) {
-        result.details = error.details;
-      }
-
-      return result;
+    if (error.details) {
+      result.details = error.details;
     }
 
-    if (error instanceof Error) {
-      return {
-        message: 'An unexpected error occurred. Please try again.',
-        code: 'UNKNOWN_ERROR',
-        statusCode: 500,
-        details: { originalMessage: error.message },
-      };
-    }
+    return result;
+  }
 
+  if (error instanceof Error) {
     return {
-      message: 'An unknown error occurred. Please try again.',
+      message: 'An unexpected error occurred. Please try again.',
       code: 'UNKNOWN_ERROR',
       statusCode: 500,
-      details: { error: String(error) },
+      details: { originalMessage: error.message },
     };
   }
 
-  /**
-   * Log error in structured format
-   */
-  static logError(error: unknown, context?: Record<string, unknown>): void {
-    const timestamp = new Date().toISOString();
+  return {
+    message: 'An unknown error occurred. Please try again.',
+    code: 'UNKNOWN_ERROR',
+    statusCode: 500,
+    details: { error: String(error) },
+  };
+}
 
-    if (error instanceof AppError) {
-      console.error(`[${timestamp}] ERROR:`, {
-        ...error.toLogFormat(),
-        context,
-      });
-    } else if (error instanceof Error) {
-      console.error(`[${timestamp}] ERROR:`, {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        context,
-      });
-    } else {
-      console.error(`[${timestamp}] ERROR:`, {
-        error: String(error),
-        context,
-      });
-    }
-  }
+/**
+ * Log error in structured format
+ */
+export function logError(
+  error: unknown,
+  context?: Record<string, unknown>
+): void {
+  const timestamp = new Date().toISOString();
 
-  /**
-   * Check if error is recoverable
-   */
-  static isRecoverable(error: unknown): boolean {
-    if (error instanceof AppError) {
-      return error.statusCode < 500;
-    }
-    return false;
+  if (error instanceof AppError) {
+    console.error(`[${timestamp}] ERROR:`, {
+      ...error.toLogFormat(),
+      context,
+    });
+  } else if (error instanceof Error) {
+    console.error(`[${timestamp}] ERROR:`, {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      context,
+    });
+  } else {
+    console.error(`[${timestamp}] ERROR:`, {
+      error: String(error),
+      context,
+    });
   }
+}
+
+/**
+ * Check if error is recoverable
+ */
+export function isRecoverable(error: unknown): boolean {
+  if (error instanceof AppError) {
+    return error.statusCode < 500;
+  }
+  return false;
 }

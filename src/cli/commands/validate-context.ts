@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { ErrorHandler } from '../../core/errors.js';
+import { handleError, logError } from '../../core/errors.js';
 import { executeValidateContextTool } from '../../core/tools/validate-context.js';
 import type { ValidateContextToolInput } from '../../schemas/validate-context.js';
 
@@ -30,11 +30,11 @@ export function validateContextCommand(program: Command): void {
           process.exit(1);
         }
       } catch (error) {
-        ErrorHandler.logError(error, {
+        logError(error, {
           command: 'validate',
           cwd: process.cwd(),
         });
-        const errorInfo = ErrorHandler.handleError(error);
+        const errorInfo = handleError(error);
         console.error(`❌ ${errorInfo.message}`);
         process.exit(errorInfo.statusCode >= 500 ? 1 : 0);
       }

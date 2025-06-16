@@ -1,13 +1,17 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import {
-  PathValidator,
-  SecuritySchemas,
-  InputSanitizer,
-  EnvSecurity,
-  RateLimiter,
-} from '../../src/core/utils/security.js';
-import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  getSafeEnvVars,
+  isSensitiveKey,
+  maskSensitiveValue,
+  PathValidator,
+  RateLimiter,
+  sanitizeContextName,
+  sanitizeFilename,
+  sanitizeString,
+  SecuritySchemas,
+} from '../../src/core/utils/security.js';
 
 describe('Security Utilities', () => {
   describe('PathValidator', () => {
@@ -134,70 +138,60 @@ describe('Security Utilities', () => {
   describe('InputSanitizer', () => {
     it('should sanitize strings by removing dangerous characters', () => {
       const input = 'Hello\x00World\x1f<script>alert("xss")</script>';
-      const sanitized = InputSanitizer.sanitizeString(input);
+      const sanitized = sanitizeString(input);
       expect(sanitized).toBe('HelloWorldalert("xss")');
     });
 
     it('should limit string length', () => {
       const longString = 'a'.repeat(2000);
-      const sanitized = InputSanitizer.sanitizeString(longString, 100);
+      const sanitized = sanitizeString(longString, 100);
       expect(sanitized).toHaveLength(100);
     });
 
     it('should sanitize filenames', () => {
-      expect(InputSanitizer.sanitizeFilename('valid-file.txt')).toBe(
-        'valid-file.txt'
-      );
-      expect(InputSanitizer.sanitizeFilename('invalid/file<name>.txt')).toBe(
+      expect(sanitizeFilename('valid-file.txt')).toBe('valid-file.txt');
+      expect(sanitizeFilename('invalid/file<name>.txt')).toBe(
         'invalid_file_name_.txt'
       );
-      expect(InputSanitizer.sanitizeFilename('file with spaces.txt')).toBe(
+      expect(sanitizeFilename('file with spaces.txt')).toBe(
         'file_with_spaces.txt'
       );
     });
 
     it('should sanitize context names', () => {
-      expect(InputSanitizer.sanitizeContextName('ValidContext')).toBe(
-        'validcontext'
-      );
-      expect(InputSanitizer.sanitizeContextName('Invalid Context!')).toBe(
-        'invalid-context'
-      );
-      expect(InputSanitizer.sanitizeContextName('context--with--dashes')).toBe(
+      expect(sanitizeContextName('ValidContext')).toBe('validcontext');
+      expect(sanitizeContextName('Invalid Context!')).toBe('invalid-context');
+      expect(sanitizeContextName('context--with--dashes')).toBe(
         'context-with-dashes'
       );
     });
 
     it('should throw error for empty context names', () => {
-      expect(() => InputSanitizer.sanitizeContextName('')).toThrow();
-      expect(() => InputSanitizer.sanitizeContextName('!!!')).toThrow();
+      expect(() => sanitizeContextName('')).toThrow();
+      expect(() => sanitizeContextName('!!!')).toThrow();
     });
   });
 
   describe('EnvSecurity', () => {
     it('should identify sensitive environment variable keys', () => {
-      expect(EnvSecurity.isSensitiveKey('API_KEY')).toBe(true);
-      expect(EnvSecurity.isSensitiveKey('DATABASE_PASSWORD')).toBe(true);
-      expect(EnvSecurity.isSensitiveKey('JWT_SECRET')).toBe(true);
-      expect(EnvSecurity.isSensitiveKey('SSL_PRIVATE_KEY')).toBe(true);
+      expect(isSensitiveKey('API_KEY')).toBe(true);
+      expect(isSensitiveKey('DATABASE_PASSWORD')).toBe(true);
+      expect(isSensitiveKey('JWT_SECRET')).toBe(true);
+      expect(isSensitiveKey('SSL_PRIVATE_KEY')).toBe(true);
 
-      expect(EnvSecurity.isSensitiveKey('NODE_ENV')).toBe(false);
-      expect(EnvSecurity.isSensitiveKey('PORT')).toBe(false);
-      expect(EnvSecurity.isSensitiveKey('DEBUG')).toBe(false);
+      expect(isSensitiveKey('NODE_ENV')).toBe(false);
+      expect(isSensitiveKey('PORT')).toBe(false);
+      expect(isSensitiveKey('DEBUG')).toBe(false);
     });
 
     it('should mask sensitive values', () => {
-      expect(EnvSecurity.maskSensitiveValue('API_KEY', 'secret123')).toBe(
-        'se*****23'
+      expect(maskSensitiveValue('API_KEY', 'secret123')).toBe('se*****23');
+      expect(maskSensitiveValue('PASSWORD', 'verylongpassword')).toBe(
+        've************rd'
       );
-      expect(
-        EnvSecurity.maskSensitiveValue('PASSWORD', 'verylongpassword')
-      ).toBe('ve************rd');
-      expect(EnvSecurity.maskSensitiveValue('SHORT', 'abc')).toBe('***');
+      expect(maskSensitiveValue('SHORT_KEY', 'abc')).toBe('***');
 
-      expect(EnvSecurity.maskSensitiveValue('NODE_ENV', 'production')).toBe(
-        'production'
-      );
+      expect(maskSensitiveValue('NODE_ENV', 'production')).toBe('production');
     });
 
     it('should get safe environment variables', () => {
@@ -205,7 +199,7 @@ describe('Security Utilities', () => {
       process.env.TEST_API_KEY = 'secret123';
       process.env.TEST_NODE_ENV = 'test';
 
-      const safeVars = EnvSecurity.getSafeEnvVars();
+      const safeVars = getSafeEnvVars();
 
       expect(safeVars.TEST_API_KEY).toBe('se*****23');
       expect(safeVars.TEST_NODE_ENV).toBe('test');

@@ -248,31 +248,28 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
-      - name: Test Results Summary
+      - name: Create Test Summary
+        if: always()
         run: |
-          echo "## 🧪 테스트 결과 요약" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 Test Result Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 테스트 스위트 상태" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 코드 품질 검사: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔥 Smoke 테스트: ${{ needs.smoke-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🧩 단위 테스트: ${{ needs.unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔗 통합 테스트: ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 🌐 E2E 테스트: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Suite Status" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Code Quality Check: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔥 Smoke Tests: ${{ needs.smoke-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🧩 Unit Tests: ${{ needs.unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔗 Integration Tests: ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 E2E Tests: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### CLI 및 MCP 도구 검증" >> $GITHUB_STEP_SUMMARY
-          echo "모든 테스트가 통과하면 CLI와 MCP 도구가 정상적으로 동작합니다." >> $GITHUB_STEP_SUMMARY
+          echo "### CLI and MCP Tool Verification" >> $GITHUB_STEP_SUMMARY
+          echo "If all tests pass, the CLI and MCP tools are working correctly." >> $GITHUB_STEP_SUMMARY
 
-      - name: Check overall test status
+      - name: Final Status
+        if: success()
         run: |
-          if [[ "${{ needs.code-quality.result }}" == "success" &&
-                "${{ needs.smoke-tests.result }}" == "success" &&
-                "${{ needs.unit-tests.result }}" == "success" &&
-                "${{ needs.integration-tests.result }}" == "success" &&
-                "${{ needs.e2e-tests.result }}" == "success" ]]; then
-            echo "🎉 모든 테스트가 성공했습니다!"
-            echo "✅ CLI와 MCP 도구가 정상적으로 동작합니다."
-          else
-            echo "❌ 일부 테스트가 실패했습니다."
-            echo "🔧 실패한 테스트를 확인하고 수정해주세요."
-            exit 1
-          fi
+          echo "🎉 All tests passed successfully!"
+          echo "✅ CLI and MCP tools are working correctly."
+      - name: Final Status (Failure)
+        if: failure()
+        run: |
+          echo "❌ Some tests failed."
+          exit 1

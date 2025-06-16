@@ -13,7 +13,7 @@ export class PathValidator {
 
   constructor(allowedBasePaths: string[] = []) {
     this.allowedBasePaths = new Set(
-      allowedBasePaths.map(path => resolve(normalize(path)))
+      allowedBasePaths.map((path) => resolve(normalize(path)))
     );
   }
 
@@ -52,7 +52,7 @@ export class PathValidator {
     // Check against allowed base paths if configured
     if (this.allowedBasePaths.size > 0) {
       const resolvedPath = resolve(normalizedPath);
-      const isAllowed = Array.from(this.allowedBasePaths).some(basePath => {
+      const isAllowed = Array.from(this.allowedBasePaths).some((basePath) => {
         const relativePath = relative(basePath, resolvedPath);
         return !relativePath.startsWith('..') && !isAbsolute(relativePath);
       });
@@ -104,7 +104,7 @@ export const SecuritySchemas = {
     .string()
     .min(1)
     .refine(
-      path => !path.includes('..'),
+      (path) => !path.includes('..'),
       'Project root cannot contain path traversal'
     ),
 
@@ -115,115 +115,108 @@ export const SecuritySchemas = {
 };
 
 /**
- * Input sanitization utilities
+ * Sanitize string input by removing dangerous characters
  */
-export class InputSanitizer {
-  /**
-   * Sanitize string input by removing dangerous characters
-   */
-  static sanitizeString(input: string, maxLength = 1000): string {
-    if (typeof input !== 'string') {
-      throw new Error('Input must be a string');
-    }
-
-    return input
-      .slice(0, maxLength)
-      .replace(/[\p{Cc}]/gu, '') // Remove control characters using Unicode property
-      .replace(/<[^>]*>/g, '') // Remove HTML/XML tags completely
-      .replace(/[<>]/g, '') // Remove remaining angle brackets
-      .trim();
+export function sanitizeString(input: string, maxLength = 1000): string {
+  if (typeof input !== 'string') {
+    throw new Error('Input must be a string');
   }
 
-  /**
-   * Sanitize filename
-   */
-  static sanitizeFilename(filename: string): string {
-    return filename
-      .replace(/[^a-zA-Z0-9._-]/g, '_')
-      .replace(/_{2,}/g, '_')
-      .slice(0, 255);
+  return input
+    .slice(0, maxLength)
+    .replace(/[\p{Cc}]/gu, '') // Remove control characters using Unicode property
+    .replace(/<[^>]*>/g, '') // Remove HTML/XML tags completely
+    .replace(/[<>]/g, '') // Remove remaining angle brackets
+    .trim();
+}
+
+/**
+ * Sanitize filename
+ */
+export function sanitizeFilename(filename: string): string {
+  return filename
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .replace(/_{2,}/g, '_')
+    .slice(0, 255);
+}
+
+/**
+ * Validate and sanitize context name
+ */
+export function sanitizeContextName(contextName: string): string {
+  if (!contextName || typeof contextName !== 'string') {
+    throw new Error('Context name must be a non-empty string');
   }
 
-  /**
-   * Validate and sanitize context name
-   */
-  static sanitizeContextName(contextName: string): string {
-    if (!contextName || typeof contextName !== 'string') {
-      throw new Error('Context name must be a non-empty string');
-    }
+  const sanitized = contextName
+    .toLowerCase()
+    .replace(/[^a-z0-9-_]/g, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-+|-+$/g, '') // Remove leading/trailing dashes
+    .slice(0, 100);
 
-    const sanitized = contextName
-      .toLowerCase()
-      .replace(/[^a-z0-9-_]/g, '-')
-      .replace(/-{2,}/g, '-')
-      .replace(/^-+|-+$/g, '') // Remove leading/trailing dashes
-      .slice(0, 100);
-
-    if (!sanitized || sanitized.length === 0) {
-      throw new Error('Context name cannot be empty after sanitization');
-    }
-
-    return sanitized;
+  if (!sanitized || sanitized.length === 0) {
+    throw new Error('Context name cannot be empty after sanitization');
   }
+
+  return sanitized;
 }
 
 /**
  * Environment variable security
  */
-export class EnvSecurity {
-  private static sensitiveKeys = new Set([
-    'password',
-    'secret',
-    'key',
-    'token',
-    'api_key',
-    'private_key',
-    'auth',
-    'credential',
-    'cert',
-    'ssl',
-    'tls',
-  ]);
+const sensitiveKeys = new Set([
+  'password',
+  'secret',
+  'key',
+  'token',
+  'api_key',
+  'private_key',
+  'auth',
+  'credential',
+  'cert',
+  'ssl',
+  'tls',
+]);
 
-  /**
-   * Check if environment variable key is sensitive
-   */
-  static isSensitiveKey(key: string): boolean {
-    const lowerKey = key.toLowerCase();
-    return Array.from(EnvSecurity.sensitiveKeys).some(sensitive =>
-      lowerKey.includes(sensitive)
-    );
-  }
+/**
+ * Check if environment variable key is sensitive
+ */
+export function isSensitiveKey(key: string): boolean {
+  const lowerKey = key.toLowerCase();
+  return Array.from(sensitiveKeys).some((sensitive) =>
+    lowerKey.includes(sensitive)
+  );
+}
 
-  /**
-   * Mask sensitive environment variable value
-   */
-  static maskSensitiveValue(key: string, value: string): string {
-    if (EnvSecurity.isSensitiveKey(key)) {
-      if (value.length <= 4) {
-        return '***';
-      }
-      // Show first 2 and last 2 characters with asterisks for the middle
-      const middleLength = value.length - 4;
-      return `${value.slice(0, 2)}${'*'.repeat(middleLength)}${value.slice(-2)}`;
+/**
+ * Mask sensitive environment variable value
+ */
+export function maskSensitiveValue(key: string, value: string): string {
+  if (isSensitiveKey(key)) {
+    if (value.length <= 4) {
+      return '***';
     }
-    return value;
+    // Show first 2 and last 2 characters with asterisks for the middle
+    const middleLength = value.length - 4;
+    return `${value.slice(0, 2)}${'*'.repeat(middleLength)}${value.slice(-2)}`;
   }
+  return value;
+}
 
-  /**
-   * Get safe environment variables for logging
-   */
-  static getSafeEnvVars(): Record<string, string> {
-    const safeVars: Record<string, string> = {};
+/**
+ * Get safe environment variables for logging
+ */
+export function getSafeEnvVars(): Record<string, string> {
+  const safeVars: Record<string, string> = {};
 
-    for (const [key, value] of Object.entries(process.env)) {
-      if (value !== undefined) {
-        safeVars[key] = EnvSecurity.maskSensitiveValue(key, value);
-      }
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined) {
+      safeVars[key] = maskSensitiveValue(key, value);
     }
-
-    return safeVars;
   }
+
+  return safeVars;
 }
 
 /**
@@ -247,7 +240,7 @@ export class RateLimiter {
     const requests = this.requests.get(identifier) || [];
 
     // Remove old requests outside the window
-    const validRequests = requests.filter(time => now - time < this.windowMs);
+    const validRequests = requests.filter((time) => now - time < this.windowMs);
 
     if (validRequests.length >= this.maxRequests) {
       return false;
@@ -264,7 +257,9 @@ export class RateLimiter {
   cleanup(): void {
     const now = Date.now();
     for (const [identifier, requests] of this.requests) {
-      const validRequests = requests.filter(time => now - time < this.windowMs);
+      const validRequests = requests.filter(
+        (time) => now - time < this.windowMs
+      );
       if (validRequests.length === 0) {
         this.requests.delete(identifier);
       } else {

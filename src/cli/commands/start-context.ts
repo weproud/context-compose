@@ -1,36 +1,44 @@
 import type { Command } from 'commander';
-import { ErrorHandler } from '../../core/errors.js';
+import { handleError, logError } from '../../core/errors.js';
 import { executeStartContextTool } from '../../core/tools/start-context.js';
+
+interface StartContextOptions {
+  projectRoot?: string;
+  enhancedPrompt?: boolean;
+}
 
 /**
  * Create Start Context CLI command
  */
-export function startContextCommand(program: Command): void {
+export function registerStartContextCommand(program: Command) {
   program
-    .command('start')
-    .description('Starts a new context from a persona.')
-    .argument('<persona>', 'The name of the persona to use.')
-    .action(async (persona: string) => {
+    .command('start-context <context-name>')
+    .description('Start a new context for a task.')
+    .option('--project-root <path>', 'The root directory of the project.')
+    .option('--enhanced-prompt', 'Use enhanced prompts.')
+    .action(async (contextName: string, options: StartContextOptions) => {
       try {
-        const input = { personaName: persona };
-        const result = await executeStartContextTool(input);
+        const result = await executeStartContextTool({
+          contextName,
+          projectRoot: options.projectRoot || process.cwd(),
+          enhancedPrompt: options.enhancedPrompt,
+        });
+
         if (result.success) {
           console.info(result.combinedPrompt);
-          // This is where the next step would be initiated
-          // For now, we just print the context.
         } else {
           console.error(`Error: ${result.message}`);
           process.exit(1);
         }
       } catch (error) {
-        ErrorHandler.logError(error, {
-          command: 'start',
-          persona,
-          cwd: process.cwd(),
+        logError(error, {
+          command: 'start-context',
+          contextName,
+          options,
         });
-        const errorInfo = ErrorHandler.handleError(error);
-        console.error(`❌ ${errorInfo.message}`);
-        process.exit(errorInfo.statusCode >= 500 ? 1 : 0);
+        const err = handleError(error);
+        console.error(`Error: ${err.message}`);
+        process.exit(1);
       }
     });
 }

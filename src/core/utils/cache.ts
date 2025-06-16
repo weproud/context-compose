@@ -203,13 +203,13 @@ export const fileCache = new MemoryCache<string>({
 /**
  * Memoization decorator for functions
  */
-export function memoize<T extends (...args: any[]) => any>(
-  fn: T,
-  keyGenerator?: (...args: Parameters<T>) => string
-): T {
-  const cache = new Map<string, ReturnType<T>>();
+export function memoize<TArgs extends readonly unknown[], TReturn>(
+  fn: (...args: TArgs) => TReturn,
+  keyGenerator?: (...args: TArgs) => string
+): (...args: TArgs) => TReturn {
+  const cache = new Map<string, TReturn>();
 
-  return ((...args: Parameters<T>): ReturnType<T> => {
+  return (...args: TArgs): TReturn => {
     const key = keyGenerator ? keyGenerator(...args) : JSON.stringify(args);
 
     if (cache.has(key)) {
@@ -222,23 +222,20 @@ export function memoize<T extends (...args: any[]) => any>(
     const result = fn(...args);
     cache.set(key, result);
     return result;
-  }) as T;
+  };
 }
 
 /**
  * Async memoization decorator
  */
-export function memoizeAsync<T extends (...args: any[]) => Promise<any>>(
-  fn: T,
-  keyGenerator?: (...args: Parameters<T>) => string,
+export function memoizeAsync<TArgs extends readonly unknown[], TReturn>(
+  fn: (...args: TArgs) => Promise<TReturn>,
+  keyGenerator?: (...args: TArgs) => string,
   ttl: number = 5 * 60 * 1000
-): T {
-  const cache = new Map<
-    string,
-    { result: Awaited<ReturnType<T>>; timestamp: number }
-  >();
+): (...args: TArgs) => Promise<TReturn> {
+  const cache = new Map<string, { result: TReturn; timestamp: number }>();
 
-  return (async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
+  return async (...args: TArgs): Promise<TReturn> => {
     const key = keyGenerator ? keyGenerator(...args) : JSON.stringify(args);
     const cached = cache.get(key);
 
@@ -249,106 +246,102 @@ export function memoizeAsync<T extends (...args: any[]) => Promise<any>>(
     const result = await fn(...args);
     cache.set(key, { result, timestamp: Date.now() });
     return result;
-  }) as T;
+  };
 }
 
 /**
  * Performance monitoring utilities
  */
-export class PerformanceMonitor {
-  private static timers = new Map<string, number>();
-  private static metrics = new Map<
-    string,
-    { count: number; totalTime: number; avgTime: number }
-  >();
+const timers = new Map<string, number>();
+const metrics = new Map<
+  string,
+  { count: number; totalTime: number; avgTime: number }
+>();
 
-  /**
-   * Start timing an operation
-   */
-  static startTimer(operation: string): void {
-    PerformanceMonitor.timers.set(operation, performance.now());
+/**
+ * Start timing an operation
+ */
+export function startTimer(operation: string): void {
+  timers.set(operation, performance.now());
+}
+
+/**
+ * End timing an operation and record metrics
+ */
+export function endTimer(operation: string): number {
+  const startTime = timers.get(operation);
+  if (!startTime) {
+    throw new Error(`Timer for operation '${operation}' was not started`);
   }
 
-  /**
-   * End timing an operation and record metrics
-   */
-  static endTimer(operation: string): number {
-    const startTime = PerformanceMonitor.timers.get(operation);
-    if (!startTime) {
-      throw new Error(`Timer for operation '${operation}' was not started`);
-    }
+  const duration = performance.now() - startTime;
+  timers.delete(operation);
 
-    const duration = performance.now() - startTime;
-    PerformanceMonitor.timers.delete(operation);
+  // Update metrics
+  const existing = metrics.get(operation) || {
+    count: 0,
+    totalTime: 0,
+    avgTime: 0,
+  };
+  existing.count++;
+  existing.totalTime += duration;
+  existing.avgTime = existing.totalTime / existing.count;
+  metrics.set(operation, existing);
 
-    // Update metrics
-    const existing = PerformanceMonitor.metrics.get(operation) || {
-      count: 0,
-      totalTime: 0,
-      avgTime: 0,
-    };
-    existing.count++;
-    existing.totalTime += duration;
-    existing.avgTime = existing.totalTime / existing.count;
-    PerformanceMonitor.metrics.set(operation, existing);
+  return duration;
+}
 
-    return duration;
-  }
+/**
+ * Get performance metrics for an operation
+ */
+export function getMetrics(
+  operation: string
+): { count: number; totalTime: number; avgTime: number } | undefined {
+  return metrics.get(operation);
+}
 
-  /**
-   * Get performance metrics for an operation
-   */
-  static getMetrics(
-    operation: string
-  ): { count: number; totalTime: number; avgTime: number } | undefined {
-    return PerformanceMonitor.metrics.get(operation);
-  }
+/**
+ * Get all performance metrics
+ */
+export function getAllMetrics(): Record<
+  string,
+  { count: number; totalTime: number; avgTime: number }
+> {
+  return Object.fromEntries(metrics);
+}
 
-  /**
-   * Get all performance metrics
-   */
-  static getAllMetrics(): Record<
-    string,
-    { count: number; totalTime: number; avgTime: number }
-  > {
-    return Object.fromEntries(PerformanceMonitor.metrics);
-  }
+/**
+ * Clear all metrics
+ */
+export function clearMetrics(): void {
+  timers.clear();
+  metrics.clear();
+}
 
-  /**
-   * Clear all metrics
-   */
-  static clearMetrics(): void {
-    PerformanceMonitor.timers.clear();
-    PerformanceMonitor.metrics.clear();
-  }
+/**
+ * Decorator for timing function execution
+ */
+export function timeFunction<TArgs extends readonly unknown[], TReturn>(
+  fn: (...args: TArgs) => TReturn,
+  operationName?: string
+): (...args: TArgs) => TReturn {
+  const name = operationName || fn.name || 'anonymous';
 
-  /**
-   * Decorator for timing function execution
-   */
-  static timeFunction<T extends (...args: any[]) => any>(
-    fn: T,
-    operationName?: string
-  ): T {
-    const name = operationName || fn.name || 'anonymous';
+  return (...args: TArgs): TReturn => {
+    startTimer(name);
+    try {
+      const result = fn(...args);
 
-    return ((...args: Parameters<T>): ReturnType<T> => {
-      PerformanceMonitor.startTimer(name);
-      try {
-        const result = fn(...args);
-
-        // Handle async functions
-        if (result instanceof Promise) {
-          return result.finally(() =>
-            PerformanceMonitor.endTimer(name)
-          ) as ReturnType<T>;
-        }
-
-        PerformanceMonitor.endTimer(name);
-        return result;
-      } catch (error) {
-        PerformanceMonitor.endTimer(name);
-        throw error;
+      // Handle async functions
+      if (result instanceof Promise) {
+        return result.finally(() => endTimer(name)) as TReturn;
       }
-    }) as T;
-  }
+
+      endTimer(name);
+      return result;
+    } catch (error) {
+      endTimer(name);
+      throw error;
+    }
+  };
 }
