@@ -14,7 +14,7 @@
     "inspect:built": "npx fastmcp inspect dist/mcp-server/server.js",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:smoke": "vitest run --test-name-pattern 'Smoke'",
+    "test:smoke": "vitest run tests/smoke/**/*.test.ts",
     "test:unit": "vitest run",
     "test:comprehensive": "pnpm test:smoke && pnpm test:unit",
     "test:all": "pnpm test:comprehensive && pnpm test:coverage",
