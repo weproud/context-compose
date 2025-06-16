@@ -26,8 +26,7 @@ enhanced-prompt: |-
 
   ### Test-Type Guide
   - **Unit Tests**: Test individual functions, methods, or components in isolation. Replace dependencies with mock objects to block external influences.
-  - **Integration Tests**: Verify that multiple components or services work together correctly. Can test integration with a real database or external APIs, but this should be controlled within the test environment.
-  - **E2E Tests**: Test the entire application flow from a real user's perspective. Use tools like Playwright or Cypress to run scenarios directly in a browser. These tests are expensive, so focus on critical user journeys.
+  - **Smoke Tests**: Quick validation tests that verify core functionality is working. These tests should run fast and catch major issues early.
 
   ### Testing Best Practices
   - **Test Failure Cases**: In addition to success scenarios, be sure to test various exceptions and failure situations, such as invalid inputs, unauthorized access, and network errors.

@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 
-// MCP Tool 관련 타입들
+// MCP Tool related types
 export interface MCPTool {
   name: string;
   description: string;
@@ -8,7 +8,7 @@ export interface MCPTool {
   handler: (_args: unknown) => Promise<unknown>;
 }
 
-// MCP 자원 타입
+// MCP resource type
 export interface MCPResource {
   uri: string;
   name: string;
@@ -16,7 +16,7 @@ export interface MCPResource {
   mimeType?: string;
 }
 
-// 로그 엔트리 타입
+// Log entry type
 export interface LogEntry {
   timestamp: string;
   level: 'info' | 'warn' | 'error' | 'debug';
@@ -24,21 +24,9 @@ export interface LogEntry {
   metadata?: Record<string, unknown>;
 }
 
-// CLI 명령 타입
+// CLI command type
 export interface CLICommand {
   name: string;
   description: string;
   action: (..._args: unknown[]) => Promise<void>;
-}
-
-// 에러 타입
-export class MCPError extends Error {
-  constructor(
-    message: string,
-    public _code: string,
-    public _statusCode = 500
-  ) {
-    super(message);
-    this.name = 'MCPError';
-  }
 }

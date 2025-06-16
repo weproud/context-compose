@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
+import { findPackageJson } from '../core/utils/index.js';
 import { initCommand } from './commands/init.js';
 import { startContextCommand } from './commands/start-context.js';
 import { validateContextCommand } from './commands/validate-context.js';
@@ -61,11 +62,14 @@ function main() {
     return;
   }
 
+  // Get version from package.json dynamically
+  const packageJson = findPackageJson();
+
   const program = new Command();
   program
     .name('context-compose')
     .description('A CLI and MCP server for composable AI contexts.')
-    .version('1.2.0'); // Make sure this is in sync with package.json
+    .version(packageJson.version);
 
   // Register all commands
   initCommand(program);

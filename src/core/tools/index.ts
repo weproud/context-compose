@@ -9,6 +9,9 @@ export { executeInit, executeInitTool } from './init.js';
 // Start Context tool
 export { executeStartContextTool } from './start-context.js';
 
+// Validate Context tool
+export { executeValidateContextTool } from './validate-context.js';
+
 // Start Context schema (re-exported from schemas)
 export { StartContextToolSchema } from '../../schemas/start-context.js';
 

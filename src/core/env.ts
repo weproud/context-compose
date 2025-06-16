@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { EnvSecurity } from './utils/security.js';
 
 /**
  * Environment variable loading utility
@@ -56,12 +57,12 @@ export function loadEnv(): void {
 }
 
 /**
- * Gets specific environment variable value.
+ * Gets environment variable value with default fallback.
  * @param key Environment variable key
- * @param defaultValue Default value (optional)
- * @returns Environment variable value or default value
+ * @param defaultValue Default value if not set
+ * @returns Environment variable value or default
  */
-export function getEnv(key: string, defaultValue?: string): string | undefined {
+export function getEnv(key: string, defaultValue = ''): string {
   loadEnv(); // Auto-load
   return process.env[key] ?? defaultValue;
 }
@@ -80,6 +81,28 @@ export function getRequiredEnv(key: string): string {
     throw new Error(`Required environment variable ${key} is not set.`);
   }
   return value;
+}
+
+/**
+ * Gets safe environment variables for logging (masks sensitive values)
+ */
+export function getSafeEnvVars(): Record<string, string> {
+  loadEnv(); // Auto-load
+  return EnvSecurity.getSafeEnvVars();
+}
+
+/**
+ * Check if running in development mode
+ */
+export function isDevelopment(): boolean {
+  return getEnv('NODE_ENV', 'development') === 'development';
+}
+
+/**
+ * Check if running in production mode
+ */
+export function isProduction(): boolean {
+  return getEnv('NODE_ENV', 'development') === 'production';
 }
 
 /**

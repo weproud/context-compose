@@ -10,6 +10,7 @@ import {
   combinePrompts,
   processContextSections,
 } from '../utils/prompt-combiner.js';
+import { SecuritySchemas, defaultPathValidator } from '../utils/security.js';
 import { readYamlFile } from '../utils/yaml.js';
 
 /**
@@ -34,15 +35,27 @@ async function readContextFile(
   projectRoot: string,
   contextName: string
 ): Promise<ContextYaml> {
+  // Validate inputs for security
+  SecuritySchemas.projectRoot.parse(projectRoot);
+  SecuritySchemas.contextName.parse(contextName);
+
   const contextFilePath = join(
     projectRoot,
     '.contextcompose',
     `${contextName}-context.yaml`
   );
-  const context = await readYamlFile<ContextYaml>(contextFilePath);
+
+  // Validate path is within project root
+  const validatedPath = defaultPathValidator.validateContextPath(
+    contextFilePath,
+    projectRoot
+  );
+
+  const context = await readYamlFile<ContextYaml>(validatedPath);
   if (context.kind !== 'context') {
     throw new InvalidContextError(
-      `Invalid context file kind: ${context.kind}. Expected 'context'.`
+      `Invalid context file kind: ${context.kind}. Expected 'context'.`,
+      { contextName, kind: context.kind }
     );
   }
   return context;

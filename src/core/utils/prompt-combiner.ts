@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { InvalidContextError } from '../errors.js';
-import { readYamlFile } from './yaml.js';
+import { readYamlFiles } from './yaml.js';
 
 /**
  * Generic YAML structure for assets (personas, rules, actions, etc.)
@@ -45,33 +45,57 @@ export async function processContextSections(
   const processedSections: ProcessedSections = {};
   const promptStyle = useEnhancedPrompt ? 'enhanced-prompt' : 'prompt';
 
-  for (const section in contextSections) {
-    if (
-      Object.prototype.hasOwnProperty.call(contextSections, section) &&
-      contextSections[section]
-    ) {
-      processedSections[section] = [];
-      const files = contextSections[section] as string[];
+  // Process all sections in parallel for better performance
+  const sectionPromises = Object.entries(contextSections).map(
+    async ([section, files]) => {
+      if (!files || files.length === 0) {
+        return { section, prompts: [] };
+      }
 
-      for (const file of files) {
-        const filePath = join(projectRoot, '.contextcompose', file);
-        const asset = await readYamlFile<AssetYaml>(filePath);
+      // Read all files in this section in parallel
+      const filePaths = files.map((file) =>
+        join(projectRoot, '.contextcompose', file)
+      );
+      const assets = await readYamlFiles<AssetYaml>(filePaths);
 
-        // According to a memory, the kind in the YAML file should match the directory name (section).
-        const expectedKind = section.endsWith('s')
-          ? section.slice(0, -1)
-          : section;
+      const prompts: string[] = [];
+      const expectedKind = section.endsWith('s')
+        ? section.slice(0, -1)
+        : section;
+
+      for (let i = 0; i < assets.length; i++) {
+        const asset = assets[i];
+        const file = files[i];
+
+        if (!asset) {
+          continue;
+        }
+
+        // Validate kind
         if (asset.kind !== expectedKind) {
           throw new InvalidContextError(
-            `Invalid kind for ${file}. Expected '${expectedKind}', but got '${asset.kind}'.`
+            `Invalid kind for ${file}. Expected '${expectedKind}', but got '${asset.kind}'.`,
+            { file, expectedKind, actualKind: asset.kind }
           );
         }
 
         const prompt = asset[promptStyle] ?? asset.prompt;
         if (prompt) {
-          processedSections[section].push(prompt);
+          prompts.push(prompt);
         }
       }
+
+      return { section, prompts };
+    }
+  );
+
+  // Wait for all sections to complete
+  const sectionResults = await Promise.all(sectionPromises);
+
+  // Build the final result
+  for (const { section, prompts } of sectionResults) {
+    if (prompts.length > 0) {
+      processedSections[section] = prompts;
     }
   }
 

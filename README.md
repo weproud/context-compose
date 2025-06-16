@@ -218,6 +218,78 @@ A team lead wants to ensure a consistent and thorough code review process. They 
 - The perspective of an **Architecture Expert Persona** to check for anti-patterns.
 - Guidelines on providing constructive feedback.
 
+## 🧪 테스트 자동화
+
+Context Compose는 코드 수정 후 CLI와 MCP 도구의 정상 동작을 자동으로 검증하는 포괄적인 테스트 시스템을 제공합니다.
+
+### 테스트 스위트
+
+- **🔥 Smoke Tests**: 핵심 기능들의 빠른 검증
+- **🧩 Unit Tests**: 개별 함수와 모듈의 상세 테스트
+- **🔗 Integration Tests**: MCP 서버와 CLI의 통합 테스트
+- **🌐 E2E Tests**: 실제 사용자 시나리오 테스트
+
+### 테스트 실행 명령어
+
+```bash
+# 모든 테스트 실행
+npm run test:all
+
+# 개별 테스트 스위트 실행
+npm run test:smoke        # 빠른 검증
+npm run test:unit         # 단위 테스트
+
+# 테스트 커버리지 확인
+npm run test:coverage
+
+# 자동화 스크립트 실행 (모든 검증 포함)
+npm run test:automation
+```
+
+### 자동화된 검증 항목
+
+✅ **CLI 명령어 동작 확인**
+
+- `init`, `start-context`, `validate` 명령어 정상 실행
+- 에러 케이스 처리 검증
+- 다양한 프로젝트 구조에서의 동작 테스트
+
+✅ **MCP 서버 통합 검증**
+
+- 서버 시작/종료 테스트
+- 각 도구의 정상 동작 확인
+- 스키마 검증 및 에러 처리
+
+✅ **파일 시스템 작업 검증**
+
+- 프로젝트 초기화 확인
+- 컨텍스트 파일 생성/읽기 테스트
+- 권한 및 경로 처리 검증
+
+✅ **안정성 테스트**
+
+- 동시 실행 안정성
+- 메모리 사용량 모니터링
+
+### CI/CD 통합
+
+GitHub Actions를 통해 모든 커밋과 PR에서 자동으로 테스트가 실행됩니다:
+
+1. **코드 품질 검사** - Biome 린팅 및 TypeScript 타입 검사
+2. **Smoke 테스트** - 핵심 기능 빠른 검증
+3. **병렬 테스트 실행** - 단위 테스트 동시 실행
+4. **테스트 결과 요약** - 상세한 결과 리포트 생성
+
+### 개발자를 위한 혜택
+
+🚀 **자신감 있는 배포**: 모든 테스트 통과 시 CLI와 MCP 도구의 정상 동작 보장
+
+🔧 **빠른 피드백**: Smoke 테스트로 핵심 기능 문제를 즉시 발견
+
+📊 **투명한 품질**: 테스트 커버리지로 코드 품질 추적
+
+⚡ **효율적인 개발**: 수동 검증 없이 자동화된 테스트로 개발 속도 향상
+
 ## 📦 Built-in Assets Structure
 
 Context Compose comes with a set of pre-built assets to get you started. You can use them as is or override them by creating files with the same name in your project's `.contextcompose/` directory.

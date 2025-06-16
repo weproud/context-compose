@@ -28,13 +28,9 @@ enhanced-prompt: |-
   echo "🧪 Running unit tests..."
   npm run test:unit 2>/dev/null || npm test
 
-  # Run integration tests
-  echo "🔗 Running integration tests..."
-  npm run test:integration 2>/dev/null || echo "⚠️ No integration tests"
-
-  # Run e2e tests
-  echo "🌐 Running e2e tests..."
-  npm run test:e2e 2>/dev/null || echo "⚠️ No e2e tests"
+  # Run smoke tests
+  echo "💨 Running smoke tests..."
+  npm run test:smoke 2>/dev/null || echo "⚠️ No smoke tests"
   ```
 
   ## Coverage Analysis

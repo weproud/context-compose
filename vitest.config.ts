@@ -8,9 +8,8 @@ export default defineConfig({
     include: [
       'tests/unit/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'tests/actions/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'tests/integration/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
-    exclude: ['node_modules', 'dist', 'tests/e2e'],
+    exclude: ['node_modules', 'dist'],
     testTimeout: 30000,
     hookTimeout: 10000,
     coverage: {

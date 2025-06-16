@@ -1,4 +1,5 @@
 import type { Command } from 'commander';
+import { ErrorHandler } from '../../core/errors.js';
 import { executeValidateContextTool } from '../../core/tools/validate-context.js';
 import type { ValidateContextToolInput } from '../../schemas/validate-context.js';
 
@@ -29,12 +30,13 @@ export function validateContextCommand(program: Command): void {
           process.exit(1);
         }
       } catch (error) {
-        if (error instanceof Error) {
-          console.error(`An unexpected error occurred: ${error.message}`);
-        } else {
-          console.error('An unexpected error occurred.');
-        }
-        process.exit(1);
+        ErrorHandler.logError(error, {
+          command: 'validate',
+          cwd: process.cwd(),
+        });
+        const errorInfo = ErrorHandler.handleError(error);
+        console.error(`❌ ${errorInfo.message}`);
+        process.exit(errorInfo.statusCode >= 500 ? 1 : 0);
       }
     });
 }
