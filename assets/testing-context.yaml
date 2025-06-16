@@ -9,10 +9,9 @@ context:
     - personas/dan-abramov.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/testing-principles.yaml
-    - rules/clean-code.yaml
+    - rules/testing-standards.yaml
     - rules/error-handling.yaml
-    - rules/performance-guidelines.yaml
+    - rules/performance-best-practices.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml

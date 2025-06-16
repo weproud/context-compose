@@ -9,9 +9,7 @@ context:
     - personas/john-carmack.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/clean-code.yaml
     - rules/error-handling.yaml
-    - rules/testing-principles.yaml
     - rules/development.yaml
   mcps:
     - mcps/sequential-thinking.yaml

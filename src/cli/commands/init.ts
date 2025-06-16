@@ -31,13 +31,14 @@ export function initCommand(program: Command): void {
           const overwrite = await confirmOverwrite();
           if (!overwrite) {
             console.info('Operation cancelled.');
-            return;
+            process.exit(0);
           }
         }
 
         const result = await executeInitTool({ projectRoot: process.cwd() });
         if (result.success) {
           console.info(result.message);
+          process.exit(0);
         } else {
           console.error(`❌ ${result.message}`);
           process.exit(1);

@@ -26,6 +26,7 @@ export function registerStartContextCommand(program: Command) {
 
         if (result.success) {
           console.info(result.combinedPrompt);
+          process.exit(0);
         } else {
           console.error(`Error: ${result.message}`);
           process.exit(1);

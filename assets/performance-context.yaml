@@ -9,10 +9,8 @@ context:
     - personas/brendan-eich.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/performance-guidelines.yaml
-    - rules/clean-code.yaml
+    - rules/performance-best-practices.yaml
     - rules/development.yaml
-    - rules/testing-principles.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml

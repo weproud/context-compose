@@ -10,13 +10,7 @@ context:
     - personas/guillermo-rauch.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/clean-code.yaml
-    - rules/solid-principles.yaml
     - rules/development.yaml
-    - rules/testing-principles.yaml
-    - rules/api-design.yaml
-    - rules/performance-guidelines.yaml
-    - rules/accessibility-guidelines.yaml
     - rules/documentation-standards.yaml
   mcps:
     - mcps/sequential-thinking.yaml

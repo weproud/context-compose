@@ -10,8 +10,6 @@ context:
   rules:
     - rules/the-must-follow.yaml
     - rules/documentation-standards.yaml
-    - rules/clean-code.yaml
-    - rules/api-design.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml

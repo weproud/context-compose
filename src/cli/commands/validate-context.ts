@@ -23,12 +23,16 @@ export function validateContextCommand(program: Command): void {
           console.info('\nValidation Errors:');
           for (const error of result.errors) {
             console.error(`- File: ${error.filePath}`);
+            console.error(`  Error: ${error.message}`);
             if (error.details) {
               console.error(`  Details: ${error.details}`);
             }
           }
           process.exit(1);
         }
+
+        // Exit successfully when validation passes
+        process.exit(0);
       } catch (error) {
         logError(error, {
           command: 'validate',

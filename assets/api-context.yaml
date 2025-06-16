@@ -9,10 +9,7 @@ context:
     - personas/martin-fowler.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/api-design.yaml
-    - rules/clean-code.yaml
     - rules/security-guidelines.yaml
-    - rules/testing-principles.yaml
     - rules/error-handling.yaml
     - rules/documentation-standards.yaml
   mcps:

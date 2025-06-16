@@ -9,7 +9,6 @@ context:
   rules:
     - rules/the-must-follow.yaml
     - rules/security-guidelines.yaml
-    - rules/clean-code.yaml
     - rules/error-handling.yaml
     - rules/development.yaml
   mcps:

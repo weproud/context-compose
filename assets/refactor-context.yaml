@@ -9,11 +9,6 @@ context:
     - personas/uncle-bob.yaml
   rules:
     - rules/the-must-follow.yaml
-    - rules/clean-code.yaml
-    - rules/solid-principles.yaml
-    - rules/refactoring.yaml
-    - rules/testing-principles.yaml
-    - rules/performance-guidelines.yaml
   mcps:
     - mcps/sequential-thinking.yaml
     - mcps/context7.yaml

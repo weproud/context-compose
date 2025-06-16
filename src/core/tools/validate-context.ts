@@ -23,10 +23,13 @@ const RequiredFieldsSchema = z
   .passthrough();
 
 async function validateComponentFile(
-  filePath: string
-): Promise<ValidationError | null> {
+  filePath: string,
+  projectRoot: string
+): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+
   if (!(await fileExists(filePath))) {
-    return { filePath, message: 'File does not exist.' };
+    return [{ filePath, message: 'File does not exist.' }];
   }
 
   try {
@@ -35,23 +38,70 @@ async function validateComponentFile(
     const result = RequiredFieldsSchema.safeParse(yaml);
 
     if (!result.success) {
-      const missing = result.error.issues
-        .map((i) => i.path.join('.'))
-        .join(', ');
-      return {
+      const missing = result.error.issues.map(i => i.path.join('.')).join(', ');
+      errors.push({
         filePath,
         message: `Missing or invalid required fields: ${missing}`,
-      };
+      });
+    }
+
+    // Check if this is a context file and validate references
+    const fileName = filePath.split('/').pop() || '';
+    if (
+      fileName.endsWith('-context.yaml') ||
+      fileName.endsWith('-context.yml')
+    ) {
+      const referenceErrors = await validateContextReferences(
+        filePath,
+        yaml,
+        projectRoot
+      );
+      errors.push(...referenceErrors);
     }
   } catch (error) {
-    return {
+    errors.push({
       filePath,
       message: `Failed to parse YAML file: ${
         error instanceof Error ? error.message : String(error)
       }`,
-    };
+    });
   }
-  return null;
+
+  return errors;
+}
+
+async function validateContextReferences(
+  contextFilePath: string,
+  contextYaml: any,
+  projectRoot: string
+): Promise<ValidationError[]> {
+  const errors: ValidationError[] = [];
+  const contextDir = join(projectRoot, '.contextcompose');
+
+  if (!contextYaml.context || typeof contextYaml.context !== 'object') {
+    return errors;
+  }
+
+  const sections = ['personas', 'rules', 'mcps', 'actions'];
+
+  for (const section of sections) {
+    const sectionData = contextYaml.context[section];
+    if (Array.isArray(sectionData)) {
+      for (const referencedFile of sectionData) {
+        if (typeof referencedFile === 'string') {
+          const referencedFilePath = join(contextDir, referencedFile);
+          if (!(await fileExists(referencedFilePath))) {
+            errors.push({
+              filePath: contextFilePath,
+              message: `Referenced file does not exist: ${referencedFile}`,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return errors;
 }
 
 async function executeValidateContext(
@@ -82,12 +132,27 @@ async function executeValidateContext(
           if (file.endsWith('.yaml') || file.endsWith('.yml')) {
             const filePath = join(assetDir, file);
             validatedFiles.push(filePath);
-            const error = await validateComponentFile(filePath);
-            if (error) {
-              errors.push(error);
-            }
+            const fileErrors = await validateComponentFile(
+              filePath,
+              projectRoot
+            );
+            errors.push(...fileErrors);
           }
         }
+      }
+    }
+
+    // Also validate context files in the root of .contextcompose
+    const contextFiles = await fs.readdir(rootPath);
+    for (const file of contextFiles) {
+      if (
+        (file.endsWith('-context.yaml') || file.endsWith('-context.yml')) &&
+        (file.endsWith('.yaml') || file.endsWith('.yml'))
+      ) {
+        const filePath = join(rootPath, file);
+        validatedFiles.push(filePath);
+        const fileErrors = await validateComponentFile(filePath, projectRoot);
+        errors.push(...fileErrors);
       }
     }
 
@@ -131,7 +196,7 @@ export async function executeValidateContextTool(
   const validationResult = ValidateContextToolSchema.safeParse(args);
   if (!validationResult.success) {
     const errorMessages = validationResult.error.errors
-      .map((e) => `${e.path.join('.')}: ${e.message}`)
+      .map(e => `${e.path.join('.')}: ${e.message}`)
       .join(', ');
     return {
       success: false,
