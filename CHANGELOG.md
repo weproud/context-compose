@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [1.5.2](https://github.com/weproud/context-compose/compare/v1.5.1...v1.5.2) (2025-06-16)
+
+
+### Bug Fixes
+
+* context-compose command not found 이슈해결 ([625bd58](https://github.com/weproud/context-compose/commit/625bd58754ccee862956060a3e54a2663c4d157b))
+
 ## [1.5.1](https://github.com/weproud/context-compose/compare/v1.5.0...v1.5.1) (2025-06-14)
 
 
