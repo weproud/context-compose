@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [1.8.1](https://github.com/weproud/context-compose/compare/v1.8.0...v1.8.1) (2025-06-16)
+
+
+### Bug Fixes
+
+* npx 명령어 실행시 server가 동작하도록 수정 ([9e0de88](https://github.com/weproud/context-compose/commit/9e0de8884bcdb10e2d23d54f775f7df7807db664))
+
 # [1.8.0](https://github.com/weproud/context-compose/compare/v1.7.0...v1.8.0) (2025-06-16)
 
 
