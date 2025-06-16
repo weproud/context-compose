@@ -1,0 +1,40 @@
+version: 1
+kind: context
+name: NodeJS Feature Development
+description: A context for developing new features in a Node.js backend environment, focusing on API design and testing.
+
+context:
+  personas:
+    - personas/guillermo-rauch.yaml
+    - personas/dan-abramov.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/clean-code.yaml
+    - rules/api-design.yaml
+    - rules/testing-principles.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/web-search.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/api-design.yaml
+    - actions/test.yaml
+prompt: |
+  Let's build a new feature for our Node.js service.
+  We will focus on creating a well-designed API, writing clean code, and ensuring it's thoroughly tested.
+  Our goal is to deliver a high-quality feature that is both maintainable and scalable.
+  Let's start by outlining the API endpoints for this new feature.
+enhanced-prompt: |-
+  # NodeJS Feature Development Context
+
+  ## Core Philosophy
+  Build high-quality, scalable, and well-tested features for our Node.js backend. We emphasize clean API design and a robust testing strategy.
+
+  ## Development Workflow
+  1.  **API Design**: Define the new API endpoints following RESTful best practices.
+  2.  **Implementation**: Write clean, maintainable TypeScript code.
+  3.  **Testing**: Create unit and integration tests to ensure correctness and reliability.
+  4.  **Documentation**: Document the new API endpoints for other developers.
+
+  **Ready to build a new feature. What are the requirements?**

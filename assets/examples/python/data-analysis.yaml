@@ -1,0 +1,40 @@
+version: 1
+kind: context
+name: Python Data Analysis
+description: A context for performing data analysis in Python, focusing on performance, accuracy, and code quality.
+
+context:
+  personas:
+    - personas/john-carmack.yaml
+    - personas/martin-fowler.yaml
+    - personas/wes-mckinney.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/clean-code.yaml
+    - rules/performance-best-practices.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/web-search.yaml
+  actions:
+    - actions/performance-optimization.yaml
+    - actions/refactor.yaml
+prompt: |
+  Let's analyze this dataset to uncover valuable insights.
+  We will write efficient Python scripts using libraries like Pandas and NumPy.
+  Our focus is on performance, mathematical correctness, and producing clear, actionable results.
+  Let's start by defining the key questions we want to answer from the data.
+enhanced-prompt: |-
+  # Python Data Analysis Context
+
+  ## Core Philosophy
+  Perform high-quality data analysis with a focus on performance and reproducible results. We write optimized, clean Python code to process data and extract insights.
+
+  ## Analysis Workflow
+  1.  **Define Objective**: Clearly state the goals of the analysis.
+  2.  **Explore Data**: Understand the dataset, its structure, and quality.
+  3.  **Process & Analyze**: Write efficient scripts to clean, transform, and analyze the data.
+  4.  **Visualize & Report**: Create clear visualizations and summarize the findings.
+  5.  **Optimize**: Refactor and optimize the analysis script for performance.
+
+  **Ready to dive into the data. What is our primary objective?**

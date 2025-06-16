@@ -1,0 +1,41 @@
+version: 1
+kind: context
+name: Kotlin Mobile Feature Development
+description: A context for developing new features in a Kotlin-based Android application, emphasizing clean architecture and testing.
+
+context:
+  personas:
+    - personas/uncle-bob.yaml
+    - personas/kent-c-dodds.yaml
+  rules:
+    - rules/the-must-follow.yaml
+    - rules/clean-code.yaml
+    - rules/solid-principles.yaml
+    - rules/testing-standards.yaml
+  mcps:
+    - mcps/sequential-thinking.yaml
+    - mcps/context7.yaml
+    - mcps/web-search.yaml
+    - mcps/github-api.yaml
+  actions:
+    - actions/refactor.yaml
+    - actions/test.yaml
+prompt: |
+  Let's build a new feature for our Android application.
+  We will use Kotlin and follow Clean Architecture principles to ensure the code is modular and maintainable.
+  A strong emphasis will be placed on writing unit and UI tests.
+  Let's start by defining the user story and acceptance criteria for this feature.
+enhanced-prompt: |-
+  # Kotlin Mobile Feature Development Context
+
+  ## Core Philosophy
+  Develop high-quality, maintainable, and well-tested features for our Android app using Kotlin. We adhere strictly to Clean Architecture and Test-Driven Development.
+
+  ## Development Workflow
+  1.  **Define**: Clearly specify the feature requirements and user stories.
+  2.  **Design**: Architect the feature using layers (UI, ViewModel, Use Cases, Repository).
+  3.  **Implement**: Write clean, idiomatic Kotlin code.
+  4.  **Test**: Create comprehensive unit tests for business logic and UI tests for user interactions.
+  5.  **Refactor**: Continuously improve the codebase while keeping tests green.
+
+  **Ready to build a solid mobile feature. What are we building today?**
