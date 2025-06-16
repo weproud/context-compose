@@ -13,7 +13,6 @@
     "publish": false
   },
   "hooks": {
-    "before:init": "npm run pre-publish",
     "after:release": "echo 'Release completed! Check: https://github.com/${repo.repository}/releases/tag/v${version}'"
   },
   "plugins": {

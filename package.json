@@ -14,7 +14,7 @@
     "check": "biome check src mcp-server",
     "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
-    "release": "release-it"
+    "release": "pnpm type-check && pnpm test && pnpm build && release-it"
   },
   "repository": {
     "type": "git",
