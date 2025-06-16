@@ -14,7 +14,9 @@
     "check": "biome check src mcp-server",
     "check:fix": "biome check --write src mcp-server",
     "type-check": "tsc --noEmit",
-    "release": "pnpm type-check && pnpm test && pnpm build && release-it"
+    "release": "pnpm type-check && pnpm test && pnpm build && release-it",
+    "pre-npm-release": "pnpm type-check && pnpm test && pnpm build",
+    "npm-release": "pnpm pre-npm-release && pnpm publish --access public"
   },
   "repository": {
     "type": "git",
