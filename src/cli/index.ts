@@ -29,10 +29,8 @@ function main() {
   const hasOptions = args.some((arg) => arg.startsWith('-'));
 
   if (!hasCommand && !hasOptions) {
-    // If not running in a terminal, default to serve command
-    if (!process.stdout.isTTY) {
-      process.argv.splice(2, 0, 'serve');
-    }
+    // Default to serve command when no arguments are provided
+    process.argv.splice(2, 0, 'serve');
   }
 
   program.parse(process.argv);
