@@ -1,7 +1,7 @@
 import type { FastMCP } from 'fastmcp';
 import { executeInitTool } from '../../../src/core/tools/init.js';
 import { InitToolSchema } from '../../../src/schemas/init.js';
-import logger from '../logger';
+import logger from '../logger.js';
 
 /**
  * Register Init tool with MCP server
