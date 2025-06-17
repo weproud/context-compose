@@ -52,7 +52,7 @@ Before using contexts, you need to initialize your project. This sets up the nec
 Copy and paste the following into your prompt to run it.
 
 ```
-initialize my project using context-compose
+initialize using context-compose
 ```
 
 **What happens**:
